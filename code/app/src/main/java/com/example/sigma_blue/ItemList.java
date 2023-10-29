@@ -2,7 +2,7 @@ package com.example.sigma_blue;
 
 import java.util.ArrayList;
 
-public class ItemList implements IAdaptable {
+public class ItemList implements IAdaptable<Item> {
     /* Attributes */
     private ArrayList<Item> items;
 
@@ -49,7 +49,7 @@ public class ItemList implements IAdaptable {
      * @return the Item stored at the index as an Object object.
      */
     @Override
-    public Object getItem(int position) {
+    public Item getItem(int position) {
         return items.get(position);
     }
 
