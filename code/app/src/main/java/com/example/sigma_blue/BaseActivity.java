@@ -12,7 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
  * project makes progress.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    /* This attribute will be used for calling another activity from one. */
+    /* This attribute will be used for calling another activity from one.
+    * Documentation needed */
     protected final ActivityLauncher<Intent, ActivityResult> activityLauncher
         = ActivityLauncher.registerActivityForResult(this);
 
