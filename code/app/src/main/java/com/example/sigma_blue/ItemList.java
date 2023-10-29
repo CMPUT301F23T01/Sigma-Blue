@@ -35,6 +35,8 @@ public class ItemList implements IAdaptable {
         this.items = items;
     }
 
+    /* Adapter interface methods */
+
     @Override
     public int getCount() {
         return items.size();
@@ -57,4 +59,20 @@ public class ItemList implements IAdaptable {
     }
 
     /* Setters and Getters */
+
+    /**
+     * TODO: Handle addition of the exact same object (unique)
+     * @param o is the new item being added. If o is null, then it will not be added to the itemList
+     */
+    public void add(Item o) {
+        if (o != null) this.items.add(o);
+    }
+
+    /**
+     * TODO: Need to handle invalid cases.
+     * @param position is the index which is being removed from the list.
+     */
+    public void remove(int position) {
+        this.items.remove(position);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,27 @@ import android.widget.BaseAdapter;
 public class ItemListAdapter extends BaseAdapter {
     /* Attributes */
     private ItemList itemList;
+    private Context applicationContext;
+
+    /* Factories and Constructors */
+
+    public static ItemListAdapter newInstance(ItemList itemList, Context context) {
+        ItemListAdapter ret = new ItemListAdapter(itemList);
+        ret.setContext(context);
+        return ret;
+    }
+
+    public static ItemListAdapter newInstance(ItemList itemList) {
+        return new ItemListAdapter(itemList);
+    }
+
+    /**
+     * Basic constructor. Takes in the ItemList that will be adapted to a list view.
+     * @param itemList is the ItemList object that will be displayed on lists through this adapter.
+     */
+    public ItemListAdapter(ItemList itemList) {
+        this.itemList = itemList;
+    }
 
     /**
      * The amount of Items that are currently held by the adapter.
@@ -62,6 +84,22 @@ public class ItemListAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        /* Need to display to recycler view. */
         return null;
+    }
+
+    /* Getters and Setters */
+    public void setContext(Context context) {
+        applicationContext = context;
+    }
+
+    public void setItemList(ItemList itemList) {
+        this.itemList = itemList;
+    }
+    public void addItem(Item item) {
+        this.itemList.add(item);
+    }
+    public void removeItem(int position) {
+        this.itemList.remove(position);
     }
 }
