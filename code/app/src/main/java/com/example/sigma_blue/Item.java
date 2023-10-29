@@ -2,7 +2,7 @@ package com.example.sigma_blue;
 
 import java.util.Date;
 
-public class item {
+public class Item {
     private String name;
     private Date date;
     private String description;
@@ -35,7 +35,7 @@ public class item {
      * @param value
      * this is the estimated value of the item
      */
-    public item(String name, Date date, String description, String make, String model, float value) {
+    public Item(String name, Date date, String description, String make, String model, float value) {
         this.name = name;
         this.date = date;
         this.description = description;
