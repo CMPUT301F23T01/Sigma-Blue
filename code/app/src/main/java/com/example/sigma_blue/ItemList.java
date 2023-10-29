@@ -2,7 +2,7 @@ package com.example.sigma_blue;
 
 import java.util.ArrayList;
 
-public class ItemList {
+public class ItemList implements IAdaptable {
     /* Attributes */
     private ArrayList<Item> items;
 
@@ -33,6 +33,27 @@ public class ItemList {
      */
     public ItemList(ArrayList<Item> items) {
         this.items = items;
+    }
+
+    @Override
+    public int getCount() {
+        return items.size();
+    }
+
+    /**
+     * The getItem method returns the Item object (casted to Object) that is stored in the array
+     * list at the position.
+     * @param position is the index that the item is being retrieved from.
+     * @return the Item stored at the index as an Object object.
+     */
+    @Override
+    public Object getItem(int position) {
+        return items.get(position);
+    }
+
+    @Override
+    public int getItemId(int position) {
+        return position;
     }
 
     /* Setters and Getters */

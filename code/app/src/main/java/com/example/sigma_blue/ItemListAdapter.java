@@ -7,10 +7,10 @@ import android.widget.BaseAdapter;
 
 public class ItemListAdapter extends BaseAdapter {
     /* Attributes */
-    private IAdaptable itemList;  // TODO: Swap this back to ItemList
+    private ItemList itemList;
 
     /**
-     * How many items are in the data set represented by this Adapter.
+     * The amount of Items that are currently held by the adapter.
      *
      * @return Count of items.
      */

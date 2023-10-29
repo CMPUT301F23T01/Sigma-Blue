@@ -6,6 +6,6 @@ package com.example.sigma_blue;
  */
 public interface IAdaptable {
     public int getCount();
-    public int getItem(int position);
+    public Object getItem(int position);
     public int getItemId(int position);
 }
