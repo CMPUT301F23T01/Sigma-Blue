@@ -1,8 +1,9 @@
 package com.example.sigma_blue;
 
 import java.util.Date;
+import java.util.Objects;
 
-public class item {
+public class Item {
     private String name;
     private Date date;
     private String description;
@@ -35,7 +36,7 @@ public class item {
      * @param value
      * this is the estimated value of the item
      */
-    public item(String name, Date date, String description, String make, String model, float value) {
+    public Item(String name, Date date, String description, String make, String model, float value) {
         this.name = name;
         this.date = date;
         this.description = description;
@@ -188,4 +189,19 @@ public class item {
         this.comment = comment;
     }
 
+    /**
+     * This overrides equals method of super class
+     * @param o
+     * This the object for equals method
+     */
+    @Override
+    public boolean equals (Object o) {
+        // if the object is not Item class, return false
+        if (!(o instanceof Item)) {
+            return false;
+        }
+        // two items are equals to each other if their name is the same
+        Item I = (Item) o;
+        return this.getName().equals(I.getName());
+    }
 }
