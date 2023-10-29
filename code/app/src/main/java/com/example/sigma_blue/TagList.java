@@ -2,15 +2,23 @@ package com.example.sigma_blue;
 
 import java.util.ArrayList;
 
+/**
+ * Keeps track of a list of tags. Also allows for sync to the DB (well in the future...)
+ */
 public class TagList {
     private ArrayList<Tag> tags;
+    final private TagDB tagDB;
 
-    public void saveTagsToDB(TagDB DB) {
-        DB.saveToDB();
+    public TagList(TagDB tagDB) {
+        this.tagDB = tagDB;
     }
 
-    public void refreshTagsFromDB(TagDB DB) {
-        DB.refreshFromDB();
+    public void saveTagsToDB() {
+        tagDB.saveToDB(this);
+    }
+
+    public void refreshTagsFromDB() {
+        this.tags = tagDB.refreshFromDB();
     }
 
     public void addTag(Tag tag) {
@@ -19,5 +27,9 @@ public class TagList {
 
     public boolean containsTag(Tag tag) {
         return tags.contains(tag);
+    }
+
+    public ArrayList<Tag> getTags() {
+        return this.tags;
     }
 }
