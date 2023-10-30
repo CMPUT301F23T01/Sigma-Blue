@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sigma-Blue</string>
+    <string name="confirm">Confirm</string>
+    <string name="back">Back</string>
+    <string name="add_tag_title">Add Tag</string>
+    <string name="edit_tag_title">Edit Tag</string>
+    <string name="tag_input_title">Tag Name</string>
+    <string name="tag_input_hint">Enter tag...</string>
 </resources>
