@@ -1,10 +1,7 @@
 package com.example.sigma_blue;
 
-import android.nfc.Tag;
-
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 public class Item implements Comparable<Item>{
     private String name;
@@ -50,6 +47,7 @@ public class Item implements Comparable<Item>{
         this.model = model;
         this.value = value;
 
+        this.tags = new ArrayList<Tag>();
     }
 
     /**
@@ -207,6 +205,22 @@ public class Item implements Comparable<Item>{
 
     public void addTag(Tag tag) {
         this.tags.add(tag);
+    }
+
+    /**
+     * This sets the comment of item
+     * @param tag
+     * This is a tag to delete
+     * @return boolean
+     * if the tag is found and successfully deleted, return true
+     * if the tag is not found, return false
+     */
+    public boolean deleteTag(Tag tag) {
+        if (this.tags.contains((Object)tag)){
+            this.tags.remove((Object)tag);
+            return true;
+        }
+        return false;
     }
 
     /**
