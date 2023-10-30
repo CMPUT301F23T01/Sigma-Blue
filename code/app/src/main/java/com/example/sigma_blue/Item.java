@@ -49,6 +49,7 @@ public class Item implements Comparable<Item>{
         this.make = make;
         this.model = model;
         this.value = value;
+
     }
 
     /**
@@ -203,6 +204,7 @@ public class Item implements Comparable<Item>{
         this.tags = tags;
     }
 
+
     public void addTag(Tag tag) {
         this.tags.add(tag);
     }
@@ -214,7 +216,10 @@ public class Item implements Comparable<Item>{
      */
     @Override
     public boolean equals (Object o) {
-
+        // if is the object self
+        if (this == o) {
+            return true;
+        }
         // if the object is not Item class, return false
         if (!(o instanceof Item)) {
             return false;
