@@ -1,9 +1,12 @@
 package com.example.sigma_blue;
 
+import android.nfc.Tag;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
-public class Item {
+public class Item implements Comparable<Item>{
     private String name;
     private Date date;
     private String description;
@@ -13,11 +16,14 @@ public class Item {
     private String serialNumber;
     private String comment;
 
+
+    private ArrayList<Tag> tags;
+
     /*TODO
         UNFINISHED ITEM OBJECT!!!
         decide the photograph storing method of the item
-        decide the type of the tag
-            THEN add these two attributes
+        (DONE)decide the type of the tag
+            add these two attributes
      */
 
 
@@ -189,6 +195,18 @@ public class Item {
         this.comment = comment;
     }
 
+    public ArrayList<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
     /**
      * This overrides equals method of super class
      * @param o
@@ -196,6 +214,7 @@ public class Item {
      */
     @Override
     public boolean equals (Object o) {
+
         // if the object is not Item class, return false
         if (!(o instanceof Item)) {
             return false;
@@ -204,4 +223,10 @@ public class Item {
         Item I = (Item) o;
         return this.getName().equals(I.getName());
     }
+
+    @Override
+    public int compareTo(Item item) {
+        return this.getName().compareTo(item.getName());
+    }
+    
 }
