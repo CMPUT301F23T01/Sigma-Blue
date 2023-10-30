@@ -228,5 +228,9 @@ public class Item implements Comparable<Item>{
     public int compareTo(Item item) {
         return this.getName().compareTo(item.getName());
     }
-    
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 }
