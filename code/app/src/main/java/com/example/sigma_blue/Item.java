@@ -223,6 +223,10 @@ public class Item implements Comparable<Item>{
         return false;
     }
 
+    public boolean hasTag(Tag tag){
+        return this.tags.contains((Object)tag);
+    }
+
     /**
      * This overrides equals method of super class
      * @param o
