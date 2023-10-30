@@ -17,4 +17,7 @@
     <string name="scan_barcode_button_text">Scan Barcode</string>
     <string name="comment_label">Comment</string>
     <string name="add_tags_button_text">Add Tags</string>
+    <string name="tag_manager_label">Tag Manager</string>
+    <string name="tag_manage_back_button_text">Back</string>
+    <string name="tag_manage_confirm_button_text">Confirm</string>
 </resources>
