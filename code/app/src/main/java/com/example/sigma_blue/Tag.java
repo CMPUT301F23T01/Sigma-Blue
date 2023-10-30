@@ -1,5 +1,7 @@
 package com.example.sigma_blue;
 
+import static android.graphics.Color.WHITE;
+
 import android.graphics.Color;
 
 /**
@@ -11,7 +13,7 @@ public class Tag implements Comparable<Tag>{
 
     public Tag(String tagText, int colour) {
         this.tagText = tagText;
-        //this.colour = Color.valueOf(colour); // requires API 26
+        this.colour = Color.valueOf(colour);
     }
 
     public Tag(String tagText, Color colour) {
