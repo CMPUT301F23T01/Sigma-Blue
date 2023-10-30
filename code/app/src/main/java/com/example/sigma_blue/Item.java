@@ -1,9 +1,11 @@
 package com.example.sigma_blue;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Item implements Comparable<Item>{
+
     private String name;
     private Date date;
     private String description;
@@ -21,6 +23,7 @@ public class Item implements Comparable<Item>{
         decide the photograph storing method of the item
         (DONE)decide the type of the tag
             add these two attributes
+
      */
 
 
@@ -48,6 +51,7 @@ public class Item implements Comparable<Item>{
         this.value = value;
 
         this.tags = new ArrayList<Tag>();
+
     }
 
     /**
@@ -194,6 +198,7 @@ public class Item implements Comparable<Item>{
         this.comment = comment;
     }
 
+
     public ArrayList<Tag> getTags() {
         return tags;
     }
@@ -227,6 +232,7 @@ public class Item implements Comparable<Item>{
         return this.tags.contains((Object)tag);
     }
 
+
     /**
      * This overrides equals method of super class
      * @param o
@@ -234,10 +240,12 @@ public class Item implements Comparable<Item>{
      */
     @Override
     public boolean equals (Object o) {
+
         // if is the object self
         if (this == o) {
             return true;
         }
+
         // if the object is not Item class, return false
         if (!(o instanceof Item)) {
             return false;
@@ -246,6 +254,7 @@ public class Item implements Comparable<Item>{
         Item I = (Item) o;
         return this.getName().equals(I.getName());
     }
+
 
     @Override
     public int compareTo(Item item) {
@@ -256,4 +265,5 @@ public class Item implements Comparable<Item>{
     public int hashCode() {
         return this.name.hashCode();
     }
+
 }
