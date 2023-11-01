@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:orientation="vertical">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:layout_gravity="top"
+        app:cardBackgroundColor="#D6D1CF">
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#0437F2"
+            android:text="@string/back_button_text"
+            android:textColor="#FFD600" />
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/nameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/dateLabel"
+            android:ems="10"
+            android:hint="@string/enter_text_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:minHeight="48sp" />
+
+        <TextView
+            android:id="@+id/valueLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameEditText"
+            android:text="@string/estimated_value_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/valueEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameEditText"
+            android:layout_toEndOf="@+id/dateLabel"
+            android:ems="10"
+            android:hint="@string/enter_value_hint"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:minHeight="48sp" />
+
+        <TextView
+            android:id="@+id/dateLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/valueEditText"
+            android:text="@string/date_of_acquisition_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/dateEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/valueEditText"
+            android:layout_toEndOf="@+id/dateLabel"
+            android:ems="10"
+            android:hint="@string/enter_date_hint"
+            android:importantForAutofill="no"
+            android:inputType="date"
+            android:minHeight="48sp" />
+
+        <TextView
+            android:id="@+id/makeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dateEditText"
+            android:text="@string/make_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/makeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dateEditText"
+            android:layout_toEndOf="@+id/dateLabel"
+            android:ems="10"
+            android:hint="@string/enter_text_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:minHeight="48sp" />
+
+        <TextView
+            android:id="@+id/modelLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/makeEditText"
+            android:text="@string/model_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/modelEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/makeEditText"
+            android:layout_toEndOf="@+id/dateLabel"
+            android:ems="10"
+            android:hint="@string/enter_text_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:minHeight="48sp" />
+
+        <TextView
+            android:id="@+id/serialLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/modelEditText"
+            android:text="@string/serial_number_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/serialEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/modelEditText"
+            android:layout_toEndOf="@+id/dateLabel"
+            android:ems="10"
+            android:hint="@string/enter_text_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:minHeight="48sp" />
+
+        <Button
+            android:id="@+id/scanSerialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/serialLabel"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/serialEditText"
+            android:backgroundTint="#0437F2"
+            android:text="@string/scan_serial_button_text"
+            android:textColor="#FFD600" />
+
+        <TextView
+            android:id="@+id/descriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/scanSerialButton"
+            android:layout_marginTop="22sp"
+            android:text="@string/description_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/scanBarcodeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/scanSerialButton"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="22sp"
+            android:backgroundTint="#0437F2"
+            android:text="@string/scan_barcode_button_text"
+            android:textColor="#FFD600" />
+
+        <EditText
+            android:id="@+id/descriptionEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/scanBarcodeButton"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="@string/enter_text_hint"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp" />
+
+        <TextView
+            android:id="@+id/commentLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionEditText"
+            android:layout_marginTop="22sp"
+            android:text="@string/comment_label"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="@string/enter_text_hint"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/addTagsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentEditText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="22sp"
+            android:backgroundTint="#0437F2"
+            android:text="@string/add_tags_button_text"
+            android:textColor="#FFD600" />
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:background="#D6D1CF">
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#0437F2"
+            android:text="@string/delete_button_text"
+            android:textColor="#FFD600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#0437F2"
+            android:text="@string/confirm_button_text"
+            android:textColor="#FFD600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>
+
+
+
+
+
