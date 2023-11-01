@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#0437F2"
-            android:text="@string/tag_manage_back_button_text"
+            android:text="@string/tag_manager_back_button_text"
             android:textColor="#FFD600"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#0437F2"
-            android:text="@string/tag_manage_confirm_button_text"
+            android:text="@string/tag_manager_confirm_button_text"
             android:textColor="#FFD600"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

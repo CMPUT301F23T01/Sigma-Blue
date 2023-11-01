@@ -18,6 +18,9 @@
     <string name="comment_label">Comment</string>
     <string name="add_tags_button_text">Add Tags</string>
     <string name="tag_manager_label">Tag Manager</string>
-    <string name="tag_manage_back_button_text">Back</string>
-    <string name="tag_manage_confirm_button_text">Confirm</string>
+    <string name="tag_manager_back_button_text">Back</string>
+    <string name="tag_manager_confirm_button_text">Confirm</string>
+    <string name="add_tag_hint">Add tag...</string>
+    <string name="add_tag_title">Create Tag</string>
+    <string name="add_tag_subtitle">Tag Name</string>
 </resources>
