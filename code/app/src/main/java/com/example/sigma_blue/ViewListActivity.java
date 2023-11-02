@@ -3,6 +3,7 @@ package com.example.sigma_blue;
 import android.os.Bundle;
 import android.widget.Button;
 
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,4 +53,8 @@ public class ViewListActivity extends BaseActivity{
         rvItemListView.setAdapter(itemListAdapter);
         rvItemListView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    /* Fragment result listeners are lambda expressions that controls what the class does when the
+    * results are received.*/
+    FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
 }
