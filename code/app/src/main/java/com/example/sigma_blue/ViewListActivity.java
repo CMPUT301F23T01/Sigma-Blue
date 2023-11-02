@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.fragment.app.FragmentResultListener;
@@ -41,6 +42,9 @@ public class ViewListActivity extends BaseActivity{
         viewHolder.searchButton = findViewById(R.id.searchButton);
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
+        /* Setting up the on click listeners*/
+        setUIOnClickListeners();
+
         /* Adding to the adapter for testing */
         itemListAdapter.addItem(new Item(
                 "3080",
@@ -59,4 +63,13 @@ public class ViewListActivity extends BaseActivity{
     /* Fragment result listeners are lambda expressions that controls what the class does when the
     * results are received.*/
     FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
+
+    /**
+     * This method sets all the on click listeners for all the interactive UI elements.
+     */
+    private void setUIOnClickListeners() {
+        viewHolder.addEntryButton.setOnClickListener(v -> {});  // Launch add fragment.
+        viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
+    }
+
 }
