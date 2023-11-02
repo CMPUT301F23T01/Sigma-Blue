@@ -11,25 +11,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Date;
 
 public class ViewListActivity extends BaseActivity{
-    /* Tracking views that gets reused */
-    private Button searchButton;
-    private FloatingActionButton addEntryButton;
+    /* Tracking views that gets reused. Using nested class because struct */
+    private class ViewHolder {
+        public Button searchButton;
+        public FloatingActionButton addEntryButton;
+
+    }
 
     /* The ItemListAdapter */
-    private ItemListAdapter itemListAdapter;
+    public ItemListAdapter itemListAdapter;
+
+    ViewHolder viewHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
+        this.viewHolder = new ViewHolder();
         setContentView(R.layout.view_list);
 
         /* Setting up the data. TODO: Make this use the database */
-        this.itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
 
         /* Code section for linking UI elements */
-        addEntryButton = findViewById(R.id.addButton);
-        searchButton = findViewById(R.id.searchButton);
+        viewHolder.addEntryButton = findViewById(R.id.addButton);
+        viewHolder.searchButton = findViewById(R.id.searchButton);
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Adding to the adapter for testing */
