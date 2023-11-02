@@ -20,4 +20,6 @@
     <string name="tag_manager_label">Tag Manager</string>
     <string name="tag_manage_back_button_text">Back</string>
     <string name="tag_manage_confirm_button_text">Confirm</string>
+    <string name="placeholder_name_1">RTX 4090</string>
+    <string name="placeholder_make_1">EVGA</string>
 </resources>

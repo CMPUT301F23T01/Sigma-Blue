@@ -16,21 +16,30 @@ public class ViewListActivity extends BaseActivity{
     /* Tracking views that gets reused. Using nested class because struct */
     private class ViewHolder {
         public Button searchButton;
+        public Button sortFilterButton;
+        public Button optionsButton;
         public FloatingActionButton addEntryButton;
 
+        /**
+         * Construction of this nested class will bind the UI element to a 'package'
+         */
+        public ViewHolder() {
+            this.searchButton = findViewById(R.id.searchButton);
+            this.sortFilterButton = findViewById(R.id.sortButton);
+            this.optionsButton = findViewById(R.id.optionButton);
+            this.addEntryButton = findViewById(R.id.addButton);
+
+        }
     }
 
-    /* The ItemListAdapter */
-    public ItemListAdapter itemListAdapter;
+    public ItemListAdapter itemListAdapter;     // The itemListAdapter
     private FragmentLauncher fragmentLauncher;
-
-    private ViewHolder viewHolder;
+    private ViewHolder viewHolder;              // Encapsulation of the Views
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
-        this.viewHolder = this.new ViewHolder();
         setContentView(R.layout.view_list);
 
         /* Setting up the data. TODO: Make this use the database */
@@ -38,12 +47,13 @@ public class ViewListActivity extends BaseActivity{
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
-        viewHolder.addEntryButton = findViewById(R.id.addButton);
-        viewHolder.searchButton = findViewById(R.id.searchButton);
+        this.viewHolder = this.new ViewHolder();
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
-        /* Setting up the on click listeners*/
-        setUIOnClickListeners();
+        /* Linking the adapter to the UI */
+        rvItemListView.setAdapter(itemListAdapter);
+        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
 
         /* Adding to the adapter for testing */
         itemListAdapter.addItem(new Item(
@@ -55,9 +65,8 @@ public class ViewListActivity extends BaseActivity{
                 38.0f
         ));
 
-        /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemListAdapter);
-        rvItemListView.setLayoutManager(new LinearLayoutManager(this));
+        /* Setting up the on click listeners*/
+        setUIOnClickListeners();
     }
 
     /* Fragment result listeners are lambda expressions that controls what the class does when the
@@ -68,8 +77,15 @@ public class ViewListActivity extends BaseActivity{
      * This method sets all the on click listeners for all the interactive UI elements.
      */
     private void setUIOnClickListeners() {
-        viewHolder.addEntryButton.setOnClickListener(v -> {});  // Launch add fragment.
+        viewHolder.addEntryButton.setOnClickListener(v -> this.itemListAdapter.addItem(
+                new Item(
+                        "ThinkPad", new Date(), "Nice UNIX book", "IBM",
+                        "T460", 300f
+                )
+        ));  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
+        viewHolder.sortFilterButton.setOnClickListener(v -> {});
+        viewHolder.optionsButton.setOnClickListener(v -> {});
     }
 
 }

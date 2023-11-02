@@ -161,6 +161,7 @@ public class ItemListAdapter extends
     }
     public void addItem(Item item) {
         this.itemList.add(item);
+        notifyItemChanged(itemList.size() -1);
     }
     public void removeItem(int position) {
         this.itemList.remove(position);

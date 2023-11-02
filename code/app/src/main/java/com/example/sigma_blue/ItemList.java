@@ -81,6 +81,12 @@ public class ItemList implements IAdaptable<Item> {
         this.items.remove(position);
     }
 
+    public int size() {
+        return items.size();
+    }
+
+    /* Database method */
+
     /**
      * Setter used for the factory method and dependency injection.
      * @param databaseHandler is the Database Handler that will be used for the list.
@@ -92,4 +98,5 @@ public class ItemList implements IAdaptable<Item> {
     private void refreshFromDB() {
         this.items = databaseInterface.refreshFromDB();
     }
+
 }
