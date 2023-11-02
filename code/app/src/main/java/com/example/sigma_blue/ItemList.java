@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class ItemList implements IAdaptable<Item> {
     /* Attributes */
     private ArrayList<Item> items;
+    private ItemDB databaseInterface;
 
     /* Factory construction */
 
@@ -13,7 +14,9 @@ public class ItemList implements IAdaptable<Item> {
      * @return an instance of the ItemList class holding no item.
      */
     public static ItemList newInstance() {
-        return new ItemList(new ArrayList<Item>());
+        ItemList ret = new ItemList(new ArrayList<Item>());
+        ret.setDatabaseInterface(new ItemDB());
+        return ret;
     }
 
     /**
@@ -24,7 +27,9 @@ public class ItemList implements IAdaptable<Item> {
      * items.
      */
     public static ItemList newInstance(ArrayList<Item> items) {
-        return new ItemList(items);
+        ItemList ret = new ItemList(items);
+        ret.setDatabaseInterface(new ItemDB());
+        return ret;
     }
 
     /**
@@ -74,5 +79,17 @@ public class ItemList implements IAdaptable<Item> {
      */
     public void remove(int position) {
         this.items.remove(position);
+    }
+
+    /**
+     * Setter used for the factory method and dependency injection.
+     * @param databaseHandler is the Database Handler that will be used for the list.
+     */
+    public void setDatabaseInterface(ItemDB databaseHandler) {
+        this.databaseInterface = databaseHandler;
+    }
+
+    private void refreshFromDB() {
+        this.items = databaseInterface.refreshFromDB();
     }
 }

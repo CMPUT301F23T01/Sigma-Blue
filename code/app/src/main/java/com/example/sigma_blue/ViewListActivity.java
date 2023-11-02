@@ -29,7 +29,7 @@ public class ViewListActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
-        this.viewHolder = new ViewHolder();
+        this.viewHolder = this.new ViewHolder();
         setContentView(R.layout.view_list);
 
         /* Setting up the data. TODO: Make this use the database */
