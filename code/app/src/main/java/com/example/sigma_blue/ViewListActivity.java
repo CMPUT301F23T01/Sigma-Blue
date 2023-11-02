@@ -21,8 +21,9 @@ public class ViewListActivity extends BaseActivity{
 
     /* The ItemListAdapter */
     public ItemListAdapter itemListAdapter;
+    private FragmentLauncher fragmentLauncher;
 
-    ViewHolder viewHolder;
+    private ViewHolder viewHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class ViewListActivity extends BaseActivity{
 
         /* Setting up the data. TODO: Make this use the database */
         itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
         viewHolder.addEntryButton = findViewById(R.id.addButton);
