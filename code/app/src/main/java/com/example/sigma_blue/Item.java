@@ -1,9 +1,11 @@
 package com.example.sigma_blue;
 
-import java.util.Date;
-import java.util.Objects;
 
-public class Item {
+import java.util.ArrayList;
+import java.util.Date;
+
+public class Item implements Comparable<Item>{
+
     private String name;
     private Date date;
     private String description;
@@ -13,11 +15,15 @@ public class Item {
     private String serialNumber;
     private String comment;
 
+
+    private ArrayList<Tag> tags;
+
     /*TODO
         UNFINISHED ITEM OBJECT!!!
         decide the photograph storing method of the item
-        decide the type of the tag
-            THEN add these two attributes
+        (DONE)decide the type of the tag
+            add these two attributes
+
      */
 
 
@@ -43,6 +49,9 @@ public class Item {
         this.make = make;
         this.model = model;
         this.value = value;
+
+        this.tags = new ArrayList<Tag>();
+
     }
 
     /**
@@ -189,6 +198,41 @@ public class Item {
         this.comment = comment;
     }
 
+
+    public ArrayList<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
+    }
+
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
+    /**
+     * This sets the comment of item
+     * @param tag
+     * This is a tag to delete
+     * @return boolean
+     * if the tag is found and successfully deleted, return true
+     * if the tag is not found, return false
+     */
+    public boolean deleteTag(Tag tag) {
+        if (this.tags.contains((Object)tag)){
+            this.tags.remove((Object)tag);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasTag(Tag tag){
+        return this.tags.contains((Object)tag);
+    }
+
+
     /**
      * This overrides equals method of super class
      * @param o
@@ -196,6 +240,12 @@ public class Item {
      */
     @Override
     public boolean equals (Object o) {
+
+        // if is the object self
+        if (this == o) {
+            return true;
+        }
+
         // if the object is not Item class, return false
         if (!(o instanceof Item)) {
             return false;
@@ -204,4 +254,16 @@ public class Item {
         Item I = (Item) o;
         return this.getName().equals(I.getName());
     }
+
+
+    @Override
+    public int compareTo(Item item) {
+        return this.getName().compareTo(item.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
+
 }
