@@ -35,6 +35,11 @@ public class ItemListAdapter extends
 
     /* Factories and Constructors */
 
+    /**
+     * Base factory. Takes in an ItemList object and returns the adapter for it.
+     * @param itemList is an ItemList object that contains the types.
+     * @return an ItemListAdapter object that has been instantiated.
+     */
     public static ItemListAdapter newInstance(ItemList itemList) {
         return new ItemListAdapter(itemList);
     }
@@ -94,9 +99,9 @@ public class ItemListAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         /* Need to inflate the custom layout */
-        View itemView = inflater.inflate(R.layout.view_row, parent, false);
-        ViewHolder viewHolder = new ViewHolder(itemView);
-        return viewHolder;
+        View itemView = inflater.inflate(R.layout.view_row, parent,
+                false);
+        return new ViewHolder(itemView);
     }
 
     /**
@@ -125,14 +130,9 @@ public class ItemListAdapter extends
         Item item = itemList.getItem(position);
 
         /* Assigning the content of the view holder */
-        TextView nameView = holder.name;
-        TextView makeView = holder.make;
-        TextView idView = holder.id;
-
-        /* Setting the text of a row */
-        nameView.setText(item.getName());
-        makeView.setText(item.getMake());
-        idView.setText(item.getSerialNumber());
+        holder.name.setText(item.getName());
+        holder.make.setText(item.getMake());
+        holder.id.setText(String.valueOf(item.getValue()));
     }
 
     /**
