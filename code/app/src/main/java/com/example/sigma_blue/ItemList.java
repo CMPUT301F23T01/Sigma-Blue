@@ -63,6 +63,15 @@ public class ItemList implements IAdaptable<Item> {
         return position;
     }
 
+    /**
+     * Returns the amount of elements held in the items ArrayList.
+     * @return an integer primitive representing the number of element held in
+     * the items ArrayList.
+     */
+    public int size() {
+        return items.size();
+    }
+
     /* Setters and Getters */
 
     /**
@@ -81,9 +90,6 @@ public class ItemList implements IAdaptable<Item> {
         this.items.remove(position);
     }
 
-    public int size() {
-        return items.size();
-    }
 
     /* Database method */
 
