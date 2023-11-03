@@ -3,6 +3,7 @@ package com.example.sigma_blue;
 import android.os.Bundle;
 import android.widget.Button;
 
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,25 +12,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Date;
 
 public class ViewListActivity extends BaseActivity{
-    /* Tracking views that gets reused */
-    private Button searchButton;
-    private FloatingActionButton addEntryButton;
+    /* Tracking views that gets reused. Using nested class because struct */
+    private class ViewHolder {
+        public Button searchButton;
+        public FloatingActionButton addEntryButton;
+
+    }
 
     /* The ItemListAdapter */
-    private ItemListAdapter itemListAdapter;
+    public ItemListAdapter itemListAdapter;
+
+    ViewHolder viewHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
+        this.viewHolder = new ViewHolder();
         setContentView(R.layout.view_list);
 
         /* Setting up the data. TODO: Make this use the database */
-        this.itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
 
         /* Code section for linking UI elements */
-        addEntryButton = findViewById(R.id.addButton);
-        searchButton = findViewById(R.id.searchButton);
+        viewHolder.addEntryButton = findViewById(R.id.addButton);
+        viewHolder.searchButton = findViewById(R.id.searchButton);
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Adding to the adapter for testing */
@@ -46,4 +53,8 @@ public class ViewListActivity extends BaseActivity{
         rvItemListView.setAdapter(itemListAdapter);
         rvItemListView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    /* Fragment result listeners are lambda expressions that controls what the class does when the
+    * results are received.*/
+    FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
 }
