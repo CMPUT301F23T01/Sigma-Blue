@@ -1,8 +1,20 @@
 package com.example.sigma_blue;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 
 public class ItemDB implements IDataBase<Item>{
+
+    private FirebaseFirestore db;
+
+    /** consructor of the ItemDB
+     *
+     */
+    public ItemDB() {
+        this.db = FirebaseFirestore.getInstance();
+    }
+
     /**
      * Saves the ArrayList of items to the database.
      *
