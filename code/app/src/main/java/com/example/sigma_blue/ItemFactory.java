@@ -50,7 +50,17 @@ public class ItemFactory {
      */
     public Item templateItem() {
         return new Item("", getFactoryDate(), "", "", "",
-                0f);
+                getFactoryValue());
+    }
+
+    /**
+     * Template Item creation, but with different title
+     * @param title is a String that is the new title.
+     * @return a manufactured Item object.
+     */
+    public Item templateItem(String title) {
+        return new Item(title, getFactoryDate(), "", "", "",
+                getFactoryValue());
     }
 
     /**
@@ -62,11 +72,23 @@ public class ItemFactory {
     }
 
     /**
+     * Default value setter
+     * @param f is new value
+     */
+    public void setFactoryValue(float f) {
+        factoryValue = f;
+    }
+
+    /**
      * Gets the date if a factory one has not been set.
      * @return a Date object that will either have the current time, or the time
      * set on to the factory date.
      */
     private Date getFactoryDate() {
         return (Date) factoryDate.clone();  // Clone so no dangling reference.
+    }
+
+    private float getFactoryValue() {
+        return factoryValue;
     }
 }
