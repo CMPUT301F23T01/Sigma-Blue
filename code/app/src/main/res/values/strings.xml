@@ -33,4 +33,22 @@
     <string name="placeholder_name_1">RTX 4090</string>
     <string name="placeholder_make_1">EVGA</string>
 
+    <!-- Strings related to the add/edit/details fragments -->
+    <string name="add_edit_empty">[PLACEHOLDER]</string>
+    <string name="add_edit_btn_back">Back</string>
+    <string name="add_edit_btn_save">Save</string>
+    <string name="add_edit_btn_cancel">Cancel</string>
+    <string name="add_edit_btn_edit">Edit</string>
+    <string name="add_edit_btn_scan_serial">Scan Serial\nNumber</string>
+    <string name="add_edit_btn_scan_barcode">Scan Barcode</string>
+    <string name="add_edit_btn_tag">Add Tag</string>
+    <string name="add_edit_text_name">Name</string>
+    <string name="add_edit_text_value">Estimated Value</string>
+    <string name="add_edit_text_date">Date of Acquisition</string>
+    <string name="add_edit_text_model">Model</string>
+    <string name="add_edit_text_make">Make</string>
+    <string name="add_edit_text_serial">Serial Number</string>
+    <string name="add_edit_text_description">Description</string>
+    <string name="add_edit_text_comment">Comment</string>
+
 </resources>
