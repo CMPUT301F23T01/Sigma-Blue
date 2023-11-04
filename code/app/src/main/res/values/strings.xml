@@ -7,9 +7,7 @@
     <string name="make_label">Make:</string>
     <string name="model_label">Model:</string>
     <string name="serial_number_label">Serial Number:</string>
-    <string name="back_button_text">Back</string>
     <string name="delete_button_text">Delete</string>
-    <string name="confirm_button_text">Confirm</string>
     <string name="enter_value_hint">Enter value</string>
     <string name="enter_date_hint">Enter date</string>
     <string name="scan_serial_button_text">Scan Serial Number</string>
@@ -17,6 +15,10 @@
     <string name="scan_barcode_button_text">Scan Barcode</string>
     <string name="comment_label">Comment</string>
     <string name="add_tags_button_text">Add Tags</string>
+    <string name="add_tag_title">Add Tag</string>
+    <string name="edit_tag_title">Edit Tag</string>
+    <string name="add_tag_subtitle">Tag Name</string>
+    <string name="add_tag_hint">Tag name...</string>
     <string name="tag_manager_label">Tag Manager</string>
     <string name="tag_manage_back_button_text">Back</string>
     <string name="tag_manage_confirm_button_text">Confirm</string>

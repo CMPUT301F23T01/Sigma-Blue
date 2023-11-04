@@ -12,16 +12,17 @@ import android.widget.EditText;
 import android.graphics.Color;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Fragment for adding new tags.
  */
-public class TagAddFragment extends Fragment {
+public class TagAddFragment extends DialogFragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
 
-    public TagAddFragment() {
-        super(R.layout.add_tag_fragment);
+    // If we are adding the tag to the TagList from the activity that is provided in the fragment.
+    public interface OnFragmentInteractionListener {
+        void addToTagList(Tag tag);
     }
 
     // I am pretty sure that isn't quite how it is done, I might have mixed up the Fragment methods
@@ -38,17 +39,17 @@ public class TagAddFragment extends Fragment {
 
         backButton.setOnClickListener(v -> {
             // exit fragment?
-            getActivity().onBackPressed();
+            getDialog().dismiss();
         });
 
         confirmButton.setOnClickListener(v -> {
             String tagName = inputField.getText().toString();
+            // NOTE for now, we will use the default color that is provided in the fragment.
 
-            // create a new tag object
-            // add it to TagList
+            // TODO Add tag to list, through the activity that calls the fragment.
 
             // exit fragment?
-            getActivity().onBackPressed();
+            getDialog().dismiss();
 
         });
 
@@ -66,11 +67,11 @@ public class TagAddFragment extends Fragment {
                 if (inputEmpty) {confirmButton.setEnabled(false);} else {confirmButton.setEnabled(true);}
             }
         });
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(R.layout.add_tag_fragment, container, false);
     }
 
