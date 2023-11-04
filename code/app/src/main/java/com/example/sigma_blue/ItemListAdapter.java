@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ItemListAdapter extends
         RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
@@ -167,4 +168,7 @@ public class ItemListAdapter extends
         this.itemList.remove(position);
     }
 
+    public Optional<Float> sumValues() {
+        return itemList.sumValues();
+    }
 }
