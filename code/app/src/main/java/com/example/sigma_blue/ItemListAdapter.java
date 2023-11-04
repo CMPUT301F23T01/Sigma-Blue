@@ -170,5 +170,4 @@ public class ItemListAdapter extends
     public Optional<Float> sumValues() {
         return this.itemList.sumValues();
     }
-
 }
