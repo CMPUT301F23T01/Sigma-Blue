@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="3dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/itemName"
@@ -20,7 +25,7 @@
             android:layout_weight="1"
             android:fontFamily="serif-monospace"
             android:gravity="center"
-            android:text="RTX 4090"
+            android:text="@string/placeholder_name_1"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
@@ -32,7 +37,7 @@
             android:layout_weight="1"
             android:fontFamily="serif-monospace"
             android:gravity="center"
-            android:text="EVGA"
+            android:text="@string/placeholder_make_1"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
@@ -49,4 +54,4 @@
             android:textSize="15sp" />
 
     </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

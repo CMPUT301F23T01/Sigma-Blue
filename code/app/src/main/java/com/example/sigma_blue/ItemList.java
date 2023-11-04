@@ -63,6 +63,15 @@ public class ItemList implements IAdaptable<Item> {
         return position;
     }
 
+    /**
+     * Returns the amount of elements held in the items ArrayList.
+     * @return an integer primitive representing the number of element held in
+     * the items ArrayList.
+     */
+    public int size() {
+        return items.size();
+    }
+
     /* Setters and Getters */
 
     /**
@@ -81,6 +90,9 @@ public class ItemList implements IAdaptable<Item> {
         this.items.remove(position);
     }
 
+
+    /* Database method */
+
     /**
      * Setter used for the factory method and dependency injection.
      * @param databaseHandler is the Database Handler that will be used for the list.
@@ -92,4 +104,5 @@ public class ItemList implements IAdaptable<Item> {
     private void refreshFromDB() {
         this.items = databaseInterface.refreshFromDB();
     }
+
 }
