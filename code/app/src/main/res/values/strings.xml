@@ -32,5 +32,6 @@
 
     <string name="placeholder_name_1">RTX 4090</string>
     <string name="placeholder_make_1">EVGA</string>
+    <string name="empty_summary_view">No Items are being held.</string>
 
 </resources>

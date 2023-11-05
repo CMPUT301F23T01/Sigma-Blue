@@ -61,12 +61,12 @@
         android:focusable="true"
         android:importantForAccessibility="no"
         app:backgroundTint="#FFD600"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/summaryTextView"
         app:layout_constraintEnd_toEndOf="@+id/listView"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/summaryTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#D6D1CF"
