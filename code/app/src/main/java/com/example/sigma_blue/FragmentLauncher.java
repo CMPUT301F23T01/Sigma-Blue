@@ -44,7 +44,8 @@ public class FragmentLauncher {
     }
 
     /**
-     * DialogFragment polymorphism for launching fragments.
+     * DialogFragment polymorphism for launching fragments. This assumes that we have already
+     * placed our initial data in the form of a Bundle when we pass @code{fragment}.
      * @param fragment the dialog fragment that is being launched.
      * @param tag is needed for dialog fragment. (Need to read what it does).
      */

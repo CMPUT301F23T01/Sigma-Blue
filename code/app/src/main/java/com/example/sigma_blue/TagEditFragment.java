@@ -16,33 +16,34 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
- * Fragment for adding new tags.
+ * Fragment for editing existing tags.
  */
-public class TagAddFragment extends DialogFragment {
+public class TagEditFragment extends DialogFragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
-    private TagAddFragment.OnFragmentInteractionListener listener;
+    private Tag tag;
+    private TagEditFragment.OnFragmentInteractionListener listener;
 
     /**
      * Attaches the listener to this fragment where we will implement the interfaces
-     * in the activity/fragment that calls the @code{addToTagList} method.
+     * in the activity/fragment that calls the @code{editExistingTag} method.
      * @param context Application environment provided by default.
      */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof TagAddFragment.OnFragmentInteractionListener) {
-            listener = (TagAddFragment.OnFragmentInteractionListener) context;
+        if (context instanceof TagEditFragment.OnFragmentInteractionListener) {
+            listener = (TagEditFragment.OnFragmentInteractionListener) context;
         }
     }
 
     /**
-     * Interface for adding To be implemented in the
+     * Interface for editing an existing tag. To be implemented in the
      * activity/fragment itself that calls this fragment.
      * Note that you will have to update the dataset, as well as the
      * ArrayAdapter that is being used in this case in the activity.
      */
     public interface OnFragmentInteractionListener {
-        void addToTagList(Tag tag);
+        void editExistingTag(String newName, Color newColor);
     }
 
 
@@ -52,31 +53,32 @@ public class TagAddFragment extends DialogFragment {
         final Button backButton = view.findViewById(R.id.back_button);
         final Button confirmButton = view.findViewById(R.id.confirm_button);
 
-        confirmButton.setEnabled(false); // User cannot outright add an empty tag on startup
-
         // TODO Maybe put a color picker for the Tag class, maybe.
         // It might also be nice to have the color picker remember the last pick.
 
+        Bundle args = getActivity().getIntent().getExtras();
+        tag = args.getParcelable("TAG_TO_EDIT"); //
+
         backButton.setOnClickListener(v -> {
+            // exit fragment?
             getDialog().dismiss();
         });
 
         confirmButton.setOnClickListener(v -> {
             String tagName = inputField.getText().toString();
-            // NOTE for now, we will use the default color that is provided in the fragment.
+            Color tagColour = tag.getColour(); // TODO finish implementation, this will depend on how we select the color.
 
-            // TODO Add tag to list, through the activity/fragment that calls this fragment.
-            listener.addToTagList(new Tag(tagName, tagColor));
+            // TODO Edit the existing tag, through the activity/fragment that calls this fragment.
+            listener.editExistingTag(tagName, tagColour);
 
             getDialog().dismiss();
 
         });
 
-        // The user cannot add empty tags
+        // The user cannot leave an empty tag
         inputField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 

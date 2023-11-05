@@ -33,6 +33,10 @@ public class Tag implements Comparable<Tag>{
         return colour;
     }
 
+    public void setColour(Color colour) {
+        this.colour = colour;
+    }
+
     @Override
     public int compareTo(Tag o) {
         return this.tagText.compareTo(o.getTagText());
