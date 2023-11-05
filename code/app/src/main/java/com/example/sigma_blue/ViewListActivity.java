@@ -87,6 +87,11 @@ public class ViewListActivity extends BaseActivity{
 
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
+
+        ItemDB testDB = new ItemDB();
+
+        testDB.signUp("testUser", "112233");
+        testDB.login("testUser", "112233");
     }
 
     /* Fragment result listeners are lambda expressions that controls what the class does when the
