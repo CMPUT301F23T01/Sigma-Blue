@@ -126,7 +126,6 @@ public class ItemDB{
      *
      * @param items is an object that is being saved.
      */
-
     public void saveToDB(ArrayList<Item> items) {
         if (loginUser == null) {
             Log.d("login error", "User not login!");
