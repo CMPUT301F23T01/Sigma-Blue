@@ -184,7 +184,7 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(date);
                         }
-                        Item item = new Item("3090", date, "Testing", "Evga", "GA102-220-A1", (float)799.99);
+                        Item item = Item.newInstance("3090");
 
                         ArrayList<Item> testItemList = new ArrayList<Item>();
                         testItemList.add(item);

@@ -26,6 +26,25 @@ public class Item implements Comparable<Item>{
 
      */
 
+    /**
+     * newInstance pattern used so that construction is decoupled from outside
+     * interface.
+     * @param t Just the name of the object.
+     * @return the constructed item.
+     */
+    public static Item newInstance(String t) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(new Date());
+        ret.setComment(null);
+        ret.setComment(null);
+        ret.setMake(null);
+        ret.setModel(null);
+        ret.setValue(0f);
+
+        return ret;
+    }
 
     /**
      * This is constructor of item object, take in required parameters only
@@ -51,7 +70,16 @@ public class Item implements Comparable<Item>{
         this.value = value;
 
         this.tags = new ArrayList<Tag>();
+    }
 
+    /**
+     * Simpler construction, where the other parts can be included.
+     * @param name is the name of the object.
+     */
+    public Item(String name) {
+        /* Making just the most vital components */
+        this.name = name;
+        this.tags = new ArrayList<>();
     }
 
     /**
