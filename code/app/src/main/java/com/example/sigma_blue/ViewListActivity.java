@@ -1,21 +1,34 @@
 package com.example.sigma_blue;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
-public class ViewListActivity extends BaseActivity{
+public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInteraction {
+
+
     /* Tracking views that gets reused. Using nested class because struct */
     private class ViewHolder {
         public Button searchButton;
@@ -66,6 +79,7 @@ public class ViewListActivity extends BaseActivity{
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
 
+    private ItemDB iDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
@@ -88,10 +102,14 @@ public class ViewListActivity extends BaseActivity{
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
 
-        ItemDB testDB = new ItemDB();
 
-        testDB.signUp("testUser", "112233");
-        testDB.login("testUser", "112233");
+        // ITEM DATA BASE RELATED STUFF
+        iDB = new ItemDB();
+
+        iDB.signUp("testUser", "112233");
+
+
+
     }
 
     /* Fragment result listeners are lambda expressions that controls what the class does when the
@@ -115,7 +133,69 @@ public class ViewListActivity extends BaseActivity{
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
-        viewHolder.optionsButton.setOnClickListener(v -> {});
+        viewHolder.optionsButton.setOnClickListener(v -> {
+
+            // FOR ItemDB TESTING PURPOSE
+
+            login(iDB, "testUser", "112233", this);
+            // after login, the
+
+            // build a mock item
+
+
+        });
+    }
+
+    @Override
+    public void login(ItemDB idb, String userName, String password, Context Activity) {
+        iDB.getDb().collection("SigmaBlue")
+                .document(userName)
+                .collection("AccountInfo")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            if (doc.getId().compareTo("Password") == 0) {
+                                //check for the password
+                                if (doc.getString("Password").compareTo(password) == 0) {
+                                    iDB.setLoginUser(userName);
+                                    int duration = Toast.LENGTH_SHORT;
+                                    Toast.makeText(Activity, "Successful Login", duration).show();
+                                } else {
+                                    int duration = Toast.LENGTH_SHORT;
+                                    Toast.makeText(Activity, "Failed to Login", duration).show();
+                                }
+
+                            }
+                        }
+
+                        // TEST Save To DB after login; FOR TESTING ONLY
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
+                        Date date = new Date();
+                        try {
+                            date = formatter.parse("2022-01");
+                        } catch (ParseException e) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                        }
+                        Item item = new Item("3090", date, "Testing", "Evga", "GA102-220-A1", (float)799.99);
+
+                        ArrayList<Item> testItemList = new ArrayList<Item>();
+                        testItemList.add(item);
+                        testItemList.add(new Item(
+                                "ThinkPad", new Date(), "Nice UNIX book", "IBM",
+                                "T460", 300f
+                        ));
+                        iDB.saveToDB(testItemList);
+                    }
+                });
+    }
+
+    // NOT YET Implemented
+    @Override
+    public ArrayList<Item> refreshFromDB(ItemDB idb) {
+        return null;
     }
 
 }

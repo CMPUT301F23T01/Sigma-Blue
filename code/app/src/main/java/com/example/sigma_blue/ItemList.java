@@ -115,8 +115,8 @@ public class ItemList implements IAdaptable<Item> {
         this.databaseInterface = databaseHandler;
     }
 
-    private void refreshFromDB() {
+/*    private void refreshFromDB() {
         this.items = databaseInterface.refreshFromDB();
-    }
+    }*/
 
 }
