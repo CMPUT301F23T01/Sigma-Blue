@@ -72,6 +72,10 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
             return String.format(Locale.ENGLISH,
                     "The total value: %7.2f", sum);
         }
+
+        public void setViewText(final TextView v, final String s) {
+            v.setText(s);
+        }
     }
 
     public ItemListAdapter itemListAdapter;     // The itemListAdapter
@@ -102,6 +106,8 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
 
+        /* Debugging activity specifics */
+        viewHolder.setViewText(viewHolder.sortFilterButton, "Button 1");
 
         // ITEM DATA BASE RELATED STUFF
         dbInit = DatabaseInitializer.newInstance();
