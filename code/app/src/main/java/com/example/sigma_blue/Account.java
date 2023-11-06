@@ -1,11 +1,12 @@
 package com.example.sigma_blue;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Stores information about a user account.
  */
-public class Account {
+public class Account implements Serializable {
     private String username;
     private String password;
 
