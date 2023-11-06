@@ -60,6 +60,7 @@ public class ViewListActivity extends BaseActivity{
                 "3080",
                 new Date(),
                 "Description",
+                "Comment",
                 "EVGA",
                 "RTX 3080",
                 38.0f
@@ -79,7 +80,7 @@ public class ViewListActivity extends BaseActivity{
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> this.itemListAdapter.addItem(
                 new Item(
-                        "ThinkPad", new Date(), "Nice UNIX book", "IBM",
+                        "ThinkPad", new Date(), "Nice UNIX book","","IBM",
                         "T460", 300f
                 )
         ));  // Launch add fragment.

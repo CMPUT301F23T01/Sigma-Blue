@@ -1,10 +1,11 @@
 package com.example.sigma_blue;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Item implements Comparable<Item>{
+public class Item implements Comparable<Item>, Serializable {
 
     private String name;
     private Date date;
@@ -42,16 +43,25 @@ public class Item implements Comparable<Item>{
      * @param value
      * this is the estimated value of the item
      */
-    public Item(String name, Date date, String description, String make, String model, float value) {
+    public Item(String name, Date date, String description, String comment, String make, String model, float value) {
         this.name = name;
         this.date = date;
         this.description = description;
         this.make = make;
         this.model = model;
         this.value = value;
+        this.comment = comment;
 
         this.tags = new ArrayList<Tag>();
 
+    }
+
+    /**
+     * Constructor for an empty item
+     */
+    public Item()
+    {
+        this("",null,"","","","",0f);
     }
 
     /**

@@ -40,7 +40,7 @@ public class ItemFactory {
      * @return an Item object with every value set to empty (but not null)
      */
     public Item emptyItem() {
-        return new Item("", new Date(), "", "", "",
+        return new Item("", new Date(), "", "","", "",
                 0f);
     }
 
@@ -49,7 +49,7 @@ public class ItemFactory {
      * @return an Item object with every value set to empty (but not null)
      */
     public Item templateItem() {
-        return new Item("", getFactoryDate(), "", "", "",
+        return new Item("", getFactoryDate(), "", "","", "",
                 0f);
     }
 
