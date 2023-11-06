@@ -4,8 +4,11 @@ addAssignees: false
 
 reviewers:
   - waridh
-  - reviewerB
-  - reviewerC
+  - Yunyang-lu
+  - JoshuaShaw-13
+  - lizard-52
+  - echeng-git
+  - bpaul2
 
 # A number of reviewers added to the pull request
 # Set 0 to add all the reviewers (default: 0)
