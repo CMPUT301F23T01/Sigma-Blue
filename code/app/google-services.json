@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479908551631",
+    "project_id": "sigmablue-4dee3",
+    "storage_bucket": "sigmablue-4dee3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479908551631:android:92f8d0fe45fdcea97210ba",
+        "android_client_info": {
+          "package_name": "com.example.sigma_blue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqcV0g8_4cEAaf8jyGeJSJuoY6C60keIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
