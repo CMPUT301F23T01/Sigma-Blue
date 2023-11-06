@@ -9,74 +9,66 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 
 import java.text.DateFormat;
+import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class EditFragment extends Fragment
 {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_NAME = "name";
-    private static final String ARG_VALUE = "value";
-    private static final String ARG_DATE = "date";
-    private static final String ARG_MAKE = "make";
-    private static final String ARG_MODEL = "model";
-    private static final String ARG_SERIAL = "serial";
-    private static final String ARG_DESCRIPTION = "description";
-    private static final String ARG_COMMENT = "comment";
+    // Fragment key-value pairs received from external fragments
+    private static final String ARG_ITEM = "item";
 
-    private String mName;
-    private Double mValue;
-    private String mDate; //Is DateFormat sufficient for this?
-    private String mMake;
-    private String mModel;
-    private int mSerial;
-    private String mDescription;
-    private String mComment;
+    private Item currentItem;
+    private String mName = " ";
+    private float mValue = 0f;
+    private Date mDate = new Date();
+    private String mMake = " ";
+    private String mModel = " ";
+    private String mSerial = " ";
+    private String mDescription = " ";
+    private String mComment = " ";
 
+    // Fragment binding
     private EditFragmentBinding binding;
+
+    // Fragment ui components
+    TextView textName;
+    TextView textValue;
+    TextView textDate;
+    TextView textMake;
+    TextView textModel;
+    TextView textSerial;
+    TextView textDescription;
+    TextView textComment;
 
     public EditFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditFragment newInstance(String param1, String param2) {
-        EditFragment fragment = new EditFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mName = getArguments().getString(ARG_NAME);
-            mValue = getArguments().getDouble(ARG_VALUE);
-            mDate = getArguments().getString(ARG_DATE);
-            mMake = getArguments().getString(ARG_MAKE);
-            mModel = getArguments().getString(ARG_MODEL);
-            mSerial = getArguments().getInt(ARG_SERIAL);
-            mDescription = getArguments().getString(ARG_DESCRIPTION);
-            mComment = getArguments().getString(ARG_COMMENT);
+
+        // Load item from bundle
+        if (getArguments() != null)
+        {
+            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+            if (currentItem != null)
+            {
+                mName = currentItem.getName();
+                mValue = currentItem.getValue();
+                mDate = currentItem.getDate();
+                mMake = currentItem.getMake();
+                mModel = currentItem.getModel();
+                mSerial = currentItem.getSerialNumber();
+                mDescription = currentItem.getDescription();
+                mComment = currentItem.getComment();
+            }
         }
     }
 
@@ -85,6 +77,17 @@ public class EditFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = EditFragmentBinding.inflate(inflater, container, false);
+
+        // bind ui components
+        textName = binding.getRoot().findViewById(R.id.text_name_disp);
+        textValue = binding.getRoot().findViewById(R.id.text_value_disp);
+        textDate = binding.getRoot().findViewById(R.id.text_date_disp);
+        textMake = binding.getRoot().findViewById(R.id.text_make_disp);
+        textModel = binding.getRoot().findViewById(R.id.text_model_disp);
+        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
+        textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
+        textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
+
         return binding.getRoot();
     }
 
@@ -93,12 +96,34 @@ public class EditFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        view.findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener()
+        // set item details from bundle
+        textName.setText(mName);
+        textValue.setText(String.valueOf(mValue));
+        textDate.setText(mDate.toString());
+        textMake.setText(mMake);
+        textModel.setText(mModel);
+        textSerial.setText(mSerial);
+        textDescription.setText(mDescription);
+        textComment.setText(mComment);
+
+        view.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+            }
+        });
+
+        view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO: update stored item with edited text values on ui
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ARG_ITEM, currentItem);
+                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
             }
         });
     }

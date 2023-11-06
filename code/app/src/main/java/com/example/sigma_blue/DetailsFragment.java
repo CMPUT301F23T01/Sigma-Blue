@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ public class DetailsFragment extends Fragment
     // Fragment key-value pairs received from external fragments
     private static final String ARG_ITEM = "item";
 
+    private Item currentItem;
     private String mName = " ";
     private float mValue = 0f;
     private Date mDate = new Date();
@@ -55,17 +57,17 @@ public class DetailsFragment extends Fragment
         // Load item from bundle
         if (getArguments() != null)
         {
-            Item i = (Item)getArguments().getSerializable(ARG_ITEM);
-            if (i != null)
+            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+            if (currentItem != null)
             {
-                mName = i.getName();
-                mValue = i.getValue();
-                mDate = i.getDate();
-                mMake = i.getMake();
-                mModel = i.getModel();
-                mSerial = i.getSerialNumber();
-                mDescription = i.getDescription();
-                mComment = i.getComment();
+                mName = currentItem.getName();
+                mValue = currentItem.getValue();
+                mDate = currentItem.getDate();
+                mMake = currentItem.getMake();
+                mModel = currentItem.getModel();
+                mSerial = currentItem.getSerialNumber();
+                mDescription = currentItem.getDescription();
+                mComment = currentItem.getComment();
             }
         }
     }
@@ -110,10 +112,20 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                Item i = new Item(mName, mDate, mDescription, mComment, mMake, mModel, mValue);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(ARG_ITEM, i);
+                bundle.putSerializable(ARG_ITEM, currentItem);
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
+            }
+        });
+
+        view.findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getActivity(), DetailsFragment.class);
+                i.putExtra(ARG_ITEM, currentItem);
+                getActivity().finish();
             }
         });
     }

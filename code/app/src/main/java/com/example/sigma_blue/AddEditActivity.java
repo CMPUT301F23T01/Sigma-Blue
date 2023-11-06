@@ -1,20 +1,16 @@
 package com.example.sigma_blue;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.sigma_blue.databinding.AddEditActivityBinding;
 
 public class AddEditActivity extends AppCompatActivity
 {
-    private AppBarConfiguration appBarConfiguration;
-    private static final String ARG_ITEM = "item"; // key for accessing item
-    Bundle currentItem; // item to add/edit
+    private static final String ARG_ITEM = "item"; // item key accessor
+    Bundle bundledItem; // item to add/edit
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,22 +22,26 @@ public class AddEditActivity extends AppCompatActivity
         // Load bundle
         if (savedInstanceState == null)
         {
-            currentItem = getIntent().getExtras();
+            bundledItem = getIntent().getExtras();
         }
         else
         {
-            currentItem = savedInstanceState;
+            bundledItem = savedInstanceState;
         }
 
         // Setup nav controller
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);
-        navController.setGraph(R.navigation.nav_graph, currentItem);
+        navController.setGraph(R.navigation.nav_graph, bundledItem);
     }
 
     @Override
-    public boolean onSupportNavigateUp()
+    protected void onDestroy()
     {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);
-        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
+        super.onDestroy();
+
+        // Get bundled item from fragment and pass it to ViewList
+        bundledItem = getIntent().getExtras();
+        Intent i = new Intent(AddEditActivity.this, ViewListActivity.class);
+        i.putExtra(ARG_ITEM, bundledItem);
     }
 }
