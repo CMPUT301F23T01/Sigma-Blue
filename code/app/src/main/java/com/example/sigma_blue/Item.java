@@ -5,7 +5,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Item implements Comparable<Item>, Serializable {
+public class Item implements Comparable<Item>, Serializable,
+        IDatabaseItem<Item> {
 
     private String name;
     private Date date;
