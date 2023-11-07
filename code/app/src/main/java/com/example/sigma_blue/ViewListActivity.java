@@ -123,7 +123,7 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
         viewHolder.addEntryButton.setOnClickListener(v -> {
             this.itemListAdapter.addItem(
                 new Item(
-                        "ThinkPad", new Date(), "Nice UNIX book", "IBM",
+                        "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
                         "T460", 300f
                 )
             );

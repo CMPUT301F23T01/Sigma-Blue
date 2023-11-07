@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Custom app colors -->
+    <color name="add_edit_btn_bgr_test">#1454c4</color>
+    <color name="add_edit_btn_text_test">#ffe4a1</color>
+    <color name="add_edit_layout_bgr_test">#99ceff</color>
+
 </resources>
