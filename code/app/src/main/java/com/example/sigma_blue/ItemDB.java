@@ -38,7 +38,7 @@ public class ItemDB extends ADatabaseInterface<Item> {
         this.itemsRef = FirebaseFirestore.getInstance()
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
-                .collection(DatabaseNames.ITEMS.getName());
+                .collection(DatabaseNames.ITEMS_COLLECTION.getName());
         this.account = a;
     }
 
