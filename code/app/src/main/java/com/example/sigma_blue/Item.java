@@ -302,6 +302,11 @@ public class Item implements Comparable<Item>, Serializable {
         return this.tags.contains((Object)tag);
     }
 
+    public String getDocID() {
+        if (this.make == null || this.model == null) return name;
+        else return name+make+model;
+    }
+
 
     /**
      * This overrides equals method of super class

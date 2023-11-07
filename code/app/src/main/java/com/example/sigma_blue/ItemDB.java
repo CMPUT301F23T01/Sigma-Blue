@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,15 +60,38 @@ public class ItemDB{
         return db;
     }
 
-    public void startListening() {
+    /**
+     * This method adds a listener to a user's item collection.
+     * @param adapter is the adapter that is getting updated.
+     */
+    public void startListening(RecyclerView.Adapter<?> adapter) {
         itemsRef.addSnapshotListener(
                 (q, e) -> {
                     if (q != null) {
                         dataList.clear();
                         this.dataList = loadItemArray(q);
+                        adapter.notifyDataSetChanged();
                     }
                 }
         );
+    }
+
+    public void addItem(Item item) {
+        addDocument(itemsRef, item, v -> {
+            HashMap<String, String> ret = new HashMap<>();
+            ret.put("NAME", item.getName());
+            ret.put("DATE", item.getDate().toString());
+            ret.put("MAKE", item.getMake());
+            ret.put("MODEL", item.getModel());
+            ret.put("VALUE", String.valueOf(item.getValue()));
+            return ret;
+        }, item.getDocID());
+    }
+
+    public static <T> void addDocument(CollectionReference cr, T item,
+                                       Function<T, HashMap<String,
+                                               String>> fn, String docID) {
+        cr.document(docID).set(fn.apply(item));
     }
 
     /**
@@ -97,7 +121,7 @@ public class ItemDB{
     private List<Item> loadItemArray(final QuerySnapshot q) {
         return loadArray(q, v -> {
             return Item.newInstance(
-                    v.getId(),
+                    v.getString("NAME"),
                     v.getDate("DATE"),
                     v.getString("MAKE"),
                     v.getString("MODEL"),
@@ -106,55 +130,6 @@ public class ItemDB{
         });
     }
 
-    //TRY this to see this method is not working
-    /*
-    public void login (String userName, String password) {
-
-        itemsRef.document(userName)
-                .collection(pwdPath)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        loginUser = userName;
-                        //issue: loginUser is not set
-                    }
-                });
-        //wait until the string set
-        while (loginUser.isEmpty());
-        /* OR this
-        for (int i = 0; i < 10000000; i ++);
-
-        //may try await(), but not allowed in main process
-     */
-
-
-
-
-   /* public void login (String userName, String password) {
-        loginCheck(userName, new OnCompleteCallback() {
-            @Override
-            public void onComplete(boolean success, String userName, ItemDB idb) {
-                idb.setLoginUser(userName);
-            }
-        }, this);
-    }
-
-    public interface OnCompleteCallback{
-        void onComplete(boolean success, String uName, ItemDB idb);
-    }
-    public void loginCheck(final String userName,final OnCompleteCallback callback, final ItemDB idb) {
-        itemsRef.document(userName)
-                .collection(pwdPath)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        callback.onComplete(true, userName, idb);
-                    }
-                });
-    }*/
 
 /*    @Override
     public ArrayList<Item> refreshFromDB() {
