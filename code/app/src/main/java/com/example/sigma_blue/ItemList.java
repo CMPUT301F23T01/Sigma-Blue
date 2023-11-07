@@ -1,5 +1,8 @@
 package com.example.sigma_blue;
 
+import android.util.Log;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,15 +10,28 @@ import java.util.Optional;
 public class ItemList implements IAdaptable<Item> {
     /* Attributes */
     private List<Item> items;
+    private ADatabaseInterface<Item> dbHandler;
+    private ItemListAdapter adapter;
+    private Account account;
 
     /* Factory construction */
+
+    public static ItemList newInstance(Account a,ADatabaseInterface<Item> dbH,
+                                       ItemListAdapter adapt) {
+        ItemList ret = new ItemList(new ArrayList<>(), a);
+        ret.setDatabaseHandler(dbH);
+        ret.setAdapter(adapt);
+        return ret;
+    }
 
     /**
      * Factory creation for when there isn't an input ArrayList of songs ready for input.
      * @return an instance of the ItemList class holding no item.
      */
-    public static ItemList newInstance() {
-        ItemList ret = new ItemList(new ArrayList<Item>());
+    public static ItemList newInstance(Account a) {
+        ItemList ret = new ItemList(new ArrayList<Item>(), a);
+        ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
+        ret.setDatabaseHandler(ItemDB.newInstance(a));
         return ret;
     }
 
@@ -26,8 +42,8 @@ public class ItemList implements IAdaptable<Item> {
      * @return an instance of the ItemList object containing the Item objects that were present in
      * items.
      */
-    public static ItemList newInstance(ArrayList<Item> items) {
-        ItemList ret = new ItemList(items);
+    public static ItemList newInstance(Account a, ArrayList<Item> items) {
+        ItemList ret = new ItemList(items, a);
         return ret;
     }
 
@@ -35,7 +51,7 @@ public class ItemList implements IAdaptable<Item> {
      * Class constructor. Designed to take in the ArrayList of items for better testing.
      * @param items is an ArrayList of Item objects that the ItemList will hold.
      */
-    public ItemList(ArrayList<Item> items) {
+    public ItemList(ArrayList<Item> items, Account account) {
         this.items = items;
     }
 
@@ -92,25 +108,43 @@ public class ItemList implements IAdaptable<Item> {
      */
     public void add(Item o) {
         if (o != null) this.items.add(o);
+        updateUI();
+        Log.v("Added Item", "Added new item");
     }
 
     /**
-     * TODO: Need to handle invalid cases.
      * @param position is the index which is being removed from the list.
      */
-    public void remove(int position) {
-        this.items.remove(position);
+    public void remove(final int position) {
+        if (position > -1 && position < size()) this.items.remove(position);
+        else ;
+        updateUI();
+        Log.v("Removed Item", "Removed an item from item list");
     }
 
+    public void updateUI() {
+        adapter.notifyDataSetChanged();
+        adapter.updateSumView(sumValues());
+    }
+
+    public void setDatabaseHandler(final ADatabaseInterface<Item> dbH) {
+        this.dbHandler = dbH;
+    }
+
+    public void setAdapter(final ItemListAdapter adapter) {
+        this.adapter = adapter;
+    }
 
     /* Database method */
-
     public void setList(final List<Item> list) {
         this.items = list;
     }
 
-/*    private void refreshFromDB() {
-        this.items = databaseInterface.refreshFromDB();
-    }*/
+    public List<Item> getList() {
+        return this.items;
+    }
 
+    public void setSummaryView(TextView summaryView) {
+        this.adapter.setSummaryView(summaryView);
+    }
 }

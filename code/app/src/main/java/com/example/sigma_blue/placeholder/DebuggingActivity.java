@@ -78,6 +78,7 @@ public class DebuggingActivity extends BaseActivity {
     }
 
     public ItemListAdapter itemListAdapter;     // The itemListAdapter
+    public ItemList itemList;
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private DatabaseInitializer dbInit;
@@ -93,8 +94,8 @@ public class DebuggingActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
-        itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
-        itemListAdapter.setSummaryView(viewHolder.summaryView);
+        itemList = ItemList.newInstance();
+        itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
         iDB = ItemDB.newInstance(testAccount2);
         iDB.startListening(itemListAdapter, itemListAdapter.getItemList());
@@ -128,15 +129,7 @@ public class DebuggingActivity extends BaseActivity {
      * This method sets all the on click listeners for all the interactive UI elements.
      */
     private void setUIOnClickListeners() {
-        viewHolder.setSummaryView(itemListAdapter.sumValues());
         viewHolder.addEntryButton.setOnClickListener(v -> {
-//            this.itemListAdapter.addItem(
-//                new Item(
-//                        "ThinkPad", new Date(),
-//                        "Nice UNIX book", "", "IBM",
-//                        "T460", 300f
-//                )
-//            );
 
             this.iDB.add(
                     new Item(

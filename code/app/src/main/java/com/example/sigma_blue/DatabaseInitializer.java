@@ -40,15 +40,7 @@ public class DatabaseInitializer {
     public boolean checkExistence(final Account a) {
        dbRef.document(a.getUsername())
                .collection(DatabaseNames.ACCOUNT_INFO_COLLECTION.getName())
-               .get().addOnCompleteListener(
-            t -> {
-                if (t.isSuccessful()) {
-                    exists = t.getResult().size() != 0;
-                }
-                else Log.e("Document Error",
-                        "Unable to get documents");
-            }
-        );
+               .document(DatabaseNames.USER_INFO_DOCUMENT.getName());
        return this.exists;
     }
 
