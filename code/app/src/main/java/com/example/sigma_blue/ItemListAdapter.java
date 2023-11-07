@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -12,17 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ItemListAdapter extends
-        RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
+        RecyclerView.Adapter<ItemListAdapter.RecyclerViewHolder> {
     /* Caching the views in the adapter. */
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         TextView make;
         TextView id;
 
         /* Constructor that accepts the entire row */
-        public ViewHolder(View itemView) {
+        public RecyclerViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.itemName);
             make = itemView.findViewById(R.id.itemMake);
@@ -73,7 +73,7 @@ public class ItemListAdapter extends
     }
 
     /**
-     * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
+     * Called when RecyclerView needs a new {@link RecyclerViewHolder} of the given type to represent
      * an item.
      * <p>
      * This new ViewHolder should be constructed with a new View that can represent the items
@@ -81,7 +81,7 @@ public class ItemListAdapter extends
      * layout file.
      * <p>
      * The new ViewHolder will be used to display items of the adapter using
-     * {@link #onBindViewHolder(ViewHolder, int, List)}. Since it will be re-used to display
+     * {@link #onBindViewHolder(RecyclerViewHolder, int, List)}. Since it will be re-used to display
      * different items in the data set, it is a good idea to cache references to sub views of
      * the View to avoid unnecessary {@link View#findViewById(int)} calls.
      *
@@ -90,23 +90,23 @@ public class ItemListAdapter extends
      * @param viewType The view type of the new View.
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
-     * @see #onBindViewHolder(ViewHolder, int)
+     * @see #onBindViewHolder(RecyclerViewHolder, int)
      */
     @NonNull
     @Override
-    public ItemListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         /* Need to inflate the custom layout */
         View itemView = inflater.inflate(R.layout.view_row, parent,
                 false);
-        return new ViewHolder(itemView);
+        return new RecyclerViewHolder(itemView);
     }
 
     /**
      * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link ViewHolder#itemView} to reflect the item at the given
+     * update the contents of the {@link RecyclerViewHolder#itemView} to reflect the item at the given
      * position.
      * <p>
      * Note that unlike {@link ListView}, RecyclerView will not call this method
@@ -114,10 +114,10 @@ public class ItemListAdapter extends
      * invalidated or the new position cannot be determined. For this reason, you should only
      * use the <code>position</code> parameter while acquiring the related data item inside
      * this method and should not keep a copy of it. If you need the position of an item later
-     * on (e.g. in a click listener), use {@link ViewHolder#getAdapterPosition()} which will
+     * on (e.g. in a click listener), use {@link RecyclerViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
      * <p>
-     * Override {@link #onBindViewHolder(ViewHolder, int, List)} instead if Adapter can
+     * Override {@link #onBindViewHolder(RecyclerViewHolder, int, List)} instead if Adapter can
      * handle efficient partial bind.
      *
      * @param holder   The ViewHolder which should be updated to represent the contents of the
@@ -125,7 +125,7 @@ public class ItemListAdapter extends
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull ItemListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         /* Caching the item that will be used to fill up the row */
         Item item = itemList.getItem(position);
 
@@ -167,4 +167,7 @@ public class ItemListAdapter extends
         this.itemList.remove(position);
     }
 
+    public Optional<Float> sumValues() {
+        return this.itemList.sumValues();
+    }
 }

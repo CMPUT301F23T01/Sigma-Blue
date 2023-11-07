@@ -24,7 +24,7 @@ public class ItemTest {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
         }
-        Item item = new Item("3090", date, "Testing", "Evga", "GA102-220-A1", (float)799.99);
+        Item item = new Item("3090", date, "Testing","Testing2", "Evga", "GA102-220-A1", (float)799.99);
         item.addTag(new Tag("computer components", new Color()));
 
         assertEquals("computer components", (item.getTags().get(0).getTagText()));
@@ -45,7 +45,7 @@ public class ItemTest {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
         }
-        Item item = new Item("3090", date, "Testing", "Evga", "GA102-220-A1", (float)799.99);
+        Item item = new Item("3090", date, "Testing","Testing2", "Evga", "GA102-220-A1", (float)799.99);
         item.addTag(new Tag("computer components", new Color()));
 
         assertEquals("computer components", (item.getTags().get(0).getTagText()));

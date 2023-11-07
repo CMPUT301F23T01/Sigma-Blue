@@ -1,0 +1,18 @@
+addReviewers: true
+
+addAssignees: false
+
+reviewers:
+  - waridh
+  - Yunyang-lu
+  - JoshuaShaw-13
+  - lizard-52
+  - echeng-git
+  - bpaul2
+
+# A number of reviewers added to the pull request
+# Set 0 to add all the reviewers (default: 0)
+numberOfReviewers: 0
+
+skipKeywords:
+  - wip

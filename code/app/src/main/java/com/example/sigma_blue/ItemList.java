@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ItemList implements IAdaptable<Item> {
     /* Attributes */
@@ -72,6 +73,19 @@ public class ItemList implements IAdaptable<Item> {
         return items.size();
     }
 
+    /**
+     * Gets the sum of all the value of the item in the ItemList.
+     * @author Bach
+     * @return the sum of the values of the items contained in this instance in
+     * an Optional wrapper. Done this way to enforce explicit handling of the
+     * case where there is no items in the list.
+     */
+    public Optional<Float> sumValues() {
+        if (items.isEmpty()) return Optional.empty();
+        else return Optional.of(items.stream().map(Item::getValue)
+                    .reduce(0f, Float::sum));
+    }
+
     /* Setters and Getters */
 
     /**
@@ -101,8 +115,8 @@ public class ItemList implements IAdaptable<Item> {
         this.databaseInterface = databaseHandler;
     }
 
-    private void refreshFromDB() {
+/*    private void refreshFromDB() {
         this.items = databaseInterface.refreshFromDB();
-    }
+    }*/
 
 }
