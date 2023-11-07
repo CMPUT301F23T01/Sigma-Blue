@@ -26,14 +26,29 @@ public class ItemDB{
 
     private ArrayList<Item> dataList;
 
+    /**
+     * newInstance method for hiding construction.
+     * @param a is the account that is doing the database transactions.
+     * @return
+     */
+    public ItemDB newInstance(Account a) {
+        ItemDB ret = new ItemDB();
+        ret.setAccount(a);
+        return ret;
+    }
 
     /** consructor of the ItemDB
      *
      */
     public ItemDB() {
         this.db = FirebaseFirestore.getInstance();
-        this.itemsRef = db.collection("SigmaBlue");
-        loginUser = "";
+    }
+
+    private void setAccount(Account a) {
+        this.itemsRef = FirebaseFirestore.getInstance()
+                .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
+                .document(a.getUsername())
+                .collection(DatabaseNames.ITEMS.getName());
     }
 
     public FirebaseFirestore getDb() {
