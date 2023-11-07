@@ -14,8 +14,6 @@ import java.util.function.Function;
  * @param <T> is the Object that is being stored in the database. i.e., Item, Tag
  */
 public abstract class ADatabaseInterface<T> {
-
-
     /**
      * Generic method for adding a new document to a collection being pointed
      * to.
@@ -57,4 +55,18 @@ public abstract class ADatabaseInterface<T> {
         }
         return list;
     }
+
+    /**
+     * Generic method for deleting a document.
+     * @param cr is the collection reference to the collection that is having a
+     *           document removed.
+     * @param item is the document item that is being removed.
+     */
+    protected static void removeDocument(final CollectionReference cr,
+                                            final IDatabaseItem<?> item) {
+        cr.document(item.getDocID()).delete();
+    }
+
+    public abstract void add(final T item);
+    public abstract void remove(final T item);
 }
