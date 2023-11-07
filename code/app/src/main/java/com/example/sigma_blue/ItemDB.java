@@ -51,7 +51,7 @@ public class ItemDB extends ADatabaseInterface<Item> {
         itemsRef.addSnapshotListener(
                 (q, e) -> {
                     if (q != null) {
-                        list.setList(loadItemArray(q));
+                        list.setList(loadArray(q));
                         adapter.notifyDataSetChanged();
                     }
                 }
@@ -62,7 +62,7 @@ public class ItemDB extends ADatabaseInterface<Item> {
      * Method for adding a new item to the database.
      * @param item is an Item object being added to the database.
      */
-    public void addItem(final Item item) {
+    public void add(final Item item) {
         addDocument(itemsRef, item, v -> {
             HashMap<String, String> ret = new HashMap<>();
             ret.put("NAME", item.getName());
@@ -76,10 +76,19 @@ public class ItemDB extends ADatabaseInterface<Item> {
     }
 
     /**
-     * Method that will just return an Item List implementation
-     * @param q
+     * This method removes the specified item from the database.
+     * @param item is an item object that is being removed from the database.
      */
-    private List<Item> loadItemArray(final QuerySnapshot q) {
+    public void remove(final Item item) {
+        removeDocument(itemsRef, item);
+    }
+
+    /**
+     * Method that will just return an Item List implementation
+     * @param q is a QuerySnapshot that is being converted into a list.
+     * @return a list of items.
+     */
+    private List<Item> loadArray(final QuerySnapshot q) {
         return loadArray(q, v -> {
             return Item.newInstance(
                     v.getString("NAME"),
