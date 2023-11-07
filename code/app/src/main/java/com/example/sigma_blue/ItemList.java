@@ -7,7 +7,6 @@ import java.util.Optional;
 public class ItemList implements IAdaptable<Item> {
     /* Attributes */
     private List<Item> items;
-    private ItemDB databaseInterface;
 
     /* Factory construction */
 
@@ -17,7 +16,6 @@ public class ItemList implements IAdaptable<Item> {
      */
     public static ItemList newInstance() {
         ItemList ret = new ItemList(new ArrayList<Item>());
-        ret.setDatabaseInterface(new ItemDB());
         return ret;
     }
 
@@ -30,7 +28,6 @@ public class ItemList implements IAdaptable<Item> {
      */
     public static ItemList newInstance(ArrayList<Item> items) {
         ItemList ret = new ItemList(items);
-        ret.setDatabaseInterface(new ItemDB());
         return ret;
     }
 
@@ -107,14 +104,6 @@ public class ItemList implements IAdaptable<Item> {
 
 
     /* Database method */
-
-    /**
-     * Setter used for the factory method and dependency injection.
-     * @param databaseHandler is the Database Handler that will be used for the list.
-     */
-    public void setDatabaseInterface(ItemDB databaseHandler) {
-        this.databaseInterface = databaseHandler;
-    }
 
     public void setList(final List<Item> list) {
         this.items = list;
