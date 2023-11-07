@@ -9,27 +9,30 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
 
 public class ItemDB{
 
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
-    private String loginUser;
+    private Account account;
 
     private boolean loginFlag = false;
 
     private final String pwdPath = "AccountInfo";
 
-    private ArrayList<Item> dataList;
+    private List<Item> dataList;
 
     /**
      * newInstance method for hiding construction.
      * @param a is the account that is doing the database transactions.
-     * @return
+     * @return a new ItemDB instance tied to the account.
      */
     public ItemDB newInstance(Account a) {
         ItemDB ret = new ItemDB();
@@ -49,41 +52,58 @@ public class ItemDB{
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
                 .collection(DatabaseNames.ITEMS.getName());
+        this.account = a;
     }
 
     public FirebaseFirestore getDb() {
         return db;
     }
 
-
-    public void signUp (String userName, String password) {
-
-        itemsRef.document(userName)
-                .collection(pwdPath)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            // if the user name do not exist, create account
-                            if (task.getResult().size() == 0){
-                                HashMap<String, String> data = new HashMap<>();
-                                data.put("Password", password);
-                                itemsRef.document(userName).collection("AccountInfo").document("Password").set(data);
-                            }else{
-                                Log.d("signup error", "User already exist");
-                            }
-
-                        } else {
-                            Log.d("Document Error", "Error getting documents: ", task.getException());
-                        }
+    public void startListening() {
+        itemsRef.addSnapshotListener(
+                (q, e) -> {
+                    if (q != null) {
+                        dataList.clear();
+                        this.dataList = loadItemArray(q);
                     }
-                });
+                }
+        );
     }
 
+    /**
+     * Generic method that produces a new list containing objects that are
+     * created from the querysnapshot.
+     * @param q QuerySnapshot object that will be parsed. Obtained directly from
+     *          the listener.
+     * @param fn    Function that will convert a single document from the
+     *              snapshot into the desired object type.
+     * @param <T>   The final object type that is being retrieved. e.g., Item
+     *           or Tags.
+     */
+    public static <T> List<T> loadArray(final QuerySnapshot q,
+                                     final Function<QueryDocumentSnapshot,
+                                             T> fn) {
+        List<T> list = new ArrayList<>();
+        for (QueryDocumentSnapshot qd : q) {
+            list.add(fn.apply(qd));
+        }
+        return list;
+    }
 
-    public void setLoginUser (String userName) {
-        this.loginUser = userName;
+    /**
+     * Method that will just return an Item List implementation
+     * @param q
+     */
+    private List<Item> loadItemArray(final QuerySnapshot q) {
+        return loadArray(q, v -> {
+            return Item.newInstance(
+                    v.getId(),
+                    v.getDate("DATE"),
+                    v.getString("MAKE"),
+                    v.getString("MODEL"),
+                    v.getDouble("VALUE").floatValue()
+            );
+        });
     }
 
     //TRY this to see this method is not working
@@ -136,21 +156,6 @@ public class ItemDB{
                 });
     }*/
 
-    /**
-     * Saves the ArrayList of items to the database.
-     *
-     * @param items is an object that is being saved.
-     */
-    public void saveToDB(ArrayList<Item> items) {
-        if (loginUser == null) {
-            Log.d("login error", "User not login!");
-        } else {
-            for (Item i : items) {
-                itemsRef.document(loginUser).collection("Items").document(i.getName()).set(i);
-            }
-        }
-    }
-
 /*    @Override
     public ArrayList<Item> refreshFromDB() {
         itemsRef.document(loginUser)
@@ -165,6 +170,10 @@ public class ItemDB{
                 });
         return dataList;
     }*/
+
+    public Account getAccount() {
+        return this.account;
+    }
 
     public interface ItemDBInteraction {
         void login (ItemDB idb, String userName, String password, Context Activity);
