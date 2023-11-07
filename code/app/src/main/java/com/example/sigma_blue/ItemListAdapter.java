@@ -11,8 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
+/**
+ * Modified adapter class for the list of items.
+ */
 public class ItemListAdapter extends
         RecyclerView.Adapter<ItemListAdapter.RecyclerViewHolder> {
     /* Caching the views in the adapter. */
@@ -32,6 +36,10 @@ public class ItemListAdapter extends
 
     /* Attributes */
     private ItemList itemList;
+
+    /* Due to the usage of listeners when updating from the database, it is
+    * much simpler to embed the summary view into the adapter */
+    private TextView summaryView;
 
     /* Factories and Constructors */
 
@@ -171,7 +179,29 @@ public class ItemListAdapter extends
         this.itemList.remove(position);
     }
 
+    public void setSummaryView(TextView view) {
+        this.summaryView = view;
+    }
+
     public Optional<Float> sumValues() {
         return this.itemList.sumValues();
+    }
+
+    /**
+     * Returns the formatted output for the summary text view.
+     * @param sum is a float that represents the sum
+     * @return the formatted string.
+     */
+    public String formatSummary(Float sum) {
+        return String.format(Locale.ENGLISH,
+                "The total value: %7.2f", sum);
+    }
+
+    public void updateSumView() {
+        Optional<Float> sum = sumValues();
+        if (sum.isPresent())this.summaryView
+                .setText(formatSummary(sum.get()));
+        else this.summaryView
+                .setText(R.string.empty_summary_view);
     }
 }

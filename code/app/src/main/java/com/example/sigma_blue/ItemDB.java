@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class handles database handling.
+ */
 public class ItemDB extends ADatabaseInterface<Item> {
 
     private CollectionReference itemsRef;
@@ -34,6 +37,12 @@ public class ItemDB extends ADatabaseInterface<Item> {
     private ItemDB() {
     }
 
+    /**
+     * Embed the account into the database. Only used when creating a new
+     * instance.
+     * @param a is an Account object that the instance of the database is
+     *          querying.
+     */
     private void setAccount(Account a) {
         this.itemsRef = FirebaseFirestore.getInstance()
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
@@ -46,13 +55,14 @@ public class ItemDB extends ADatabaseInterface<Item> {
      * This method adds a listener to a user's item collection.
      * @param adapter is the adapter that is getting updated.
      */
-    public void startListening(RecyclerView.Adapter<?> adapter,
+    public void startListening(ItemListAdapter adapter,
                                ItemList list) {
         itemsRef.addSnapshotListener(
                 (q, e) -> {
                     if (q != null) {
                         list.setList(loadArray(q));
                         adapter.notifyDataSetChanged();
+                        adapter.updateSumView();
                     }
                 }
         );

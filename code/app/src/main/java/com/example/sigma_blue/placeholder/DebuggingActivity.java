@@ -90,15 +90,16 @@ public class DebuggingActivity extends BaseActivity {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
+        this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
         itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        itemListAdapter.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
         iDB = ItemDB.newInstance(testAccount2);
         iDB.startListening(itemListAdapter, itemListAdapter.getItemList());
 
         /* Code section for linking UI elements */
-        this.viewHolder = this.new ViewHolder();
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Linking the adapter to the UI */
