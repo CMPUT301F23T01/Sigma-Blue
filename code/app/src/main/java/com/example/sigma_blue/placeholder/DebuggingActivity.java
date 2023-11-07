@@ -1,12 +1,10 @@
 package com.example.sigma_blue.placeholder;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,16 +18,8 @@ import com.example.sigma_blue.ItemDB;
 import com.example.sigma_blue.ItemList;
 import com.example.sigma_blue.ItemListAdapter;
 import com.example.sigma_blue.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
@@ -120,6 +110,8 @@ public class DebuggingActivity extends BaseActivity {
 
         /* Debugging activity specifics */
         viewHolder.setViewText(viewHolder.sortFilterButton, "Button 1");
+        viewHolder.setViewText(viewHolder.searchButton, "Delete");
+        viewHolder.setViewText(viewHolder.optionsButton, "Add");
 
         // ITEM DATA BASE RELATED STUFF
         dbInit = DatabaseInitializer.newInstance();
@@ -143,7 +135,7 @@ public class DebuggingActivity extends BaseActivity {
 //                )
 //            );
 
-            this.iDB.addItem(
+            this.iDB.add(
                     new Item(
                             "ThinkPad", new Date(),
                             "Nice UNIX book", "", "IBM",
@@ -154,7 +146,12 @@ public class DebuggingActivity extends BaseActivity {
             /* Updates the summation */
             this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
-        viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
+        viewHolder.searchButton.setOnClickListener(v -> {
+            this.iDB.remove(new Item(
+                            "ThinkPad", new Date(),
+                            "Nice UNIX book", "", "IBM",
+                            "T460", 300f));
+        });    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {
              if (dbInit.checkExistence(new Account("Watrina",
                     "lkj312"))) Toast.makeText(this,
