@@ -73,6 +73,7 @@ public class ItemListTest {
                 "ThinkPad",
                 new Date(),
                 "Lenovo ThinkPad",
+                "It's cool",
                 "Lenovo",
                 "T470",
                 300f

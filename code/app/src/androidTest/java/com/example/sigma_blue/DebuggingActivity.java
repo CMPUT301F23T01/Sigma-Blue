@@ -1,7 +1,6 @@
 package com.example.sigma_blue;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
-public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInteraction {
+public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInteraction {
 
 
     /* Tracking views that gets reused. Using nested class because struct */
@@ -73,11 +72,16 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
             return String.format(Locale.ENGLISH,
                     "The total value: %7.2f", sum);
         }
+
+        public void setViewText(final TextView v, final String s) {
+            v.setText(s);
+        }
     }
 
     public ItemListAdapter itemListAdapter;     // The itemListAdapter
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
+    private DatabaseInitializer dbInit;
 
     private ItemDB iDB;
     @Override
@@ -102,14 +106,15 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
 
+        /* Debugging activity specifics */
+        viewHolder.setViewText(viewHolder.sortFilterButton, "Button 1");
 
         // ITEM DATA BASE RELATED STUFF
+        dbInit = DatabaseInitializer.newInstance();
+
         iDB = new ItemDB();
 
         iDB.signUp("testUser", "112233");
-
-
-
     }
 
     /* Fragment result listeners are lambda expressions that controls what the class does when the
@@ -123,7 +128,7 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
         viewHolder.addEntryButton.setOnClickListener(v -> {
             this.itemListAdapter.addItem(
                 new Item(
-                        "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
+                        "ThinkPad", new Date(), "Nice UNIX book", "IBM",
                         "T460", 300f
                 )
             );
@@ -132,7 +137,13 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
             this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
-        viewHolder.sortFilterButton.setOnClickListener(v -> {});
+        viewHolder.sortFilterButton.setOnClickListener(v -> {
+             if (dbInit.checkExistence(new Account("Watrina",
+                    "lkj312"))) Toast.makeText(this,
+                     "Exists", Toast.LENGTH_SHORT).show();
+             else Toast.makeText(this, "Does not exist",
+                     Toast.LENGTH_SHORT).show();
+        });
         viewHolder.optionsButton.setOnClickListener(v -> {
 
             // FOR ItemDB TESTING PURPOSE
@@ -179,14 +190,12 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(date);
                         }
-                        Item item = Item.newInstance("3090", date,
-                                "Testing", "", "Evga",
-                                "GA102-220-A1", (float)799.99);
+                        Item item = Item.newInstance("3090");
 
                         ArrayList<Item> testItemList = new ArrayList<Item>();
                         testItemList.add(item);
-                        testItemList.add(Item.newInstance(
-                                "ThinkPad", new Date(), "IBM",
+                        testItemList.add(new Item(
+                                "ThinkPad", new Date(), "Nice UNIX book", "IBM",
                                 "T460", 300f
                         ));
                         iDB.saveToDB(testItemList);

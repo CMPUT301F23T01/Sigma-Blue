@@ -1,10 +1,11 @@
 package com.example.sigma_blue;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Item implements Comparable<Item>{
+public class Item implements Comparable<Item>, Serializable {
 
     private String name;
     private Date date;
@@ -26,6 +27,57 @@ public class Item implements Comparable<Item>{
 
      */
 
+    /**
+     * newInstance pattern used so that construction is decoupled from outside
+     * interface.
+     * @param t Just the name of the object.
+     * @return the constructed item.
+     */
+    public static Item newInstance(String t) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(new Date());
+        ret.setComment(null);
+        ret.setDescription(null);
+        ret.setMake(null);
+        ret.setModel(null);
+        ret.setValue(0f);
+
+        return ret;
+    }
+
+    public static Item newInstance(String t, Date date, String comment,
+                                   String description, String make,
+                                   String model, float value) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(date);
+        ret.setComment(comment);
+        ret.setDescription(description);
+        ret.setMake(make);
+        ret.setModel(model);
+        ret.setValue(value);
+
+        return ret;
+    }
+
+    public static Item newInstance(final String t, final Date date,
+                                   final String make, final String model,
+                                   final float value) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(date);
+        ret.setComment(null);
+        ret.setDescription(null);
+        ret.setMake(make);
+        ret.setModel(model);
+        ret.setValue(value);
+
+        return ret;
+    }
 
     /**
      * This is constructor of item object, take in required parameters only
@@ -42,16 +94,34 @@ public class Item implements Comparable<Item>{
      * @param value
      * this is the estimated value of the item
      */
-    public Item(String name, Date date, String description, String make, String model, float value) {
+    public Item(String name, Date date, String description, String comment, String make, String model, float value) {
         this.name = name;
         this.date = date;
         this.description = description;
         this.make = make;
         this.model = model;
         this.value = value;
+        this.comment = comment;
 
         this.tags = new ArrayList<Tag>();
+    }
 
+    /**
+     * Simpler construction, where the other parts can be included.
+     * @param name is the name of the object.
+     */
+    public Item(String name) {
+        /* Making just the most vital components */
+        this.name = name;
+        this.tags = new ArrayList<>();
+    }
+
+    /**
+     * Constructor for an empty item
+     */
+    public Item()
+    {
+        this("",null,"","","","",0f);
     }
 
     /**
