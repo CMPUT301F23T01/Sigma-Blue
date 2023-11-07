@@ -156,6 +156,10 @@ public class ItemListAdapter extends
         return itemList.getCount();
     }
 
+    public ItemList getItemList() {
+        return itemList;
+    }
+
     public void setItemList(ItemList itemList) {
         this.itemList = itemList;
     }

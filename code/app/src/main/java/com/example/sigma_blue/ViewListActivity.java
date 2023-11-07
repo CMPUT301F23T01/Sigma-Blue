@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
-public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInteraction {
+public class ViewListActivity extends BaseActivity {
 
 
     /* Tracking views that gets reused. Using nested class because struct */
@@ -104,9 +104,9 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
 
 
         // ITEM DATA BASE RELATED STUFF
-        iDB = new ItemDB();
-
-        iDB.signUp("testUser", "112233");
+//        iDB = new ItemDB();
+//
+//        iDB.signUp("testUser", "112233");
 
 
 
@@ -137,8 +137,8 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
 
             // FOR ItemDB TESTING PURPOSE
 
-            login(iDB, "testUser", "112233", this);
-            // after login, the
+//            login(iDB, "testUser", "112233", this);
+//             after login, the
 
             // build a mock item
 
@@ -146,56 +146,58 @@ public class ViewListActivity extends BaseActivity implements ItemDB.ItemDBInter
         });
     }
 
-    @Override
-    public void login(ItemDB idb, String userName, String password, Context Activity) {
-        iDB.getDb().collection("SigmaBlue")
-                .document(userName)
-                .collection("AccountInfo")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            if (doc.getId().compareTo("Password") == 0) {
-                                //check for the password
-                                if (doc.getString("Password").compareTo(password) == 0) {
-                                    iDB.setLoginUser(userName);
-                                    int duration = Toast.LENGTH_SHORT;
-                                    Toast.makeText(Activity, "Successful Login", duration).show();
-                                } else {
-                                    int duration = Toast.LENGTH_SHORT;
-                                    Toast.makeText(Activity, "Failed to Login", duration).show();
-                                }
-
-                            }
-                        }
-
-                        // TEST Save To DB after login; FOR TESTING ONLY
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
-                        Date date = new Date();
-                        try {
-                            date = formatter.parse("2022-01");
-                        } catch (ParseException e) {
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(date);
-                        }
-                        Item item = new Item("3090", date, "Testing", "Evga", "GA102-220-A1", (float)799.99);
-
-                        ArrayList<Item> testItemList = new ArrayList<Item>();
-                        testItemList.add(item);
-                        testItemList.add(new Item(
-                                "ThinkPad", new Date(), "Nice UNIX book", "IBM",
-                                "T460", 300f
-                        ));
-                        iDB.saveToDB(testItemList);
-                    }
-                });
-    }
+//    @Override
+//    public void login(ItemDB idb, String userName, String password, Context Activity) {
+//        iDB.getDb().collection("SigmaBlue")
+//                .document(userName)
+//                .collection("AccountInfo")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        for (QueryDocumentSnapshot doc : task.getResult()) {
+//                            if (doc.getId().compareTo("Password") == 0) {
+//                                //check for the password
+//                                if (doc.getString("Password").compareTo(password) == 0) {
+//                                    iDB.setLoginUser(userName);
+//                                    int duration = Toast.LENGTH_SHORT;
+//                                    Toast.makeText(Activity, "Successful Login", duration).show();
+//                                } else {
+//                                    int duration = Toast.LENGTH_SHORT;
+//                                    Toast.makeText(Activity, "Failed to Login", duration).show();
+//                                }
+//
+//                            }
+//                        }
+//
+//                        // TEST Save To DB after login; FOR TESTING ONLY
+//                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
+//                        Date date = new Date();
+//                        try {
+//                            date = formatter.parse("2022-01");
+//                        } catch (ParseException e) {
+//                            Calendar calendar = Calendar.getInstance();
+//                            calendar.setTime(date);
+//                        }
+//                        Item item = Item.newInstance("3090", date,
+//                                "Testing", "", "Evga",
+//                                "GA102-220-A1", (float)799.99);
+//
+//                        ArrayList<Item> testItemList = new ArrayList<Item>();
+//                        testItemList.add(item);
+//                        testItemList.add(Item.newInstance(
+//                                "ThinkPad", new Date(), "IBM",
+//                                "T460", 300f
+//                        ));
+//                        iDB.saveToDB(testItemList);
+//                    }
+//                });
+//    }
 
     // NOT YET Implemented
-    @Override
-    public ArrayList<Item> refreshFromDB(ItemDB idb) {
-        return null;
-    }
+//    @Override
+//    public ArrayList<Item> refreshFromDB(ItemDB idb) {
+//        return null;
+//    }
 
 }
