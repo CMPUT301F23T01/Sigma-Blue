@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.sigma_blue.DebuggingActivity"
+        <activity android:name="com.example.sigma_blue.placeholder.DebuggingActivity"
             android:exported="true"
             ></activity>
     </application>

@@ -14,6 +14,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -35,7 +36,7 @@ public class ItemDB{
      * @param a is the account that is doing the database transactions.
      * @return a new ItemDB instance tied to the account.
      */
-    public ItemDB newInstance(Account a) {
+    public static ItemDB newInstance(Account a) {
         ItemDB ret = new ItemDB();
         ret.setAccount(a);
         return ret;
@@ -64,19 +65,23 @@ public class ItemDB{
      * This method adds a listener to a user's item collection.
      * @param adapter is the adapter that is getting updated.
      */
-    public void startListening(RecyclerView.Adapter<?> adapter) {
+    public void startListening(RecyclerView.Adapter<?> adapter,
+                               ItemList list) {
         itemsRef.addSnapshotListener(
                 (q, e) -> {
                     if (q != null) {
-                        dataList.clear();
-                        this.dataList = loadItemArray(q);
+                        list.setList(loadItemArray(q));
                         adapter.notifyDataSetChanged();
                     }
                 }
         );
     }
 
-    public void addItem(Item item) {
+    /**
+     * Method for adding a new item to the database.
+     * @param item is an Item object being added to the database.
+     */
+    public void addItem(final Item item) {
         addDocument(itemsRef, item, v -> {
             HashMap<String, String> ret = new HashMap<>();
             ret.put("NAME", item.getName());
@@ -86,11 +91,14 @@ public class ItemDB{
             ret.put("VALUE", String.valueOf(item.getValue()));
             return ret;
         }, item.getDocID());
+        Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
     }
 
-    public static <T> void addDocument(CollectionReference cr, T item,
-                                       Function<T, HashMap<String,
-                                               String>> fn, String docID) {
+    public static <T> void addDocument(final CollectionReference cr,
+                                       final T item,
+                                       final Function<T, HashMap<String,
+                                               String>> fn,
+                                       final String docID) {
         cr.document(docID).set(fn.apply(item));
     }
 
@@ -122,10 +130,10 @@ public class ItemDB{
         return loadArray(q, v -> {
             return Item.newInstance(
                     v.getString("NAME"),
-                    v.getDate("DATE"),
+                    new Date(),    // TODO: Work on unifying date
                     v.getString("MAKE"),
                     v.getString("MODEL"),
-                    v.getDouble("VALUE").floatValue()
+                    Float.parseFloat(v.getString("VALUE"))
             );
         });
     }

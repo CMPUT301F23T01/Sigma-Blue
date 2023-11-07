@@ -1,4 +1,4 @@
-package com.example.sigma_blue;
+package com.example.sigma_blue.placeholder;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,15 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sigma_blue.Account;
+import com.example.sigma_blue.BaseActivity;
+import com.example.sigma_blue.DatabaseInitializer;
+import com.example.sigma_blue.FragmentLauncher;
+import com.example.sigma_blue.Item;
+import com.example.sigma_blue.ItemDB;
+import com.example.sigma_blue.ItemList;
+import com.example.sigma_blue.ItemListAdapter;
+import com.example.sigma_blue.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,7 +34,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
-public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInteraction {
+public class DebuggingActivity extends BaseActivity {
 
 
     /* Tracking views that gets reused. Using nested class because struct */
@@ -93,6 +102,9 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
         /* Setting up the data. TODO: Make this use the database */
         itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
+        iDB = ItemDB.newInstance(new Account("Watrina 2",
+                "dsiaflk1j"));
+        iDB.startListening(itemListAdapter, itemListAdapter.getItemList());
 
         /* Code section for linking UI elements */
         this.viewHolder = this.new ViewHolder();
@@ -112,9 +124,6 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
         // ITEM DATA BASE RELATED STUFF
         dbInit = DatabaseInitializer.newInstance();
 
-        iDB = new ItemDB();
-
-        iDB.signUp("testUser", "112233");
     }
 
     /* Fragment result listeners are lambda expressions that controls what the class does when the
@@ -126,11 +135,20 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
-            this.itemListAdapter.addItem(
-                new Item(
-                        "ThinkPad", new Date(), "Nice UNIX book", "IBM",
-                        "T460", 300f
-                )
+//            this.itemListAdapter.addItem(
+//                new Item(
+//                        "ThinkPad", new Date(),
+//                        "Nice UNIX book", "", "IBM",
+//                        "T460", 300f
+//                )
+//            );
+
+            this.iDB.addItem(
+                    new Item(
+                            "ThinkPad", new Date(),
+                            "Nice UNIX book", "", "IBM",
+                            "T460", 300f
+                    )
             );
 
             /* Updates the summation */
@@ -146,67 +164,8 @@ public class DebuggingActivity extends BaseActivity implements ItemDB.ItemDBInte
         });
         viewHolder.optionsButton.setOnClickListener(v -> {
 
-            // FOR ItemDB TESTING PURPOSE
-
-            login(iDB, "testUser", "112233", this);
-            // after login, the
-
-            // build a mock item
 
 
         });
     }
-
-    @Override
-    public void login(ItemDB idb, String userName, String password, Context Activity) {
-        iDB.getDb().collection("SigmaBlue")
-                .document(userName)
-                .collection("AccountInfo")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            if (doc.getId().compareTo("Password") == 0) {
-                                //check for the password
-                                if (doc.getString("Password").compareTo(password) == 0) {
-                                    iDB.setLoginUser(userName);
-                                    int duration = Toast.LENGTH_SHORT;
-                                    Toast.makeText(Activity, "Successful Login", duration).show();
-                                } else {
-                                    int duration = Toast.LENGTH_SHORT;
-                                    Toast.makeText(Activity, "Failed to Login", duration).show();
-                                }
-
-                            }
-                        }
-
-                        // TEST Save To DB after login; FOR TESTING ONLY
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
-                        Date date = new Date();
-                        try {
-                            date = formatter.parse("2022-01");
-                        } catch (ParseException e) {
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(date);
-                        }
-                        Item item = Item.newInstance("3090");
-
-                        ArrayList<Item> testItemList = new ArrayList<Item>();
-                        testItemList.add(item);
-                        testItemList.add(new Item(
-                                "ThinkPad", new Date(), "Nice UNIX book", "IBM",
-                                "T460", 300f
-                        ));
-                        iDB.saveToDB(testItemList);
-                    }
-                });
-    }
-
-    // NOT YET Implemented
-    @Override
-    public ArrayList<Item> refreshFromDB(ItemDB idb) {
-        return null;
-    }
-
 }

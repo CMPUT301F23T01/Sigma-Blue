@@ -1,11 +1,12 @@
 package com.example.sigma_blue;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ItemList implements IAdaptable<Item> {
     /* Attributes */
-    private ArrayList<Item> items;
+    private List<Item> items;
     private ItemDB databaseInterface;
 
     /* Factory construction */
@@ -113,6 +114,10 @@ public class ItemList implements IAdaptable<Item> {
      */
     public void setDatabaseInterface(ItemDB databaseHandler) {
         this.databaseInterface = databaseHandler;
+    }
+
+    public void setList(final List<Item> list) {
+        this.items = list;
     }
 
 /*    private void refreshFromDB() {
