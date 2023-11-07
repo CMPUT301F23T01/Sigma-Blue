@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.fragment.app.DialogFragment;
@@ -14,7 +15,7 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
     private FragmentLauncher fragmentLauncher;
     private DialogFragment createAccFragment;
     private DialogFragment loginFragment;
-    private Account userAccount;
+    private AccountList userAccountList;
 
 
     @Override
@@ -26,14 +27,15 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
         loginBtn = findViewById(R.id.loginButton);
         fragmentLauncher = FragmentLauncher.newInstance(this);
 
+        userAccountList = new AccountList();
+
         createAccBtn.setOnClickListener((v) -> {
             createAccFragment = new CreateAccFragment();
             fragmentLauncher.startFragmentTransaction(createAccFragment, "CREATE_ACCOUNT");
         });
 
         loginBtn.setOnClickListener((v) -> {
-            Account inputAcc = userAccount;
-            loginFragment = new LoginFragment().newInstance(inputAcc);
+            loginFragment = new LoginFragment().newInstance(userAccountList);
             fragmentLauncher.startFragmentTransaction(loginFragment, "LOGIN");
         });
     }
@@ -45,7 +47,7 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
      */
     @Override
     public void onConfirmPressed(Account newAccount) {
-        userAccount = newAccount;
+        userAccountList.add(newAccount);
     }
 
     /**
@@ -56,11 +58,11 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
     @Override
     public void onLoginPressed(boolean matches){
         if (matches) {
-            // this is where the next activity (ViewListActivity) is going to be launched
+            Intent intent = new Intent(LoginPageActivity.this, ViewListActivity.class);
+            startActivity(intent);
         }
         else {
-            Account inputAcc = userAccount;
-            loginFragment = new LoginFragment().newInstance(inputAcc);
+            loginFragment = new LoginFragment().newInstance(userAccountList);
             fragmentLauncher.startFragmentTransaction(loginFragment, "LOGIN");
         }
     }
