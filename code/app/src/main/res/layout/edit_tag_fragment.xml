@@ -78,11 +78,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
                 android:layout_weight="1"
-                android:backgroundTint="#0437f2"
+                android:backgroundTint="@color/add_edit_btn_bgr_test"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
                 android:text="Color?"
-                android:textColor="#ffd600"
+                android:textColor="@color/add_edit_btn_text_test"
                 android:textSize="10sp" />
 
         </LinearLayout>
@@ -92,10 +92,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:backgroundTint="#0437f2"
+            android:backgroundTint="@color/add_edit_btn_bgr_test"
             android:fontFamily="sans-serif-medium"
             android:text="@string/tag_manage_back_button_text"
-            android:textColor="#ffd600"
+            android:textColor="@color/add_edit_btn_text_test"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_layout" />
@@ -105,10 +105,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:backgroundTint="#0437f2"
+            android:backgroundTint="@color/add_edit_btn_bgr_test"
             android:fontFamily="sans-serif-medium"
             android:text="@string/tag_manage_confirm_button_text"
-            android:textColor="#ffd600"
+            android:textColor="@color/add_edit_btn_text_test"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_layout" />
