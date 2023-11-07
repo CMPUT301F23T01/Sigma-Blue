@@ -39,10 +39,42 @@ public class Item implements Comparable<Item>, Serializable {
         /* Default setting */
         ret.setDate(new Date());
         ret.setComment(null);
-        ret.setComment(null);
+        ret.setDescription(null);
         ret.setMake(null);
         ret.setModel(null);
         ret.setValue(0f);
+
+        return ret;
+    }
+
+    public static Item newInstance(String t, Date date, String comment,
+                                   String description, String make,
+                                   String model, float value) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(date);
+        ret.setComment(comment);
+        ret.setDescription(description);
+        ret.setMake(make);
+        ret.setModel(model);
+        ret.setValue(value);
+
+        return ret;
+    }
+
+    public static Item newInstance(final String t, final Date date,
+                                   final String make, final String model,
+                                   final float value) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(date);
+        ret.setComment(null);
+        ret.setDescription(null);
+        ret.setMake(make);
+        ret.setModel(model);
+        ret.setValue(value);
 
         return ret;
     }
