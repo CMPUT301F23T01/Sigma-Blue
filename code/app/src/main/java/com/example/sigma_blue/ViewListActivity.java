@@ -78,8 +78,8 @@ public class ViewListActivity extends BaseActivity {
     public ItemListAdapter itemListAdapter;     // The itemListAdapter
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
+    private ItemList itemList;
 
-    private ItemDB iDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
@@ -128,8 +128,6 @@ public class ViewListActivity extends BaseActivity {
                 )
             );
 
-            /* Updates the summation */
-            this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});

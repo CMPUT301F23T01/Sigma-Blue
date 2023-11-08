@@ -85,7 +85,6 @@ public class DebuggingActivity extends BaseActivity {
     private final Account testAccount2= new Account("Watrina 2",
             "dsiaflk1j");
 
-    private ItemDB iDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
@@ -94,11 +93,9 @@ public class DebuggingActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
-        itemList = ItemList.newInstance();
+        itemList = ItemList.newInstance(testAccount2);
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
-        iDB = ItemDB.newInstance(testAccount2);
-        iDB.startListening(itemListAdapter, itemListAdapter.getItemList());
 
         /* Code section for linking UI elements */
         RecyclerView rvItemListView = findViewById(R.id.listView);
@@ -130,26 +127,16 @@ public class DebuggingActivity extends BaseActivity {
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
-
-            this.iDB.add(
+            this.itemList.add(
                     new Item(
                             "ThinkPad", new Date(),
                             "Nice UNIX book", "", "IBM",
                             "T460", 300f
                     )
             );
-            this.itemListAdapter.notifyDataSetChanged();
-
-            /* Updates the summation */
-            this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {
-            this.iDB.remove(new Item(
-                            "ThinkPad", new Date(),
-                            "Nice UNIX book", "", "IBM",
-                            "T460", 300f));
-            this.itemListAdapter.notifyDataSetChanged();
-            this.viewHolder.setSummaryView(itemListAdapter.sumValues());
+            this.itemList.remove(0);
         });    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {
              if (dbInit.checkExistence(new Account("Watrina",

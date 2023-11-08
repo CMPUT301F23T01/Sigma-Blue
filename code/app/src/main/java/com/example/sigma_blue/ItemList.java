@@ -6,21 +6,23 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class ItemList implements IAdaptable<Item> {
     /* Attributes */
     private List<Item> items;
-    private ADatabaseInterface<Item> dbHandler;
+    private ItemDB dbHandler;
     private ItemListAdapter adapter;
     private Account account;
 
     /* Factory construction */
 
-    public static ItemList newInstance(Account a,ADatabaseInterface<Item> dbH,
+    public static ItemList newInstance(Account a, ItemDB dbH,
                                        ItemListAdapter adapt) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setDatabaseHandler(dbH);
         ret.setAdapter(adapt);
+        ret.setDatabaseHandler(dbH);
+        ret.startListening();
         return ret;
     }
 
@@ -32,6 +34,7 @@ public class ItemList implements IAdaptable<Item> {
         ItemList ret = new ItemList(new ArrayList<Item>(), a);
         ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
+        ret.startListening();
         return ret;
     }
 
@@ -44,6 +47,9 @@ public class ItemList implements IAdaptable<Item> {
      */
     public static ItemList newInstance(Account a, ArrayList<Item> items) {
         ItemList ret = new ItemList(items, a);
+        ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
+        ret.setDatabaseHandler(ItemDB.newInstance(a));
+        ret.startListening();
         return ret;
     }
 
@@ -94,10 +100,12 @@ public class ItemList implements IAdaptable<Item> {
      * an Optional wrapper. Done this way to enforce explicit handling of the
      * case where there is no items in the list.
      */
-    public Optional<Float> sumValues() {
-        if (items.isEmpty()) return Optional.empty();
-        else return Optional.of(items.stream().map(Item::getValue)
+    public Function<List<Item>, Optional<Float>> sumValues() {
+        return lst -> {
+            if (lst.isEmpty()) return Optional.empty();
+            else return Optional.of(lst.stream().map(Item::getValue)
                     .reduce(0f, Float::sum));
+        };
     }
 
     /* Setters and Getters */
@@ -107,7 +115,10 @@ public class ItemList implements IAdaptable<Item> {
      * @param o is the new item being added. If o is null, then it will not be added to the itemList
      */
     public void add(Item o) {
-        if (o != null) this.items.add(o);
+        if (o != null) {
+            this.items.add(o);
+            this.dbHandler.add(o);
+        }
         updateUI();
         Log.v("Added Item", "Added new item");
     }
@@ -116,7 +127,10 @@ public class ItemList implements IAdaptable<Item> {
      * @param position is the index which is being removed from the list.
      */
     public void remove(final int position) {
-        if (position > -1 && position < size()) this.items.remove(position);
+        if (position > -1 && position < size()) {
+            this.dbHandler.remove(items.get(position));
+            this.items.remove(position);
+        }
         else ;
         updateUI();
         Log.v("Removed Item", "Removed an item from item list");
@@ -124,11 +138,15 @@ public class ItemList implements IAdaptable<Item> {
 
     public void updateUI() {
         adapter.notifyDataSetChanged();
-        adapter.updateSumView(sumValues());
+        adapter.updateSumView(sumValues().apply(items));
     }
 
-    public void setDatabaseHandler(final ADatabaseInterface<Item> dbH) {
+    public void setDatabaseHandler(final ItemDB dbH) {
         this.dbHandler = dbH;
+    }
+
+    public void startListening() {
+        dbHandler.startListening(this.adapter, items, sumValues());
     }
 
     public void setAdapter(final ItemListAdapter adapter) {

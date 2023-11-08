@@ -2,7 +2,6 @@ package com.example.sigma_blue;
 
 import android.util.Log;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -11,6 +10,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * This class handles database handling.
@@ -19,6 +21,7 @@ public class ItemDB extends ADatabaseInterface<Item> {
 
     private CollectionReference itemsRef;
     private Account account;
+    private List<Item> items;
 
     /**
      * newInstance method for hiding construction.
@@ -51,18 +54,20 @@ public class ItemDB extends ADatabaseInterface<Item> {
         this.account = a;
     }
 
+    BiConsumer<List<Item>, List<Item>> hookingFn = (lst, accept) -> lst = accept;
+
     /**
      * This method adds a listener to a user's item collection.
      * @param adapter is the adapter that is getting updated.
      */
-    public void startListening(ItemListAdapter adapter,
-                               ItemList list) {
+    public void startListening(final ItemListAdapter adapter,
+                               List<Item> lst,
+                               Function<List<Item>, Optional<Float>> fn) {
         itemsRef.addSnapshotListener(
                 (q, e) -> {
                     if (q != null) {
-                        list.setList(loadArray(q));
-                        adapter.notifyDataSetChanged();
-                        adapter.updateSumView();
+                        hookingFn.accept(lst, loadArray(q));
+                        adapter.updateSumView(fn.apply(lst));
                     }
                 }
         );
