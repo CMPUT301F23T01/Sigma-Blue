@@ -75,40 +75,34 @@ public class ViewListActivity extends BaseActivity {
         }
     }
 
-    public ItemListAdapter itemListAdapter;     // The itemListAdapter
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private ItemList itemList;
+    private final Account placeHolderAccount = new Account("Watrina 3",
+            "flsdkjqi1121-");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
+        this.viewHolder = this.new ViewHolder();
 
-        /* Setting up the data. TODO: Make this use the database */
-        itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        /* ItemList encapsulates both the database and the adapter */
+        this.itemList = ItemList.newInstance(placeHolderAccount);
+        itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
-        this.viewHolder = this.new ViewHolder();
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemListAdapter);
+        rvItemListView.setAdapter(itemList.getAdapter());
         rvItemListView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
-
-
-        // ITEM DATA BASE RELATED STUFF
-//        iDB = new ItemDB();
-//
-//        iDB.signUp("testUser", "112233");
-
-
 
     }
 
@@ -121,7 +115,7 @@ public class ViewListActivity extends BaseActivity {
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
-            this.itemListAdapter.addItem(
+            this.itemList.add(
                 new Item(
                         "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
                         "T460", 300f
@@ -143,59 +137,5 @@ public class ViewListActivity extends BaseActivity {
 
         });
     }
-
-//    @Override
-//    public void login(ItemDB idb, String userName, String password, Context Activity) {
-//        iDB.getDb().collection("SigmaBlue")
-//                .document(userName)
-//                .collection("AccountInfo")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        for (QueryDocumentSnapshot doc : task.getResult()) {
-//                            if (doc.getId().compareTo("Password") == 0) {
-//                                //check for the password
-//                                if (doc.getString("Password").compareTo(password) == 0) {
-//                                    iDB.setLoginUser(userName);
-//                                    int duration = Toast.LENGTH_SHORT;
-//                                    Toast.makeText(Activity, "Successful Login", duration).show();
-//                                } else {
-//                                    int duration = Toast.LENGTH_SHORT;
-//                                    Toast.makeText(Activity, "Failed to Login", duration).show();
-//                                }
-//
-//                            }
-//                        }
-//
-//                        // TEST Save To DB after login; FOR TESTING ONLY
-//                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
-//                        Date date = new Date();
-//                        try {
-//                            date = formatter.parse("2022-01");
-//                        } catch (ParseException e) {
-//                            Calendar calendar = Calendar.getInstance();
-//                            calendar.setTime(date);
-//                        }
-//                        Item item = Item.newInstance("3090", date,
-//                                "Testing", "", "Evga",
-//                                "GA102-220-A1", (float)799.99);
-//
-//                        ArrayList<Item> testItemList = new ArrayList<Item>();
-//                        testItemList.add(item);
-//                        testItemList.add(Item.newInstance(
-//                                "ThinkPad", new Date(), "IBM",
-//                                "T460", 300f
-//                        ));
-//                        iDB.saveToDB(testItemList);
-//                    }
-//                });
-//    }
-
-    // NOT YET Implemented
-//    @Override
-//    public ArrayList<Item> refreshFromDB(ItemDB idb) {
-//        return null;
-//    }
 
 }
