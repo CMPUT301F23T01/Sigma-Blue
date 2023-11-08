@@ -40,6 +40,13 @@ public class ItemListAdapter extends
             make = itemView.findViewById(R.id.itemMake);
             id = itemView.findViewById(R.id.uniqueId);
         }
+
+        /**
+         * binds the provided listener to the specific item row. Since ItemList is the class used
+         * in activities the listener gets passed in from there
+         * @param item Item that will be displayed on a row
+         * @param listener method to call on a click
+         */
         public void bind(final Item item, final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
