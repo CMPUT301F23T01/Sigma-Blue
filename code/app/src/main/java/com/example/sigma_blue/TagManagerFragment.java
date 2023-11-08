@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TagManagerFragment extends DialogFragment {
@@ -17,17 +19,32 @@ public class TagManagerFragment extends DialogFragment {
     private RecyclerView tagRecyclerView;
     public TagListAdapter tagListAdapter;
 
+    private TagListAdapter.RecyclerViewHolder viewHolder;
 
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        // TODO Look into multiple item selection for the tag manager.
 
-        // Get the data from the bundle I guess.
-        tagListAdapter = TagListAdapter.newInstance(getContext(), new TagList(new TagDB()));
+        super.onViewCreated(view, savedInstanceState);
+
         fragmentLauncher = FragmentLauncher.newInstance(this);
 
+        // TODO Look into multiple item selection for the tag manager.
 
+        TagDB dummyTagDB = new TagDB();
+        tagsData = new TagList(dummyTagDB);
+        Tag dt = new Tag("Graphics card", Color.parseColor("#ff0000"));
+        tagsData.addTag(dt);
+        Tag dt2 = new Tag("Graphics card", Color.parseColor("#ff0000"));
+        tagsData.addTag(dt2);
+
+        tagListAdapter = TagListAdapter.newInstance(getContext(), tagsData);
+
+        tagRecyclerView = view.findViewById(R.id.tagManageRecyclerView);
+        tagRecyclerView.setHasFixedSize(true);
+
+        tagRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        tagRecyclerView.setAdapter(tagListAdapter);
 
     }
 

@@ -11,6 +11,7 @@ public class TagList implements IAdaptable<Tag> {
 
     public TagList(TagDB tagDB) {
         this.tagDB = tagDB;
+        this.tags = new ArrayList<>();
     }
 
     public void saveTagsToDB() {
