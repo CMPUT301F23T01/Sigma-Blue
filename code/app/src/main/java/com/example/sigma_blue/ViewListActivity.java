@@ -105,7 +105,7 @@ public class ViewListActivity extends BaseActivity {
 
 
         /* ItemList encapsulates both the database and the adapter */
-        this.itemList = ItemList.newInstance(currentAccount, v -> {this.handleClick(v);});
+        this.itemList = ItemList.newInstance(currentAccount, this::handleClick);
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
@@ -135,7 +135,7 @@ public class ViewListActivity extends BaseActivity {
     }
 
     /**
-     * Either adds a new item to the list or updates an exsisting one.
+     * Either adds a new item to the list or updates an existing one.
      * @param result result from the AddEditActivity
      */
     protected void updateList(ActivityResult result) {
