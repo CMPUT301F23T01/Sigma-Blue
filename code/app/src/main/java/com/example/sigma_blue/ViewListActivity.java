@@ -119,7 +119,13 @@ public class ViewListActivity extends BaseActivity {
 
     }
 
-    //https://stackoverflow.com/questions/24471109/recyclerview-onclick, answer from Marurban
+    /**
+     * listener used to deal with the user clicking on a thing in the list. This method is passed to
+     * the ItemList constructor as a callback function, but not called directly from anywhere.
+     * see <a href="https://stackoverflow.com/questions/24471109/recyclerview-onclick">...</a>,
+     * answer from Marurban
+     * @param item Clicked on item
+     */
     private void handleClick(Item item) {
         Log.i("DEBUG", item.getName());
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
@@ -128,6 +134,10 @@ public class ViewListActivity extends BaseActivity {
         activityLauncher.launch(intent, this::updateList);
     }
 
+    /**
+     * Either adds a new item to the list or updates an exsisting one.
+     * @param result result from the AddEditActivity
+     */
     protected void updateList(ActivityResult result) {
         Bundle extras = result.getData().getExtras();
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);

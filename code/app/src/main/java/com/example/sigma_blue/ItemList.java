@@ -171,6 +171,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         this.adapter.setSummaryView(summaryView);
     }
 
+    /**
+     * Swaps out an item for a new one.
+     * @param updatedItem New Item to put in the list
+     * @param oldDocID Search for an item with this DocID to replace
+     */
     public void updateItem(Item updatedItem, String oldDocID) {
         for (int i = 0; i < this.items.size(); i++) {
             if (Objects.equals(this.items.get(i).getDocID(), oldDocID)) {
