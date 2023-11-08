@@ -45,15 +45,11 @@ public class DetailsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        currentItem = new Item();
         // Load item from bundle
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            if (currentItem == null)
-            {
-                currentItem = new Item();
-            }
         }
     }
 

@@ -128,7 +128,7 @@ public class EditFragment extends Fragment
                 {
                     Bundle bundle = new Bundle();
                     currentItem.setName(textName.getText().toString());
-                    currentItem.setValue(Float.valueOf(textName.getText().toString()));
+                    currentItem.setValue(Float.valueOf(textValue.getText().toString()));
                     SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
                     try {
                         currentItem.setDate(sdf.parse(textDate.getText().toString()));
