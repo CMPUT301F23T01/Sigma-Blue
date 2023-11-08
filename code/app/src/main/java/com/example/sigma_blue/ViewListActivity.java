@@ -107,16 +107,15 @@ public class ViewListActivity extends BaseActivity {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
-        this.viewHolder = this.new ViewHolder();
+
+        /* Code section for linking UI elements */
+        RecyclerView rvItemListView = findViewById(R.id.listView);
+        this.viewHolder = this.new ViewHolder(rvItemListView);
 
         /* ItemList encapsulates both the database and the adapter */
         this.itemList = ItemList.newInstance(placeHolderAccount);
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
-
-        /* Code section for linking UI elements */
-        RecyclerView rvItemListView = findViewById(R.id.listView);
-        this.viewHolder = this.new ViewHolder(rvItemListView);
 
         /* Linking the adapter to the UI */
         rvItemListView.setAdapter(itemList.getAdapter());
@@ -131,7 +130,7 @@ public class ViewListActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Bundle extras = intent.getExtras();
-        Item testItem = new Item();
+        Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
         Integer updatedItemID = null;
         try {
@@ -141,14 +140,15 @@ public class ViewListActivity extends BaseActivity {
             Log.e("DEBUG", "New intent without extras!");
         }
 
-        itemListAdapter.addItem(testItem);
+
         if (updatedItem == null) {
             Log.e("DEBUG", "Null updated item");
             return;
         }
+        this.itemList.add(testItem);
 
         if (updatedItemID == null) {
-            itemListAdapter.addItem(updatedItem);
+            this.itemList.add(updatedItem);
         } else {
             // problem for later
         }
