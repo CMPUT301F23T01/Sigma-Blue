@@ -20,7 +20,9 @@ public class ItemListTest {
      */
     @Before
     public void makeItemList() {
-        itemListUT = ItemList.newInstance();
+        Account testAccount = new Account("Watrina 4",
+                "fdsoijj191");
+        itemListUT = ItemList.newInstance(testAccount);
     }
 
     @Before
@@ -51,7 +53,7 @@ public class ItemListTest {
     public void sumValuesTest() {
         itemF.setFactoryValue(10f);
 
-        assertFalse(itemListUT.sumValues().isPresent());
+        assertFalse(itemListUT.sumValues.apply(itemListUT.getList()).isPresent());
 
         itemListUT.add(itemF.templateItem("a"));
         itemListUT.add(itemF.templateItem("b"));
@@ -59,8 +61,8 @@ public class ItemListTest {
         itemListUT.add(itemF.templateItem("d"));
         itemListUT.add(itemF.templateItem("e"));
 
-        if (itemListUT.sumValues().isPresent())
-            assertEquals(itemListUT.sumValues().get(), 50f);
+        if (itemListUT.sumValues.apply(itemListUT.getList()).isPresent())
+            assertEquals(itemListUT.sumValues.apply(itemListUT.getList()).get(), 50f);
         else fail("Empty optional, expected optional with 50f");
 
     }
