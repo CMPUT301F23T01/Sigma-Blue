@@ -24,6 +24,7 @@ public class DetailsFragment extends Fragment
     private static final String ARG_ITEM = "item";
 
     private Item currentItem;
+    private String oldItemID;
 
     // Fragment binding
     private DetailsFragmentBinding binding;
@@ -51,6 +52,7 @@ public class DetailsFragment extends Fragment
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+            oldItemID = getArguments().getString("id");
         }
     }
 
@@ -107,6 +109,7 @@ public class DetailsFragment extends Fragment
             {
                 Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
+                i.putExtra("id", oldItemID);
                 //startActivity(i);
                 getActivity().setResult(Activity.RESULT_OK, i);
                 getActivity().finish();

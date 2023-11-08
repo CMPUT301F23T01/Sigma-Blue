@@ -140,7 +140,6 @@ public class ViewListActivity extends BaseActivity {
             Log.e("DEBUG", "New intent without extras!");
         }
 
-
         if (updatedItem == null) {
             Log.e("DEBUG", "Null updated item");
             return;
