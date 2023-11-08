@@ -98,15 +98,20 @@ public class ViewListActivity extends BaseActivity {
     public ItemListAdapter itemListAdapter;
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
+    private ItemList itemList;
+    private final Account placeHolderAccount = new Account("Watrina 3",
+            "flsdkjqi1121-");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
+        this.viewHolder = this.new ViewHolder();
 
-        /* Setting up the data. TODO: Make this use the database */
-        itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        /* ItemList encapsulates both the database and the adapter */
+        this.itemList = ItemList.newInstance(placeHolderAccount);
+        itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
@@ -114,7 +119,7 @@ public class ViewListActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder(rvItemListView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemListAdapter);
+        rvItemListView.setAdapter(itemList.getAdapter());
         rvItemListView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
@@ -180,9 +185,13 @@ public class ViewListActivity extends BaseActivity {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("item", newItem);
             startActivity(intent);
+            // this.itemList.add(
+            //     new Item(
+            //             "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
+            //             "T460", 300f
+            //     )
+            // );
 
-            /* Updates the summation */
-            this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});

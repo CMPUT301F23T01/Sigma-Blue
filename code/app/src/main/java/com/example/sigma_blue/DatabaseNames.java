@@ -1,11 +1,12 @@
 package com.example.sigma_blue;
 
 public enum DatabaseNames {
-    PRIMARY_COLLECTION("SigmaBlue"), ITEMS("Item"), TAGS("Tag"),
-    PWDPATH("AccountInfo");
+    PRIMARY_COLLECTION("SigmaBlue"), ITEMS_COLLECTION("Item"),
+    TAGS_COLLECTION("Tag"), ACCOUNT_INFO_COLLECTION("AccountInfo"),
+    USER_INFO_DOCUMENT("UserInfo");
 
     private String name;
-    private DatabaseNames(String s) {
+    DatabaseNames(String s) {
         name = s;
     }
 
