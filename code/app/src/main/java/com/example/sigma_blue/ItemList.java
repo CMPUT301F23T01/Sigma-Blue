@@ -30,9 +30,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * Factory creation for when there isn't an input ArrayList of songs ready for input.
      * @return an instance of the ItemList class holding no item.
      */
-    public static ItemList newInstance(Account a) {
+    public static ItemList newInstance(Account a, ItemListAdapter.OnItemClickListener listener) {
         ItemList ret = new ItemList(new ArrayList<Item>(), a);
-        ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
+        ret.setAdapter(ItemListAdapter.newInstance(ret.getList(), listener));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;
@@ -45,9 +45,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * @return an instance of the ItemList object containing the Item objects that were present in
      * items.
      */
-    public static ItemList newInstance(Account a, ArrayList<Item> items) {
+    public static ItemList newInstance(Account a, ArrayList<Item> items, ItemListAdapter.OnItemClickListener listener) {
         ItemList ret = new ItemList(items, a);
-        ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
+        ret.setAdapter(ItemListAdapter.newInstance(ret.getList(), listener));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;

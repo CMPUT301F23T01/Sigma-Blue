@@ -38,7 +38,7 @@ public class ViewListActivity extends BaseActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick
-    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ViewHolder extends RecyclerView.ViewHolder {
         public Button searchButton;
         public Button sortFilterButton;
         public Button optionsButton;
@@ -50,7 +50,6 @@ public class ViewListActivity extends BaseActivity {
          */
         private ViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
             this.searchButton = findViewById(R.id.searchButton);
             this.sortFilterButton = findViewById(R.id.sortButton);
             this.optionsButton = findViewById(R.id.optionButton);
@@ -59,10 +58,6 @@ public class ViewListActivity extends BaseActivity {
 
             /* Setting up defaults for the UI elements */
             setSummaryView(Optional.empty());
-        }
-        @Override
-        public void onClick(final View v) {
-            int position = getBindingAdapterPosition();
         }
 
         /**
@@ -87,8 +82,6 @@ public class ViewListActivity extends BaseActivity {
             return String.format(Locale.ENGLISH,
                     "The total value: %7.2f", sum);
         }
-
-
     }
 
     private FragmentLauncher fragmentLauncher;
@@ -111,7 +104,7 @@ public class ViewListActivity extends BaseActivity {
 
 
         /* ItemList encapsulates both the database and the adapter */
-        this.itemList = ItemList.newInstance(currentAccount);
+        this.itemList = ItemList.newInstance(currentAccount, v -> {this.handleClick(v);});
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
@@ -124,6 +117,11 @@ public class ViewListActivity extends BaseActivity {
         setUIOnClickListeners();
 
     }
+
+    private void handleClick(Item v) {
+        Log.i("DEBUG", v.getName());
+    }
+
     protected void updateList(ActivityResult result) {
         Bundle extras = result.getData().getExtras();
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
@@ -158,39 +156,16 @@ public class ViewListActivity extends BaseActivity {
      * This method sets all the on click listeners for all the interactive UI elements.
      */
     private void setUIOnClickListeners() {
-//        ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-//                new ActivityResultCallback<Uri>() {
-//                    @Override
-//                    public void onActivityResult(Uri uri) {
-//                        uri.toString();
-//                    }
-//                });
-//
-//        viewHolder.addEntryButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Pass in the mime type you want to let the user select
-//                // as the input
-//                mGetContent.launch("image/*");
-//            }
-//        });
-
         viewHolder.addEntryButton.setOnClickListener(v -> {
             Item newItem = new Item();
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("item", newItem);
-            activityLauncher.launch(intent, result -> {this.updateList(result);});
-            // this.itemList.add(
-            //     new Item(
-            //             "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
-            //             "T460", 300f
-            //     )
-            // );
+            intent.putExtra("id", -1);
+            activityLauncher.launch(intent, this::updateList);
 
-        });  // Launch add fragment.
+        });  // Launch add activity.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
-        RecyclerView rvItemListView = (RecyclerView) findViewById(R.id.listView);
     }
 }

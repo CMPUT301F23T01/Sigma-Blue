@@ -21,6 +21,12 @@ import java.util.Optional;
  */
 public class ItemListAdapter extends
         RecyclerView.Adapter<ItemListAdapter.RecyclerViewHolder> {
+
+    public interface OnItemClickListener {
+        void onItemClick(Item item);
+    }
+    private static OnItemClickListener listener;
+
     /* Caching the views in the adapter. */
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView name;
@@ -33,6 +39,13 @@ public class ItemListAdapter extends
             name = itemView.findViewById(R.id.itemName);
             make = itemView.findViewById(R.id.itemMake);
             id = itemView.findViewById(R.id.uniqueId);
+        }
+        public void bind(final Item item, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
         }
     }
 
@@ -50,10 +63,9 @@ public class ItemListAdapter extends
      * @param itemList is an ItemList object that contains the types.
      * @return an ItemListAdapter object that has been instantiated.
      */
-    public static ItemListAdapter newInstance(List<Item> itemList) {
-        return new ItemListAdapter(itemList);
+    public static ItemListAdapter newInstance(List<Item> itemList, OnItemClickListener listener) {
+        return new ItemListAdapter(itemList, listener);
     }
-
     public static ItemListAdapter newInstance() {
         return new ItemListAdapter();
     }
@@ -62,8 +74,9 @@ public class ItemListAdapter extends
      * Basic constructor. Takes in the ItemList that will be adapted to a list view.
      * @param items is the ItemList object that will be displayed on lists through this adapter.
      */
-    public ItemListAdapter(List<Item> items) {
+    public ItemListAdapter(List<Item> items, OnItemClickListener listener) {
         this.items = items;
+        this.listener = listener;
     }
 
     public ItemListAdapter() {
@@ -132,6 +145,7 @@ public class ItemListAdapter extends
         holder.name.setText(item.getName());
         holder.make.setText(item.getMake());
         holder.id.setText(String.valueOf(item.getValue()));
+        holder.bind(item, listener);
     }
 
     /**
