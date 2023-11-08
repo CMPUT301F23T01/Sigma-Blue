@@ -1,5 +1,7 @@
 package com.example.sigma_blue;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.example.sigma_blue.databinding.EditFragmentBinding;
@@ -17,6 +20,7 @@ import com.example.sigma_blue.databinding.EditFragmentBinding;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class EditFragment extends Fragment
@@ -25,14 +29,14 @@ public class EditFragment extends Fragment
     private static final String ARG_ITEM = "item";
 
     private Item currentItem;
-    private String mName = " ";
-    private float mValue = 0f;
-    private Date mDate = new Date();
-    private String mMake = " ";
-    private String mModel = " ";
-    private String mSerial = " ";
-    private String mDescription = " ";
-    private String mComment = " ";
+//    private String mName = " ";
+//    private float mValue = 0f;
+//    private Date mDate = new Date();
+//    private String mMake = " ";
+//    private String mModel = " ";
+//    private String mSerial = " ";
+//    private String mDescription = " ";
+//    private String mComment = " ";
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -47,6 +51,7 @@ public class EditFragment extends Fragment
     EditText textDescription;
     EditText textComment;
     ArrayList<EditText> editTextList;
+    private int mDay, mMonth, mYear;
 
     public EditFragment() {
         // Required empty public constructor
@@ -63,14 +68,14 @@ public class EditFragment extends Fragment
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
             if (currentItem != null)
             {
-                mName = currentItem.getName();
-                mValue = currentItem.getValue();
-                mDate = currentItem.getDate();
-                mMake = currentItem.getMake();
-                mModel = currentItem.getModel();
-                mSerial = currentItem.getSerialNumber();
-                mDescription = currentItem.getDescription();
-                mComment = currentItem.getComment();
+//                mName = currentItem.getName();
+//                mValue = currentItem.getValue();
+//                mDate = currentItem.getDate();
+//                mMake = currentItem.getMake();
+//                mModel = currentItem.getModel();
+//                mSerial = currentItem.getSerialNumber();
+//                mDescription = currentItem.getDescription();
+//                mComment = currentItem.getComment();
             }
         }
     }
@@ -89,8 +94,8 @@ public class EditFragment extends Fragment
         textMake = binding.getRoot().findViewById(R.id.text_make_disp); editTextList.add(textMake);
         textModel = binding.getRoot().findViewById(R.id.text_model_disp); editTextList.add(textModel);
         textSerial = binding.getRoot().findViewById(R.id.text_serial_disp); editTextList.add(textSerial);
-        textDescription = binding.getRoot().findViewById(R.id.text_description_disp); editTextList.add(textDescription);
-        textComment = binding.getRoot().findViewById(R.id.text_comment_disp); editTextList.add(textComment);
+        textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
+        textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
 
         return binding.getRoot();
     }
@@ -101,15 +106,43 @@ public class EditFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         // set item details from bundle
-        textName.setText(mName);
-        textValue.setText(String.valueOf(mValue));
-        textDate.setText(mDate.toString());
-        textMake.setText(mMake);
-        textModel.setText(mModel);
-        textSerial.setText(mSerial);
-        textDescription.setText(mDescription);
-        textComment.setText(mComment);
+        textName.setText(currentItem.getName());
+        textValue.setText(String.valueOf(currentItem.getValue()));
+        textDate.setText(currentItem.getDate().toString());
+        textMake.setText(currentItem.getMake());
+        textModel.setText(currentItem.getModel());
+        textSerial.setText(currentItem.getSerialNumber());
+        textDescription.setText(currentItem.getDescription());
+        textComment.setText(currentItem.getComment());
 
+        Context context = this.getContext();
+
+        textDate.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                        new DatePickerDialog.OnDateSetListener()
+                        {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                textDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
         view.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -128,8 +161,8 @@ public class EditFragment extends Fragment
                 {
                     Bundle bundle = new Bundle();
                     currentItem.setName(textName.getText().toString());
-                    currentItem.setValue(Float.valueOf(textValue.getText().toString()));
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+                    currentItem.setValue(Float.parseFloat(textValue.getText().toString()));
+                    SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
                     try {
                         currentItem.setDate(sdf.parse(textDate.getText().toString()));
                     } catch (ParseException e) {
