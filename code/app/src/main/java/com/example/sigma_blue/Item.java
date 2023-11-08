@@ -2,6 +2,7 @@ package com.example.sigma_blue;
 
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -122,7 +123,7 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item()
     {
-        this("",null,"","","","",0f);
+        this("",new Date(),"","","","",0f);
     }
 
     /**
