@@ -15,11 +15,6 @@
     <activity
         android:name="com.example.sigma_blue.ViewListActivity"
         android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
     </activity>
         <activity
             android:name="com.example.sigma_blue.AddEditActivity"
@@ -29,9 +24,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.sigma_blue.DebuggingActivity"
+        <activity android:name="com.example.sigma_blue.placeholder.DebuggingActivity"
             android:exported="true"
             ></activity>
+        <activity android:name="com.example.sigma_blue.LoginPageActivity"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -5,7 +5,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Item implements Comparable<Item>, Serializable {
+public class Item implements Comparable<Item>, Serializable,
+        IDatabaseItem<Item> {
 
     private String name;
     private Date date;
@@ -300,6 +301,11 @@ public class Item implements Comparable<Item>, Serializable {
 
     public boolean hasTag(Tag tag){
         return this.tags.contains((Object)tag);
+    }
+
+    public String getDocID() {
+        if (this.make == null || this.model == null) return name;
+        else return name+make+model;
     }
 
 

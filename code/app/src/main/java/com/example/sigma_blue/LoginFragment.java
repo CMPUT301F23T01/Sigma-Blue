@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import org.checkerframework.checker.units.qual.A;
+
 /**
  * Class for login version of fragment from main login page
  */
@@ -34,10 +36,10 @@ public class LoginFragment extends DialogFragment {
      * Creates instance to take in account object from LoginPageActivity so it can be checked
      * against user input
      */
-    LoginFragment newInstance(Account account) {
+    public static LoginFragment newInstance(AccountList accountList) {
 
         Bundle args = new Bundle();
-        args.putSerializable("account", account);
+        args.putSerializable("accountList", accountList);
 
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
@@ -66,10 +68,11 @@ public class LoginFragment extends DialogFragment {
 
         // creates the account that the user input will be tested against
         Bundle args = getArguments();
-        Account testAccount;
-        testAccount = (Account) args.getSerializable("account");
+        AccountList validAccounts;
+        validAccounts = (AccountList) args.getSerializable("accountList");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
         return builder
                 .setView(view)
                 .setTitle("Login")
@@ -87,11 +90,10 @@ public class LoginFragment extends DialogFragment {
                         String username = usernameInput.getText().toString();
                         String password = passwordInput.getText().toString();
 
+                        Account enteredAccount = new Account(username, password);
                         // checks if user input matches test account
-                        boolean matches = false;
-                        if (testAccount.checkUsername(username) && testAccount.checkPassword(password)) {
-                            matches = true;
-                        }
+                        assert validAccounts != null;
+                        boolean matches = validAccounts.contains(enteredAccount);
 
                         // creates popup message for incorrect user account information input
                         if (!matches) {

@@ -1,158 +1,111 @@
 package com.example.sigma_blue;
 
-import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
-public class ItemDB{
+/**
+ * This class handles database handling.
+ */
+public class ItemDB extends ADatabaseInterface<Item> {
 
-    private FirebaseFirestore db;
     private CollectionReference itemsRef;
-    private String loginUser;
-
-    private boolean loginFlag = false;
-
-    private final String pwdPath = "AccountInfo";
-
-    private ArrayList<Item> dataList;
-
-
-    /** consructor of the ItemDB
-     *
-     */
-    public ItemDB() {
-        this.db = FirebaseFirestore.getInstance();
-        this.itemsRef = db.collection("SigmaBlue");
-        loginUser = "";
-    }
-
-    public FirebaseFirestore getDb() {
-        return db;
-    }
-
-
-    public void signUp (String userName, String password) {
-
-        itemsRef.document(userName)
-                .collection(pwdPath)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            // if the user name do not exist, create account
-                            if (task.getResult().size() == 0){
-                                HashMap<String, String> data = new HashMap<>();
-                                data.put("Password", password);
-                                itemsRef.document(userName).collection("AccountInfo").document("Password").set(data);
-                            }else{
-                                Log.d("signup error", "User already exist");
-                            }
-
-                        } else {
-                            Log.d("Document Error", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-    }
-
-
-    public void setLoginUser (String userName) {
-        this.loginUser = userName;
-    }
-
-    //TRY this to see this method is not working
-    /*
-    public void login (String userName, String password) {
-
-        itemsRef.document(userName)
-                .collection(pwdPath)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        loginUser = userName;
-                        //issue: loginUser is not set
-                    }
-                });
-        //wait until the string set
-        while (loginUser.isEmpty());
-        /* OR this
-        for (int i = 0; i < 10000000; i ++);
-
-        //may try await(), but not allowed in main process
-     */
-
-
-
-
-   /* public void login (String userName, String password) {
-        loginCheck(userName, new OnCompleteCallback() {
-            @Override
-            public void onComplete(boolean success, String userName, ItemDB idb) {
-                idb.setLoginUser(userName);
-            }
-        }, this);
-    }
-
-    public interface OnCompleteCallback{
-        void onComplete(boolean success, String uName, ItemDB idb);
-    }
-    public void loginCheck(final String userName,final OnCompleteCallback callback, final ItemDB idb) {
-        itemsRef.document(userName)
-                .collection(pwdPath)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        callback.onComplete(true, userName, idb);
-                    }
-                });
-    }*/
+    private Account account;
+    private List<Item> items;
 
     /**
-     * Saves the ArrayList of items to the database.
-     *
-     * @param items is an object that is being saved.
+     * newInstance method for hiding construction.
+     * @param a is the account that is doing the database transactions.
+     * @return a new ItemDB instance tied to the account.
      */
-    public void saveToDB(ArrayList<Item> items) {
-        if (loginUser == null) {
-            Log.d("login error", "User not login!");
-        } else {
-            for (Item i : items) {
-                itemsRef.document(loginUser).collection("Items").document(i.getName()).set(i);
-            }
-        }
+    public static ItemDB newInstance(Account a) {
+        ItemDB ret = new ItemDB();
+        ret.setAccount(a);
+        return ret;
     }
 
-/*    @Override
-    public ArrayList<Item> refreshFromDB() {
-        itemsRef.document(loginUser)
-                .collection("Items")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    /**
+     * Bare Constructor
+     */
+    private ItemDB() {
+    }
 
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        dataList.clear();
-                    }
-                });
-        return dataList;
-    }*/
+    /**
+     * Embed the account into the database. Only used when creating a new
+     * instance.
+     * @param a is an Account object that the instance of the database is
+     *          querying.
+     */
+    private void setAccount(Account a) {
+        this.itemsRef = FirebaseFirestore.getInstance()
+                .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
+                .document(a.getUsername())
+                .collection(DatabaseNames.ITEMS_COLLECTION.getName());
+        this.account = a;
+    }
 
-    public interface ItemDBInteraction {
-        void login (ItemDB idb, String userName, String password, Context Activity);
-        ArrayList<Item> refreshFromDB(ItemDB idb);
+    /**
+     * This method adds a listener to a user's item collection.
+     */
+    public void startListening(final IDatabaseList<Item> lst) {
+        itemsRef.addSnapshotListener(
+                (q, e) -> {
+                    if (q != null) {
+                        lst.setList(loadArray(q));
+                        lst.updateUI();
+                    }});
+    }
+
+    /**
+     * Method for adding a new item to the database.
+     * @param item is an Item object being added to the database.
+     */
+    public void add(final Item item) {
+        addDocument(itemsRef, item, v -> {
+            HashMap<String, String> ret = new HashMap<>();
+            ret.put("NAME", item.getName());
+            ret.put("DATE", item.getDate().toString());
+            ret.put("MAKE", item.getMake());
+            ret.put("MODEL", item.getModel());
+            ret.put("VALUE", String.valueOf(item.getValue()));
+            return ret;
+        }, item.getDocID());
+        Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
+    }
+
+    /**
+     * This method removes the specified item from the database.
+     * @param item is an item object that is being removed from the database.
+     */
+    public void remove(final Item item) {
+        removeDocument(itemsRef, item);
+    }
+
+    /**
+     * Method that will just return an Item List implementation
+     * @param q is a QuerySnapshot that is being converted into a list.
+     * @return a list of items.
+     */
+    private List<Item> loadArray(final QuerySnapshot q) {
+        return loadArray(q, v -> {
+            return Item.newInstance(
+                    v.getString("NAME"),
+                    new Date(),    // TODO: Work on unifying date
+                    v.getString("MAKE"),
+                    v.getString("MODEL"),
+                    Float.parseFloat(v.getString("VALUE"))
+            );
+        });
+    }
+
+    public Account getAccount() {
+        return this.account;
     }
 }
