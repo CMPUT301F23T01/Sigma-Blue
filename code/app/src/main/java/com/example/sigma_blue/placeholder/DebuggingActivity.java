@@ -77,7 +77,6 @@ public class DebuggingActivity extends BaseActivity {
         }
     }
 
-    public ItemListAdapter itemListAdapter;     // The itemListAdapter
     public ItemList itemList;
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
@@ -101,7 +100,7 @@ public class DebuggingActivity extends BaseActivity {
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemListAdapter);
+        rvItemListView.setAdapter(itemList.getAdapter());
         rvItemListView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
