@@ -3,8 +3,9 @@ package com.example.sigma_blue;
 import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 /**
  * This class creates the base database structure that an account will need when
@@ -35,20 +36,26 @@ public class DatabaseInitializer {
     /**
      * Method for checking if the account has been inserted into the database.
      * @param a is the Account that is being checked.
-     * @return
      */
     public boolean checkExistence(final Account a) {
        dbRef.document(a.getUsername())
-               .collection(DatabaseNames.PWDPATH.getName())
-               .get().addOnCompleteListener(
-            t -> {
-                if (t.isSuccessful()) {
-                    exists = t.getResult().size() != 0;
-                }
-                else Log.e("Document Error",
-                        "Unable to get documents");
-            }
-        );
+               .collection(DatabaseNames.ACCOUNT_INFO_COLLECTION.getName())
+               .document(DatabaseNames.USER_INFO_DOCUMENT.getName());
        return this.exists;
+    }
+
+    public void generateFileStructure(final Account a) {
+        HashMap<String, String> entry = documentOfAccount(a);
+        dbRef.document(a.getUsername())
+                .collection(DatabaseNames.ACCOUNT_INFO_COLLECTION.getName())
+                .document(DatabaseNames.USER_INFO_DOCUMENT.getName())
+                .set(entry);
+    }
+
+    public HashMap<String, String> documentOfAccount(final Account a) {
+        HashMap<String, String> doc = new HashMap<>();
+        doc.put("USERNAME", a.getUsername());
+        doc.put("PASSWORD", a.getPassword());
+        return doc;
     }
 }

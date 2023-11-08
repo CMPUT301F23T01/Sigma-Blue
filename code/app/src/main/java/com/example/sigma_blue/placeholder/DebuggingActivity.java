@@ -77,31 +77,30 @@ public class DebuggingActivity extends BaseActivity {
         }
     }
 
-    public ItemListAdapter itemListAdapter;     // The itemListAdapter
+    public ItemList itemList;
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private DatabaseInitializer dbInit;
+    private final Account testAccount2= new Account("Watrina 2",
+            "dsiaflk1j");
 
-    private ItemDB iDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
+        this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
-        itemListAdapter = ItemListAdapter.newInstance(ItemList.newInstance());
+        itemList = ItemList.newInstance(testAccount2);
+        itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
-        iDB = ItemDB.newInstance(new Account("Watrina 2",
-                "dsiaflk1j"));
-        iDB.startListening(itemListAdapter, itemListAdapter.getItemList());
 
         /* Code section for linking UI elements */
-        this.viewHolder = this.new ViewHolder();
         RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemListAdapter);
+        rvItemListView.setAdapter(itemList.getAdapter());
         rvItemListView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
@@ -109,9 +108,9 @@ public class DebuggingActivity extends BaseActivity {
         setUIOnClickListeners();
 
         /* Debugging activity specifics */
-        viewHolder.setViewText(viewHolder.sortFilterButton, "Button 1");
+        viewHolder.setViewText(viewHolder.sortFilterButton, "Non-existant account");
         viewHolder.setViewText(viewHolder.searchButton, "Delete");
-        viewHolder.setViewText(viewHolder.optionsButton, "Add");
+        viewHolder.setViewText(viewHolder.optionsButton, "Real account");
 
         // ITEM DATA BASE RELATED STUFF
         dbInit = DatabaseInitializer.newInstance();
@@ -127,30 +126,16 @@ public class DebuggingActivity extends BaseActivity {
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
-//            this.itemListAdapter.addItem(
-//                new Item(
-//                        "ThinkPad", new Date(),
-//                        "Nice UNIX book", "", "IBM",
-//                        "T460", 300f
-//                )
-//            );
-
-            this.iDB.add(
+            this.itemList.add(
                     new Item(
                             "ThinkPad", new Date(),
                             "Nice UNIX book", "", "IBM",
                             "T460", 300f
                     )
             );
-
-            /* Updates the summation */
-            this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {
-            this.iDB.remove(new Item(
-                            "ThinkPad", new Date(),
-                            "Nice UNIX book", "", "IBM",
-                            "T460", 300f));
+            this.itemList.remove(0);
         });    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {
              if (dbInit.checkExistence(new Account("Watrina",
@@ -160,9 +145,11 @@ public class DebuggingActivity extends BaseActivity {
                      Toast.LENGTH_SHORT).show();
         });
         viewHolder.optionsButton.setOnClickListener(v -> {
-
-
-
+            dbInit.generateFileStructure(testAccount2);
+            if (dbInit.checkExistence(testAccount2)) Toast.makeText(this,
+                    "Exists", Toast.LENGTH_SHORT).show();
+            else Toast.makeText(this, "Does not exist",
+                    Toast.LENGTH_SHORT).show();
         });
     }
 }

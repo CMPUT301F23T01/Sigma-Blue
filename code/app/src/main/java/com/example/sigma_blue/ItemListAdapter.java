@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
+/**
+ * Modified adapter class for the list of items.
+ */
 public class ItemListAdapter extends
         RecyclerView.Adapter<ItemListAdapter.RecyclerViewHolder> {
     /* Caching the views in the adapter. */
@@ -31,7 +37,11 @@ public class ItemListAdapter extends
     }
 
     /* Attributes */
-    private ItemList itemList;
+    private List<Item> items;
+
+    /* Due to the usage of listeners when updating from the database, it is
+    * much simpler to embed the summary view into the adapter */
+    private TextView summaryView;
 
     /* Factories and Constructors */
 
@@ -40,36 +50,24 @@ public class ItemListAdapter extends
      * @param itemList is an ItemList object that contains the types.
      * @return an ItemListAdapter object that has been instantiated.
      */
-    public static ItemListAdapter newInstance(ItemList itemList) {
+    public static ItemListAdapter newInstance(List<Item> itemList) {
         return new ItemListAdapter(itemList);
+    }
+
+    public static ItemListAdapter newInstance() {
+        return new ItemListAdapter();
     }
 
     /**
      * Basic constructor. Takes in the ItemList that will be adapted to a list view.
-     * @param itemList is the ItemList object that will be displayed on lists through this adapter.
+     * @param items is the ItemList object that will be displayed on lists through this adapter.
      */
-    public ItemListAdapter(ItemList itemList) {
-        this.itemList = itemList;
+    public ItemListAdapter(List<Item> items) {
+        this.items = items;
     }
 
-    /**
-     * The amount of Items that are currently held by the adapter.
-     *
-     * @return Count of items.
-     */
-    public int getCount() {
-        return itemList.getCount();
-    }
-
-    /**
-     * Get the data item associated with the specified position in the data set.
-     *
-     * @param position Position of the item whose data we want within the adapter's
-     *                 data set.
-     * @return The data at the specified position.
-     */
-    public Item getItem(int position) {
-        return itemList.getItem(position);
+    public ItemListAdapter() {
+        this.items = new ArrayList<>();
     }
 
     /**
@@ -125,9 +123,10 @@ public class ItemListAdapter extends
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewHolder holder,
+                                 int position) {
         /* Caching the item that will be used to fill up the row */
-        Item item = itemList.getItem(position);
+        Item item = items.get(position);
 
         /* Assigning the content of the view holder */
         holder.name.setText(item.getName());
@@ -143,7 +142,9 @@ public class ItemListAdapter extends
      */
     @Override
     public long getItemId(int position) {
-        return position;    // TODO: Want to have HashCode for each item. We need to think about how
+        if (position < items.size()) return items.get(position)
+                .getDocID().hashCode();
+        else return -1;
     }
 
     /**
@@ -153,25 +154,34 @@ public class ItemListAdapter extends
      */
     @Override
     public int getItemCount() {
-        return itemList.getCount();
+        return items.size();
     }
 
-    public ItemList getItemList() {
-        return itemList;
+    public void setList(List<Item> itemList) {
+        this.items = itemList;
     }
 
-    public void setItemList(ItemList itemList) {
-        this.itemList = itemList;
-    }
-    public void addItem(Item item) {
-        this.itemList.add(item);
-        notifyItemChanged(itemList.size() -1);
-    }
-    public void removeItem(int position) {
-        this.itemList.remove(position);
+    public void setSummaryView(TextView view) {
+        this.summaryView = view;
     }
 
-    public Optional<Float> sumValues() {
-        return this.itemList.sumValues();
+    /**
+     * Returns the formatted output for the summary text view.
+     * @param sum is a float that represents the sum
+     * @return the formatted string.
+     */
+    public String formatSummary(Float sum) {
+        return String.format(Locale.ENGLISH,
+                "The total value: %7.2f", sum);
+    }
+
+    public void updateSumView(Optional<Float> sum) {
+        if (this.summaryView != null) {
+            if (sum.isPresent()) this.summaryView
+                    .setText(formatSummary(sum.get()));
+            else this.summaryView
+                    .setText(R.string.empty_summary_view);
+        } else Log.w("Missing Summary View",
+                "Summary view not hooked to adapter");
     }
 }
