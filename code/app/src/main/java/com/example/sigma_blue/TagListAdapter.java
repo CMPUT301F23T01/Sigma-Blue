@@ -10,17 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TagListAdapter extends
         RecyclerView.Adapter<TagListAdapter.RecyclerViewHolder> {
 
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
-        View color;
+    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        private TextView name;
+        private View color;
 
         /* Constructor that accepts the entire row */
-        public RecyclerViewHolder(View tagView) {
+        public RecyclerViewHolder(@NonNull View tagView) {
             super(tagView);
             name = tagView.findViewById(R.id.tagName);
             color = tagView.findViewById(R.id.tagColor);
@@ -34,7 +35,7 @@ public class TagListAdapter extends
     /* Factories and Constructors */
 
     /**
-     * Base factor that takes in a tagList object and returns the adapter for it
+     * Base factory that takes in a tagList object and returns the adapter for it
      * @param tagList is a TagList object, containing the types.
      * @return a TagListAdapter object that has been instantiated.
      */

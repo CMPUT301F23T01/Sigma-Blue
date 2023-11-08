@@ -57,7 +57,12 @@ public class TagEditFragment extends DialogFragment {
         // It might also be nice to have the color picker remember the last pick.
 
         Bundle args = getActivity().getIntent().getExtras();
-        tag = args.getParcelable("TAG_TO_EDIT");
+        if (args == null) {
+
+        } else {
+            tag = args.getParcelable("TAG_TO_EDIT");
+        }
+
 
         backButton.setOnClickListener(v -> {
             // exit fragment?
@@ -93,7 +98,7 @@ public class TagEditFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.add_tag_fragment, container, false);
+        return inflater.inflate(R.layout.edit_tag_fragment, container, false);
     }
 
 }
