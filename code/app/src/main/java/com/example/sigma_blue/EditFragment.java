@@ -17,6 +17,7 @@ import android.widget.EditText;
 
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class EditFragment extends Fragment
     private static final String ARG_ITEM = "item";
 
     private Item currentItem;
+    private String oldItemID;
 //    private String mName = " ";
 //    private float mValue = 0f;
 //    private Date mDate = new Date();
@@ -66,6 +68,7 @@ public class EditFragment extends Fragment
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+            oldItemID = currentItem.getDocID();
             if (currentItem != null)
             {
 //                mName = currentItem.getName();
@@ -174,6 +177,7 @@ public class EditFragment extends Fragment
                     currentItem.setDescription(textDescription.getText().toString());
                     currentItem.setComment(textComment.getText().toString());
                     bundle.putSerializable(ARG_ITEM, currentItem);
+                    bundle.putString("id", oldItemID);
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
                 }
 

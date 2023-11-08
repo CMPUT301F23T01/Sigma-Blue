@@ -29,7 +29,7 @@ public class LoginFragment extends DialogFragment {
      * original activity
      */
     public interface OnFragmentInteractionListener {
-        void onLoginPressed(boolean matches);
+        void onLoginPressed(boolean matches, Account account);
     }
 
     /**
@@ -101,7 +101,7 @@ public class LoginFragment extends DialogFragment {
                             incorrectMessage.show();
                         }
 
-                        listener.onLoginPressed(matches);
+                        listener.onLoginPressed(matches, enteredAccount);
                     }
                 }).create();
     }

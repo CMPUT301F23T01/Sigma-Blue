@@ -1,12 +1,20 @@
 package com.example.sigma_blue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,13 +32,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ViewListActivity extends BaseActivity {
 
-
     /* Tracking views that gets reused. Using nested class because struct */
-    private class ViewHolder {
+    // https://stackoverflow.com/questions/24471109/recyclerview-onclick
+    private class ViewHolder extends RecyclerView.ViewHolder {
         public Button searchButton;
         public Button sortFilterButton;
         public Button optionsButton;
@@ -40,7 +49,8 @@ public class ViewListActivity extends BaseActivity {
         /**
          * Construction of this nested class will bind the UI element to a 'package'
          */
-        public ViewHolder() {
+        private ViewHolder(View itemView) {
+            super(itemView);
             this.searchButton = findViewById(R.id.searchButton);
             this.sortFilterButton = findViewById(R.id.sortButton);
             this.optionsButton = findViewById(R.id.optionButton);
@@ -76,25 +86,28 @@ public class ViewListActivity extends BaseActivity {
     }
 
     private FragmentLauncher fragmentLauncher;
+    private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private ItemList itemList;
-    private final Account placeHolderAccount = new Account("Watrina 3",
-            "flsdkjqi1121-");
+    private Account currentAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
-        this.viewHolder = this.new ViewHolder();
 
-        /* ItemList encapsulates both the database and the adapter */
-        this.itemList = ItemList.newInstance(placeHolderAccount);
-        itemList.setSummaryView(viewHolder.summaryView);
-        fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
-
+        Bundle extras = getIntent().getExtras();
+        currentAccount = (Account) extras.getSerializable("account");
         /* Code section for linking UI elements */
         RecyclerView rvItemListView = findViewById(R.id.listView);
+        this.viewHolder = this.new ViewHolder(rvItemListView);
+
+
+        /* ItemList encapsulates both the database and the adapter */
+        this.itemList = ItemList.newInstance(currentAccount, this::handleClick);
+        itemList.setSummaryView(viewHolder.summaryView);
+        fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Linking the adapter to the UI */
         rvItemListView.setAdapter(itemList.getAdapter());
@@ -103,6 +116,50 @@ public class ViewListActivity extends BaseActivity {
 
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
+
+    }
+
+    /**
+     * listener used to deal with the user clicking on a thing in the list. This method is passed to
+     * the ItemList constructor as a callback function, but not called directly from anywhere.
+     * see <a href="https://stackoverflow.com/questions/24471109/recyclerview-onclick">...</a>,
+     * answer from Marurban
+     * @param item Clicked on item
+     */
+    private void handleClick(Item item) {
+        Log.i("DEBUG", item.getName());
+        Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+        intent.putExtra("item", item);
+        intent.putExtra("id", item.hashCode());
+        activityLauncher.launch(intent, this::processNewItemResult);
+    }
+
+    /**
+     * Either adds a new item to the list or updates an existing one.
+     * @param result result from the AddEditActivity
+     */
+    protected void processNewItemResult(ActivityResult result) {
+        Bundle extras = result.getData().getExtras();
+        //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
+        Item updatedItem = null;
+        String updatedItemID = null;
+        try {
+            updatedItem = (Item) extras.getSerializable("item");
+            updatedItemID = extras.getString("id");
+        } catch (NullPointerException e) {
+            Log.e("DEBUG", "New intent without extras!");
+        }
+
+        if (updatedItem == null) {
+            Log.e("DEBUG", "Null updated item");
+            return;
+        }
+
+        if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
+            this.itemList.add(updatedItem);
+        } else {
+            this.itemList.updateItem(updatedItem, updatedItemID);
+        }
 
     }
 
@@ -115,27 +172,15 @@ public class ViewListActivity extends BaseActivity {
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
-            this.itemList.add(
-                new Item(
-                        "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
-                        "T460", 300f
-                )
-            );
+            Item newItem = new Item();
+            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            intent.putExtra("item", newItem);
+            intent.putExtra("id", "");
+            activityLauncher.launch(intent, this::processNewItemResult);
 
-        });  // Launch add fragment.
+        });  // Launch add activity.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
-        viewHolder.optionsButton.setOnClickListener(v -> {
-
-            // FOR ItemDB TESTING PURPOSE
-
-//            login(iDB, "testUser", "112233", this);
-//             after login, the
-
-            // build a mock item
-
-
-        });
+        viewHolder.optionsButton.setOnClickListener(v -> {});
     }
-
 }
