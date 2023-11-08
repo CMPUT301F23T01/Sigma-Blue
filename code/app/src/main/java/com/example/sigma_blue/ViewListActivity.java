@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ViewListActivity extends BaseActivity {
@@ -118,18 +119,23 @@ public class ViewListActivity extends BaseActivity {
 
     }
 
-    private void handleClick(Item v) {
-        Log.i("DEBUG", v.getName());
+    //https://stackoverflow.com/questions/24471109/recyclerview-onclick, answer from Marurban
+    private void handleClick(Item item) {
+        Log.i("DEBUG", item.getName());
+        Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+        intent.putExtra("item", item);
+        intent.putExtra("id", item.hashCode());
+        activityLauncher.launch(intent, this::updateList);
     }
 
     protected void updateList(ActivityResult result) {
         Bundle extras = result.getData().getExtras();
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
-        Integer updatedItemID = null;
+        String updatedItemID = null;
         try {
             updatedItem = (Item) extras.getSerializable("item");
-            updatedItemID = extras.getInt("id");
+            updatedItemID = extras.getString("id");
         } catch (NullPointerException e) {
             Log.e("DEBUG", "New intent without extras!");
         }
@@ -140,10 +146,10 @@ public class ViewListActivity extends BaseActivity {
             return;
         }
 
-        if (updatedItemID != null) {
+        if (Objects.equals(updatedItemID, "")) {
             this.itemList.add(updatedItem);
         } else {
-            // problem for later
+            this.itemList.updateItem(updatedItem, updatedItemID);
         }
 
     }
@@ -160,7 +166,7 @@ public class ViewListActivity extends BaseActivity {
             Item newItem = new Item();
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("item", newItem);
-            intent.putExtra("id", -1);
+            intent.putExtra("id", "");
             activityLauncher.launch(intent, this::updateList);
 
         });  // Launch add activity.

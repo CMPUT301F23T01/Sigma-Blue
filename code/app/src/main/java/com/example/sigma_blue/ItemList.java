@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -168,5 +169,17 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
 
     public void setSummaryView(TextView summaryView) {
         this.adapter.setSummaryView(summaryView);
+    }
+
+    public void updateItem(Item updatedItem, String oldDocID) {
+        for (int i = 0; i < this.items.size(); i++) {
+            if (Objects.equals(this.items.get(i).getDocID(), oldDocID)) {
+                dbHandler.remove(this.items.get(i));
+                dbHandler.add(updatedItem);
+
+                this.items.set(i, updatedItem);
+            }
+        }
+        updateUI();
     }
 }
