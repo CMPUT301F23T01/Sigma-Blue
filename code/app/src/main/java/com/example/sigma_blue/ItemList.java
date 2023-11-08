@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -30,9 +31,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * Factory creation for when there isn't an input ArrayList of songs ready for input.
      * @return an instance of the ItemList class holding no item.
      */
-    public static ItemList newInstance(Account a) {
+    public static ItemList newInstance(Account a, ItemListAdapter.OnItemClickListener listener) {
         ItemList ret = new ItemList(new ArrayList<Item>(), a);
-        ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
+        ret.setAdapter(ItemListAdapter.newInstance(ret.getList(), listener));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;
@@ -45,9 +46,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * @return an instance of the ItemList object containing the Item objects that were present in
      * items.
      */
-    public static ItemList newInstance(Account a, ArrayList<Item> items) {
+    public static ItemList newInstance(Account a, ArrayList<Item> items, ItemListAdapter.OnItemClickListener listener) {
         ItemList ret = new ItemList(items, a);
-        ret.setAdapter(ItemListAdapter.newInstance(ret.getList()));
+        ret.setAdapter(ItemListAdapter.newInstance(ret.getList(), listener));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;
@@ -168,5 +169,22 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
 
     public void setSummaryView(TextView summaryView) {
         this.adapter.setSummaryView(summaryView);
+    }
+
+    /**
+     * Swaps out an item for a new one.
+     * @param updatedItem New Item to put in the list
+     * @param oldDocID Search for an item with this DocID to replace
+     */
+    public void updateItem(Item updatedItem, String oldDocID) {
+        for (int i = 0; i < this.items.size(); i++) {
+            if (Objects.equals(this.items.get(i).getDocID(), oldDocID)) {
+                dbHandler.remove(this.items.get(i));
+                dbHandler.add(updatedItem);
+
+                this.items.set(i, updatedItem);
+            }
+        }
+        updateUI();
     }
 }

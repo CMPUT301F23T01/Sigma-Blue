@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SigmaBlue"
         tools:targetApi="31" >
-    <activity
-        android:name="com.example.sigma_blue.ViewListActivity"
-        android:exported="true">
-    </activity>
+        <activity
+            android:name="com.example.sigma_blue.ViewListActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <activity
             android:name="com.example.sigma_blue.AddEditActivity"
             android:exported="true">
@@ -25,8 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.sigma_blue.placeholder.DebuggingActivity"
-            android:exported="true"
-            ></activity>
+            android:exported="true"/>
         <activity android:name="com.example.sigma_blue.LoginPageActivity"
             android:exported="true">
             <intent-filter>

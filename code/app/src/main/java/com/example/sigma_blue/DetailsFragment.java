@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,14 +24,7 @@ public class DetailsFragment extends Fragment
     private static final String ARG_ITEM = "item";
 
     private Item currentItem;
-    private String mName = " ";
-    private float mValue = 0f;
-    private Date mDate = new Date();
-    private String mMake = " ";
-    private String mModel = " ";
-    private String mSerial = " ";
-    private String mDescription = " ";
-    private String mComment = " ";
+    private String oldItemID;
 
     // Fragment binding
     private DetailsFragmentBinding binding;
@@ -53,22 +47,12 @@ public class DetailsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        currentItem = new Item();
         // Load item from bundle
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            if (currentItem != null)
-            {
-                mName = currentItem.getName();
-                mValue = currentItem.getValue();
-                mDate = currentItem.getDate();
-                mMake = currentItem.getMake();
-                mModel = currentItem.getModel();
-                mSerial = currentItem.getSerialNumber();
-                mDescription = currentItem.getDescription();
-                mComment = currentItem.getComment();
-            }
+            oldItemID = getArguments().getString("id");
         }
     }
 
@@ -98,14 +82,14 @@ public class DetailsFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         // set item details from bundle
-        textName.setText(mName);
-        textValue.setText(String.valueOf(mValue));
-        textDate.setText(mDate.toString());
-        textMake.setText(mMake);
-        textModel.setText(mModel);
-        textSerial.setText(mSerial);
-        textDescription.setText(mDescription);
-        textComment.setText(mComment);
+        textName.setText(currentItem.getName());
+        textValue.setText(String.valueOf(currentItem.getValue()));
+        textDate.setText(currentItem.getDate().toString());
+        textMake.setText(currentItem.getMake());
+        textModel.setText(currentItem.getModel());
+        textSerial.setText(currentItem.getSerialNumber());
+        textDescription.setText(currentItem.getDescription());
+        textComment.setText(currentItem.getComment());
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {
@@ -123,8 +107,11 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent(getActivity(), DetailsFragment.class);
+                Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
+                i.putExtra("id", oldItemID);
+                //startActivity(i);
+                getActivity().setResult(Activity.RESULT_OK, i);
                 getActivity().finish();
             }
         });
