@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ItemList implements IAdaptable<Item> {
+public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     /* Attributes */
     private List<Item> items;
     private ItemDB dbHandler;
@@ -100,13 +100,12 @@ public class ItemList implements IAdaptable<Item> {
      * an Optional wrapper. Done this way to enforce explicit handling of the
      * case where there is no items in the list.
      */
-    public Function<List<Item>, Optional<Float>> sumValues() {
-        return lst -> {
+    final Function<List<Item>, Optional<Float>> sumValues =
+        lst -> {
             if (lst.isEmpty()) return Optional.empty();
             else return Optional.of(lst.stream().map(Item::getValue)
                     .reduce(0f, Float::sum));
         };
-    }
 
     /* Setters and Getters */
 
@@ -138,7 +137,7 @@ public class ItemList implements IAdaptable<Item> {
 
     public void updateUI() {
         adapter.notifyDataSetChanged();
-        adapter.updateSumView(sumValues().apply(items));
+        adapter.updateSumView(sumValues.apply(items));
     }
 
     public void setDatabaseHandler(final ItemDB dbH) {
@@ -146,16 +145,21 @@ public class ItemList implements IAdaptable<Item> {
     }
 
     public void startListening() {
-        dbHandler.startListening(this.adapter, items, sumValues());
+        dbHandler.startListening(this);
     }
 
     public void setAdapter(final ItemListAdapter adapter) {
         this.adapter = adapter;
     }
 
+    public ItemListAdapter getAdapter() {
+        return this.adapter;
+    }
+
     /* Database method */
     public void setList(final List<Item> list) {
         this.items = list;
+        this.adapter.setList(list);
     }
 
     public List<Item> getList() {
