@@ -60,7 +60,7 @@ public class ViewListActivity extends BaseActivity {
             setSummaryView(Optional.empty());
         }
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             int position = getBindingAdapterPosition();
         }
 
@@ -130,7 +130,7 @@ public class ViewListActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Bundle extras = intent.getExtras();
-        Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
+        //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
         Integer updatedItemID = null;
         try {
@@ -145,9 +145,8 @@ public class ViewListActivity extends BaseActivity {
             Log.e("DEBUG", "Null updated item");
             return;
         }
-        this.itemList.add(testItem);
 
-        if (updatedItemID == null) {
+        if (updatedItemID != null) {
             this.itemList.add(updatedItem);
         } else {
             // problem for later
