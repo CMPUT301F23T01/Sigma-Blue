@@ -123,8 +123,9 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent(getActivity(), DetailsFragment.class);
+                Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
+                startActivity(i);
                 getActivity().finish();
             }
         });

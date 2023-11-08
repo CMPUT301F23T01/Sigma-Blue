@@ -1,12 +1,19 @@
 package com.example.sigma_blue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,9 +35,9 @@ import java.util.Optional;
 
 public class ViewListActivity extends BaseActivity {
 
-
     /* Tracking views that gets reused. Using nested class because struct */
-    private class ViewHolder {
+    // https://stackoverflow.com/questions/24471109/recyclerview-onclick
+    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public Button searchButton;
         public Button sortFilterButton;
         public Button optionsButton;
@@ -40,7 +47,9 @@ public class ViewListActivity extends BaseActivity {
         /**
          * Construction of this nested class will bind the UI element to a 'package'
          */
-        public ViewHolder() {
+        private ViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
             this.searchButton = findViewById(R.id.searchButton);
             this.sortFilterButton = findViewById(R.id.sortButton);
             this.optionsButton = findViewById(R.id.optionButton);
@@ -49,6 +58,10 @@ public class ViewListActivity extends BaseActivity {
 
             /* Setting up defaults for the UI elements */
             setSummaryView(Optional.empty());
+        }
+        @Override
+        public void onClick(View v) {
+            int position = getBindingAdapterPosition();
         }
 
         /**
@@ -73,13 +86,19 @@ public class ViewListActivity extends BaseActivity {
             return String.format(Locale.ENGLISH,
                     "The total value: %7.2f", sum);
         }
+
+
     }
 
-    public ItemListAdapter itemListAdapter;     // The itemListAdapter
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+        void onItemLongClick(int position, View v);
+    }
+
+    public ItemListAdapter itemListAdapter;
     private FragmentLauncher fragmentLauncher;
     private ViewHolder viewHolder;              // Encapsulation of the Views
 
-    private ItemDB iDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
@@ -91,8 +110,8 @@ public class ViewListActivity extends BaseActivity {
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
-        this.viewHolder = this.new ViewHolder();
         RecyclerView rvItemListView = findViewById(R.id.listView);
+        this.viewHolder = this.new ViewHolder(rvItemListView);
 
         /* Linking the adapter to the UI */
         rvItemListView.setAdapter(itemListAdapter);
@@ -102,13 +121,32 @@ public class ViewListActivity extends BaseActivity {
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
 
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle extras = intent.getExtras();
+        Item testItem = new Item();
+        Item updatedItem = null;
+        Integer updatedItemID = null;
+        try {
+            updatedItem = (Item) extras.getSerializable("item");
+            updatedItemID = extras.getInt("id");
+        } catch (NullPointerException e) {
+            Log.e("DEBUG", "New intent without extras!");
+        }
 
-        // ITEM DATA BASE RELATED STUFF
-//        iDB = new ItemDB();
-//
-//        iDB.signUp("testUser", "112233");
+        itemListAdapter.addItem(testItem);
+        if (updatedItem == null) {
+            Log.e("DEBUG", "Null updated item");
+            return;
+        }
 
-
+        if (updatedItemID == null) {
+            itemListAdapter.addItem(updatedItem);
+        } else {
+            // problem for later
+        }
 
     }
 
@@ -120,84 +158,35 @@ public class ViewListActivity extends BaseActivity {
      * This method sets all the on click listeners for all the interactive UI elements.
      */
     private void setUIOnClickListeners() {
+//        ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+//                new ActivityResultCallback<Uri>() {
+//                    @Override
+//                    public void onActivityResult(Uri uri) {
+//                        uri.toString();
+//                    }
+//                });
+//
+//        viewHolder.addEntryButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // Pass in the mime type you want to let the user select
+//                // as the input
+//                mGetContent.launch("image/*");
+//            }
+//        });
+
         viewHolder.addEntryButton.setOnClickListener(v -> {
-            this.itemListAdapter.addItem(
-                new Item(
-                        "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
-                        "T460", 300f
-                )
-            );
+            Item newItem = new Item();
+            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            intent.putExtra("item", newItem);
+            startActivity(intent);
 
             /* Updates the summation */
             this.viewHolder.setSummaryView(itemListAdapter.sumValues());
         });  // Launch add fragment.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
-        viewHolder.optionsButton.setOnClickListener(v -> {
-
-            // FOR ItemDB TESTING PURPOSE
-
-//            login(iDB, "testUser", "112233", this);
-//             after login, the
-
-            // build a mock item
-
-
-        });
+        viewHolder.optionsButton.setOnClickListener(v -> {});
+        RecyclerView rvItemListView = (RecyclerView) findViewById(R.id.listView);
     }
-
-//    @Override
-//    public void login(ItemDB idb, String userName, String password, Context Activity) {
-//        iDB.getDb().collection("SigmaBlue")
-//                .document(userName)
-//                .collection("AccountInfo")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        for (QueryDocumentSnapshot doc : task.getResult()) {
-//                            if (doc.getId().compareTo("Password") == 0) {
-//                                //check for the password
-//                                if (doc.getString("Password").compareTo(password) == 0) {
-//                                    iDB.setLoginUser(userName);
-//                                    int duration = Toast.LENGTH_SHORT;
-//                                    Toast.makeText(Activity, "Successful Login", duration).show();
-//                                } else {
-//                                    int duration = Toast.LENGTH_SHORT;
-//                                    Toast.makeText(Activity, "Failed to Login", duration).show();
-//                                }
-//
-//                            }
-//                        }
-//
-//                        // TEST Save To DB after login; FOR TESTING ONLY
-//                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
-//                        Date date = new Date();
-//                        try {
-//                            date = formatter.parse("2022-01");
-//                        } catch (ParseException e) {
-//                            Calendar calendar = Calendar.getInstance();
-//                            calendar.setTime(date);
-//                        }
-//                        Item item = Item.newInstance("3090", date,
-//                                "Testing", "", "Evga",
-//                                "GA102-220-A1", (float)799.99);
-//
-//                        ArrayList<Item> testItemList = new ArrayList<Item>();
-//                        testItemList.add(item);
-//                        testItemList.add(Item.newInstance(
-//                                "ThinkPad", new Date(), "IBM",
-//                                "T460", 300f
-//                        ));
-//                        iDB.saveToDB(testItemList);
-//                    }
-//                });
-//    }
-
-    // NOT YET Implemented
-//    @Override
-//    public ArrayList<Item> refreshFromDB(ItemDB idb) {
-//        return null;
-//    }
-
 }

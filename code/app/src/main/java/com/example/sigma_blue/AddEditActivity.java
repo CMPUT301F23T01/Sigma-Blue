@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -34,14 +35,15 @@ public class AddEditActivity extends AppCompatActivity
         navController.setGraph(R.navigation.nav_graph, bundledItem);
     }
 
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-
-        // Get bundled item from fragment and pass it to ViewList
-        bundledItem = getIntent().getExtras();
-        Intent i = new Intent(AddEditActivity.this, ViewListActivity.class);
-        i.putExtra(ARG_ITEM, bundledItem);
-    }
+//    @Override
+//    protected void onDestroy()
+//    {
+//        super.onDestroy();
+//
+//        // Get bundled item from fragment and pass it to ViewList
+//        bundledItem = getIntent().getExtras();
+//        Intent intent = new Intent(AddEditActivity.this, ViewListActivity.class);
+//        intent.putExtra(ARG_ITEM, bundledItem);
+//        startActivity(intent); // this does not start a new activity due manifest setting
+//    }
 }
