@@ -44,7 +44,7 @@ public class AddEditActivity extends AppCompatActivity
 //        bundledItem = getIntent().getExtras();
 //        Intent intent = new Intent(AddEditActivity.this, ViewListActivity.class);
 //        intent.putExtra(ARG_ITEM, bundledItem);
-//        startActivity(intent); // this does not start a new activity due manifest setting
+//        setResult(Activity.RESULT_OK, intent);
 //    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

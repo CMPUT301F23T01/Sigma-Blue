@@ -17,6 +17,8 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
     private DialogFragment loginFragment;
     private AccountList userAccountList;
 
+    private Account currentAccount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,10 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
      * This is a boolean that is the result of a check if the user input matched the desired login information (true = login info matches)
      */
     @Override
-    public void onLoginPressed(boolean matches){
+    public void onLoginPressed(boolean matches, Account account){
         if (matches) {
             Intent intent = new Intent(LoginPageActivity.this, ViewListActivity.class);
+            intent.putExtra("account", account);
             startActivity(intent);
         }
         else {

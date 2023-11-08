@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -106,7 +107,8 @@ public class DetailsFragment extends Fragment
             {
                 Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
-                startActivity(i);
+                //startActivity(i);
+                getActivity().setResult(Activity.RESULT_OK, i);
                 getActivity().finish();
             }
         });

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -90,17 +91,11 @@ public class ViewListActivity extends BaseActivity {
 
     }
 
-    public interface ClickListener {
-        void onItemClick(int position, View v);
-        void onItemLongClick(int position, View v);
-    }
-
-    public ItemListAdapter itemListAdapter;
     private FragmentLauncher fragmentLauncher;
+    private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private ItemList itemList;
-    private final Account placeHolderAccount = new Account("Watrina 3",
-            "flsdkjqi1121-");
+    private Account currentAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,12 +103,15 @@ public class ViewListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
 
+        Bundle extras = getIntent().getExtras();
+        currentAccount = (Account) extras.getSerializable("account");
         /* Code section for linking UI elements */
         RecyclerView rvItemListView = findViewById(R.id.listView);
         this.viewHolder = this.new ViewHolder(rvItemListView);
 
+
         /* ItemList encapsulates both the database and the adapter */
-        this.itemList = ItemList.newInstance(placeHolderAccount);
+        this.itemList = ItemList.newInstance(currentAccount);
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
@@ -126,10 +124,8 @@ public class ViewListActivity extends BaseActivity {
         setUIOnClickListeners();
 
     }
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Bundle extras = intent.getExtras();
+    protected void updateList(ActivityResult result) {
+        Bundle extras = result.getData().getExtras();
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
         Integer updatedItemID = null;
@@ -183,7 +179,7 @@ public class ViewListActivity extends BaseActivity {
             Item newItem = new Item();
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("item", newItem);
-            startActivity(intent);
+            activityLauncher.launch(intent, result -> {this.updateList(result);});
             // this.itemList.add(
             //     new Item(
             //             "ThinkPad", new Date(), "Nice UNIX book","", "IBM",
