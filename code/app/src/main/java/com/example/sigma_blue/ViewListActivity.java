@@ -131,14 +131,14 @@ public class ViewListActivity extends BaseActivity {
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         intent.putExtra("item", item);
         intent.putExtra("id", item.hashCode());
-        activityLauncher.launch(intent, this::updateList);
+        activityLauncher.launch(intent, this::processNewItemResult);
     }
 
     /**
      * Either adds a new item to the list or updates an existing one.
      * @param result result from the AddEditActivity
      */
-    protected void updateList(ActivityResult result) {
+    protected void processNewItemResult(ActivityResult result) {
         Bundle extras = result.getData().getExtras();
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
