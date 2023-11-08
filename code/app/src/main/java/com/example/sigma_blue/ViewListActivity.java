@@ -145,7 +145,7 @@ public class ViewListActivity extends BaseActivity {
             return;
         }
 
-        if (Objects.equals(updatedItemID, "")) {
+        if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
             this.itemList.add(updatedItem);
         } else {
             this.itemList.updateItem(updatedItem, updatedItemID);
