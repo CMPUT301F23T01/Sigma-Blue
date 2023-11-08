@@ -23,14 +23,6 @@ public class DetailsFragment extends Fragment
     private static final String ARG_ITEM = "item";
 
     private Item currentItem;
-    private String mName = " ";
-    private float mValue = 0f;
-    private Date mDate = new Date();
-    private String mMake = " ";
-    private String mModel = " ";
-    private String mSerial = " ";
-    private String mDescription = " ";
-    private String mComment = " ";
 
     // Fragment binding
     private DetailsFragmentBinding binding;
@@ -58,16 +50,9 @@ public class DetailsFragment extends Fragment
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            if (currentItem != null)
+            if (currentItem == null)
             {
-                mName = currentItem.getName();
-                mValue = currentItem.getValue();
-                mDate = currentItem.getDate();
-                mMake = currentItem.getMake();
-                mModel = currentItem.getModel();
-                mSerial = currentItem.getSerialNumber();
-                mDescription = currentItem.getDescription();
-                mComment = currentItem.getComment();
+                currentItem = new Item();
             }
         }
     }
@@ -98,14 +83,14 @@ public class DetailsFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         // set item details from bundle
-        textName.setText(mName);
-        textValue.setText(String.valueOf(mValue));
-        textDate.setText(mDate.toString());
-        textMake.setText(mMake);
-        textModel.setText(mModel);
-        textSerial.setText(mSerial);
-        textDescription.setText(mDescription);
-        textComment.setText(mComment);
+        textName.setText(currentItem.getName());
+        textValue.setText(String.valueOf(currentItem.getValue()));
+        textDate.setText(currentItem.getDate().toString());
+        textMake.setText(currentItem.getMake());
+        textModel.setText(currentItem.getModel());
+        textSerial.setText(currentItem.getSerialNumber());
+        textDescription.setText(currentItem.getDescription());
+        textComment.setText(currentItem.getComment());
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {

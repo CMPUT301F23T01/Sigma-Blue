@@ -46,4 +46,9 @@ public class AddEditActivity extends AppCompatActivity
 //        intent.putExtra(ARG_ITEM, bundledItem);
 //        startActivity(intent); // this does not start a new activity due manifest setting
 //    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

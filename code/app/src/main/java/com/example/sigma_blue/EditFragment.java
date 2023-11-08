@@ -6,15 +6,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.EditText;
 
-import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 
-import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class EditFragment extends Fragment
@@ -36,14 +38,15 @@ public class EditFragment extends Fragment
     private EditFragmentBinding binding;
 
     // Fragment ui components
-    TextView textName;
-    TextView textValue;
-    TextView textDate;
-    TextView textMake;
-    TextView textModel;
-    TextView textSerial;
-    TextView textDescription;
-    TextView textComment;
+    EditText textName;
+    EditText textValue;
+    EditText textDate;
+    EditText textMake;
+    EditText textModel;
+    EditText textSerial;
+    EditText textDescription;
+    EditText textComment;
+    ArrayList<EditText> editTextList;
 
     public EditFragment() {
         // Required empty public constructor
@@ -79,14 +82,15 @@ public class EditFragment extends Fragment
         binding = EditFragmentBinding.inflate(inflater, container, false);
 
         // bind ui components
-        textName = binding.getRoot().findViewById(R.id.text_name_disp);
-        textValue = binding.getRoot().findViewById(R.id.text_value_disp);
-        textDate = binding.getRoot().findViewById(R.id.text_date_disp);
-        textMake = binding.getRoot().findViewById(R.id.text_make_disp);
-        textModel = binding.getRoot().findViewById(R.id.text_model_disp);
-        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
-        textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
-        textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
+        editTextList = new ArrayList<>();
+        textName = binding.getRoot().findViewById(R.id.text_name_disp); editTextList.add(textName);
+        textValue = binding.getRoot().findViewById(R.id.text_value_disp); editTextList.add(textValue);
+        textDate = binding.getRoot().findViewById(R.id.text_date_disp); editTextList.add(textDate);
+        textMake = binding.getRoot().findViewById(R.id.text_make_disp); editTextList.add(textMake);
+        textModel = binding.getRoot().findViewById(R.id.text_model_disp); editTextList.add(textModel);
+        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp); editTextList.add(textSerial);
+        textDescription = binding.getRoot().findViewById(R.id.text_description_disp); editTextList.add(textDescription);
+        textComment = binding.getRoot().findViewById(R.id.text_comment_disp); editTextList.add(textComment);
 
         return binding.getRoot();
     }
@@ -120,10 +124,26 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                // TODO: update stored item with edited text values on ui
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(ARG_ITEM, currentItem);
-                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                if (verifyText())
+                {
+                    Bundle bundle = new Bundle();
+                    currentItem.setName(textName.getText().toString());
+                    currentItem.setValue(Float.valueOf(textName.getText().toString()));
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+                    try {
+                        currentItem.setDate(sdf.parse(textDate.getText().toString()));
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    currentItem.setMake(textMake.getText().toString());
+                    currentItem.setModel(textModel.getText().toString());
+                    currentItem.setSerialNumber(textSerial.getText().toString());
+                    currentItem.setDescription(textDescription.getText().toString());
+                    currentItem.setComment(textComment.getText().toString());
+                    bundle.putSerializable(ARG_ITEM, currentItem);
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                }
+
             }
         });
     }
@@ -132,5 +152,24 @@ public class EditFragment extends Fragment
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    /**
+     * Verifies that no text field is empty when saving edits
+     * @return flag verifying that required EditText's are populated
+     */
+    private boolean verifyText()
+    {
+        String emptyErrText = "Must enter a value before saving";
+        boolean flag = true;
+        for (EditText e : editTextList)
+        {
+            if (TextUtils.isEmpty(e.getText()))
+            {
+                e.setError(emptyErrText);
+                flag = false;
+            }
+        }
+        return flag;
     }
 }
