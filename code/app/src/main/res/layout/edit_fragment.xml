@@ -82,7 +82,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ScanningLayout">
 
-            <TextView
+            <EditText
                 android:id="@+id/text_description_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_comment_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -205,10 +205,11 @@
                 app:layout_constraintStart_toStartOf="@+id/text_model"
                 app:layout_constraintTop_toBottomOf="@+id/text_model" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_serial_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="text|textNoSuggestions"
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -217,11 +218,12 @@
                 app:layout_constraintEnd_toEndOf="@+id/text_model_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_serial" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_name_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
+                android:inputType="text|textNoSuggestions"
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -229,12 +231,13 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/text_name"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.448" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_make_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="text|textNoSuggestions"
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -243,7 +246,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/text_date_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_make" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_date_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -255,10 +258,11 @@
                 app:layout_constraintEnd_toEndOf="@+id/text_value_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_date" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_model_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="text|textNoSuggestions"
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -267,10 +271,11 @@
                 app:layout_constraintEnd_toEndOf="@+id/text_make_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_model" />
 
-            <TextView
+            <EditText
                 android:id="@+id/text_value_disp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="text|textNoSuggestions"
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
