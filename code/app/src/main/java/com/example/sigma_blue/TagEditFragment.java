@@ -57,7 +57,7 @@ public class TagEditFragment extends DialogFragment {
         // It might also be nice to have the color picker remember the last pick.
 
         Bundle args = getActivity().getIntent().getExtras();
-        tag = args.getParcelable("TAG_TO_EDIT"); //
+        tag = args.getParcelable("TAG_TO_EDIT");
 
         backButton.setOnClickListener(v -> {
             // exit fragment?

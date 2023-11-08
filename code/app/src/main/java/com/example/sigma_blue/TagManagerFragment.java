@@ -1,19 +1,32 @@
 package com.example.sigma_blue;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class TagManagerFragment extends DialogFragment {
-    private TagList tags;
+    private TagList tagsData;
+    private FragmentLauncher fragmentLauncher;
+    private RecyclerView tagRecyclerView;
+    public TagListAdapter tagListAdapter;
+
+
+
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         // TODO Look into multiple item selection for the tag manager.
-        // NOTE You may have to use an adapter.
+
+        // Get the data from the bundle I guess.
+        tagListAdapter = TagListAdapter.newInstance(getContext(), new TagList(new TagDB()));
+        fragmentLauncher = FragmentLauncher.newInstance(this);
+
 
 
     }

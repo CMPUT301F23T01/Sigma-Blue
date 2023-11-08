@@ -3,13 +3,18 @@ package com.example.sigma_blue;
 import static android.graphics.Color.WHITE;
 
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 /**
  * Stores information about a single tag.
  */
-public class Tag implements Comparable<Tag>{
+public class Tag implements Comparable<Tag> {
     private String tagText;
     private Color colour;
+    private boolean isChecked = false; // For the TagManager.
 
     public Tag(String tagText, int colour) {
         this.tagText = tagText;
@@ -19,6 +24,14 @@ public class Tag implements Comparable<Tag>{
     public Tag(String tagText, Color colour) {
         this.tagText = tagText;
         this.colour = colour;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public String getTagText() {
