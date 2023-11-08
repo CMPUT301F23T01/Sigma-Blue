@@ -69,4 +69,5 @@ public abstract class ADatabaseInterface<T> {
 
     public abstract void add(final T item);
     public abstract void remove(final T item);
+    public abstract void startListening(final IDatabaseList<T> lst);
 }
