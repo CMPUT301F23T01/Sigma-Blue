@@ -176,7 +176,7 @@ public class ViewListActivity extends BaseActivity {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("item", newItem);
             intent.putExtra("id", "");
-            activityLauncher.launch(intent, this::updateList);
+            activityLauncher.launch(intent, this::processNewItemResult);
 
         });  // Launch add activity.
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
