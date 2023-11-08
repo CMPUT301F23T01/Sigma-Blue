@@ -26,11 +26,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/TagListLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="150dp"
+            android:layout_height="180dp"
             android:layout_marginEnd="16dp"
             android:background="@color/add_edit_layout_bgr_test"
-            app:layout_constraintBottom_toBottomOf="@+id/DetialsLongLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ScanningLayout">
 
@@ -85,12 +84,12 @@
             <EditText
                 android:id="@+id/text_description_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/add_edit_empty"
+                android:hint="@string/add_edit_text_description_hint"
+                android:inputType="text|textNoSuggestions"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/text_description" />
 
@@ -102,18 +101,19 @@
                 android:text="@string/add_edit_text_description"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/text_comment_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/add_edit_empty"
+                android:hint="@string/add_edit_text_comment_hint"
+                android:inputType="text|textNoSuggestions"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_comment"
                 app:layout_constraintTop_toBottomOf="@+id/text_comment" />
 
@@ -125,6 +125,7 @@
                 android:text="@string/add_edit_text_comment"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/text_description_disp" />
 
@@ -176,10 +177,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/add_edit_text_name"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -191,6 +193,7 @@
                 android:text="@string/add_edit_text_model"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_make"
                 app:layout_constraintTop_toBottomOf="@+id/text_make" />
 
@@ -202,86 +205,82 @@
                 android:text="@string/add_edit_text_serial"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_model"
                 app:layout_constraintTop_toBottomOf="@+id/text_model" />
 
             <EditText
                 android:id="@+id/text_serial_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:hint="@string/add_edit_text_serial_hint"
                 android:inputType="text|textNoSuggestions"
-                android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_serial"
-                app:layout_constraintEnd_toEndOf="@+id/text_model_disp"
+                app:layout_constraintStart_toStartOf="@+id/text_name_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_serial" />
 
             <EditText
                 android:id="@+id/text_name_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="180dp"
+                android:hint="@string/add_edit_text_name_hint"
                 android:inputType="text|textNoSuggestions"
-                android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/text_name"
-                app:layout_constraintVertical_bias="0.448" />
+                app:layout_constraintStart_toEndOf="@+id/text_name"
+                app:layout_constraintTop_toTopOf="@+id/text_name" />
 
             <EditText
                 android:id="@+id/text_make_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:hint="@string/add_edit_text_make_hint"
                 android:inputType="text|textNoSuggestions"
-                android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_make"
-                app:layout_constraintEnd_toEndOf="@+id/text_date_disp"
+                app:layout_constraintStart_toStartOf="@+id/text_name_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_make" />
 
             <EditText
                 android:id="@+id/text_date_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_edit_empty"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:contextClickable="true"
+                android:hint="@string/add_edit_text_date_hint"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_date"
-                app:layout_constraintEnd_toEndOf="@+id/text_value_disp"
+                app:layout_constraintStart_toStartOf="@+id/text_name_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_date" />
 
             <EditText
                 android:id="@+id/text_model_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:hint="@string/add_edit_text_model_hint"
                 android:inputType="text|textNoSuggestions"
-                android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_model"
-                app:layout_constraintEnd_toEndOf="@+id/text_make_disp"
+                app:layout_constraintStart_toStartOf="@+id/text_name_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_model" />
 
             <EditText
                 android:id="@+id/text_value_disp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="text|textNoSuggestions"
-                android:text="@string/add_edit_empty"
+                android:layout_height="50dp"
+                android:hint="@string/add_edit_text_value_hint"
+                android:inputType="number|numberDecimal|numberSigned"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_value"
-                app:layout_constraintEnd_toEndOf="@+id/text_name_disp"
+                app:layout_constraintStart_toStartOf="@+id/text_name_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_value" />
 
             <TextView
@@ -292,6 +291,7 @@
                 android:text="@string/add_edit_text_make"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_date"
                 app:layout_constraintTop_toBottomOf="@+id/text_date" />
 
@@ -303,6 +303,7 @@
                 android:text="@string/add_edit_text_value"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_name"
                 app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
@@ -314,6 +315,7 @@
                 android:text="@string/add_edit_text_date"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_value"
                 app:layout_constraintTop_toBottomOf="@+id/text_value" />
         </androidx.constraintlayout.widget.ConstraintLayout>
