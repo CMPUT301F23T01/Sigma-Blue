@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,9 +176,12 @@ public class ItemListAdapter extends
     }
 
     public void updateSumView(Optional<Float> sum) {
-        if (sum.isPresent())this.summaryView
-                .setText(formatSummary(sum.get()));
-        else this.summaryView
-                .setText(R.string.empty_summary_view);
+        if (this.summaryView != null) {
+            if (sum.isPresent()) this.summaryView
+                    .setText(formatSummary(sum.get()));
+            else this.summaryView
+                    .setText(R.string.empty_summary_view);
+        } else Log.w("Missing Summary View",
+                "Summary view not hooked to adapter");
     }
 }
