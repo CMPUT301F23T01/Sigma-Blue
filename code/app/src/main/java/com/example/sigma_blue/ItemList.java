@@ -145,8 +145,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * @param deletedItem the item to be deleted
      */
     public void remove(Item deletedItem) {
-        this.dbHandler.remove(deletedItem);
-        this.items.remove(deletedItem);
+        for (int i = 0; i < this.items.size(); i++) {
+            if (Objects.equals(this.items.get(i).getDocID(), deletedItem.getDocID())) {
+                this.remove(i);
+            }
+        }
         updateUI();
     }
 
