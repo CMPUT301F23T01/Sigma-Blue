@@ -3,7 +3,10 @@ package com.example.sigma_blue;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -130,10 +133,24 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         if (position > -1 && position < size()) {
             this.dbHandler.remove(items.get(position));
             this.items.remove(position);
+        } else {
+            Log.e("Remove Item", "Invalid remove action: negative index or index out of range");
         }
-        else ;
         updateUI();
         Log.v("Removed Item", "Removed an item from item list");
+    }
+
+    /**
+     * Delete the item from the Database
+     * @param deletedItem the item to be deleted
+     */
+    public void remove(Item deletedItem) {
+        for (int i = 0; i < this.items.size(); i++) {
+            if (Objects.equals(this.items.get(i).getDocID(), deletedItem.getDocID())) {
+                this.remove(i);
+            }
+        }
+        updateUI();
     }
 
     public void updateUI() {
@@ -141,12 +158,31 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         adapter.updateSumView(sumValues.apply(items));
     }
 
+    /**
+     * Method that will just return an Item List implementation
+     * @param q is a QuerySnapshot that is being converted into a list.
+     * @return a list of items.
+     */
+    @Override
+    public List<Item> loadArray(QuerySnapshot q) {
+        return ItemDB.loadArray(q, v -> {
+            return Item.newInstance(
+                    v.getString("NAME"),
+                    new Date(),    // TODO: Work on unifying date
+                    v.getString("MAKE"),
+                    v.getString("MODEL"),
+                    Float.parseFloat(v.getString("VALUE"))
+            );
+        });
+    }
+
     public void setDatabaseHandler(final ItemDB dbH) {
         this.dbHandler = dbH;
     }
 
     public void startListening() {
-        dbHandler.startListening(this);
+        dbHandler.startListening(this.dbHandler.getCollectionReference(),
+                this);
     }
 
     public void setAdapter(final ItemListAdapter adapter) {

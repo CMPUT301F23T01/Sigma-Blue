@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DetailsFragment extends Fragment
@@ -47,8 +48,9 @@ public class DetailsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        currentItem = new Item();
+
         // Load item from bundle
+        currentItem = new Item();
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
@@ -84,7 +86,8 @@ public class DetailsFragment extends Fragment
         // set item details from bundle
         textName.setText(currentItem.getName());
         textValue.setText(String.valueOf(currentItem.getValue()));
-        textDate.setText(currentItem.getDate().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
+        textDate.setText(sdf.format(currentItem.getDate()));
         textMake.setText(currentItem.getMake());
         textModel.setText(currentItem.getModel());
         textSerial.setText(currentItem.getSerialNumber());
@@ -99,6 +102,18 @@ public class DetailsFragment extends Fragment
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ARG_ITEM, currentItem);
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
+            }
+        });
+
+        view.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ViewListActivity.class);
+                i.putExtra(ARG_ITEM, currentItem);
+                i.putExtra("onDeletion", true);
+                //startActivity(i);
+                getActivity().setResult(Activity.RESULT_OK, i);
+                getActivity().finish();
             }
         });
 

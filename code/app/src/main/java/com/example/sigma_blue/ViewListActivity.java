@@ -98,7 +98,12 @@ public class ViewListActivity extends BaseActivity {
         setContentView(R.layout.view_list);
 
         Bundle extras = getIntent().getExtras();
-        currentAccount = (Account) extras.getSerializable("account");
+        if (extras != null) {
+            currentAccount = (Account) extras.getSerializable("account");
+        } else {
+            Log.e("DEBUG", "No Account object in bundle!");
+            currentAccount = new Account("user1", "password");
+        }
         /* Code section for linking UI elements */
         RecyclerView rvItemListView = findViewById(R.id.listView);
         this.viewHolder = this.new ViewHolder(rvItemListView);
@@ -130,7 +135,7 @@ public class ViewListActivity extends BaseActivity {
         Log.i("DEBUG", item.getName());
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         intent.putExtra("item", item);
-        intent.putExtra("id", item.hashCode());
+        intent.putExtra("mode", "edit");
         activityLauncher.launch(intent, this::processNewItemResult);
     }
 
@@ -143,9 +148,11 @@ public class ViewListActivity extends BaseActivity {
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
         String updatedItemID = null;
+        boolean onDeletion = false;
         try {
             updatedItem = (Item) extras.getSerializable("item");
             updatedItemID = extras.getString("id");
+            onDeletion = extras.getBoolean("onDeletion");
         } catch (NullPointerException e) {
             Log.e("DEBUG", "New intent without extras!");
         }
@@ -155,7 +162,9 @@ public class ViewListActivity extends BaseActivity {
             return;
         }
 
-        if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
+        if (onDeletion) {
+            this.itemList.remove(updatedItem);
+        } else if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
             this.itemList.add(updatedItem);
         } else {
             this.itemList.updateItem(updatedItem, updatedItemID);
@@ -175,7 +184,7 @@ public class ViewListActivity extends BaseActivity {
             Item newItem = new Item();
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("item", newItem);
-            intent.putExtra("id", "");
+            intent.putExtra("mode", "add");
             activityLauncher.launch(intent, this::processNewItemResult);
 
         });  // Launch add activity.
