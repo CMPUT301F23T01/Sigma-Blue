@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DetailsFragment extends Fragment
@@ -85,7 +86,8 @@ public class DetailsFragment extends Fragment
         // set item details from bundle
         textName.setText(currentItem.getName());
         textValue.setText(String.valueOf(currentItem.getValue()));
-        textDate.setText(currentItem.getDate().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
+        textDate.setText(sdf.format(currentItem.getDate()));
         textMake.setText(currentItem.getMake());
         textModel.setText(currentItem.getModel());
         textSerial.setText(currentItem.getSerialNumber());

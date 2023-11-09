@@ -98,13 +98,14 @@ public class EditFragment extends Fragment
         {
             textName.setText(currentItem.getName());
             textValue.setText(String.valueOf(currentItem.getValue()));
-            textDate.setText(currentItem.getDate().toString());
             textMake.setText(currentItem.getMake());
             textModel.setText(currentItem.getModel());
             textSerial.setText(currentItem.getSerialNumber());
             textDescription.setText(currentItem.getDescription());
             textComment.setText(currentItem.getComment());
         }
+        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
+        textDate.setText(sdf.format(currentItem.getDate()));
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
@@ -123,10 +124,10 @@ public class EditFragment extends Fragment
                         {
                             @Override
                             public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                textDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
+                                                  int monthOfYear, int dayOfMonth)
+                            {
+                                // TODO: Add this to strings.xml
+                                textDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
