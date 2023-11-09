@@ -105,6 +105,18 @@ public class DetailsFragment extends Fragment
             }
         });
 
+        view.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ViewListActivity.class);
+                i.putExtra(ARG_ITEM, currentItem);
+                i.putExtra("onDeletion", true);
+                //startActivity(i);
+                getActivity().setResult(Activity.RESULT_OK, i);
+                getActivity().finish();
+            }
+        });
+
         view.findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener()
         {
             @Override

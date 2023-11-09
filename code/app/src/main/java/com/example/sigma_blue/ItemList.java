@@ -133,10 +133,24 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         if (position > -1 && position < size()) {
             this.dbHandler.remove(items.get(position));
             this.items.remove(position);
+        } else {
+            Log.e("Remove Item", "Invalid remove action: negative index or index out of range");
         }
-        else ;
         updateUI();
         Log.v("Removed Item", "Removed an item from item list");
+    }
+
+    /**
+     * Delete the item from the Database
+     * @param deletedItem the item to be deleted
+     */
+    public void remove(Item deletedItem) {
+        for (int i = 0; i < this.items.size(); i++) {
+            if (Objects.equals(this.items.get(i).getDocID(), deletedItem.getDocID())) {
+                this.remove(i);
+            }
+        }
+        updateUI();
     }
 
     public void updateUI() {
