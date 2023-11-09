@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.Account;
+import com.example.sigma_blue.AccountList;
 import com.example.sigma_blue.BaseActivity;
 import com.example.sigma_blue.DatabaseInitializer;
 import com.example.sigma_blue.FragmentLauncher;
@@ -83,6 +84,7 @@ public class DebuggingActivity extends BaseActivity {
     private DatabaseInitializer dbInit;
     private final Account testAccount2= new Account("Watrina 2",
             "dsiaflk1j");
+    private AccountList accList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,7 @@ public class DebuggingActivity extends BaseActivity {
         /* Setting up the data. TODO: Make this use the database */
         itemList = ItemList.newInstance(testAccount2, v -> {});
         itemList.setSummaryView(viewHolder.summaryView);
+        accList = AccountList.newInstance();
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */

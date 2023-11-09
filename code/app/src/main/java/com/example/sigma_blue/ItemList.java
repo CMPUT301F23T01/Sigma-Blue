@@ -3,7 +3,10 @@ package com.example.sigma_blue;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -141,12 +144,31 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         adapter.updateSumView(sumValues.apply(items));
     }
 
+    /**
+     * Method that will just return an Item List implementation
+     * @param q is a QuerySnapshot that is being converted into a list.
+     * @return a list of items.
+     */
+    @Override
+    public List<Item> loadArray(QuerySnapshot q) {
+        return ItemDB.loadArray(q, v -> {
+            return Item.newInstance(
+                    v.getString("NAME"),
+                    new Date(),    // TODO: Work on unifying date
+                    v.getString("MAKE"),
+                    v.getString("MODEL"),
+                    Float.parseFloat(v.getString("VALUE"))
+            );
+        });
+    }
+
     public void setDatabaseHandler(final ItemDB dbH) {
         this.dbHandler = dbH;
     }
 
     public void startListening() {
-        dbHandler.startListening(this);
+        dbHandler.startListening(this.dbHandler.getCollectionReference(),
+                this);
     }
 
     public void setAdapter(final ItemListAdapter adapter) {
