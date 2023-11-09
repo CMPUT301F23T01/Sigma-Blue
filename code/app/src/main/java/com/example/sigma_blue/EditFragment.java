@@ -167,7 +167,6 @@ public class EditFragment extends Fragment
                     bundle.putString("id", oldItemID);
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
                 }
-
             }
         });
     }
