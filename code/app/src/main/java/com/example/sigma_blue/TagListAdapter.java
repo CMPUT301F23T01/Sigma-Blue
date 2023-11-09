@@ -18,7 +18,6 @@ import java.util.List;
 
 public class TagListAdapter extends ArrayAdapter<Tag> {
 
-
     /* Attributes */
     private ArrayList<Tag> tagsData;
     private Context context;
@@ -30,17 +29,17 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
      * @param tagsData an ArrayList of Tags, containing the tags for each item.
      * @return a TagListAdapter object that has been instantiated.
      */
-    public static TagListAdapter newInstance(Context context, ArrayList<Tag> tagsData) {
-        return new TagListAdapter(context, tagsData);
+    public static TagListAdapter newInstance(ArrayList<Tag> tagsData, Context context) {
+        return new TagListAdapter(tagsData, context);
     }
 
     /**
      * Basic constructor that takes in the TagList that will be adapted to a list view.
      *
      * @param context the Context of the calling fragment or activity that the adapter is linked to.
-     * @param tagsData the ArrayList that we will display on lists through this adapter.
+     * @param tagsData the ArrayList providing the tag data that we will display with this adapter.
      */
-    public TagListAdapter(Context context, ArrayList<Tag> tagsData) {
+    public TagListAdapter(ArrayList<Tag> tagsData, Context context) {
         super(context, 0, tagsData);
         this.context = context;
         this.tagsData = tagsData;
@@ -57,10 +56,11 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
 
         Tag tag = tagsData.get(position);
         TextView tagTitle = view.findViewById(R.id.tagName);
-        View tagColor = view.findViewById(R.id.tagColor);
+
+        // View tagColor = view.findViewById(R.id.tagColor);
 
         tagTitle.setText(tag.getTagText());
-        tagColor.setBackgroundColor(Color.parseColor("#" + tag.getColour()));
+        // tagColor.setBackgroundColor(Color.parseColor("#" + tag.getColour()));
 
         return view;
     }

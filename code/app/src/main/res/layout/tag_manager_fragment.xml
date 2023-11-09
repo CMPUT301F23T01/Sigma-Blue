@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    tools:context=".TagManagerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutTitle"
@@ -20,7 +19,7 @@
 
         <TextView
             android:id="@+id/tagManagerTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center|center_vertical"
             android:text="@string/tag_manager_label"
@@ -33,7 +32,7 @@
 
         <Button
             android:id="@+id/tagManageEditButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/add_edit_btn_bgr_test"
             android:scaleX="0.9"
@@ -47,12 +46,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="48dp"
         android:foregroundGravity="fill_horizontal|center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +58,8 @@
         <ListView
             android:id="@+id/tagManagerListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="visible" />
 
     </androidx.cardview.widget.CardView>
 

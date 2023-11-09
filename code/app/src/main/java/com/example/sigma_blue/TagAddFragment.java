@@ -14,11 +14,12 @@ import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Fragment for adding new tags.
  */
-public class TagAddFragment extends DialogFragment {
+public class TagAddFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
     private TagAddFragment.OnFragmentInteractionListener listener;
 
@@ -58,7 +59,7 @@ public class TagAddFragment extends DialogFragment {
         // It might also be nice to have the color picker remember the last pick.
 
         backButton.setOnClickListener(v -> {
-            getDialog().dismiss();
+            getActivity().onBackPressed();
         });
 
         confirmButton.setOnClickListener(v -> {
@@ -66,9 +67,9 @@ public class TagAddFragment extends DialogFragment {
             // NOTE for now, we will use the default color that is provided in the fragment.
 
             // TODO Add tag to list, through the activity/fragment that calls this fragment.
-            listener.addToTagList(new Tag(tagName, tagColor));
+            // listener.addToTagList(new Tag(tagName, tagColor));
 
-            getDialog().dismiss();
+            getActivity().onBackPressed();
 
         });
 

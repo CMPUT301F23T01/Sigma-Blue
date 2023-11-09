@@ -14,11 +14,12 @@ import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Fragment for editing existing tags.
  */
-public class TagEditFragment extends DialogFragment {
+public class TagEditFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
     private Tag tag;
     private TagEditFragment.OnFragmentInteractionListener listener;
@@ -66,7 +67,7 @@ public class TagEditFragment extends DialogFragment {
 
         backButton.setOnClickListener(v -> {
             // exit fragment?
-            getDialog().dismiss();
+            getActivity().onBackPressed();
         });
 
         confirmButton.setOnClickListener(v -> {
@@ -76,7 +77,7 @@ public class TagEditFragment extends DialogFragment {
             // TODO Edit the existing tag, through the activity/fragment that calls this fragment.
             listener.editExistingTag(tagName, tagColour);
 
-            getDialog().dismiss();
+            getActivity().onBackPressed();
 
         });
 

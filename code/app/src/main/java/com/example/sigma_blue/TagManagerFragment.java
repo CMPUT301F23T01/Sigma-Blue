@@ -1,5 +1,7 @@
 package com.example.sigma_blue;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,66 +9,110 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sigma_blue.databinding.TagManagerFragmentBinding;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class TagManagerFragment extends DialogFragment {
+public class TagManagerFragment extends Fragment {
     private ArrayList<Tag> tagsData;
     private FragmentLauncher fragmentLauncher;
     private TagAddFragment tagAddFragment;
     private TagEditFragment tagEditFragment;
     public TagListAdapter tagListAdapter;
 
-    // Fragment components
-    Button tagCreateButton;
-    Button tagEditButton;
-    Button backButton;
-    Button confirmButton;
+    // Fragment binding
+    private TagManagerFragmentBinding binding;
 
+    // Fragment UI components
+    private Button tagCreateButton;
+    private Button tagEditButton;
+    private Button backButton;
+    private Button confirmButton;
+    private ListView tagsListView;
 
+    public TagManagerFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = TagManagerFragmentBinding.inflate(inflater, container, false);
+
+        // Bind the UI components
+        tagCreateButton = binding.getRoot().findViewById(R.id.tagManageCreateButton);
+        tagEditButton = binding.getRoot().findViewById(R.id.tagManageEditButton);
+        backButton = binding.getRoot().findViewById(R.id.tagManageBackButton);
+        confirmButton = binding.getRoot().findViewById(R.id.tagManageConfirmButton);
+        tagsListView = binding.getRoot().findViewById(R.id.tagManagerListView);
+
+        return binding.getRoot();
+    }
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
 
-        if (getArguments() != null) {
-            tagsData = (ArrayList<Tag>) getArguments().getSerializable(EditFragment.ARG_TAGS);
-        }
-        // to go to a new fragment example:
-        // NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+        // Obtain the context
+        Context context = getContext();
 
-        fragmentLauncher = FragmentLauncher.newInstance(this);
-        // TODO Look into multiple item selection for the tag manager.
-        tagListAdapter = TagListAdapter.newInstance(getContext(), tagsData);
+        // Set tag details for the Bundle, if applicable
+        if (getArguments() != null) {
+            tagsData = (ArrayList<Tag>) getArguments().getSerializable(
+                    EditFragment.ARG_TAGS
+            );
+        }
+
+        tagListAdapter = TagListAdapter.newInstance(tagsData, context);
+        tagsListView.setAdapter(tagListAdapter);
+
+        tagsData.add(new Tag("Testo", Color.parseColor("#FF0000")));
+
+
+
+        /* Link the adapter to the UI */
+
+
+
 
         /* On click listeners */
+        // Direct user to go to a new tag
         tagCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_tagAddFragment);
+            }
+        });
 
+        // TODO Implement data passing through fragments!
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
             }
         });
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = getView();
-
-        // Linking the UI components.
-        tagCreateButton = view.findViewById(R.id.tagManageCreateButton);
-        tagEditButton = view.findViewById(R.id.tagManageEditButton);
-        backButton = view.findViewById(R.id.tagManageBackButton);
-        confirmButton = view.findViewById(R.id.tagManageConfirmButton);
-
-        return inflater.inflate(R.layout.tag_manager_fragment, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
