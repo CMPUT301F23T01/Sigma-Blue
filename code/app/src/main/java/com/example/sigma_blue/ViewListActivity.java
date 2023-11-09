@@ -148,9 +148,11 @@ public class ViewListActivity extends BaseActivity {
         //Item testItem = new Item("ThinkPad", new Date(), "Nice UNIX book","", "IBM", "T460", 300f);
         Item updatedItem = null;
         String updatedItemID = null;
+        boolean onDeletion = false;
         try {
             updatedItem = (Item) extras.getSerializable("item");
             updatedItemID = extras.getString("id");
+            onDeletion = extras.getBoolean("onDeletion");
         } catch (NullPointerException e) {
             Log.e("DEBUG", "New intent without extras!");
         }
@@ -160,7 +162,9 @@ public class ViewListActivity extends BaseActivity {
             return;
         }
 
-        if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
+        if (onDeletion) {
+            this.itemList.remove(updatedItem);
+        } else if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
             this.itemList.add(updatedItem);
         } else {
             this.itemList.updateItem(updatedItem, updatedItemID);
