@@ -1,7 +1,9 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -138,7 +140,18 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                if (Objects.equals(newItemFlag, "add")){
+                    Intent i = new Intent(getActivity(), ViewListActivity.class);
+
+                    getActivity().setResult(Activity.RESULT_OK, i);
+                    getActivity().finish();
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(ARG_ITEM, currentItem);
+                    bundle.putString("id", oldItemID);
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                }
+
             }
         });
 

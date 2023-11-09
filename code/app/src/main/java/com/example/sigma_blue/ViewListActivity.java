@@ -154,7 +154,7 @@ public class ViewListActivity extends BaseActivity {
             updatedItemID = extras.getString("id");
             onDeletion = extras.getBoolean("onDeletion");
         } catch (NullPointerException e) {
-            Log.e("DEBUG", "New intent without extras!");
+            Log.e("DEBUG", "New intent without extras! (canceling add an item)");
         }
 
         if (updatedItem == null) {

@@ -101,6 +101,7 @@ public class DetailsFragment extends Fragment
             {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ARG_ITEM, currentItem);
+                bundle.putSerializable("mode", "edit");
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
             }
         });
