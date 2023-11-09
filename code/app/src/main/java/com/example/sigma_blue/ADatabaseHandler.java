@@ -13,7 +13,7 @@ import java.util.function.Function;
  * Interface for the Database interface classes.
  * @param <T> is the Object that is being stored in the database. i.e., Item, Tag
  */
-public abstract class ADatabaseInterface<T> {
+public abstract class ADatabaseHandler<T> {
     /**
      * Generic method for adding a new document to a collection being pointed
      * to.
@@ -30,7 +30,8 @@ public abstract class ADatabaseInterface<T> {
      */
     protected static <T> void addDocument(final CollectionReference cr,
                                        final T item,
-                                       final Function<T, HashMap<String,
+                                       final Function<T,
+                                               HashMap<String,
                                                String>> fn,
                                        final String docID) {
         cr.document(docID).set(fn.apply(item));
@@ -46,7 +47,7 @@ public abstract class ADatabaseInterface<T> {
      * @param <T>   The final object type that is being retrieved. e.g., Item
      *           or Tags.
      */
-    protected static <T> List<T> loadArray(final QuerySnapshot q,
+    public static <T> List<T> loadArray(final QuerySnapshot q,
                                         final Function<QueryDocumentSnapshot,
                                                 T> fn) {
         List<T> list = new ArrayList<>();
@@ -69,5 +70,17 @@ public abstract class ADatabaseInterface<T> {
 
     public abstract void add(final T item);
     public abstract void remove(final T item);
-    public abstract void startListening(final IDatabaseList<T> lst);
+    public abstract CollectionReference getCollectionReference();
+
+    /**
+     * This method adds a listener to a user's item collection.
+     */
+    public void startListening(final CollectionReference cR, final IDatabaseList<T> lst) {
+        cR.addSnapshotListener(
+                (q, e) -> {
+                    if (q != null) {
+                        lst.setList(lst.loadArray(q));
+                        lst.updateUI();
+                    }});
+    }
 }

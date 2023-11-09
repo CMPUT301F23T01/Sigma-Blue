@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * This class handles database handling.
  */
-public class ItemDB extends ADatabaseInterface<Item> {
+public class ItemDB extends ADatabaseHandler<Item> {
 
     private CollectionReference itemsRef;
     private Account account;
@@ -52,29 +52,17 @@ public class ItemDB extends ADatabaseInterface<Item> {
     }
 
     /**
-     * This method adds a listener to a user's item collection.
-     */
-    public void startListening(final IDatabaseList<Item> lst) {
-        itemsRef.addSnapshotListener(
-                (q, e) -> {
-                    if (q != null) {
-                        lst.setList(loadArray(q));
-                        lst.updateUI();
-                    }});
-    }
-
-    /**
      * Method for adding a new item to the database.
      * @param item is an Item object being added to the database.
      */
     public void add(final Item item) {
         addDocument(itemsRef, item, v -> {
             HashMap<String, String> ret = new HashMap<>();
-            ret.put("NAME", item.getName());
-            ret.put("DATE", item.getDate().toString());
-            ret.put("MAKE", item.getMake());
-            ret.put("MODEL", item.getModel());
-            ret.put("VALUE", String.valueOf(item.getValue()));
+            ret.put("NAME", v.getName());
+            ret.put("DATE", v.getDate().toString());
+            ret.put("MAKE", v.getMake());
+            ret.put("MODEL", v.getModel());
+            ret.put("VALUE", String.valueOf(v.getValue()));
             return ret;
         }, item.getDocID());
         Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
@@ -88,24 +76,11 @@ public class ItemDB extends ADatabaseInterface<Item> {
         removeDocument(itemsRef, item);
     }
 
-    /**
-     * Method that will just return an Item List implementation
-     * @param q is a QuerySnapshot that is being converted into a list.
-     * @return a list of items.
-     */
-    private List<Item> loadArray(final QuerySnapshot q) {
-        return loadArray(q, v -> {
-            return Item.newInstance(
-                    v.getString("NAME"),
-                    new Date(),    // TODO: Work on unifying date
-                    v.getString("MAKE"),
-                    v.getString("MODEL"),
-                    Float.parseFloat(v.getString("VALUE"))
-            );
-        });
-    }
-
     public Account getAccount() {
         return this.account;
+    }
+
+    public CollectionReference getCollectionReference() {
+        return this.itemsRef;
     }
 }
