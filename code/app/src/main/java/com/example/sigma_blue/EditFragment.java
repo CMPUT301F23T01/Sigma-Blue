@@ -27,10 +27,10 @@ import java.util.Objects;
 
 public class EditFragment extends Fragment
 {
+    // Fragment key-value pairs received from external fragments
     private static final String ARG_ITEM = "item";
     private static final String ARG_MODE = "mode";
-    // Fragment key-value pairs received from external fragments
-    public static final String ARG_ITEM = "item";
+
     public static final String ARG_TAGS = "tag";
 
     private Item currentItem;

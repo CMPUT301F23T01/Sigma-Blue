@@ -2,6 +2,7 @@ package com.example.sigma_blue;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
     /* Attributes */
     private ArrayList<Tag> tagsData;
     private Context context;
+    private ArrayList<Tag> selectedTags;
 
     /* Factories and Constructors */
 
@@ -43,25 +45,35 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         super(context, 0, tagsData);
         this.context = context;
         this.tagsData = tagsData;
+        this.selectedTags = new ArrayList<Tag>();
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
+        Tag tag = tagsData.get(position);
 
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.tag_row, parent, false);
+
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            view = inflater.inflate(R.layout.tag_row, parent, false);
         }
 
-        Tag tag = tagsData.get(position);
         TextView tagTitle = view.findViewById(R.id.tagName);
+        View tagColor = view.findViewById(R.id.tagColor);
 
-        // View tagColor = view.findViewById(R.id.tagColor);
-
+        tagColor.setBackgroundColor(tag.getColour().toArgb());
         tagTitle.setText(tag.getTagText());
-        // tagColor.setBackgroundColor(Color.parseColor("#" + tag.getColour()));
 
         return view;
     }
+
+    @Override
+    public int getCount() {
+        return tagsData.size();
+    }
+
+
+
 }

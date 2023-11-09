@@ -5,11 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -62,15 +69,13 @@ public class TagManagerFragment extends Fragment {
         confirmButton = binding.getRoot().findViewById(R.id.tagManageConfirmButton);
         tagsListView = binding.getRoot().findViewById(R.id.tagManagerListView);
 
+
         return binding.getRoot();
     }
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-
-        // Obtain the context
-        Context context = getContext();
 
         // Set tag details for the Bundle, if applicable
         if (getArguments() != null) {
@@ -79,15 +84,13 @@ public class TagManagerFragment extends Fragment {
             );
         }
 
-        tagListAdapter = TagListAdapter.newInstance(tagsData, context);
-        tagsListView.setAdapter(tagListAdapter);
-
         tagsData.add(new Tag("Testo", Color.parseColor("#FF0000")));
-
-
+        tagsData.add(new Tag("Testo2", Color.parseColor("#FF0000")));
 
         /* Link the adapter to the UI */
-
+        tagListAdapter = TagListAdapter.newInstance(tagsData, getContext());
+        tagsListView.setAdapter(tagListAdapter);
+        tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
 
 
@@ -114,5 +117,9 @@ public class TagManagerFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void updateTagListView() {
+        tagListAdapter.notifyDataSetChanged();
     }
 }
