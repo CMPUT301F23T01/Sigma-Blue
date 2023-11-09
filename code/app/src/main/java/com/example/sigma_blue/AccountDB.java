@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * This class handles databse handling for accounts
+ * Handles database interactions for each account.
  */
 public class AccountDB extends ADatabaseHandler<Account> {
 
@@ -32,7 +32,7 @@ public class AccountDB extends ADatabaseHandler<Account> {
     }
 
     /**
-     * Constructor for AccountDB
+     * Constructor for AccountDB. Links Firestore instance to the class itself.
      */
     private AccountDB() {
         accountPointer = FirebaseFirestore.getInstance()
@@ -40,7 +40,7 @@ public class AccountDB extends ADatabaseHandler<Account> {
     }
 
     /**
-     * Method for adding a new account to the database
+     * Adds a new account to the database.
      * @param item is an Account object that is being added
      */
     @Override
@@ -49,7 +49,7 @@ public class AccountDB extends ADatabaseHandler<Account> {
     }
 
     /**
-     * Method for removing an existing account from the database
+     * Removes an existing account from the database.
      * @param item is the Account object to be removed
      */
     @Override
