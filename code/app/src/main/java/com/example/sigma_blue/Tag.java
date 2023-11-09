@@ -8,10 +8,12 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * Stores information about a single tag.
  */
-public class Tag implements Comparable<Tag> {
+public class Tag implements Comparable<Tag>, Serializable {
     private String tagText;
     private Color colour;
     private boolean isChecked = false; // For the TagManager.
@@ -24,14 +26,6 @@ public class Tag implements Comparable<Tag> {
     public Tag(String tagText, Color colour) {
         this.tagText = tagText;
         this.colour = colour;
-    }
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
     }
 
     public String getTagText() {

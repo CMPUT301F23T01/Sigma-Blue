@@ -17,17 +17,16 @@ import android.widget.EditText;
 
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class EditFragment extends Fragment
 {
     // Fragment key-value pairs received from external fragments
-    private static final String ARG_ITEM = "item";
+    public static final String ARG_ITEM = "item";
+    public static final String ARG_TAGS = "tag";
 
     private Item currentItem;
     private String oldItemID;
@@ -152,6 +151,19 @@ public class EditFragment extends Fragment
             public void onClick(View view)
             {
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+            }
+        });
+
+        view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
+                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+
             }
         });
 

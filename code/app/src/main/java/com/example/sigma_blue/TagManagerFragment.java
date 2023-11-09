@@ -10,16 +10,25 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class TagManagerFragment extends DialogFragment {
-    private TagList tagsData;
+    private ArrayList<Tag> tagsData;
     private FragmentLauncher fragmentLauncher;
-    private RecyclerView tagRecyclerView;
+    private TagAddFragment tagAddFragment;
+    private TagEditFragment tagEditFragment;
     public TagListAdapter tagListAdapter;
 
-    private TagListAdapter.RecyclerViewHolder viewHolder;
+    // Fragment components
+    Button tagCreateButton;
+    Button tagEditButton;
+    Button backButton;
+    Button confirmButton;
 
 
     @Override
@@ -27,30 +36,37 @@ public class TagManagerFragment extends DialogFragment {
 
         super.onViewCreated(view, savedInstanceState);
 
+        if (getArguments() != null) {
+            tagsData = (ArrayList<Tag>) getArguments().getSerializable(EditFragment.ARG_TAGS);
+        }
+        // to go to a new fragment example:
+        // NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+
         fragmentLauncher = FragmentLauncher.newInstance(this);
-
         // TODO Look into multiple item selection for the tag manager.
-
-        TagDB dummyTagDB = new TagDB();
-        tagsData = new TagList(dummyTagDB);
-        Tag dt = new Tag("Graphics card", Color.parseColor("#ff0000"));
-        tagsData.addTag(dt);
-        Tag dt2 = new Tag("Graphics card", Color.parseColor("#ff0000"));
-        tagsData.addTag(dt2);
-
         tagListAdapter = TagListAdapter.newInstance(getContext(), tagsData);
 
-        tagRecyclerView = view.findViewById(R.id.tagManageRecyclerView);
-        tagRecyclerView.setHasFixedSize(true);
+        /* On click listeners */
+        tagCreateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        tagRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        tagRecyclerView.setAdapter(tagListAdapter);
+            }
+        });
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        View view = getView();
+
+        // Linking the UI components.
+        tagCreateButton = view.findViewById(R.id.tagManageCreateButton);
+        tagEditButton = view.findViewById(R.id.tagManageEditButton);
+        backButton = view.findViewById(R.id.tagManageBackButton);
+        confirmButton = view.findViewById(R.id.tagManageConfirmButton);
+
         return inflater.inflate(R.layout.tag_manager_fragment, container, false);
     }
 }

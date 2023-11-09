@@ -1,11 +1,12 @@
 package com.example.sigma_blue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Keeps track of a list of tags. Also allows for sync to the DB (well in the future...)
+ * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
-public class TagList implements IAdaptable<Tag> {
+public class TagList implements Serializable {
     private ArrayList<Tag> tags;
     final private TagDB tagDB;
 
@@ -40,13 +41,7 @@ public class TagList implements IAdaptable<Tag> {
 
     public int getCount() { return tags.size(); }
 
-    @Override
     public Tag getItem(int position) {
         return tags.get(position);
-    }
-
-    @Override
-    public int getItemId(int position) {
-        return position;
     }
 }
