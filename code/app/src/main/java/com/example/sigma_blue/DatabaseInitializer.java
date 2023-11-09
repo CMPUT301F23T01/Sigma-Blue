@@ -44,6 +44,10 @@ public class DatabaseInitializer {
        return this.exists;
     }
 
+    /**
+     * Method for generating file structure for an account
+     * @param a is the Account object connected to the generating file structure
+     */
     public void generateFileStructure(final Account a) {
         HashMap<String, String> entry = documentOfAccount(a);
         dbRef.document(a.getUsername())
@@ -52,6 +56,11 @@ public class DatabaseInitializer {
                 .set(entry);
     }
 
+    /**
+     * Method for creating document for an account
+     * @param a is the Account object whose document is being made
+     * @return doc is the document that was made, of type HashMap<String, String>
+     */
     public HashMap<String, String> documentOfAccount(final Account a) {
         HashMap<String, String> doc = new HashMap<>();
         doc.put("USERNAME", a.getUsername());
