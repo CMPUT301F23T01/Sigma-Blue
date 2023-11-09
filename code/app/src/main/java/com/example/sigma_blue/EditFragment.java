@@ -29,6 +29,8 @@ public class EditFragment extends Fragment
 {
     private static final String ARG_ITEM = "item";
     private static final String ARG_MODE = "mode";
+    public static final String ARG_TAGS = "tag";
+
     private Item currentItem;
     private String oldItemID;
     private String newItemFlag;
@@ -142,6 +144,19 @@ public class EditFragment extends Fragment
             }
         });
 
+        view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
+//                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+
+            }
+        });
+
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -167,6 +182,7 @@ public class EditFragment extends Fragment
                     bundle.putString("id", oldItemID);
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
                 }
+
             }
         });
     }
