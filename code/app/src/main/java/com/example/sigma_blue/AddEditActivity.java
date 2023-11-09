@@ -6,17 +6,25 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+
+import java.util.Objects;
 
 public class AddEditActivity extends AppCompatActivity
 {
+    // TODO: Add these modes to a global enum file
     private static final String ARG_ITEM = "item"; // item key accessor
-    Bundle bundledItem; // item to add/edit
+    private static final String ARG_MODE = "mode";
+    private Bundle bundledItem; // item to add/edit
+    private String newItemFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         // Set xml view
         setContentView(R.layout.add_edit_activity);
 
@@ -24,28 +32,28 @@ public class AddEditActivity extends AppCompatActivity
         if (savedInstanceState == null)
         {
             bundledItem = getIntent().getExtras();
+            newItemFlag = bundledItem.getString(ARG_MODE);
         }
         else
         {
             bundledItem = savedInstanceState;
+            newItemFlag = bundledItem.getString(ARG_MODE);
         }
 
         // Setup nav controller
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);
-        navController.setGraph(R.navigation.nav_graph, bundledItem);
+        NavGraph graph = navController.getNavInflater().inflate(R.navigation.nav_graph);
+        if (Objects.equals(newItemFlag, "add"))
+        {
+            graph.setStartDestination(R.id.editFragment);
+        }
+        else
+        {
+            graph.setStartDestination(R.id.detailsFragment);
+        }
+        navController.setGraph(graph, bundledItem);
     }
 
-//    @Override
-//    protected void onDestroy()
-//    {
-//        super.onDestroy();
-//
-//        // Get bundled item from fragment and pass it to ViewList
-//        bundledItem = getIntent().getExtras();
-//        Intent intent = new Intent(AddEditActivity.this, ViewListActivity.class);
-//        intent.putExtra(ARG_ITEM, bundledItem);
-//        setResult(Activity.RESULT_OK, intent);
-//    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
