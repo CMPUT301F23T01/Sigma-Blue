@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.test.espresso:espresso-contrib:3.5.1")
+    //implementation("androidx.test.espresso:espresso-contrib:3.5.1")
     val nav_version = "2.7.5"
 
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -43,12 +43,14 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-    testImplementation("junit:junit:4.13.2")
+    //testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
 
     constraints {
@@ -58,5 +60,6 @@ dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
+        implementation("com.google.protobuf:protobuf-lite:3.0.1")
     }
 }
