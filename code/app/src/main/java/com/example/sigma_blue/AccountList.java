@@ -17,22 +17,38 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
     private List<Account> accList;
     private AccountDB accountDB;
 
+    /**
+     * newInstance method to hide construction
+     * @return a new AccountList instance
+     */
     public static AccountList newInstance() {
         return new AccountList();
     }
 
     // placholder for now
+    /**
+     * Constructor for an AccountList
+     */
     public AccountList() {
         accList = new ArrayList<Account>();
         accountDB = AccountDB.newInstance();
         startListening();
     }
 
+    /**
+     * Method for adding an account to the AccountList
+     * @param account is the Account object to be added
+     */
     public void add(Account account) {
         accList.add(account);
         this.accountDB.add(account);
     }
 
+    /**
+     * Method for checking if a given Account object exists in the AccountList
+     * @param account is the Account object we are checking for existance in AccountList
+     * @return match is a boolean that returns true if the account is contained in the list, and false if not
+     */
     public boolean contains(Account account) {
         if (accList == null) {
             Log.w("DEBUG", "Checking null accounts list");

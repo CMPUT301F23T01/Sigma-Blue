@@ -1,7 +1,9 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Class for handling fragment for editing an Item objects values
+ */
 public class EditFragment extends Fragment
 {
     private static final String ARG_ITEM = "item";
@@ -48,10 +53,16 @@ public class EditFragment extends Fragment
     private ArrayList<EditText> editTextList;
     private int mDay, mMonth, mYear;
 
+    /**
+     * Required empty public constructor
+     */
     public EditFragment() {
-        // Required empty public constructor
     }
 
+    /**
+     * Method to create the activity
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -68,6 +79,12 @@ public class EditFragment extends Fragment
         }
     }
 
+    /**
+     * Method to inflate layout of fragment and bind components
+     * @param inflater is the LayoutInflater that is going to inflate for the fragment
+     * @param container is a ViewGroup of the views for the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,6 +105,11 @@ public class EditFragment extends Fragment
         return binding.getRoot();
     }
 
+    /**
+     * Method to set details of item in fragment and handle button interactions
+     * @param view is the View of the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
@@ -138,7 +160,18 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                if (Objects.equals(newItemFlag, "add")){
+                    Intent i = new Intent(getActivity(), ViewListActivity.class);
+
+                    getActivity().setResult(Activity.RESULT_OK, i);
+                    getActivity().finish();
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(ARG_ITEM, currentItem);
+                    bundle.putString("id", oldItemID);
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                }
+
             }
         });
 
@@ -172,6 +205,9 @@ public class EditFragment extends Fragment
         });
     }
 
+    /**
+     * Method for destroying fragment
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
