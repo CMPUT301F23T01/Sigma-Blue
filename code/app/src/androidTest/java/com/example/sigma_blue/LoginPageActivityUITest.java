@@ -7,6 +7,7 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -49,10 +50,53 @@ public class LoginPageActivityUITest {
 
     /**
      * As a user, I want a profile with a unique username.
+     * Check if a invalid account gets denied
      */
     @Test
     public void check_login_US_06_01_01() {
-        
+        onView(withId(R.id.loginButton)).perform(click());
+        onView(withId(R.id.usernameEditText)).perform(ViewActions.typeText("Temp_User"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.passwordEditText)).perform(ViewActions.typeText("password"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withText("LOGIN"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click());
+        // shouldn't be able to login with a bad account
+        onView(withText("Login")).check(matches(isDisplayed()));
+        onView(withText("Incorrect Username or Password")).check(matches(isDisplayed()));
+    }
+    /**
+     * As a user, I want a profile with a unique username.
+     * Try making a new account and logging in with it
+     */
+    @Test
+    public void check_login_US_06_01_02() {
+        onView(withId(R.id.createAccButton)).perform(click());
+        onView(withId(R.id.usernameEditText)).perform(ViewActions.typeText("Temp_User"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.passwordEditText)).perform(ViewActions.typeText("p"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withText("CONFIRM"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        // login with new account
+        onView(withId(R.id.loginButton)).perform(click());
+        onView(withId(R.id.usernameEditText)).perform(ViewActions.typeText("Temp_User"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.passwordEditText)).perform(ViewActions.typeText("password"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withText("LOGIN"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        // check if on the list page
+        onView(withText("SEARCH")).check(matches(isDisplayed()));
+        onView(withText("OPTIONS")).check(matches(isDisplayed()));
     }
     @After
     public void tearDown() {
