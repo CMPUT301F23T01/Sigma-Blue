@@ -23,36 +23,29 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class EditFragment extends Fragment
 {
-    // Fragment key-value pairs received from external fragments
     private static final String ARG_ITEM = "item";
-
+    private static final String ARG_MODE = "mode";
     private Item currentItem;
     private String oldItemID;
-//    private String mName = " ";
-//    private float mValue = 0f;
-//    private Date mDate = new Date();
-//    private String mMake = " ";
-//    private String mModel = " ";
-//    private String mSerial = " ";
-//    private String mDescription = " ";
-//    private String mComment = " ";
+    private String newItemFlag;
 
     // Fragment binding
     private EditFragmentBinding binding;
 
     // Fragment ui components
-    EditText textName;
-    EditText textValue;
-    EditText textDate;
-    EditText textMake;
-    EditText textModel;
-    EditText textSerial;
-    EditText textDescription;
-    EditText textComment;
-    ArrayList<EditText> editTextList;
+    private EditText textName;
+    private EditText textValue;
+    private EditText textDate;
+    private EditText textMake;
+    private EditText textModel;
+    private EditText textSerial;
+    private EditText textDescription;
+    private EditText textComment;
+    private ArrayList<EditText> editTextList;
     private int mDay, mMonth, mYear;
 
     public EditFragment() {
@@ -65,21 +58,13 @@ public class EditFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         // Load item from bundle
+        currentItem = new Item();
+        newItemFlag = "edit";
         if (getArguments() != null)
         {
             currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
             oldItemID = currentItem.getDocID();
-            if (currentItem != null)
-            {
-//                mName = currentItem.getName();
-//                mValue = currentItem.getValue();
-//                mDate = currentItem.getDate();
-//                mMake = currentItem.getMake();
-//                mModel = currentItem.getModel();
-//                mSerial = currentItem.getSerialNumber();
-//                mDescription = currentItem.getDescription();
-//                mComment = currentItem.getComment();
-            }
+            newItemFlag = (String)getArguments().getSerializable(ARG_MODE);
         }
     }
 
@@ -109,17 +94,19 @@ public class EditFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         // set item details from bundle
-        textName.setText(currentItem.getName());
-        textValue.setText(String.valueOf(currentItem.getValue()));
-        textDate.setText(currentItem.getDate().toString());
-        textMake.setText(currentItem.getMake());
-        textModel.setText(currentItem.getModel());
-        textSerial.setText(currentItem.getSerialNumber());
-        textDescription.setText(currentItem.getDescription());
-        textComment.setText(currentItem.getComment());
+        if (Objects.equals(newItemFlag, "edit"))
+        {
+            textName.setText(currentItem.getName());
+            textValue.setText(String.valueOf(currentItem.getValue()));
+            textDate.setText(currentItem.getDate().toString());
+            textMake.setText(currentItem.getMake());
+            textModel.setText(currentItem.getModel());
+            textSerial.setText(currentItem.getSerialNumber());
+            textDescription.setText(currentItem.getDescription());
+            textComment.setText(currentItem.getComment());
+        }
 
         Context context = this.getContext();
-
         textDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -134,7 +121,6 @@ public class EditFragment extends Fragment
                 DatePickerDialog datePickerDialog = new DatePickerDialog(context,
                         new DatePickerDialog.OnDateSetListener()
                         {
-
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
