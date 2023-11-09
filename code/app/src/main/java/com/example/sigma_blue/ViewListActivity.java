@@ -162,10 +162,10 @@ public class ViewListActivity extends BaseActivity {
             return;
         }
 
-        if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
-            this.itemList.add(updatedItem);
-        } else if (onDeletion) {
+        if (onDeletion) {
             this.itemList.remove(updatedItem);
+        } else if (Objects.equals(updatedItemID, "") || updatedItemID == null) {
+            this.itemList.add(updatedItem);
         } else {
             this.itemList.updateItem(updatedItem, updatedItemID);
         }
