@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Stores information about a user account.
  */
-public class Account implements Serializable {
+public class Account implements Serializable, IDatabaseItem<Account> {
     private String username;
     private String password;
 
@@ -63,4 +63,8 @@ public class Account implements Serializable {
         return Objects.equals(this.password, aPassword);
     }
 
+    @Override
+    public String getDocID() {
+        return username;
+    }
 }
