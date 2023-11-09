@@ -149,6 +149,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         this.items.remove(deletedItem);
         updateUI();
     }
+
     public void updateUI() {
         adapter.notifyDataSetChanged();
         adapter.updateSumView(sumValues.apply(items));
