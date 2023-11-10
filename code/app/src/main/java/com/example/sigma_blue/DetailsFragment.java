@@ -24,15 +24,6 @@ import java.text.SimpleDateFormat;
  */
 public class DetailsFragment extends Fragment
 {
-    // Fragment key-value pairs received from external fragments
-    private static final String ARG_ITEM = "item";
-    private static final String ARG_MODE = "mode";
-    private static final String ARG_ID = "id";
-
-//    private Item currentItem;
-    private String mode;
-    private String oldItemID;
-
     // Fragment binding
     private DetailsFragmentBinding binding;
 
@@ -60,25 +51,6 @@ public class DetailsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        // Load item from bundle
-//        currentItem = new Item();
-//        mode = "edit";
-//        if (getArguments() != null)
-//        {
-//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-//            mode = getArguments().getSerializable(ARG_MODE);
-//            oldItemID = getArguments().getString("id");
-//        }
-
-        // Access item from parent activities ViewModel
-//        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
-//        sharedVM.getItem().observe(requireActivity(), item -> {
-//            Log.e("DEBUG","after: " + item.getName());
-//            Log.e("DEBUG", "kys");
-////            currentItem = item;
-//        });
-
     }
 
     /**
@@ -116,6 +88,7 @@ public class DetailsFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        final AddEditActivity activity = (AddEditActivity) getActivity();
 
         // Access item from parent activities ViewModel
         AddEditViewModel sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
@@ -137,22 +110,16 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(ARG_ITEM, currentItem);
-//                bundle.putString(ARG_MODE, mode);
-//                NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
 
         view.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ViewListActivity.class);
-                i.putExtra(ARG_ITEM, currentItem);
-                i.putExtra("onDeletion", true);
-                getActivity().setResult(Activity.RESULT_OK, i);
-                getActivity().finish();
+            public void onClick(View v)
+            {
+                sharedVM.setDeleteFlag(true);
+                activity.returnAndClose();
             }
         });
 
@@ -161,11 +128,7 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent(getActivity(), ViewListActivity.class);
-                i.putExtra(ARG_ITEM, currentItem);
-                i.putExtra(ARG_ID, sharedVM.getId().getValue());
-                getActivity().setResult(Activity.RESULT_OK, i);
-                getActivity().finish();
+                activity.returnAndClose();
             }
         });
     }
