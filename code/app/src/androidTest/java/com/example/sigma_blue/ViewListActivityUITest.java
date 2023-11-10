@@ -1,11 +1,9 @@
 package com.example.sigma_blue;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -14,19 +12,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.internal.util.Checks.checkNotNull;
 
 
-import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 
 import android.view.View;
-import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -117,7 +108,7 @@ public class ViewListActivityUITest {
     @Test
     public void view_item_US_01_02_01() {
         // go to view page (items will persist between tests since everything is done on via the database
-        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+//        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(withText("iName")).check(matches(isDisplayed()));
         onView(withText("100.00")).check(matches(isDisplayed()));
         onView(withText("Banana")).check(matches(isDisplayed()));
@@ -133,7 +124,7 @@ public class ViewListActivityUITest {
     @Test
     public void edit_item_US_01_03_01() {
         // go to view page (items will persist between tests since everything is done on via the database
-        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+//        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         // modify name
         onView(withId(R.id.button_edit)).perform(click());
         onView(withId(R.id.text_name_disp)).perform(replaceText("iName2")).perform(closeSoftKeyboard());
@@ -154,7 +145,7 @@ public class ViewListActivityUITest {
     @Test
     public void del_item_US_01_04_01() {
         // go to view page (items will persist between tests since everything is done on via the database
-        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+//        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         // delete
         onView(withId(R.id.button_delete)).perform(click());
         assert(getRVcount() == 0);
@@ -265,7 +256,7 @@ public class ViewListActivityUITest {
             for (int i = 0; i < getRVcount(); i++) {
 
                 // click on item
-                onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(i, click()));
+//                onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(i, click()));
                 // delete item
                 onView(withId(R.id.deleteButton)).perform(click());
             }

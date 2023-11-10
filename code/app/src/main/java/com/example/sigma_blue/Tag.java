@@ -74,6 +74,11 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
         return (this.tagText+Integer.toHexString(colour.toArgb())).hashCode();
     }
 
+    /**
+     * Equals
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
