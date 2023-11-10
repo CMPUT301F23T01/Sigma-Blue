@@ -33,19 +33,21 @@ android {
 }
 
 dependencies {
+    //implementation("androidx.test.espresso:espresso-contrib:3.5.1")
     val nav_version = "2.7.5"
     val mockitoVersion = "4.11.x"
     val mockkVersion = "4.11.x"
 
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+
 
     androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -63,6 +65,8 @@ dependencies {
 
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
 
     constraints {
@@ -72,5 +76,6 @@ dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
+        implementation("com.google.protobuf:protobuf-lite:3.0.1")
     }
 }

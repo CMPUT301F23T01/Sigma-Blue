@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * Stores information about a single tag.
@@ -16,6 +18,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     private String tagText;
     private Color colour;
     private boolean isChecked = false; // For the TagManager.
+    public static final String LABEL = "LABEL", COLOR = "COLOR";
 
     public Tag(String tagText, int colour) {
         this.tagText = tagText;
@@ -38,6 +41,13 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     public Color getColour() {
         return colour;
     }
+
+    public static final Function<Tag, HashMap<String, String>> hashMapOfTag = t -> {
+        HashMap<String, String> ret = new HashMap<>();
+        ret.put(LABEL, t.getTagText());
+        ret.put(COLOR, t.getColourString());
+        return ret;
+    };
 
     public void setColour(Color colour) {
         this.colour = colour;
