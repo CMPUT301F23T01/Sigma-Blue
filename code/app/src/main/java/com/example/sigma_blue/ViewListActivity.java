@@ -1,10 +1,13 @@
 package com.example.sigma_blue;
 
+import static java.util.Objects.isNull;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -145,10 +148,10 @@ public class ViewListActivity extends BaseActivity {
         Log.i("DEBUG", item.getName() + "Sort Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         intent.putExtra("item", item);
+        intent.putExtra("account", currentAccount);
         intent.putExtra("mode", "edit");
         activityLauncher.launch(intent, this::processNewItemResult);
     }
-
 
     /**
      * listened to deal with long presses
@@ -156,19 +159,14 @@ public class ViewListActivity extends BaseActivity {
      */
     private void handleLongClick(Item item) {
         Log.i("DEBUG", item.getName() + "Long Press");
-        if (selectedItems.contains(item)) {
-            selectedItems.remove(item);
-        } else {
-            selectedItems.add(item);
-        }
 
-        if (selectedItems.size() > 0) {
+        if (itemList.getAdapter().getHighlightedItems().size() > 0) {
             viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
         } else {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-
         }
     }
+
     /**
      * Either adds a new item to the list or updates an existing one.
      * @param result result from the AddEditActivity
@@ -202,6 +200,9 @@ public class ViewListActivity extends BaseActivity {
 
     }
 
+    /**
+     * Delete the selected items. Fully deletes them with no confirm
+     */
     private void deleteSelectedItems() {
         for (Item i : this.selectedItems) {
             itemList.remove(i);
@@ -210,6 +211,27 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
+    /**
+     * Updates the tags of highlighted items, given the list of user selected tags
+     * @param result result sent back from activity
+     */
+    private void applyTagResults(ActivityResult result) {
+        Bundle extras = result.getData().getExtras();
+        ArrayList<Tag> tags = null;
+        try {
+            tags = ((Item) extras.getSerializable("item")).getTags();
+        } catch (NullPointerException e) {
+            Log.e("DEBUG", "Apply tags, but no tags returned");
+        }
+
+        if (!isNull(tags)) {
+            for (Tag t : tags) {
+                for (Item i : itemList.getAdapter().getHighlightedItems()) {
+                    i.addTag(t);
+                }
+            }
+        }
+    }
     /* Fragment result listeners are lambda expressions that controls what the class does when the
     * results are received.*/
     FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
@@ -232,6 +254,10 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+            itemList.getAdapter().resetHighlightedItems();
+            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            intent.putExtra("mode", "multi_tag");
+            activityLauncher.launch(intent, this::applyTagResults);
         });
     }
 }

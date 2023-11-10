@@ -34,9 +34,18 @@ import java.util.Objects;
  */
 public class EditFragment extends Fragment
 {
+    // Fragment key-value pairs received from external fragments
+    public static final String ARG_ITEM = "item";
+    public static final String ARG_MODE = "mode";
     public static final String ARG_TAGS = "tag";
 
+    private Item currentItem;
+
     private AddEditViewModel sharedVM;
+
+//    private Item currentItem;
+    private String mode;
+    private String oldItemID;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -163,6 +172,7 @@ public class EditFragment extends Fragment
                 if (Objects.equals(mode, "add"))
                 {
                     // Cancel new item; Return to ViewListActivity
+                    sharedVM.setItem(null); // TODO: fix communication expectations with ViewList
                     activity.returnAndClose();
                 }
                 else
