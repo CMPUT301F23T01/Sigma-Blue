@@ -1,11 +1,8 @@
 package com.example.sigma_blue;
 
-import android.util.Log;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +12,7 @@ import java.util.ArrayList;
 public class TagDB extends ADatabaseHandler<Tag> {
 
     private final Account account;
-    private final CollectionReference accountRef;
+    private final CollectionReference tagRef;
 
     public static TagDB newInstance(Account a) {
         TagDB ret = new TagDB(a);
@@ -29,7 +26,7 @@ public class TagDB extends ADatabaseHandler<Tag> {
      */
     private TagDB(Account a) {
         account = a;
-        accountRef = FirebaseFirestore.getInstance()
+        tagRef = FirebaseFirestore.getInstance()
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
                 .collection(DatabaseNames.TAGS_COLLECTION.getName());
@@ -50,13 +47,22 @@ public class TagDB extends ADatabaseHandler<Tag> {
         return tags;
     };
 
+    /**
+     * Adds a new item to the database
+     * @param item Tag being stored
+     */
     @Override
-    public void add(Tag tag) {
-        // TODO IMPLEMENT THIS ADD METHOD FOR PERSISTENCE
+    public void add(Tag item) {
+        addDocument(tagRef, item, Tag.hashMapOfTag, item.getDocID());
     }
 
+    /**
+     * Removes the specified item from the database
+     * @param item the Tag class
+     */
     @Override
     public void remove(Tag item) {
+        removeDocument(tagRef, item);
     }
 
     /**
@@ -65,7 +71,7 @@ public class TagDB extends ADatabaseHandler<Tag> {
      */
     @Override
     public CollectionReference getCollectionReference() {
-        return this.accountRef;
+        return this.tagRef;
     }
 
     /**
