@@ -1,5 +1,10 @@
 package com.example.sigma_blue;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;

@@ -1,10 +1,13 @@
 package com.example.sigma_blue;
 
+import static java.util.Objects.isNull;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -149,26 +152,20 @@ public class ViewListActivity extends BaseActivity {
         activityLauncher.launch(intent, this::processNewItemResult);
     }
 
-
     /**
      * listened to deal with long presses
      * @param item Item that was long pressed on
      */
     private void handleLongClick(Item item) {
         Log.i("DEBUG", item.getName() + "Long Press");
-        if (selectedItems.contains(item)) {
-            selectedItems.remove(item);
-        } else {
-            selectedItems.add(item);
-        }
 
-        if (selectedItems.size() > 0) {
+        if (itemList.getAdapter().getHighlightedItems().size() > 0) {
             viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
         } else {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-
         }
     }
+
     /**
      * Either adds a new item to the list or updates an existing one.
      * @param result result from the AddEditActivity
@@ -202,6 +199,9 @@ public class ViewListActivity extends BaseActivity {
 
     }
 
+    /**
+     * Delete the selected items. Fully deletes them with no confirm
+     */
     private void deleteSelectedItems() {
         for (Item i : this.selectedItems) {
             itemList.remove(i);
@@ -210,6 +210,23 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
+    private void applyTagResults(ActivityResult result) {
+        Bundle extras = result.getData().getExtras();
+        ArrayList<Parcelable> tags = null;
+        try {
+            tags = extras.getParcelableArrayList("tags");
+        } catch (NullPointerException e) {
+            Log.e("DEBUG", "Apply tags, but no tags returned");
+        }
+
+        if (!isNull(tags)) {
+            for (Parcelable t : tags) {
+                for (Item i : itemList.getAdapter().getHighlightedItems()) {
+                    i.addTag((Tag) t);
+                }
+            }
+        }
+    }
     /* Fragment result listeners are lambda expressions that controls what the class does when the
     * results are received.*/
     FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
@@ -232,6 +249,12 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+            itemList.getAdapter().resetHighlightedItems();
+            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            intent.putExtra("mode", "multi_tag");
+            //activityLauncher.launch(intent, this::applyTagResults);
+
+            //fragmentLauncher.
         });
     }
 }
