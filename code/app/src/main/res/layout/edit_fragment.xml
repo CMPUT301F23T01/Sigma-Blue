@@ -7,7 +7,7 @@
     tools:context=".EditFragment">
 
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/BottomBarLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -319,9 +319,7 @@
         android:background="@color/add_edit_layout_bgr_test"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/BottomBarLayout"
