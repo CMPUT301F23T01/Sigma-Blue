@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#0437F2"
-            android:text="@string/back_button_text"
+            android:text="@string/add_edit_btn_cancel"
             android:textColor="#FFD600" />
     </androidx.cardview.widget.CardView>
 
@@ -256,7 +256,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#0437F2"
-            android:text="@string/confirm_button_text"
+            android:text="@string/tag_manage_confirm_button_text"
             android:textColor="#FFD600"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
