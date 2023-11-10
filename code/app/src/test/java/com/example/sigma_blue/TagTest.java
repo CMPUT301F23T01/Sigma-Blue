@@ -22,13 +22,13 @@ public class TagTest {
         cUT = new Tag("testing", mockColor);
     }
 
+    /* With the way that context works, it's a little useless to do a test with
+    * mocking, since some of the method really relies on the context working */
     @Test
     public void testGetColourString() {
-        String expected = "12712700";
-        Mockito.when(mockColor.alpha()).thenReturn(127f);
-        Mockito.when(mockColor.red()).thenReturn(127f);
-        Mockito.when(mockColor.green()).thenReturn(127f);
-        Mockito.when(mockColor.blue()).thenReturn(127f);
+        String expected = "ff0000ff";
+
+        Mockito.when(mockColor.toArgb()).thenReturn(0xFF0000FF);
 
         assertEquals(expected, cUT.getColourString());
     }

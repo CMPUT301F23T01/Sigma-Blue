@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
@@ -103,6 +104,17 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
                     Integer.valueOf(v.getString("COLOR")));
         });
     }
+
+    /**
+     * Conversion from QueryDocumentSnapshot to Tag objects.
+     */
+    public static final Function<QueryDocumentSnapshot, Tag> tagOfDocument
+            = q -> {
+        if (q.getString("COLOR") != null)
+            return new Tag(q.getString("LABEL"),
+                    Integer.decode(q.getString("COLOR")));
+        else return null;
+    };
 
     /**
      * Sets up a listening thread for changes to the database collection. This

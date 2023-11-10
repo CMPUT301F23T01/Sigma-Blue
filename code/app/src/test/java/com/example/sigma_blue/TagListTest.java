@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import android.graphics.Color;
 
@@ -34,12 +35,19 @@ public class TagListTest {
     @Test
     public void testHashMapOfTag() {
         HashMap<String, String> expected = new HashMap<>();
-        expected.put(TagList.COLOR, "0xFFFF0000");
+        expected.put(TagList.COLOR, "ffff0000");
         expected.put(TagList.LABEL, "Spider");
+
+        Mockito.when(mockColor.toArgb()).thenReturn(0xFFFF0000);
 
         Tag input = new Tag("Spider", mockColor);
 
 
         assertEquals(expected, TagList.hashMapOfTag.apply(input));
+    }
+
+    @Test
+    public void testTagOfDocument() {
+        Tag expected = new Tag("abc", mockColor);
     }
 }
