@@ -15,6 +15,7 @@ import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 /**
  * Fragment for adding new tags.
@@ -66,10 +67,12 @@ public class TagAddFragment extends Fragment {
             String tagName = inputField.getText().toString();
             // NOTE for now, we will use the default color that is provided in the fragment.
 
-            // TODO Add tag to list, through the activity/fragment that calls this fragment.
-            // listener.addToTagList(new Tag(tagName, tagColor));
+            Tag tagToSend = new Tag(tagName, tagColor);
 
-            getActivity().onBackPressed();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(TagManagerFragment.ARG_TAG_ADD, tagToSend);
+
+            NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment, bundle);
 
         });
 

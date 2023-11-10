@@ -38,6 +38,9 @@ public class TagManagerFragment extends Fragment {
 
     // Shared value between parent calling activity and other fragments
     private AddEditViewModel sharedVM;
+
+    // Key for new tags that are being created.
+    public static String ARG_TAG_ADD = "tag_add";
     public TagListAdapter tagListAdapter;
 
     // Fragment binding
@@ -102,7 +105,6 @@ public class TagManagerFragment extends Fragment {
 
 
 
-
         // TODO Link the global TagList to the fragment data itself
         // Tags in tagsData are passed from the current item, if applicable. TAKE THE UNION OF THE TWO.
         sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
@@ -122,6 +124,14 @@ public class TagManagerFragment extends Fragment {
             // The user is applying a selection of tags to multiple Items, we just want to
             // return an ArrayList of Tags that we can apply.
             tagsData = new ArrayList<>();
+        }
+
+        // Get the new Tag object from the TagAddFragment, if applicable.
+        if (getArguments() != null) {
+            Tag freshlyCreatedTag = (Tag) getArguments().getSerializable(ARG_TAG_ADD);
+            if (!tagsData.contains(freshlyCreatedTag) && freshlyCreatedTag != null ) {
+                tagsData.add(freshlyCreatedTag);
+            }
         }
 
         /* Link the adapter to the UI */
@@ -161,7 +171,7 @@ public class TagManagerFragment extends Fragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                updateTagListView();
                 ArrayList<Tag> tagsConfirmed = new ArrayList<>();
                 for (Tag t: tagsData) {
                     if (t.isChecked()) {
@@ -169,10 +179,12 @@ public class TagManagerFragment extends Fragment {
                     }
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(EditFragment.ARG_TAGS, tagsConfirmed);
-                NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
+                currentItem.setTags(tagsConfirmed);
+                //Bundle bundle = new Bundle();
+                //bundle.putSerializable(EditFragment.ARG_TAGS, tagsConfirmed);
+                //NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
 
+                NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
             }
         });
 
