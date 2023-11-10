@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,12 @@ public class ItemListAdapter extends
     public interface OnItemClickListener {
         void onItemClick(Item item);
     }
-    private static OnItemClickListener listener;
+    public interface OnLongClickListener {
+        void onLongClick(Item item);
+    }
+    private static OnItemClickListener clickListener;
+    private static OnLongClickListener longClickListener;
+
 
     /* Caching the views in the adapter. */
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -45,12 +51,26 @@ public class ItemListAdapter extends
          * binds the provided listener to the specific item row. Since ItemList is the class used
          * in activities the listener gets passed in from there
          * @param item Item that will be displayed on a row
-         * @param listener method to call on a click
+         * @param clickListener method to call on a click
+         * @param longClickListener method to call on a long click
          */
-        public void bind(final Item item, final OnItemClickListener listener) {
+        public void bind(final Item item, final OnItemClickListener clickListener, final OnLongClickListener longClickListener) {
+            itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    itemView.setSelected(!itemView.isSelected());
+                    itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
+                    longClickListener.onLongClick(item);
+                    return true;
+                }
+
+            });
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    listener.onItemClick(item);
+                    clickListener.onItemClick(item);
                 }
             });
         }
@@ -70,8 +90,8 @@ public class ItemListAdapter extends
      * @param itemList is an ItemList object that contains the types.
      * @return an ItemListAdapter object that has been instantiated.
      */
-    public static ItemListAdapter newInstance(List<Item> itemList, OnItemClickListener listener) {
-        return new ItemListAdapter(itemList, listener);
+    public static ItemListAdapter newInstance(List<Item> itemList, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
+        return new ItemListAdapter(itemList, itemClickListener, longClickListener);
     }
     public static ItemListAdapter newInstance() {
         return new ItemListAdapter();
@@ -81,9 +101,10 @@ public class ItemListAdapter extends
      * Basic constructor. Takes in the ItemList that will be adapted to a list view.
      * @param items is the ItemList object that will be displayed on lists through this adapter.
      */
-    public ItemListAdapter(List<Item> items, OnItemClickListener listener) {
+    public ItemListAdapter(List<Item> items, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
         this.items = items;
-        this.listener = listener;
+        this.clickListener = itemClickListener;
+        this.longClickListener = longClickListener;
     }
 
     public ItemListAdapter() {
@@ -152,7 +173,7 @@ public class ItemListAdapter extends
         holder.name.setText(item.getName());
         holder.make.setText(item.getMake());
         holder.id.setText(String.valueOf(item.getValue()));
-        holder.bind(item, listener);
+        holder.bind(item, this.clickListener, this.longClickListener);
     }
 
     /**

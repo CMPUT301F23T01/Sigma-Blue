@@ -1,11 +1,14 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
@@ -25,6 +28,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Class for handling fragment for editing an Item objects values
+ */
 public class EditFragment extends Fragment
 {
     // Fragment key-value pairs received from external fragments
@@ -34,8 +40,13 @@ public class EditFragment extends Fragment
     public static final String ARG_TAGS = "tag";
 
     private Item currentItem;
+    public static final String ARG_TAGS = "tag";
+
+    private AddEditViewModel sharedVM;
+
+//    private Item currentItem;
+    private String mode;
     private String oldItemID;
-    private String newItemFlag;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -52,26 +63,38 @@ public class EditFragment extends Fragment
     private ArrayList<EditText> editTextList;
     private int mDay, mMonth, mYear;
 
+    /**
+     * Required empty public constructor
+     */
     public EditFragment() {
-        // Required empty public constructor
     }
 
+    /**
+     * Method to create the activity
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         // Load item from bundle
-        currentItem = new Item();
-        newItemFlag = "edit";
-        if (getArguments() != null)
-        {
-            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            oldItemID = currentItem.getDocID();
-            newItemFlag = (String)getArguments().getSerializable(ARG_MODE);
-        }
+//        currentItem = new Item();
+//        mode = "edit";
+//        if (getArguments() != null)
+//        {
+//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+//            mode = (String)getArguments().getSerializable(ARG_MODE);
+//            oldItemID = currentItem.getDocID();
+//        }
     }
 
+    /**
+     * Method to inflate layout of fragment and bind components
+     * @param inflater is the LayoutInflater that is going to inflate for the fragment
+     * @param container is a ViewGroup of the views for the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,20 +108,30 @@ public class EditFragment extends Fragment
         textDate = binding.getRoot().findViewById(R.id.text_date_disp); editTextList.add(textDate);
         textMake = binding.getRoot().findViewById(R.id.text_make_disp); editTextList.add(textMake);
         textModel = binding.getRoot().findViewById(R.id.text_model_disp); editTextList.add(textModel);
-        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp); editTextList.add(textSerial);
+        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
 
         return binding.getRoot();
     }
 
+    /**
+     * Method to set details of item in fragment and handle button interactions
+     * @param view is the View of the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
-        // set item details from bundle
-        if (Objects.equals(newItemFlag, "edit"))
+        // Access item from parent activities ViewModel
+        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        final Item currentItem = sharedVM.getItem().getValue();
+        final String mode = sharedVM.getMode().getValue();
+
+        // set item details
+        if (Objects.equals(mode, "edit"))
         {
             textName.setText(currentItem.getName());
             textValue.setText(String.valueOf(currentItem.getValue()));
@@ -142,7 +175,30 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                if (Objects.equals(mode, "add"))
+                {
+                    Intent i = new Intent(getActivity(), ViewListActivity.class);
+                    getActivity().setResult(Activity.RESULT_OK, i);
+                    getActivity().finish();
+                }
+                else
+                {
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                }
+            }
+        });
+
+        view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
+//                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
+
             }
         });
 
@@ -166,7 +222,8 @@ public class EditFragment extends Fragment
             {
                 if (verifyText())
                 {
-                    Bundle bundle = new Bundle();
+//                    Bundle bundle = new Bundle();
+//                    Item editItem = new Item();
                     currentItem.setName(textName.getText().toString());
                     currentItem.setValue(Float.parseFloat(textValue.getText().toString()));
                     SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -180,15 +237,23 @@ public class EditFragment extends Fragment
                     currentItem.setSerialNumber(textSerial.getText().toString());
                     currentItem.setDescription(textDescription.getText().toString());
                     currentItem.setComment(textComment.getText().toString());
-                    bundle.putSerializable(ARG_ITEM, currentItem);
-                    bundle.putString("id", oldItemID);
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+//                    bundle.putSerializable(ARG_ITEM, currentItem);
+//                    bundle.putString(ARG_MODE, mode);
+//                    bundle.putString("id", oldItemID);
+//                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                    sharedVM.setItem(currentItem);
+                    sharedVM.setMode("edit");
+                    sharedVM.setDeleteFlag(false);
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
 
             }
         });
     }
 
+    /**
+     * Method for destroying fragment
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

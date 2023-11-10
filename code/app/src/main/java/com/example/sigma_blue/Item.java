@@ -6,6 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Class that stores information about a single item
+ */
 public class Item implements Comparable<Item>, Serializable,
         IDatabaseItem<Item> {
 
@@ -300,6 +303,11 @@ public class Item implements Comparable<Item>, Serializable,
         return false;
     }
 
+    /**
+     * Method that checks if the Item contains a given tag
+     * @param tag is the Tag object we are checking for
+     * @return this.tags.contains((Object)tag) is a boolean that has value true if the Item contains the tag, false if not
+     */
     public boolean hasTag(Tag tag){
         return this.tags.contains((Object)tag);
     }
