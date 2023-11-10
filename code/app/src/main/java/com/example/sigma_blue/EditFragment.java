@@ -172,6 +172,7 @@ public class EditFragment extends Fragment
                 if (Objects.equals(mode, "add"))
                 {
                     // Cancel new item; Return to ViewListActivity
+                    sharedVM.setItem(null); // TODO: fix communication expectations with ViewList
                     activity.returnAndClose();
                 }
                 else

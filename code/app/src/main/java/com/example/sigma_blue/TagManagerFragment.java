@@ -32,6 +32,7 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TagManagerFragment extends Fragment {
     private ArrayList<Tag> tagsData; // Tags passed in from the Item in question.
@@ -107,7 +108,8 @@ public class TagManagerFragment extends Fragment {
 
         // TODO Link the global TagList to the fragment data itself
         // Tags in tagsData are passed from the current item, if applicable. TAKE THE UNION OF THE TWO.
-        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        final AddEditActivity activity = (AddEditActivity) requireActivity();
+        sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
 
         if (currentItem != null) {
@@ -183,8 +185,15 @@ public class TagManagerFragment extends Fragment {
                 //Bundle bundle = new Bundle();
                 //bundle.putSerializable(EditFragment.ARG_TAGS, tagsConfirmed);
                 //NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
+                if (Objects.equals(sharedVM.getMode().getValue(), "multi_tag"))
+                {
+                    activity.returnAndClose();
+                }
+                else
+                {
+                    NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
+                }
 
-                NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
             }
         });
 

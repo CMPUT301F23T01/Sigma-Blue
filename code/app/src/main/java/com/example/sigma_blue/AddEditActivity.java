@@ -34,13 +34,9 @@ public class AddEditActivity extends BaseActivity
         if (savedInstanceState == null) { bundledItem = getIntent().getExtras(); }
         else { bundledItem = savedInstanceState; }
         Item currentItem = (Item) bundledItem.getSerializable(ARG_ITEM);
+        if (Objects.isNull(currentItem)) { currentItem = new Item(); }
         String mode = bundledItem.getString(ARG_MODE);
-        String id = "";
-        if (currentItem != null) {
-            id = currentItem.getDocID();
-        } else {
-            currentItem = new Item();
-        }
+        String id = currentItem.getDocID();
 
         sharedVM = new ViewModelProvider(this).get(AddEditViewModel.class);
         sharedVM.setItem(currentItem);
@@ -79,9 +75,13 @@ public class AddEditActivity extends BaseActivity
 
         // Add shared item and flags to intent
         i.putExtra(ARG_ITEM, sharedVM.getItem().getValue());
+        Log.e("DEBUG", sharedVM.getItem().getValue().toString());
         i.putExtra(ARG_MODE, sharedVM.getMode().getValue());
+        Log.e("DEBUG", sharedVM.getMode().getValue().toString());
         i.putExtra(ARG_ID, sharedVM.getId().getValue());
+        Log.e("DEBUG", sharedVM.getId().getValue().toString());
         i.putExtra(ARG_DELETE_FLAG, sharedVM.getDeleteFlag().getValue());
+        Log.e("DEBUG", sharedVM.getDeleteFlag().getValue().toString());
 
         setResult(Activity.RESULT_OK, i);
         finish();
