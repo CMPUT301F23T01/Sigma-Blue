@@ -32,6 +32,9 @@ public class TagListTest {
         this.classUnderTest = null;
     }
 
+    /**
+     * Converts a tag object into a hashmap format
+     */
     @Test
     public void testHashMapOfTag() {
         HashMap<String, String> expected = new HashMap<>();
@@ -46,8 +49,13 @@ public class TagListTest {
         assertEquals(expected, TagList.hashMapOfTag.apply(input));
     }
 
+    /**
+     * Testing convert from document to tag, but android makes testing this
+     * through unit testing impossible.
+     */
     @Test
     public void testTagOfDocument() {
         Tag expected = new Tag("abc", mockColor);
     }
+
 }
