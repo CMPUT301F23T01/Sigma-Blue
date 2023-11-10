@@ -35,7 +35,10 @@ public class AddEditActivity extends BaseActivity
         else { bundledItem = savedInstanceState; }
         Item currentItem = (Item) bundledItem.getSerializable(ARG_ITEM);
         String mode = bundledItem.getString(ARG_MODE);
-        String id = currentItem.getDocID();
+        String id = "";
+        if (currentItem != null) {
+            id = currentItem.getDocID();
+        }
 
         sharedVM = new ViewModelProvider(this).get(AddEditViewModel.class);
         sharedVM.setItem(currentItem);
@@ -50,13 +53,17 @@ public class AddEditActivity extends BaseActivity
         {
             graph.setStartDestination(R.id.editFragment);
         }
-        else if (Objects.equals(mode, "mutli_tag"))
+        else if (Objects.equals(mode, "multi_tag"))
         {
             graph.setStartDestination(R.id.tagManagerFragment);
         }
-        else
+        else if (Objects.equals(mode, "edit"))
         {
             graph.setStartDestination(R.id.detailsFragment);
+        }
+        else
+        {
+            Log.e("DEBUG", "Bad AddEditMode");
         }
         navController.setGraph(graph, bundledItem);
     }

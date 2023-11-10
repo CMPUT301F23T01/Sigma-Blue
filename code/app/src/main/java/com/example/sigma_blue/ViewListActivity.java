@@ -210,6 +210,10 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
+    /**
+     * Updates the tags of highlighted items, given the list of user selected tags
+     * @param result result sent back from activity
+     */
     private void applyTagResults(ActivityResult result) {
         Bundle extras = result.getData().getExtras();
         ArrayList<Parcelable> tags = null;
@@ -252,9 +256,7 @@ public class ViewListActivity extends BaseActivity {
             itemList.getAdapter().resetHighlightedItems();
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("mode", "multi_tag");
-            //activityLauncher.launch(intent, this::applyTagResults);
-
-            //fragmentLauncher.
+            activityLauncher.launch(intent, this::applyTagResults);
         });
     }
 }
