@@ -41,29 +41,23 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/TagListLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="180dp"
+            android:layout_height="200dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:background="@color/add_edit_layout_bgr_test"
-            app:layout_constraintBottom_toBottomOf="@+id/DetialsLongLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ScanningLayout"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintTop_toBottomOf="@+id/ScanningLayout">
 
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="Tag list goes here?"
+            <ListView
+                android:id="@+id/list_tag"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -82,7 +76,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/text_description" />
 
@@ -94,6 +87,7 @@
                 android:text="@string/add_edit_text_description"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,7 +99,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_comment"
                 app:layout_constraintTop_toBottomOf="@+id/text_comment" />
 
@@ -117,6 +110,7 @@
                 android:text="@string/add_edit_text_comment"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/text_description_disp" />
 
@@ -146,7 +140,8 @@
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/text_model"
@@ -156,6 +151,7 @@
                 android:text="@string/add_edit_text_model"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_make"
                 app:layout_constraintTop_toBottomOf="@+id/text_make" />
 
@@ -167,6 +163,7 @@
                 android:text="@string/add_edit_text_serial"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_model"
                 app:layout_constraintTop_toBottomOf="@+id/text_model" />
 
@@ -177,7 +174,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_serial"
                 app:layout_constraintStart_toStartOf="@+id/text_model_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_serial" />
@@ -190,7 +186,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_name"
                 app:layout_constraintStart_toEndOf="@+id/text_name"
                 app:layout_constraintTop_toTopOf="@+id/text_name"
@@ -203,7 +198,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_make"
                 app:layout_constraintStart_toStartOf="@+id/text_date_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_make" />
@@ -215,7 +209,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_date"
                 app:layout_constraintStart_toStartOf="@+id/text_value_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_date" />
@@ -227,7 +220,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_model"
                 app:layout_constraintStart_toStartOf="@+id/text_make_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_model" />
@@ -239,7 +231,6 @@
                 android:text="@string/add_edit_empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_value"
                 app:layout_constraintStart_toStartOf="@+id/text_name_disp"
                 app:layout_constraintTop_toTopOf="@+id/text_value" />
@@ -252,6 +243,7 @@
                 android:text="@string/add_edit_text_make"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_date"
                 app:layout_constraintTop_toBottomOf="@+id/text_date" />
 
@@ -263,6 +255,7 @@
                 android:text="@string/add_edit_text_value"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_name"
                 app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
@@ -274,6 +267,7 @@
                 android:text="@string/add_edit_text_date"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/text_value"
                 app:layout_constraintTop_toBottomOf="@+id/text_value" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
@@ -34,9 +35,13 @@ public class EditFragment extends Fragment
 {
     private static final String ARG_ITEM = "item";
     private static final String ARG_MODE = "mode";
-    private Item currentItem;
+    public static final String ARG_TAGS = "tag";
+
+    private AddEditViewModel sharedVM;
+
+//    private Item currentItem;
+    private String mode;
     private String oldItemID;
-    private String newItemFlag;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -69,14 +74,14 @@ public class EditFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         // Load item from bundle
-        currentItem = new Item();
-        newItemFlag = "edit";
-        if (getArguments() != null)
-        {
-            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            oldItemID = currentItem.getDocID();
-            newItemFlag = (String)getArguments().getSerializable(ARG_MODE);
-        }
+//        currentItem = new Item();
+//        mode = "edit";
+//        if (getArguments() != null)
+//        {
+//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+//            mode = (String)getArguments().getSerializable(ARG_MODE);
+//            oldItemID = currentItem.getDocID();
+//        }
     }
 
     /**
@@ -98,7 +103,7 @@ public class EditFragment extends Fragment
         textDate = binding.getRoot().findViewById(R.id.text_date_disp); editTextList.add(textDate);
         textMake = binding.getRoot().findViewById(R.id.text_make_disp); editTextList.add(textMake);
         textModel = binding.getRoot().findViewById(R.id.text_model_disp); editTextList.add(textModel);
-        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp); editTextList.add(textSerial);
+        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
 
@@ -115,8 +120,13 @@ public class EditFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        // set item details from bundle
-        if (Objects.equals(newItemFlag, "edit"))
+        // Access item from parent activities ViewModel
+        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        final Item currentItem = sharedVM.getItem().getValue();
+        final String mode = sharedVM.getMode().getValue();
+
+        // set item details
+        if (Objects.equals(mode, "edit"))
         {
             textName.setText(currentItem.getName());
             textValue.setText(String.valueOf(currentItem.getValue()));
@@ -160,17 +170,29 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (Objects.equals(newItemFlag, "add")){
+                if (Objects.equals(mode, "add"))
+                {
                     Intent i = new Intent(getActivity(), ViewListActivity.class);
-
                     getActivity().setResult(Activity.RESULT_OK, i);
                     getActivity().finish();
-                } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(ARG_ITEM, currentItem);
-                    bundle.putString("id", oldItemID);
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
                 }
+                else
+                {
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                }
+            }
+        });
+
+        view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
+//                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
 
             }
         });
@@ -182,7 +204,8 @@ public class EditFragment extends Fragment
             {
                 if (verifyText())
                 {
-                    Bundle bundle = new Bundle();
+//                    Bundle bundle = new Bundle();
+//                    Item editItem = new Item();
                     currentItem.setName(textName.getText().toString());
                     currentItem.setValue(Float.parseFloat(textValue.getText().toString()));
                     SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -196,9 +219,14 @@ public class EditFragment extends Fragment
                     currentItem.setSerialNumber(textSerial.getText().toString());
                     currentItem.setDescription(textDescription.getText().toString());
                     currentItem.setComment(textComment.getText().toString());
-                    bundle.putSerializable(ARG_ITEM, currentItem);
-                    bundle.putString("id", oldItemID);
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+//                    bundle.putSerializable(ARG_ITEM, currentItem);
+//                    bundle.putString(ARG_MODE, mode);
+//                    bundle.putString("id", oldItemID);
+//                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                    sharedVM.setItem(currentItem);
+                    sharedVM.setMode("edit");
+                    sharedVM.setDeleteFlag(false);
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
 
             }
