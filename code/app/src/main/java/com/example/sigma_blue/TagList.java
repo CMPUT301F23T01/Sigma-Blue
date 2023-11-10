@@ -1,29 +1,31 @@
 package com.example.sigma_blue;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
- * Keeps track of a list of tags. Also allows for sync to the DB (well in the future...)
+ * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
-public class TagList implements IDatabaseList<Tag> {
-    private List<Tag> tags;
+public class TagList implements IDatabaseList<Tag>, Serializable {
+    private ArrayList<Tag> tags;
     final private TagDB tagDB;
 
-    public static final String LABEL = "LABEL", COLOR = "COLOR";
 
-    public final Function<Tag, HashMap<String, String>> hashMapOfTag = t -> {
-        HashMap<String, String> ret = new HashMap<>();
-        ret.put(LABEL, t.getTagText());
-        ret.put(COLOR, t.getColourString());
+
+    public static TagList newInstance(TagDB db) {
+        TagList ret = new TagList(db);
         return ret;
-    };
+    }
 
     public TagList(TagDB tagDB) {
         this.tagDB = tagDB;
+        this.tags = new ArrayList<>();
     }
 
     public void saveTagsToDB() {
@@ -41,11 +43,15 @@ public class TagList implements IDatabaseList<Tag> {
         }
     }
 
-    public void remove(Tag tag) {
+    public void removeTag(Tag tag) {
         if (tags.contains(tag)) {
             tagDB.remove(tag);
             tags.remove(tag);
         }
+    }
+
+    public void removeTag(int position) {
+        tags.remove(position);
     }
 
     public boolean containsTag(Tag tag) {
@@ -56,13 +62,19 @@ public class TagList implements IDatabaseList<Tag> {
         return this.tags;
     }
 
+    public int getCount() { return tags.size(); }
+
+    public Tag getItem(int position) {
+        return tags.get(position);
+    }
+
     /**
      * Sets a new list.
-     * @param lst is a List object that is replacing it.
+     * @param lst is an list object that is replacing it.
      */
     @Override
     public void setList(List<Tag> lst) {
-        this.tags = lst;
+        this.tags = (ArrayList<Tag>) lst; // Duck tape fix. If this is implemented in main I'll kms
     }
 
     /**
@@ -80,11 +92,19 @@ public class TagList implements IDatabaseList<Tag> {
      */
     @Override
     public List<Tag> loadArray(QuerySnapshot q) {
-        return TagDB.loadArray(q, v -> {
-            return new Tag(v.getString("LABEL"),
-                    Integer.valueOf(v.getString("COLOR")));
-        });
+        return TagDB.loadArray(q, tagOfDocument);
     }
+
+    /**
+     * Conversion from QueryDocumentSnapshot to Tag objects.
+     */
+    public static final Function<QueryDocumentSnapshot, Tag> tagOfDocument
+            = q -> {
+        if (q.getString("COLOR") != null)
+            return new Tag(q.getString("LABEL"),
+                    Integer.decode(q.getString("COLOR")));
+        else return null;
+    };
 
     /**
      * Sets up a listening thread for changes to the database collection. This

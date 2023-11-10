@@ -21,5 +21,38 @@
         <action
             android:id="@+id/action_editFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_tagManagerFragment"
+            app:destination="@id/tagManagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tagManagerFragment"
+        android:name="com.example.sigma_blue.TagManagerFragment"
+        android:label="TagManagerFragment" >
+        <action
+            android:id="@+id/action_tagManagerFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+        <action
+            android:id="@+id/action_tagManagerFragment_to_tagAddFragment"
+            app:destination="@id/tagAddFragment" />
+        <action
+            android:id="@+id/action_tagManagerFragment_to_tagEditFragment"
+            app:destination="@id/tagEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tagAddFragment"
+        android:name="com.example.sigma_blue.TagAddFragment"
+        android:label="TagAddFragment" >
+        <action
+            android:id="@+id/action_tagAddFragment_to_tagManagerFragment"
+            app:destination="@id/tagManagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tagEditFragment"
+        android:name="com.example.sigma_blue.TagEditFragment"
+        android:label="TagEditFragment" >
+        <action
+            android:id="@+id/action_tagEditFragment_to_tagManagerFragment"
+            app:destination="@id/tagManagerFragment" />
     </fragment>
 </navigation>

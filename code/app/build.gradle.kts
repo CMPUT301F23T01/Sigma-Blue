@@ -35,6 +35,8 @@ android {
 dependencies {
     //implementation("androidx.test.espresso:espresso-contrib:3.5.1")
     val nav_version = "2.7.5"
+    val mockitoVersion = "4.11.x"
+    val mockkVersion = "4.11.x"
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
@@ -45,8 +47,22 @@ dependencies {
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
     implementation("com.google.firebase:firebase-firestore:24.9.1")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-    //testImplementation("junit:junit:4.13.2")
+
+
+    androidTestImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+
+    // Mockito
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    androidTestImplementation("org.mockito:mockito-android:5.7.0")
+
+    // Assertions
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.ext:truth:1.5.0")
+
+    testImplementation("junit:junit:4.13.2")
+
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
