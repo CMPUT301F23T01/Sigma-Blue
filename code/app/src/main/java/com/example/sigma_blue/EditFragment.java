@@ -205,27 +205,26 @@ public class EditFragment extends Fragment
                 if (verifyText())
                 {
 //                    Bundle bundle = new Bundle();
-                    Item editItem = new Item();
-                    editItem.setName(textName.getText().toString());
-                    editItem.setValue(Float.parseFloat(textValue.getText().toString()));
+//                    Item editItem = new Item();
+                    currentItem.setName(textName.getText().toString());
+                    currentItem.setValue(Float.parseFloat(textValue.getText().toString()));
                     SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
                     try {
-                        editItem.setDate(sdf.parse(textDate.getText().toString()));
+                        currentItem.setDate(sdf.parse(textDate.getText().toString()));
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
-                    editItem.setMake(textMake.getText().toString());
-                    editItem.setModel(textModel.getText().toString());
-                    editItem.setSerialNumber(textSerial.getText().toString());
-                    editItem.setDescription(textDescription.getText().toString());
-                    editItem.setComment(textComment.getText().toString());
+                    currentItem.setMake(textMake.getText().toString());
+                    currentItem.setModel(textModel.getText().toString());
+                    currentItem.setSerialNumber(textSerial.getText().toString());
+                    currentItem.setDescription(textDescription.getText().toString());
+                    currentItem.setComment(textComment.getText().toString());
 //                    bundle.putSerializable(ARG_ITEM, currentItem);
 //                    bundle.putString(ARG_MODE, mode);
 //                    bundle.putString("id", oldItemID);
 //                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
-                    sharedVM.setItem(editItem);
+                    sharedVM.setItem(currentItem);
                     sharedVM.setMode("edit");
-                    sharedVM.setId(editItem.getDocID());
                     sharedVM.setDeleteFlag(false);
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }

@@ -163,7 +163,7 @@ public class DetailsFragment extends Fragment
             {
                 Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
-                i.putExtra(ARG_ID, oldItemID);
+                i.putExtra(ARG_ID, sharedVM.getId().getValue());
                 getActivity().setResult(Activity.RESULT_OK, i);
                 getActivity().finish();
             }
