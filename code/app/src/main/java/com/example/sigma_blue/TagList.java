@@ -16,14 +16,7 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
     private ArrayList<Tag> tags;
     final private TagDB tagDB;
 
-    public static final String LABEL = "LABEL", COLOR = "COLOR";
 
-    public static final Function<Tag, HashMap<String, String>> hashMapOfTag = t -> {
-        HashMap<String, String> ret = new HashMap<>();
-        ret.put(LABEL, t.getTagText());
-        ret.put(COLOR, t.getColourString());
-        return ret;
-    };
 
     public static TagList newInstance(TagDB db) {
         TagList ret = new TagList(db);

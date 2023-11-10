@@ -38,15 +38,15 @@ public class TagListTest {
     @Test
     public void testHashMapOfTag() {
         HashMap<String, String> expected = new HashMap<>();
-        expected.put(TagList.COLOR, "ffff0000");
-        expected.put(TagList.LABEL, "Spider");
+        expected.put(Tag.COLOR, "ffff0000");
+        expected.put(Tag.LABEL, "Spider");
 
         Mockito.when(mockColor.toArgb()).thenReturn(0xFFFF0000);
 
         Tag input = new Tag("Spider", mockColor);
 
 
-        assertEquals(expected, TagList.hashMapOfTag.apply(input));
+        assertEquals(expected, Tag.hashMapOfTag.apply(input));
     }
 
     /**
