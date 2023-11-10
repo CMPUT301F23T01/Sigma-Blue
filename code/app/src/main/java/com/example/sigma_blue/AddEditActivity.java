@@ -50,6 +50,10 @@ public class AddEditActivity extends BaseActivity
         {
             graph.setStartDestination(R.id.editFragment);
         }
+        else if (Objects.equals(mode, "mutli_tag"))
+        {
+            graph.setStartDestination(R.id.tagManagerFragment);
+        }
         else
         {
             graph.setStartDestination(R.id.detailsFragment);
