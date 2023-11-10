@@ -110,7 +110,7 @@ public class ViewListActivity extends BaseActivity {
             currentAccount = (Account) extras.getSerializable("account");
         } else {
             Log.e("DEBUG", "No Account object in bundle!");
-            currentAccount = new Account("user1", "password");
+            currentAccount = new Account("UI_Test_User", "password");
         }
         /* Code section for linking UI elements */
         RecyclerView rvItemListView = findViewById(R.id.listView);
