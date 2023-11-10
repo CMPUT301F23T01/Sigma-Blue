@@ -123,7 +123,6 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
             this.dbHandler.add(o);
         }
         updateUI();
-        Log.v("Added Item", "Added new item");
     }
 
     /**
@@ -153,6 +152,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         updateUI();
     }
 
+    /**
+     * Updates the UI to match the current data in the ItemList.
+     */
     public void updateUI() {
         adapter.notifyDataSetChanged();
         adapter.updateSumView(sumValues.apply(items));
@@ -165,21 +167,17 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      */
     @Override
     public List<Item> loadArray(QuerySnapshot q) {
-        return ItemDB.loadArray(q, v -> {
-            return Item.newInstance(
-                    v.getString("NAME"),
-                    new Date(),    // TODO: Work on unifying date
-                    v.getString("MAKE"),
-                    v.getString("MODEL"),
-                    Float.parseFloat(v.getString("VALUE"))
-            );
-        });
+        return ItemDB.loadArray(q, Item.itemOfQueryDocument);
     }
 
     public void setDatabaseHandler(final ItemDB dbH) {
         this.dbHandler = dbH;
     }
 
+    /**
+     * Starts listening to the database. Will update the content of this class,
+     * and the adapter on change in the database.
+     */
     public void startListening() {
         dbHandler.startListening(this.dbHandler.getCollectionReference(),
                 this);
@@ -194,6 +192,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     /* Database method */
+
+    /**
+     * Both updates the list held in this class and the adapter element.
+     * @param list is the list that is replacing the current list.
+     */
     public void setList(final List<Item> list) {
         this.items = list;
         this.adapter.setList(list);

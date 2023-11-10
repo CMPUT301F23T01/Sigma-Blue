@@ -24,6 +24,11 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         return ret;
     };
 
+    public TagList newInstance(TagDB db) {
+        TagList ret = new TagList(db);
+        return ret;
+    }
+
     public TagList(TagDB tagDB) {
         this.tagDB = tagDB;
         this.tags = new ArrayList<>();
@@ -59,7 +64,7 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         return tags.contains(tag);
     }
 
-    public ArrayList<Tag> getTags() {
+    public List<Tag> getTags() {
         return this.tags;
     }
 

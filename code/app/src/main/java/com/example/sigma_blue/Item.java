@@ -1,10 +1,15 @@
 package com.example.sigma_blue;
 
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * Class that stores information about a single item
@@ -273,16 +278,22 @@ public class Item implements Comparable<Item>, Serializable,
         this.comment = comment;
     }
 
-
     public ArrayList<Tag> getTags() {
         return tags;
     }
 
+    /**
+     * Swaps the list of tags.
+     * @param tags List containing tags.
+     */
     public void setTags(ArrayList<Tag> tags) {
         this.tags = tags;
     }
 
-
+    /**
+     * Adds a new tag.
+     * @param tag the tag being added.
+     */
     public void addTag(Tag tag) {
         this.tags.add(tag);
     }
@@ -312,6 +323,10 @@ public class Item implements Comparable<Item>, Serializable,
         return this.tags.contains((Object)tag);
     }
 
+    /**
+     * Returns the unique DocID of the item.
+     * @return String used as the database identifier.
+     */
     public String getDocID() {
         if (this.make == null || this.model == null) return name;
         else return name+make+model;
@@ -341,14 +356,77 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
 
+    /**
+     * Comparable interface override. Returns -1 if lower value than the other,
+     * 0 if equal, and 1 if greater than.
+     * @param item the object to be compared.
+     * @return the compared values
+     */
     @Override
     public int compareTo(Item item) {
         return this.getName().compareTo(item.getName());
     }
 
+    /**
+     * Returns a hash code that entails uniqueness. Currently based on the name
+     * of the item.
+     * @return an integer that is the hashCode.
+     */
     @Override
     public int hashCode() {
         return this.name.hashCode();
     }
 
+    /**
+     * Simple date format for string conversion.
+     */
+    public static final SimpleDateFormat simpledf =
+            new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * Function for converting Item object into HashMap, which is compatible
+     * with Firestore database.
+     */
+    public static final Function<Item, HashMap<String, String>> hashMapOfItem =
+            item -> {
+                HashMap<String, String> ret = new HashMap<>();
+                ret.put("NAME", item.getName());
+                ret.put("DATE", simpledf.format(item.getDate()));
+                ret.put("MAKE", item.getMake());
+                ret.put("MODEL", item.getModel());
+                ret.put("COMMENT", item.getComment());
+                ret.put("DESCRIPTION", item.getDescription());
+                ret.put("SERIAL", item.getSerialNumber());
+                ret.put("VALUE", String.valueOf(item.getValue()));
+                return ret;
+            };
+
+    /**
+     * This function is created for converting QueryDocumentSnapshot from the
+     * database into an Item object.
+     */
+    public static final Function<QueryDocumentSnapshot, Item>
+            itemOfQueryDocument = q -> {
+        try {
+            return Item.newInstance(
+                    q.getString("NAME"),
+                    simpledf.parse(q.getString("DATE")),
+                    q.getString("COMMENT"),
+                    q.getString("DESCRIPTION"),
+                    q.getString("MAKE"),
+                    q.getString("MODEL"),
+                    Float.parseFloat(q.getString("VALUE"))
+            );
+        } catch (ParseException e) {
+            return Item.newInstance(
+                    q.getString("NAME"),
+                    new Date(),
+                    q.getString("COMMENT"),
+                    q.getString("DESCRIPTION"),
+                    q.getString("MAKE"),
+                    q.getString("MODEL"),
+                    Float.parseFloat(q.getString("VALUE"))
+            );
+        }
+    };
 }
