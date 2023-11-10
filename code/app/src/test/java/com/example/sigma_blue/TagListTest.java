@@ -57,4 +57,5 @@ public class TagListTest {
     public void testTagOfDocument() {
         Tag expected = new Tag("abc", mockColor);
     }
+
 }
