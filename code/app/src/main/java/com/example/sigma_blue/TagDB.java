@@ -1,5 +1,7 @@
 package com.example.sigma_blue;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -49,8 +51,8 @@ public class TagDB extends ADatabaseHandler<Tag> {
     };
 
     @Override
-    public void add(Tag item) {
-
+    public void add(Tag tag) {
+        // TODO IMPLEMENT THIS ADD METHOD FOR PERSISTENCE
     }
 
     @Override

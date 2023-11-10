@@ -121,6 +121,7 @@ public class TagManagerFragment extends Fragment {
 
         // Load the global list of tags per user into the fragment
         tagList = new TagList(TagDB.newInstance(currentAccount));
+        tagList.startListening();
 
         // Load the shared data from the parent AddEditActivity
         sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
@@ -157,6 +158,8 @@ public class TagManagerFragment extends Fragment {
 
         // Here we should obtain the union of the TagList's Tags with tagsData,
         // but for now I will just join the two
+        // TODO Consider the checked status, we probably should get unique tags without regard
+        //  to the isChecked status.
         tagsData.addAll( tagList.getTags() );
 
         /* Link the adapter to the UI */
