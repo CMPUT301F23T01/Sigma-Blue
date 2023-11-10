@@ -52,7 +52,8 @@ dependencies {
     androidTestImplementation("androidx.test:rules:1.5.0")
 
     // Mockito
-    debugImplementation("org.mockito:mockito-android:3.2.4")
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    androidTestImplementation("org.mockito:mockito-android:5.7.0")
 
     // Assertions
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
