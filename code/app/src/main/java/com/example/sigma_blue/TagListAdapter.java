@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -54,17 +55,20 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         View view = convertView;
         Tag tag = tagsData.get(position);
 
-
+        // Inflate the custom layout.
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.tag_row, parent, false);
         }
 
+        // Obtain UI elements from custom layout and represent the items appropriately.
         TextView tagTitle = view.findViewById(R.id.tagName);
         View tagColor = view.findViewById(R.id.tagColor);
+        CheckBox tagCheckBox = view.findViewById(R.id.tagCheckBox);
 
         tagColor.setBackgroundColor(tag.getColour().toArgb());
         tagTitle.setText(tag.getTagText());
+        tagCheckBox.setChecked(tag.isChecked());
 
         return view;
     }
@@ -73,7 +77,5 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
     public int getCount() {
         return tagsData.size();
     }
-
-
 
 }

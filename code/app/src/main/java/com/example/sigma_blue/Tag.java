@@ -96,4 +96,17 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
                 .map(v->String.valueOf(v))
                 .reduce("", (s, e) -> s + e);
     }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean val) { isChecked = val; }
+
+    /**
+     * Toggles checked status a ListView element in the ListView of checkboxes.
+     */
+    public void toggleChecked() {
+        isChecked = !isChecked;
+    }
 }

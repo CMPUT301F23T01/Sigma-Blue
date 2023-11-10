@@ -21,20 +21,26 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.databinding.TagManagerFragmentBinding;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class TagManagerFragment extends Fragment {
-    private ArrayList<Tag> tagsData;
-    private FragmentLauncher fragmentLauncher;
-    private TagAddFragment tagAddFragment;
-    private TagEditFragment tagEditFragment;
+    private ArrayList<Tag> tagsData; // Tags passed in from the Item in question.
+
+    // Shared value between parent calling activity and other fragments
+    private AddEditViewModel sharedVM;
+
+    // Key for new tags that are being created.
+    public static String ARG_TAG_ADD = "tag_add";
     public TagListAdapter tagListAdapter;
 
     // Fragment binding
@@ -56,6 +62,18 @@ public class TagManagerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Method to inflate layout of the fragment, as well as bind UI components.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,30 +90,68 @@ public class TagManagerFragment extends Fragment {
 
         return binding.getRoot();
     }
+
+    /**
+     * Method to set the details of the selected Item, if applicable in the fragment,
+     * and handle button interactions.
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
 
-        // Set tag details for the Bundle, if applicable
-        if (getArguments() != null) {
-            tagsData = (ArrayList<Tag>) getArguments().getSerializable(
-                    EditFragment.ARG_TAGS
-            );
+
+
+        // TODO Link the global TagList to the fragment data itself
+        // Tags in tagsData are passed from the current item, if applicable. TAKE THE UNION OF THE TWO.
+        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        final Item currentItem = sharedVM.getItem().getValue();
+
+        if (currentItem != null) {
+            // TODO Link the global TagList to the fragment data itself
+
+            // User is opening the tag manager fragment on an existing fragment.
+            tagsData = currentItem.getTags();
+            // Check tags already applied onto the item.
+            for (Tag t: tagsData) {
+                t.setChecked(true);
+            }
+
+        } else {
+            // The user is applying a selection of tags to multiple Items, we just want to
+            // return an ArrayList of Tags that we can apply.
+            tagsData = new ArrayList<>();
         }
 
-        tagsData.add(new Tag("Testo", Color.parseColor("#FF0000")));
-        tagsData.add(new Tag("Testo2", Color.parseColor("#FF0000")));
+        // Get the new Tag object from the TagAddFragment, if applicable.
+        if (getArguments() != null) {
+            Tag freshlyCreatedTag = (Tag) getArguments().getSerializable(ARG_TAG_ADD);
+            if (!tagsData.contains(freshlyCreatedTag) && freshlyCreatedTag != null ) {
+                tagsData.add(freshlyCreatedTag);
+            }
+        }
 
         /* Link the adapter to the UI */
         tagListAdapter = TagListAdapter.newInstance(tagsData, getContext());
         tagsListView.setAdapter(tagListAdapter);
-        tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-
+        updateTagListView();
 
 
         /* On click listeners */
-        // Direct user to go to a new tag
+
+        // Handle the checkbox, and the checked state for the user selecting an item
+        tagsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                tagsData.get(position).toggleChecked();
+                updateTagListView();
+            }
+        });
+
+        // Direct user to go to the tag add fragment
         tagCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +159,7 @@ public class TagManagerFragment extends Fragment {
             }
         });
 
-        // TODO Implement data passing through fragments!
+        // Direct user to go to the tag edit fragment
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,15 +167,55 @@ public class TagManagerFragment extends Fragment {
             }
         });
 
+        // Handle the user confirming the tag addition.
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateTagListView();
+                ArrayList<Tag> tagsConfirmed = new ArrayList<>();
+                for (Tag t: tagsData) {
+                    if (t.isChecked()) {
+                        tagsConfirmed.add(t);
+                    }
+                }
+
+                currentItem.setTags(tagsConfirmed);
+                //Bundle bundle = new Bundle();
+                //bundle.putSerializable(EditFragment.ARG_TAGS, tagsConfirmed);
+                //NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
+
+                NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
+            }
+        });
+
     }
 
+    /**
+     * Method called when the fragment is no longer in use; unbinds all UI elements.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
+    /**
+     * Updates the adapter, as well as the Edit Tag button when called. The user should
+     * not be able to edit a tag if they have selected 0, or than 1 tags.
+     */
     public void updateTagListView() {
         tagListAdapter.notifyDataSetChanged();
+
+        // Poll through each of the tags and check if they are checked
+        int checkedTags = 0;
+        for (Tag t: tagsData) {
+            if (t.isChecked()) { checkedTags++; }
+        }
+
+        if (checkedTags == 1) {
+            tagEditButton.setEnabled(true);
+        } else {
+            tagEditButton.setEnabled(false);
+        }
     }
 }
