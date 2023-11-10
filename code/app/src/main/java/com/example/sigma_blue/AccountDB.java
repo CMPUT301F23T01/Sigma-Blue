@@ -55,6 +55,10 @@ public class AccountDB extends ADatabaseHandler<Account> {
         removeDocument(accountPointer, item);
     }
 
+    /**
+     * Returns the collection reference for testing.
+     * @return the CollectionReference
+     */
     @Override
     public CollectionReference getCollectionReference() {
         return this.accountPointer;

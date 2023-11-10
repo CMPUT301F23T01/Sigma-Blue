@@ -153,6 +153,15 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     /**
+     * This method removes all the items owned by the user. Made for testing.
+     */
+    public void removeAll() {
+        this.items.stream()
+                .forEach(item -> dbHandler.remove(item));
+        this.items.clear();
+    }
+
+    /**
      * Updates the UI to match the current data in the ItemList.
      */
     public void updateUI() {

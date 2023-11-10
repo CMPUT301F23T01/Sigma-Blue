@@ -79,7 +79,8 @@ public class LoginPageActivityUITest {
     }
     /**
      * As a user, I want a profile with a unique username.
-     * Try making a new account and logging in with it
+     * Try making a new account and logging in with it. Should be able to access
+     * the list view.
      */
     @Test
     public void check_login_US_06_01_02() {

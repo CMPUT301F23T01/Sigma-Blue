@@ -74,6 +74,11 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         }
     }
 
+    /**
+     * Used for concurrent list update
+     * // TODO: Add a semaphore.
+     * @param lst
+     */
     @Override
     public void setList(List<Account> lst) {
         this.accList = lst;

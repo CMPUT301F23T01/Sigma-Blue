@@ -24,6 +24,7 @@ public class AddEditViewModel extends ViewModel
     {
         return mItem;
     }
+
     /**
      * Sets the shared item
      * @param item item shared between fragments

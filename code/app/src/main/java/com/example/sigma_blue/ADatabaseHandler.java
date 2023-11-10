@@ -11,7 +11,8 @@ import java.util.function.Function;
 
 /**
  * Interface for the Database interface classes.
- * @param <T> is the Object that is being stored in the database. i.e., Item, Tag
+ * @param <T> is the Object that is being stored in the database. i.e., Item,
+ *           Tag
  */
 public abstract class ADatabaseHandler<T> {
 
@@ -69,8 +70,22 @@ public abstract class ADatabaseHandler<T> {
         cr.document(item.getDocID()).delete();
     }
 
+    /**
+     * Adds a new document to the database
+     * @param item item being added
+     */
     public abstract void add(final T item);
+
+    /**
+     * Removes the document from the database
+     * @param item
+     */
     public abstract void remove(final T item);
+
+    /**
+     * Returns the database collection reference.
+     * @return
+     */
     public abstract CollectionReference getCollectionReference();
 
     /**

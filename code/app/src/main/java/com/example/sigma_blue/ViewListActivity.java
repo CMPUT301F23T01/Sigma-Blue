@@ -234,4 +234,12 @@ public class ViewListActivity extends BaseActivity {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
         });
     }
+
+    /**
+     * Part of testing frameworks. This method sends the item back.
+     * @return ItemList is the object that controls the items.
+     */
+    public ItemList getItemList() {
+        return this.itemList;
+    }
 }
