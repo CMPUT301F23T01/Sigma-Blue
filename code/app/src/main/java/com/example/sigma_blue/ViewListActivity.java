@@ -252,6 +252,7 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
         viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
+        /*
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
             itemList.getAdapter().resetHighlightedItems();
@@ -260,5 +261,6 @@ public class ViewListActivity extends BaseActivity {
             intent.putExtra("account", currentAccount);
             activityLauncher.launch(intent, this::applyTagResults);
         });
+         */
     }
 }

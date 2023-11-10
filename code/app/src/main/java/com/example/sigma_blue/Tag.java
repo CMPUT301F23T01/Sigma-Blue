@@ -97,7 +97,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
      */
     @Override
     public String getDocID() {
-        return this.tagText + Integer.toHexString(this.colour.toArgb());
+            return this.tagText + Integer.toHexString(this.colour.toArgb());
     }
 
     public String getColourString() {

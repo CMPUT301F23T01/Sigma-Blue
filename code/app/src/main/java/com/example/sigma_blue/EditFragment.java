@@ -176,6 +176,7 @@ public class EditFragment extends Fragment
             }
         });
 
+        /*
         view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -188,6 +189,7 @@ public class EditFragment extends Fragment
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
+         */
 
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener()
         {
