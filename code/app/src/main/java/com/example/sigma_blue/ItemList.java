@@ -152,6 +152,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         updateUI();
     }
 
+    /**
+     * Updates the UI to match the current data in the ItemList.
+     */
     public void updateUI() {
         adapter.notifyDataSetChanged();
         adapter.updateSumView(sumValues.apply(items));
@@ -171,6 +174,10 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         this.dbHandler = dbH;
     }
 
+    /**
+     * Starts listening to the database. Will update the content of this class,
+     * and the adapter on change in the database.
+     */
     public void startListening() {
         dbHandler.startListening(this.dbHandler.getCollectionReference(),
                 this);
@@ -185,6 +192,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     /* Database method */
+
+    /**
+     * Both updates the list held in this class and the adapter element.
+     * @param list is the list that is replacing the current list.
+     */
     public void setList(final List<Item> list) {
         this.items = list;
         this.adapter.setList(list);
