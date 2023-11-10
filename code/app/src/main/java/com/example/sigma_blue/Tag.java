@@ -1,14 +1,10 @@
 package com.example.sigma_blue;
 
-import static android.graphics.Color.WHITE;
 
 import android.graphics.Color;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,13 +15,11 @@ import java.util.Arrays;
 public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     private String tagText;
     private Color colour;
-    private int colorInt;
     private boolean isChecked = false; // For the TagManager.
 
     public Tag(String tagText, int colour) {
         this.tagText = tagText;
         this.colour = Color.valueOf(colour);
-        colorInt = colour;
     }
 
     public Tag(String tagText, Color colour) {
@@ -48,6 +42,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     public void setColour(Color colour) {
         this.colour = colour;
     }
+
     /**
      * Part of the comparable interface.
      * @param o the object to be compared.
@@ -59,9 +54,14 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
         return this.tagText.compareTo(o.getTagText());
     }
 
+    /**
+     * Hash Code determines uniqueness based on the combination of both the tag
+     * text and color.
+     * @return int hash code based on the uniqueness requirements.
+     */
     @Override
     public int hashCode() {
-        return this.tagText.hashCode();
+        return (this.tagText+Integer.toHexString(colour.toArgb())).hashCode();
     }
 
     @Override
@@ -73,7 +73,8 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
             return false;
         }
         Tag otherTag = (Tag) obj;
-        return this.tagText.equals(otherTag.getTagText());
+        return (this.tagText.equals(otherTag.getTagText())
+                && (colour.equals(otherTag.getColour())));
     }
 
     /**
@@ -83,17 +84,10 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
      */
     @Override
     public String getDocID() {
-        return this.tagText + this.colour;
+        return this.tagText + Integer.toHexString(this.colour.toArgb());
     }
 
     public String getColourString() {
-        ArrayList<Float> lst = new ArrayList<>();
-        lst.add(colour.alpha());
-        lst.add(colour.red());
-        lst.add(colour.green());
-        lst.add(colour.blue());
-        return lst.stream()
-                .map(v->String.valueOf(v))
-                .reduce("", (s, e) -> s + e);
+        return Integer.toHexString(colour.toArgb());
     }
 }

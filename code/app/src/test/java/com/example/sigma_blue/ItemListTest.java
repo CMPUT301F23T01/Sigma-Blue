@@ -2,18 +2,35 @@ package com.example.sigma_blue;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
+import static org.hamcrest.CoreMatchers.any;
 import static org.junit.Assert.assertFalse;
+
+import static io.grpc.okhttp.internal.Platform.logger;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ItemListTest {
+    /* Under test */
     ItemList itemListUT;
     ItemFactory itemF;
+    ArrayList<Item> fakeItemDB;
+
+    /* Mock classes */
+    @Mock
+    ItemDB mockDBHandler;
+    @Mock
+    ItemListAdapter itemListAdapter;
 
     /**
      * Recreating the Class Under Test
@@ -22,7 +39,8 @@ public class ItemListTest {
     public void makeItemList() {
         Account testAccount = new Account("Watrina 4",
                 "fdsoijj191");
-        itemListUT = ItemList.newInstance(testAccount);
+        itemListUT = ItemList.newInstance(testAccount, mockDBHandler,
+                itemListAdapter);
     }
 
     @Before

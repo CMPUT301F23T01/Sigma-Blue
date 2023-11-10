@@ -14,6 +14,7 @@ import java.util.function.Function;
  * @param <T> is the Object that is being stored in the database. i.e., Item, Tag
  */
 public abstract class ADatabaseHandler<T> {
+
     /**
      * Generic method for adding a new document to a collection being pointed
      * to.
