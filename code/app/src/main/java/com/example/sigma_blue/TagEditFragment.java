@@ -22,31 +22,6 @@ import androidx.fragment.app.Fragment;
 public class TagEditFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
     private Tag tag;
-    private TagEditFragment.OnFragmentInteractionListener listener;
-
-    /**
-     * Attaches the listener to this fragment where we will implement the interfaces
-     * in the activity/fragment that calls the @code{editExistingTag} method.
-     * @param context Application environment provided by default.
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof TagEditFragment.OnFragmentInteractionListener) {
-            listener = (TagEditFragment.OnFragmentInteractionListener) context;
-        }
-    }
-
-    /**
-     * Interface for editing an existing tag. To be implemented in the
-     * activity/fragment itself that calls this fragment.
-     * Note that you will have to update the dataset, as well as the
-     * ArrayAdapter that is being used in this case in the activity.
-     */
-    public interface OnFragmentInteractionListener {
-        void editExistingTag(String newName, Color newColor);
-    }
-
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -75,7 +50,6 @@ public class TagEditFragment extends Fragment {
             Color tagColour = tag.getColour(); // TODO finish implementation, this will depend on how we select the color.
 
             // TODO Edit the existing tag, through the activity/fragment that calls this fragment.
-            listener.editExistingTag(tagName, tagColour);
 
             getActivity().onBackPressed();
 

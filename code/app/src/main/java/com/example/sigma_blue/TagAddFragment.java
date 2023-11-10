@@ -22,31 +22,6 @@ import androidx.navigation.fragment.NavHostFragment;
  */
 public class TagAddFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
-    private TagAddFragment.OnFragmentInteractionListener listener;
-
-    /**
-     * Attaches the listener to this fragment where we will implement the interfaces
-     * in the activity/fragment that calls the @code{addToTagList} method.
-     * @param context Application environment provided by default.
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof TagAddFragment.OnFragmentInteractionListener) {
-            listener = (TagAddFragment.OnFragmentInteractionListener) context;
-        }
-    }
-
-    /**
-     * Interface for adding To be implemented in the
-     * activity/fragment itself that calls this fragment.
-     * Note that you will have to update the dataset, as well as the
-     * ArrayAdapter that is being used in this case in the activity.
-     */
-    public interface OnFragmentInteractionListener {
-        void addToTagList(Tag tag);
-    }
-
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
