@@ -51,6 +51,9 @@ public class AccountTest {
         assertTrue(testAccount.checkPassword(goodPassword));
     }
 
+    /**
+     * Tests the conversion between the document query and the account class.
+     */
     @Test
     public void testAccountOfDocument() {
         Account expected = new Account("Watrina",

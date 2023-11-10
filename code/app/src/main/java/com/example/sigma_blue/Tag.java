@@ -5,7 +5,6 @@ import android.graphics.Color;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 
 /**
  * Stores information about a single tag.

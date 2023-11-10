@@ -3,6 +3,7 @@ package com.example.sigma_blue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -86,6 +87,14 @@ public class Account implements Serializable, IDatabaseItem<Account> {
                 q.getString(USERNAME),
                 q.getString(PASSWORD)
         );
+    };
+
+    public static final Function<Account, HashMap<String, String>>
+            hashMapOfAccount = a -> {
+        HashMap<String, String> ret = new HashMap<>();
+        ret.put(USERNAME, a.getUsername());
+        ret.put(PASSWORD, a.getPassword());
+        return ret;
     };
 
     /**

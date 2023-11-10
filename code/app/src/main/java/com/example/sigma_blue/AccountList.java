@@ -59,6 +59,7 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
      * @return match is a boolean that returns true if the account is contained in the list, and false if not
      */
     public boolean contains(Account account) {
+        // TODO: Bach come back and refactor
         if (accList == null) {
             Log.w("DEBUG", "Checking null accounts list");
             return false;

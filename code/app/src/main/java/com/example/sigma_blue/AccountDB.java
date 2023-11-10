@@ -2,11 +2,7 @@ package com.example.sigma_blue;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Handles database interactions for each account.
@@ -14,14 +10,6 @@ import java.util.function.Function;
 public class AccountDB extends ADatabaseHandler<Account> {
 
     private CollectionReference accountPointer;
-    private List<Account> accounts;
-    public Function<Account, HashMap<String, String>> hashMapConverter = v ->
-    {
-        HashMap<String, String> ret = new HashMap<>();
-        ret.put("USERNAME", v.getUsername());
-        ret.put("PASSWORD", v.getPassword());
-        return ret;
-    };
 
     /**
      * newInstance method for hiding construction.
@@ -34,9 +22,18 @@ public class AccountDB extends ADatabaseHandler<Account> {
     /**
      * Constructor for AccountDB. Links Firestore instance to the class itself.
      */
-    private AccountDB() {
+    public AccountDB() {
         accountPointer = FirebaseFirestore.getInstance()
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName());
+    }
+
+    /**
+     * Database dependency injection constructor
+     * @param fS firestore object.
+     */
+    public AccountDB(FirebaseFirestore fS) {
+        accountPointer = fS.collection(DatabaseNames.PRIMARY_COLLECTION
+                .getName());
     }
 
     /**
@@ -45,7 +42,8 @@ public class AccountDB extends ADatabaseHandler<Account> {
      */
     @Override
     public void add(Account item) {
-        addDocument(accountPointer, item, hashMapConverter, item.getDocID());
+        addDocument(accountPointer, item, Account.hashMapOfAccount,
+                item.getDocID());
     }
 
     /**
