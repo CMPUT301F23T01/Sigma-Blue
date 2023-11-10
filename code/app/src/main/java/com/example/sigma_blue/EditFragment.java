@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 
@@ -33,15 +34,9 @@ import java.util.Objects;
  */
 public class EditFragment extends Fragment
 {
-    private static final String ARG_ITEM = "item";
-    private static final String ARG_MODE = "mode";
     public static final String ARG_TAGS = "tag";
 
     private AddEditViewModel sharedVM;
-
-//    private Item currentItem;
-    private String mode;
-    private String oldItemID;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -55,6 +50,8 @@ public class EditFragment extends Fragment
     private EditText textSerial;
     private EditText textDescription;
     private EditText textComment;
+    private ListView tagListView;
+    private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
     private int mDay, mMonth, mYear;
 
@@ -72,16 +69,6 @@ public class EditFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        // Load item from bundle
-//        currentItem = new Item();
-//        mode = "edit";
-//        if (getArguments() != null)
-//        {
-//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-//            mode = (String)getArguments().getSerializable(ARG_MODE);
-//            oldItemID = currentItem.getDocID();
-//        }
     }
 
     /**
@@ -106,6 +93,7 @@ public class EditFragment extends Fragment
         textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
+        tagListView = binding.getRoot().findViewById((R.id.list_tag));
 
         return binding.getRoot();
     }
@@ -119,9 +107,10 @@ public class EditFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        final AddEditActivity activity = (AddEditActivity) requireActivity();
 
         // Access item from parent activities ViewModel
-        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
         final String mode = sharedVM.getMode().getValue();
 
@@ -135,6 +124,8 @@ public class EditFragment extends Fragment
             textSerial.setText(currentItem.getSerialNumber());
             textDescription.setText(currentItem.getDescription());
             textComment.setText(currentItem.getComment());
+            tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+            tagListView.setAdapter(tagListAdapter);
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
@@ -150,16 +141,15 @@ public class EditFragment extends Fragment
                 mMonth = c.get(Calendar.MONTH);
                 mDay = c.get(Calendar.DAY_OF_MONTH);
 
-
                 DatePickerDialog datePickerDialog = new DatePickerDialog(context,
                         new DatePickerDialog.OnDateSetListener()
                         {
                             @Override
                             public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth)
+                                                  int month, int day)
                             {
                                 // TODO: Add this to strings.xml
-                                textDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                                textDate.setText(year + "-" + (month + 1) + "-" + day);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -172,12 +162,12 @@ public class EditFragment extends Fragment
             {
                 if (Objects.equals(mode, "add"))
                 {
-                    Intent i = new Intent(getActivity(), ViewListActivity.class);
-                    getActivity().setResult(Activity.RESULT_OK, i);
-                    getActivity().finish();
+                    // Cancel new item; Return to ViewListActivity
+                    activity.returnAndClose();
                 }
                 else
                 {
+                    // Navigate to Item Details
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
             }
@@ -188,12 +178,8 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
-//                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+                // Open TagManager
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
-
             }
         });
 
@@ -202,33 +188,15 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Load ui text and save into shared item; Navigate to DetailsFragment
                 if (verifyText())
                 {
-//                    Bundle bundle = new Bundle();
-//                    Item editItem = new Item();
-                    currentItem.setName(textName.getText().toString());
-                    currentItem.setValue(Float.parseFloat(textValue.getText().toString()));
-                    SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-                    try {
-                        currentItem.setDate(sdf.parse(textDate.getText().toString()));
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                    currentItem.setMake(textMake.getText().toString());
-                    currentItem.setModel(textModel.getText().toString());
-                    currentItem.setSerialNumber(textSerial.getText().toString());
-                    currentItem.setDescription(textDescription.getText().toString());
-                    currentItem.setComment(textComment.getText().toString());
-//                    bundle.putSerializable(ARG_ITEM, currentItem);
-//                    bundle.putString(ARG_MODE, mode);
-//                    bundle.putString("id", oldItemID);
-//                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                    loadUiText(currentItem);
                     sharedVM.setItem(currentItem);
                     sharedVM.setMode("edit");
                     sharedVM.setDeleteFlag(false);
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
-
             }
         });
     }
@@ -259,5 +227,26 @@ public class EditFragment extends Fragment
             }
         }
         return flag;
+    }
+
+    /**
+     * Adds ui text into an item object
+     * @param item to edit
+     */
+    private void loadUiText(@NonNull Item item)
+    {
+        item.setName(textName.getText().toString());
+        item.setValue(Float.parseFloat(textValue.getText().toString()));
+        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
+        try {
+            item.setDate(sdf.parse(textDate.getText().toString()));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        item.setMake(textMake.getText().toString());
+        item.setModel(textModel.getText().toString());
+        item.setSerialNumber(textSerial.getText().toString());
+        item.setDescription(textDescription.getText().toString());
+        item.setComment(textComment.getText().toString());
     }
 }

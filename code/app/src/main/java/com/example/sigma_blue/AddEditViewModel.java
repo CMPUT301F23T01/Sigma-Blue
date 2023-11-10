@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 /**
- * Manges sharing of the item to be added/edited between all fragment
+ * Class that manages sharing of the item to be added/edited between all fragment
  */
 public class AddEditViewModel extends ViewModel
 {

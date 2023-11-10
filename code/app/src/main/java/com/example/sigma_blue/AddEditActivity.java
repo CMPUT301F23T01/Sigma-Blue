@@ -3,6 +3,7 @@ package com.example.sigma_blue;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -29,7 +30,6 @@ public class AddEditActivity extends BaseActivity
         setContentView(R.layout.add_edit_activity);
 
         // Add bundle to shared ViewHolder
-        // item to add/edit
         Bundle bundledItem;
         if (savedInstanceState == null) { bundledItem = getIntent().getExtras(); }
         else { bundledItem = savedInstanceState; }
@@ -50,6 +50,10 @@ public class AddEditActivity extends BaseActivity
         {
             graph.setStartDestination(R.id.editFragment);
         }
+        else if (Objects.equals(mode, "mutli_tag"))
+        {
+            graph.setStartDestination(R.id.tagManagerFragment);
+        }
         else
         {
             graph.setStartDestination(R.id.detailsFragment);
@@ -63,6 +67,8 @@ public class AddEditActivity extends BaseActivity
     protected void returnAndClose()
     {
         Intent i = new Intent(this, ViewListActivity.class);
+
+        // Add shared item and flags to intent
         i.putExtra(ARG_ITEM, sharedVM.getItem().getValue());
         i.putExtra(ARG_MODE, sharedVM.getMode().getValue());
         i.putExtra(ARG_ID, sharedVM.getId().getValue());
