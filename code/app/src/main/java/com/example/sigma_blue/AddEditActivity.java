@@ -12,6 +12,9 @@ import androidx.navigation.Navigation;
 
 import java.util.Objects;
 
+/**
+ * Add/Edit activity class. Controls the add and edit activity.
+ */
 public class AddEditActivity extends BaseActivity
 {
     // TODO: Add these modes to a global enum file

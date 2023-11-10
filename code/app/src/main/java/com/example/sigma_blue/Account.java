@@ -89,6 +89,9 @@ public class Account implements Serializable, IDatabaseItem<Account> {
         );
     };
 
+    /**
+     * Function that converts Account to HashMap of String and String.
+     */
     public static final Function<Account, HashMap<String, String>>
             hashMapOfAccount = a -> {
         HashMap<String, String> ret = new HashMap<>();

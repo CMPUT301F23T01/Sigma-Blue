@@ -97,7 +97,11 @@ public class LoginFragment extends DialogFragment {
 
                         // creates popup message for incorrect user account information input
                         if (!matches) {
-                            Toast incorrectMessage = Toast.makeText(getActivity(), "Incorrect Username or Password", Toast.LENGTH_SHORT);
+                            Toast incorrectMessage = Toast
+                                    .makeText(getActivity(),
+                                            getResources().getString(R.string
+                                                    .invalid_username_password),
+                                            Toast.LENGTH_SHORT);
                             incorrectMessage.show();
                         }
 
