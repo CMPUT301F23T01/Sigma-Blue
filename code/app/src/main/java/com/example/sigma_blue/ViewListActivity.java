@@ -216,17 +216,17 @@ public class ViewListActivity extends BaseActivity {
      */
     private void applyTagResults(ActivityResult result) {
         Bundle extras = result.getData().getExtras();
-        ArrayList<Parcelable> tags = null;
+        ArrayList<Tag> tags = null;
         try {
-            tags = extras.getParcelableArrayList("tags");
+            tags = ((Item) extras.getSerializable("item")).getTags();
         } catch (NullPointerException e) {
             Log.e("DEBUG", "Apply tags, but no tags returned");
         }
 
         if (!isNull(tags)) {
-            for (Parcelable t : tags) {
+            for (Tag t : tags) {
                 for (Item i : itemList.getAdapter().getHighlightedItems()) {
-                    i.addTag((Tag) t);
+                    i.addTag(t);
                 }
             }
         }

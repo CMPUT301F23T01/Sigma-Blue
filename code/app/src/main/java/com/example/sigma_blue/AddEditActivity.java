@@ -38,6 +38,8 @@ public class AddEditActivity extends BaseActivity
         String id = "";
         if (currentItem != null) {
             id = currentItem.getDocID();
+        } else {
+            currentItem = new Item();
         }
 
         sharedVM = new ViewModelProvider(this).get(AddEditViewModel.class);
