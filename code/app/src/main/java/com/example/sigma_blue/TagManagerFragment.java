@@ -35,19 +35,23 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class TagManagerFragment extends Fragment {
-    private ArrayList<Tag> tagsData; // Tags passed in from the Item in question.
+    private ArrayList<Tag> tagsData; // Tags that are applied to the Item, if applicable.
 
     // Shared value between parent calling activity and other fragments
     private AddEditViewModel sharedVM;
 
+    // Globally defined TagList that stores all tags defined for a particular user.
+    private TagList tagList;
+    private Account currentAccount;
+
     // Key for new tags that are being created.
     public static String ARG_TAG_ADD = "tag_add";
-    public TagListAdapter tagListAdapter;
 
     // Fragment binding
     private TagManagerFragmentBinding binding;
 
     // Fragment UI components
+    public TagListAdapter tagListAdapter;
     private Button tagCreateButton;
     private Button tagEditButton;
     private Button backButton;
@@ -88,7 +92,6 @@ public class TagManagerFragment extends Fragment {
         confirmButton = binding.getRoot().findViewById(R.id.tagManageConfirmButton);
         tagsListView = binding.getRoot().findViewById(R.id.tagManagerListView);
 
-
         return binding.getRoot();
     }
 
@@ -104,16 +107,26 @@ public class TagManagerFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-
-
-        // TODO Link the global TagList to the fragment data itself
-        // Tags in tagsData are passed from the current item, if applicable. TAKE THE UNION OF THE TWO.
+        // Tags in tagsData are passed from the current item, if applicable.
+        // The Account of the user that is signed in is also passed into the fragment.
         final AddEditActivity activity = (AddEditActivity) requireActivity();
+
+        // Link the TagList to the fragment itself
+        Bundle extras = activity.getIntent().getExtras();
+        if (extras != null) {
+            currentAccount = (Account) extras.getSerializable("account");
+        } else {
+            currentAccount = new Account("user1", "password");
+        }
+
+        // Load the global list of tags per user into the fragment
+        tagList = new TagList(TagDB.newInstance(currentAccount));
+
+        // Load the shared data from the parent AddEditActivity
         sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
 
         if (currentItem != null) {
-            // TODO Link the global TagList to the fragment data itself
 
             // User is opening the tag manager fragment on an existing fragment.
             tagsData = currentItem.getTags();
@@ -125,16 +138,26 @@ public class TagManagerFragment extends Fragment {
         } else {
             // The user is applying a selection of tags to multiple Items, we just want to
             // return an ArrayList of Tags that we can apply.
-            tagsData = new ArrayList<>();
+            // Here we simply get the globally defined tags.
+            tagsData = (ArrayList<Tag>) tagList.getTags();
         }
+
 
         // Get the new Tag object from the TagAddFragment, if applicable.
         if (getArguments() != null) {
             Tag freshlyCreatedTag = (Tag) getArguments().getSerializable(ARG_TAG_ADD);
-            if (!tagsData.contains(freshlyCreatedTag) && freshlyCreatedTag != null ) {
-                tagsData.add(freshlyCreatedTag);
+            if (freshlyCreatedTag != null) {
+
+                tagList.addTag(freshlyCreatedTag);
+
+                // tagsData.add(freshlyCreatedTag);
+
             }
         }
+
+        // Here we should obtain the union of the TagList's Tags with tagsData,
+        // but for now I will just join the two
+        tagsData.addAll( tagList.getTags() );
 
         /* Link the adapter to the UI */
         tagListAdapter = TagListAdapter.newInstance(tagsData, getContext());

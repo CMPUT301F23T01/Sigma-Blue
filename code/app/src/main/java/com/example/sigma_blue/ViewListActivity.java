@@ -148,6 +148,7 @@ public class ViewListActivity extends BaseActivity {
         Log.i("DEBUG", item.getName() + "Sort Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         intent.putExtra("item", item);
+        intent.putExtra("account", currentAccount);
         intent.putExtra("mode", "edit");
         activityLauncher.launch(intent, this::processNewItemResult);
     }

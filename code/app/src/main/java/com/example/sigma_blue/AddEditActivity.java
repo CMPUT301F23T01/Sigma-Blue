@@ -15,11 +15,14 @@ import java.util.Objects;
 public class AddEditActivity extends BaseActivity
 {
     // TODO: Add these modes to a global enum file
+    private static final String ARG_ACC = "account";
     private static final String ARG_ITEM = "item"; // item key accessor
     private static final String ARG_MODE = "mode"; // item mode accessor
     private static final String ARG_ID = "id"; // item id accessor
     private static final String ARG_DELETE_FLAG = "onDeletion"; // item deletion flag accessor
     private AddEditViewModel sharedVM; // Shared ViewModel
+    private Account currentAccount; // Account of the user currently logged in
+                                    // We will need pass this from ViewListActivity for DB interactions
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -34,6 +37,8 @@ public class AddEditActivity extends BaseActivity
         if (savedInstanceState == null) { bundledItem = getIntent().getExtras(); }
         else { bundledItem = savedInstanceState; }
         Item currentItem = (Item) bundledItem.getSerializable(ARG_ITEM);
+        currentAccount = (Account) bundledItem.getSerializable(ARG_ACC);
+
         if (Objects.isNull(currentItem)) { currentItem = new Item(); }
         String mode = bundledItem.getString(ARG_MODE);
         String id = currentItem.getDocID();
