@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 /**
- * Class for creating account version of fragment from main login page
+ * Class for handling the create account version of fragment from main login page
  */
 public class CreateAccFragment extends DialogFragment {
 
@@ -23,13 +23,16 @@ public class CreateAccFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
 
     /**
-     * Listens for interaction with confirm button in fragment, contains method to return to
-     * original activity
+     * Listens for interaction with confirm button in fragment, contains method to return to original activity
      */
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(Account account);
     }
 
+    /**
+     * Identifies listener of current fragment from context, errors if correct interface is not implemented
+     * @param context is a Context object of the current enivronment
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -40,6 +43,11 @@ public class CreateAccFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Method on creation of fragment
+     * @param savedInstanceState
+     * @return builder is a Dialog object for creating fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -56,12 +64,6 @@ public class CreateAccFragment extends DialogFragment {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        /*
-                         * Note: the way the fragment creates a new account will need to change
-                         * as it only works for one account object existing. When multiple exist
-                         * usernames will need to be checked to see if it is available
-                         */
 
                         // gets user input
                         String username = usernameInput.getText().toString();

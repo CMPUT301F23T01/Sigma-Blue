@@ -3,6 +3,15 @@ package com.example.sigma_blue;
 import static android.graphics.Color.WHITE;
 
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,10 +19,11 @@ import java.util.Arrays;
 /**
  * Stores information about a single tag.
  */
-public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>{
+public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     private String tagText;
     private Color colour;
     private int colorInt;
+    private boolean isChecked = false; // For the TagManager.
 
     public Tag(String tagText, int colour) {
         this.tagText = tagText;
@@ -38,6 +48,9 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>{
         return colour;
     }
 
+    public void setColour(Color colour) {
+        this.colour = colour;
+    }
     /**
      * Part of the comparable interface.
      * @param o the object to be compared.

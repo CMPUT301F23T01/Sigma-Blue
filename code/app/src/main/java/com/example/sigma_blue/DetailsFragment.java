@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +17,20 @@ import android.widget.TextView;
 
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
+/**
+ * Class for handling activity to view details of an item
+ */
 public class DetailsFragment extends Fragment
 {
     // Fragment key-value pairs received from external fragments
     private static final String ARG_ITEM = "item";
+    private static final String ARG_MODE = "mode";
+    private static final String ARG_ID = "id";
 
-    private Item currentItem;
+//    private Item currentItem;
+    private String mode;
     private String oldItemID;
 
     // Fragment binding
@@ -40,24 +46,47 @@ public class DetailsFragment extends Fragment
     TextView textDescription;
     TextView textComment;
 
+    /**
+     * Required empty public constructor
+     */
     public DetailsFragment() {
-        // Required empty public constructor
     }
 
+    /**
+     * Method to create the activity
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         // Load item from bundle
-        currentItem = new Item();
-        if (getArguments() != null)
-        {
-            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            oldItemID = getArguments().getString("id");
-        }
+//        currentItem = new Item();
+//        mode = "edit";
+//        if (getArguments() != null)
+//        {
+//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+//            mode = getArguments().getSerializable(ARG_MODE);
+//            oldItemID = getArguments().getString("id");
+//        }
+
+        // Access item from parent activities ViewModel
+//        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+//        sharedVM.getItem().observe(requireActivity(), item -> {
+//            Log.e("DEBUG","after: " + item.getName());
+//            Log.e("DEBUG", "kys");
+////            currentItem = item;
+//        });
+
     }
 
+    /**
+     * Method to inflate layout of fragment and bind components
+     * @param inflater is the LayoutInflater that is going to inflate for the fragment
+     * @param container is a ViewGroup of the views for the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -78,10 +107,19 @@ public class DetailsFragment extends Fragment
         return binding.getRoot();
     }
 
+    /**
+     * Method to set details of item in fragment and handle button interactions
+     * @param view is the View of the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        // Access item from parent activities ViewModel
+        AddEditViewModel sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        final Item currentItem = sharedVM.getItem().getValue();
 
         // set item details from bundle
         textName.setText(currentItem.getName());
@@ -99,9 +137,11 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(ARG_ITEM, currentItem);
-                NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(ARG_ITEM, currentItem);
+//                bundle.putString(ARG_MODE, mode);
+//                NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
+                NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
 
@@ -111,7 +151,6 @@ public class DetailsFragment extends Fragment
                 Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
                 i.putExtra("onDeletion", true);
-                //startActivity(i);
                 getActivity().setResult(Activity.RESULT_OK, i);
                 getActivity().finish();
             }
@@ -124,14 +163,16 @@ public class DetailsFragment extends Fragment
             {
                 Intent i = new Intent(getActivity(), ViewListActivity.class);
                 i.putExtra(ARG_ITEM, currentItem);
-                i.putExtra("id", oldItemID);
-                //startActivity(i);
+                i.putExtra(ARG_ID, sharedVM.getId().getValue());
                 getActivity().setResult(Activity.RESULT_OK, i);
                 getActivity().finish();
             }
         });
     }
 
+    /**
+     * Method for destroying fragment
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

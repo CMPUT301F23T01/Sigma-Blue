@@ -5,12 +5,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
- * Keeps track of a list of tags. Also allows for sync to the DB (well in the future...)
+ * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
-public class TagList implements IDatabaseList<Tag> {
-    private List<Tag> tags;
+public class TagList implements IDatabaseList<Tag>, Serializable {
+    private ArrayList<Tag> tags;
     final private TagDB tagDB;
 
     public static final String LABEL = "LABEL", COLOR = "COLOR";
@@ -26,8 +28,10 @@ public class TagList implements IDatabaseList<Tag> {
         TagList ret = new TagList(db);
         return ret;
     }
+
     public TagList(TagDB tagDB) {
         this.tagDB = tagDB;
+        this.tags = new ArrayList<>();
     }
 
     public void saveTagsToDB() {
@@ -45,11 +49,15 @@ public class TagList implements IDatabaseList<Tag> {
         }
     }
 
-    public void remove(Tag tag) {
+    public void removeTag(Tag tag) {
         if (tags.contains(tag)) {
             tagDB.remove(tag);
             tags.remove(tag);
         }
+    }
+
+    public void removeTag(int position) {
+        tags.remove(position);
     }
 
     public boolean containsTag(Tag tag) {
@@ -60,13 +68,19 @@ public class TagList implements IDatabaseList<Tag> {
         return this.tags;
     }
 
+    public int getCount() { return tags.size(); }
+
+    public Tag getItem(int position) {
+        return tags.get(position);
+    }
+
     /**
      * Sets a new list.
-     * @param lst is a List object that is replacing it.
+     * @param lst is an list object that is replacing it.
      */
     @Override
     public void setList(List<Tag> lst) {
-        this.tags = lst;
+        this.tags = (ArrayList<Tag>) lst; // Duck tape fix. If this is implemented in main I'll kms
     }
 
     /**
