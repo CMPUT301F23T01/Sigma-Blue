@@ -4,18 +4,17 @@ import android.util.Log;
 
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Similar to ItemList and TagList. Stores a list of all user accounts
+ * Similar to ItemList and TagList. Stores a list of all user accounts. Allows
+ * for persistent storage of accounts.
  */
 public class AccountList implements Serializable, IDatabaseList<Account> {
     private List<Account> accList;
-    private AccountDB accountDB;
+    private final AccountDB accountDB;
 
     /**
      * newInstance method to hide construction
@@ -23,6 +22,16 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
      */
     public static AccountList newInstance() {
         return new AccountList();
+    }
+
+    /**
+     * Dependency injection constructor.
+     * @param aDB database handler
+     * @param aLst local list
+     */
+    public AccountList(AccountDB aDB, List<Account> aLst) {
+        accountDB = aDB;
+        accList = aLst;
     }
 
     // placholder for now
@@ -50,6 +59,7 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
      * @return match is a boolean that returns true if the account is contained in the list, and false if not
      */
     public boolean contains(Account account) {
+        // TODO: Bach come back and refactor
         if (accList == null) {
             Log.w("DEBUG", "Checking null accounts list");
             return false;
@@ -69,22 +79,27 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         this.accList = lst;
     }
 
+    /**
+     * Method for updating any ui element associated with the method.
+     */
     @Override
     public void updateUI() {
-
     }
 
+    /**
+     * Loads the database collection into a List of objects.
+     * @param q QuerySnapshot (database collection)
+     * @return a List of Tag objects that represent the tags held by the account
+     */
     @Override
     public List<Account> loadArray(QuerySnapshot q) {
-        return AccountDB.loadArray(q, v-> {
-            return new Account(
-                    v.getString("USERNAME"),
-                    v.getString("PASSWORD")
-            );
-        });
+        return AccountDB.loadArray(q, Account.accountOfDocument);
     }
 
-
+    /**
+     * Installs the listener to the database that updates the list as the
+     * database changes.
+     */
     @Override
     public void startListening() {
         accountDB.startListening(accountDB.getCollectionReference(), this);
