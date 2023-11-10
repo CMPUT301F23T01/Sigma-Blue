@@ -2,18 +2,15 @@ package com.example.sigma_blue;
 
 import android.util.Log;
 
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
- * Similar to ItemList and TagList. Stores a list of all user accounts
+ * Similar to ItemList and TagList. Stores a list of all user accounts. Allows
+ * for persistent storage of accounts.
  */
 public class AccountList implements Serializable, IDatabaseList<Account> {
     private List<Account> accList;
@@ -81,6 +78,9 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         this.accList = lst;
     }
 
+    /**
+     * Method for updating any ui element associated with the method.
+     */
     @Override
     public void updateUI() {
     }
@@ -95,7 +95,10 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         return AccountDB.loadArray(q, Account.accountOfDocument);
     }
 
-
+    /**
+     * Installs the listener to the database that updates the list as the
+     * database changes.
+     */
     @Override
     public void startListening() {
         accountDB.startListening(accountDB.getCollectionReference(), this);
