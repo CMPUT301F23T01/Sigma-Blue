@@ -1,10 +1,15 @@
 package com.example.sigma_blue;
 
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.function.Function;
 
 public class Item implements Comparable<Item>, Serializable,
         IDatabaseItem<Item> {
@@ -343,4 +348,52 @@ public class Item implements Comparable<Item>, Serializable,
         return this.name.hashCode();
     }
 
+    public static final SimpleDateFormat simpledf = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * Function for converting Item object into HashMap, which is compatible
+     * with Firestore database.
+     */
+    public static final Function<Item, HashMap<String, String>> hashMapOfItem =
+            item -> {
+                HashMap<String, String> ret = new HashMap<>();
+                ret.put("NAME", item.getName());
+                ret.put("DATE", simpledf.format(item.getDate()));
+                ret.put("MAKE", item.getMake());
+                ret.put("MODEL", item.getModel());
+                ret.put("COMMENT", item.getComment());
+                ret.put("DESCRIPTION", item.getDescription());
+                ret.put("SERIAL", item.getSerialNumber());
+                ret.put("VALUE", String.valueOf(item.getValue()));
+                return ret;
+            };
+
+    /**
+     * This function is created for converting QueryDocumentSnapshot from the
+     * database into an Item object.
+     */
+    public static final Function<QueryDocumentSnapshot, Item>
+            itemOfQueryDocument = q -> {
+        try {
+            return Item.newInstance(
+                    q.getString("NAME"),
+                    simpledf.parse(q.getString("DATE")),
+                    q.getString("COMMENT"),
+                    q.getString("DESCRIPTION"),
+                    q.getString("MAKE"),
+                    q.getString("MODEL"),
+                    Float.parseFloat(q.getString("VALUE"))
+            );
+        } catch (ParseException e) {
+            return Item.newInstance(
+                    q.getString("NAME"),
+                    new Date(),
+                    q.getString("COMMENT"),
+                    q.getString("DESCRIPTION"),
+                    q.getString("MAKE"),
+                    q.getString("MODEL"),
+                    Float.parseFloat(q.getString("VALUE"))
+            );
+        }
+    };
 }

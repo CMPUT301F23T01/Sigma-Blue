@@ -10,6 +10,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * This class handles database handling.
@@ -52,6 +53,7 @@ public class ItemDB extends ADatabaseHandler<Item> {
     private ItemDB() {
     }
 
+
     /**
      * Embed the account into the database. Only used when creating a new
      * instance.
@@ -84,15 +86,7 @@ public class ItemDB extends ADatabaseHandler<Item> {
      * @param item is an Item object being added to the database.
      */
     public void add(final Item item) {
-        addDocument(itemsRef, item, v -> {
-            HashMap<String, String> ret = new HashMap<>();
-            ret.put("NAME", v.getName());
-            ret.put("DATE", v.getDate().toString());
-            ret.put("MAKE", v.getMake());
-            ret.put("MODEL", v.getModel());
-            ret.put("VALUE", String.valueOf(v.getValue()));
-            return ret;
-        }, item.getDocID());
+        addDocument(itemsRef, item, Item.hashMapOfItem, item.getDocID());
         Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
     }
 

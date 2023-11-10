@@ -22,6 +22,10 @@ public class TagList implements IDatabaseList<Tag> {
         return ret;
     };
 
+    public TagList newInstance(TagDB db) {
+        TagList ret = new TagList(db);
+        return ret;
+    }
     public TagList(TagDB tagDB) {
         this.tagDB = tagDB;
     }

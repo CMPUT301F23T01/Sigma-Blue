@@ -164,15 +164,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      */
     @Override
     public List<Item> loadArray(QuerySnapshot q) {
-        return ItemDB.loadArray(q, v -> {
-            return Item.newInstance(
-                    v.getString("NAME"),
-                    new Date(),    // TODO: Work on unifying date
-                    v.getString("MAKE"),
-                    v.getString("MODEL"),
-                    Float.parseFloat(v.getString("VALUE"))
-            );
-        });
+        return ItemDB.loadArray(q, Item.itemOfQueryDocument);
     }
 
     public void setDatabaseHandler(final ItemDB dbH) {
