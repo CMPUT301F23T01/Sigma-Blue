@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 
@@ -49,6 +50,8 @@ public class EditFragment extends Fragment
     private EditText textSerial;
     private EditText textDescription;
     private EditText textComment;
+    private ListView tagListView;
+    private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
     private int mDay, mMonth, mYear;
 
@@ -90,6 +93,7 @@ public class EditFragment extends Fragment
         textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
+        tagListView = binding.getRoot().findViewById((R.id.list_tag));
 
         return binding.getRoot();
     }
@@ -103,10 +107,10 @@ public class EditFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        final AddEditActivity activity = (AddEditActivity) getActivity();
+        final AddEditActivity activity = (AddEditActivity) requireActivity();
 
         // Access item from parent activities ViewModel
-        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
         final String mode = sharedVM.getMode().getValue();
 
@@ -120,6 +124,8 @@ public class EditFragment extends Fragment
             textSerial.setText(currentItem.getSerialNumber());
             textDescription.setText(currentItem.getDescription());
             textComment.setText(currentItem.getComment());
+            tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+            tagListView.setAdapter(tagListAdapter);
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
@@ -140,10 +146,10 @@ public class EditFragment extends Fragment
                         {
                             @Override
                             public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth)
+                                                  int month, int day)
                             {
                                 // TODO: Add this to strings.xml
-                                textDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                                textDate.setText(year + "-" + (month + 1) + "-" + day);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -156,10 +162,12 @@ public class EditFragment extends Fragment
             {
                 if (Objects.equals(mode, "add"))
                 {
+                    // Cancel new item; Return to ViewListActivity
                     activity.returnAndClose();
                 }
                 else
                 {
+                    // Navigate to Item Details
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
             }
@@ -170,6 +178,7 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Open TagManager
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
@@ -179,6 +188,7 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Load ui text and save into shared item; Navigate to DetailsFragment
                 if (verifyText())
                 {
                     loadUiText(currentItem);
@@ -187,7 +197,6 @@ public class EditFragment extends Fragment
                     sharedVM.setDeleteFlag(false);
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
-
             }
         });
     }

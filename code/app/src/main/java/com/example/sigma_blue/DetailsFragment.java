@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
@@ -28,14 +29,16 @@ public class DetailsFragment extends Fragment
     private DetailsFragmentBinding binding;
 
     // Fragment ui components
-    TextView textName;
-    TextView textValue;
-    TextView textDate;
-    TextView textMake;
-    TextView textModel;
-    TextView textSerial;
-    TextView textDescription;
-    TextView textComment;
+    private TextView textName;
+    private TextView textValue;
+    private TextView textDate;
+    private TextView textMake;
+    private TextView textModel;
+    private TextView textSerial;
+    private TextView textDescription;
+    private TextView textComment;
+    private ListView tagListView;
+    private TagListAdapter tagListAdapter;
 
     /**
      * Required empty public constructor
@@ -75,6 +78,7 @@ public class DetailsFragment extends Fragment
         textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
+        tagListView = binding.getRoot().findViewById(R.id.list_tag);
 
         return binding.getRoot();
     }
@@ -88,13 +92,13 @@ public class DetailsFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        final AddEditActivity activity = (AddEditActivity) getActivity();
+        final AddEditActivity activity = (AddEditActivity) requireActivity();
 
         // Access item from parent activities ViewModel
-        AddEditViewModel sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        AddEditViewModel sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
 
-        // set item details from bundle
+        // set item details from shared activity
         textName.setText(currentItem.getName());
         textValue.setText(String.valueOf(currentItem.getValue()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -104,12 +108,15 @@ public class DetailsFragment extends Fragment
         textSerial.setText(currentItem.getSerialNumber());
         textDescription.setText(currentItem.getDescription());
         textComment.setText(currentItem.getComment());
+        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+        tagListView.setAdapter(tagListAdapter);
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
+                // Navigate to EditFragment
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
@@ -118,6 +125,7 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Return to ViewListActivity; notify object needs to be deleted
                 sharedVM.setDeleteFlag(true);
                 activity.returnAndClose();
             }
@@ -128,6 +136,7 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Return to ViewListActivity
                 activity.returnAndClose();
             }
         });

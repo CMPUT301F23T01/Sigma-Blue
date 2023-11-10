@@ -63,6 +63,8 @@ public class AddEditActivity extends BaseActivity
     protected void returnAndClose()
     {
         Intent i = new Intent(this, ViewListActivity.class);
+
+        // Add shared item and flags to intent
         i.putExtra(ARG_ITEM, sharedVM.getItem().getValue());
         i.putExtra(ARG_MODE, sharedVM.getMode().getValue());
         i.putExtra(ARG_ID, sharedVM.getId().getValue());
