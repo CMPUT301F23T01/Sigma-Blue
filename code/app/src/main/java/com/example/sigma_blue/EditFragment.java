@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,18 +35,7 @@ import java.util.Objects;
  */
 public class EditFragment extends Fragment
 {
-    // Fragment key-value pairs received from external fragments
-    public static final String ARG_ITEM = "item";
-    public static final String ARG_MODE = "mode";
-    public static final String ARG_TAGS = "tag";
-
-    private Item currentItem;
-
     private AddEditViewModel sharedVM;
-
-//    private Item currentItem;
-    private String mode;
-    private String oldItemID;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -62,6 +52,7 @@ public class EditFragment extends Fragment
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
+    private Item savedItemChanges;
     private int mDay, mMonth, mYear;
 
     /**
@@ -120,7 +111,9 @@ public class EditFragment extends Fragment
 
         // Access item from parent activities ViewModel
         sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
-        final Item currentItem = sharedVM.getItem().getValue();
+
+        // Load Item and mode
+        final Item currentItem = sharedVM.getEditItem().getValue();
         final String mode = sharedVM.getMode().getValue();
 
         // set item details
@@ -188,6 +181,9 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Save current ui state
+                loadUiText(currentItem);
+                sharedVM.setEditItem(currentItem);
                 // Open TagManager
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
@@ -248,7 +244,8 @@ public class EditFragment extends Fragment
         item.setName(textName.getText().toString());
         item.setValue(Float.parseFloat(textValue.getText().toString()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        try {
+        try
+        {
             item.setDate(sdf.parse(textDate.getText().toString()));
         } catch (ParseException e) {
             throw new RuntimeException(e);

@@ -301,13 +301,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             android:id="@+id/button_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/add_edit_btn_bgr_test"
-            android:text="@string/delete_btn_delete"
+            android:text="@string/add_edit_btn_delete"
             android:textColor="@color/add_edit_btn_text_test"
             app:layout_constraintBottom_toBottomOf="@+id/button_edit"
             app:layout_constraintEnd_toEndOf="parent"

@@ -117,6 +117,7 @@ public class DetailsFragment extends Fragment
             public void onClick(View view)
             {
                 // Navigate to EditFragment
+                sharedVM.setEditItem(currentItem);
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
