@@ -19,6 +19,9 @@ import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * Class for handling activity to view details of an item
+ */
 public class DetailsFragment extends Fragment
 {
     // Fragment key-value pairs received from external fragments
@@ -43,10 +46,16 @@ public class DetailsFragment extends Fragment
     TextView textDescription;
     TextView textComment;
 
+    /**
+     * Required empty public constructor
+     */
     public DetailsFragment() {
-        // Required empty public constructor
     }
 
+    /**
+     * Method to create the activity
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -72,6 +81,12 @@ public class DetailsFragment extends Fragment
 
     }
 
+    /**
+     * Method to inflate layout of fragment and bind components
+     * @param inflater is the LayoutInflater that is going to inflate for the fragment
+     * @param container is a ViewGroup of the views for the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -92,6 +107,11 @@ public class DetailsFragment extends Fragment
         return binding.getRoot();
     }
 
+    /**
+     * Method to set details of item in fragment and handle button interactions
+     * @param view is the View of the fragment
+     * @param savedInstanceState is a Bundle passed that holds data of activity
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
@@ -150,6 +170,9 @@ public class DetailsFragment extends Fragment
         });
     }
 
+    /**
+     * Method for destroying fragment
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
