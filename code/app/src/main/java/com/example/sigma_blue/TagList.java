@@ -17,14 +17,14 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
 
     public static final String LABEL = "LABEL", COLOR = "COLOR";
 
-    public final Function<Tag, HashMap<String, String>> hashMapOfTag = t -> {
+    public static final Function<Tag, HashMap<String, String>> hashMapOfTag = t -> {
         HashMap<String, String> ret = new HashMap<>();
         ret.put(LABEL, t.getTagText());
         ret.put(COLOR, t.getColourString());
         return ret;
     };
 
-    public TagList newInstance(TagDB db) {
+    public static TagList newInstance(TagDB db) {
         TagList ret = new TagList(db);
         return ret;
     }
