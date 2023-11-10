@@ -45,13 +45,43 @@
             android:textColor="#FFD600" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/selectedItemsMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#D6D1CF"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+
+        <Button
+            android:id="@+id/deleteSelectedButton"
+            android:layout_width="104dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:backgroundTint="#0437F2"
+            android:text="Delete"
+            android:textColor="#FFD600" />
+
+        <Button
+            android:id="@+id/addTagsSelectedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:backgroundTint="#0437F2"
+            android:text="Add Tag..."
+            android:textColor="#FFD600" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="630dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/selectedItemsMenu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
