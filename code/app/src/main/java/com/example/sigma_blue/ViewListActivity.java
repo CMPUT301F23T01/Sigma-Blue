@@ -206,6 +206,7 @@ public class ViewListActivity extends BaseActivity {
         for (Item i : this.selectedItems) {
             itemList.remove(i);
         }
+        selectedItems.clear();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
