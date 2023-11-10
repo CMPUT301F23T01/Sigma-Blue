@@ -30,7 +30,6 @@ public class AddEditActivity extends BaseActivity
         setContentView(R.layout.add_edit_activity);
 
         // Add bundle to shared ViewHolder
-        // item to add/edit
         Bundle bundledItem;
         if (savedInstanceState == null) { bundledItem = getIntent().getExtras(); }
         else { bundledItem = savedInstanceState; }
