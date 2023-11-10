@@ -162,13 +162,14 @@ public class TagManagerFragment extends Fragment {
         // but for now I will just join the two
         // TODO Consider the checked status, we probably should get unique tags without regard
         //  to the isChecked status.
-        tagsData.addAll( tagList.getTags() );
+        tagsData =  (ArrayList<Tag>) tagList.getTags();
 
         /* Link the adapter to the UI */
         tagListAdapter = TagListAdapter.newInstance(tagsData, getContext());
         tagsListView.setAdapter(tagListAdapter);
         updateTagListView();
 
+        tagList.setAdapter(tagListAdapter);
 
         /* On click listeners */
 
@@ -214,6 +215,7 @@ public class TagManagerFragment extends Fragment {
                 //NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
                 if (Objects.equals(sharedVM.getMode().getValue(), "multi_tag"))
                 {
+                    currentItem.setTags(tagsConfirmed);
                     activity.returnAndClose();
                 }
                 else

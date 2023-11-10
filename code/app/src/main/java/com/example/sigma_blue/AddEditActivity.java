@@ -31,7 +31,6 @@ public class AddEditActivity extends BaseActivity
 
         // Set xml view
         setContentView(R.layout.add_edit_activity);
-        setContentView(R.layout.add_edit_activity);
 
         // Add bundle to shared ViewHolder
         Bundle bundledItem;
