@@ -15,37 +15,13 @@ import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 /**
  * Fragment for adding new tags.
  */
 public class TagAddFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
-    private TagAddFragment.OnFragmentInteractionListener listener;
-
-    /**
-     * Attaches the listener to this fragment where we will implement the interfaces
-     * in the activity/fragment that calls the @code{addToTagList} method.
-     * @param context Application environment provided by default.
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof TagAddFragment.OnFragmentInteractionListener) {
-            listener = (TagAddFragment.OnFragmentInteractionListener) context;
-        }
-    }
-
-    /**
-     * Interface for adding To be implemented in the
-     * activity/fragment itself that calls this fragment.
-     * Note that you will have to update the dataset, as well as the
-     * ArrayAdapter that is being used in this case in the activity.
-     */
-    public interface OnFragmentInteractionListener {
-        void addToTagList(Tag tag);
-    }
-
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -66,10 +42,12 @@ public class TagAddFragment extends Fragment {
             String tagName = inputField.getText().toString();
             // NOTE for now, we will use the default color that is provided in the fragment.
 
-            // TODO Add tag to list, through the activity/fragment that calls this fragment.
-            // listener.addToTagList(new Tag(tagName, tagColor));
+            Tag tagToSend = new Tag(tagName, tagColor);
 
-            getActivity().onBackPressed();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(TagManagerFragment.ARG_TAG_ADD, tagToSend);
+
+            NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment, bundle);
 
         });
 

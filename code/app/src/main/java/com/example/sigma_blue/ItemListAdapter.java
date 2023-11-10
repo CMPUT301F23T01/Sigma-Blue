@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +33,7 @@ public class ItemListAdapter extends
     }
     private static OnItemClickListener clickListener;
     private static OnLongClickListener longClickListener;
+    private ArrayList<RecyclerViewHolder> recyclerViewHolderList;
 
 
     /* Caching the views in the adapter. */
@@ -38,6 +41,8 @@ public class ItemListAdapter extends
         TextView name;
         TextView make;
         TextView id;
+        Boolean highlighted;
+        Item item;
 
         /* Constructor that accepts the entire row */
         public RecyclerViewHolder(View itemView) {
@@ -55,11 +60,14 @@ public class ItemListAdapter extends
          * @param longClickListener method to call on a long click
          */
         public void bind(final Item item, final OnItemClickListener clickListener, final OnLongClickListener longClickListener) {
+            this.highlighted = itemView.isSelected();
+            this.item = item;
             itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    highlighted = !highlighted;
                     itemView.setSelected(!itemView.isSelected());
                     itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
                     longClickListener.onLongClick(item);
@@ -73,6 +81,23 @@ public class ItemListAdapter extends
                     clickListener.onItemClick(item);
                 }
             });
+        }
+
+        /**
+         * 'un-highlight' this item
+         */
+        public void resetHighlight() {
+            itemView.setSelected(false);
+            itemView.setBackgroundColor(Color.WHITE);
+            highlighted = false;
+        }
+
+        public boolean getHighlighted() {
+            return this.highlighted;
+        }
+
+        public Item getItem() {
+            return this.item;
         }
     }
 
@@ -134,13 +159,18 @@ public class ItemListAdapter extends
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (this.recyclerViewHolderList == null) {
+            recyclerViewHolderList = new ArrayList<RecyclerViewHolder>();
+        }
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         /* Need to inflate the custom layout */
         View itemView = inflater.inflate(R.layout.view_row, parent,
                 false);
-        return new RecyclerViewHolder(itemView);
+        RecyclerViewHolder r = new RecyclerViewHolder(itemView);
+        this.recyclerViewHolderList.add(r);
+        return r;
     }
 
     /**
@@ -225,5 +255,21 @@ public class ItemListAdapter extends
                     .setText(R.string.empty_summary_view);
         } else Log.w("Missing Summary View",
                 "Summary view not hooked to adapter");
+    }
+
+    public ArrayList<Item> getHighlightedItems() {
+        ArrayList<Item> highlightedItems = new ArrayList<Item>();
+        for (RecyclerViewHolder H : recyclerViewHolderList) {
+            if (H.getHighlighted()) {
+                highlightedItems.add(H.getItem());
+            }
+        }
+        return highlightedItems;
+    }
+
+    public void resetHighlightedItems() {
+        for (RecyclerViewHolder H : recyclerViewHolderList) {
+            H.resetHighlight();
+        }
     }
 }

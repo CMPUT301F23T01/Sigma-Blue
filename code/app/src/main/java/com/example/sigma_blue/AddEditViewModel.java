@@ -5,16 +5,18 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 /**
- * Manges sharing of the item to be added/edited between all fragment
+ * Class that manages sharing of the item to be added/edited between all fragment
  */
 public class AddEditViewModel extends ViewModel
 {
     // Live data instance
     private final MutableLiveData<Item> mItem = new MutableLiveData<>(new Item());
+    private final MutableLiveData<Item> mEditItem = new MutableLiveData<>(new Item());
     // TODO: Change String to enum
     private final MutableLiveData<String>  mMode = new MutableLiveData<>();
     private final MutableLiveData<String> mId = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mDeleteFlag = new MutableLiveData<>();
+    private final MutableLiveData<Account> mAccount = new MutableLiveData<>();
 
     /**
      * Accesses the shared item object
@@ -33,6 +35,16 @@ public class AddEditViewModel extends ViewModel
         mItem.setValue(item);
     }
 
+    public LiveData<Item> getEditItem()
+    {
+        return mEditItem;
+    }
+
+    public void setEditItem(Item item)
+    {
+        mEditItem.setValue(item);
+    }
+
     public LiveData<String> getMode() { return mMode; }
 
     public void setMode(String mode) { mMode.setValue(mode); }
@@ -44,4 +56,8 @@ public class AddEditViewModel extends ViewModel
     public LiveData<Boolean> getDeleteFlag() { return mDeleteFlag; }
 
     public void setDeleteFlag(Boolean deleteFlag) { mDeleteFlag.setValue(deleteFlag);}
+
+    public LiveData<Account> getAccount() { return mAccount; }
+
+    public void setAccount(Account account) { mAccount.setValue(account);}
 }

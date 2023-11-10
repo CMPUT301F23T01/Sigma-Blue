@@ -49,6 +49,7 @@
     <string name="add_edit_btn_save">Save</string>
     <string name="add_edit_btn_cancel">Cancel</string>
     <string name="add_edit_btn_edit">Edit</string>
+    <string name="add_edit_btn_delete">Delete</string>
     <string name="add_edit_btn_scan_serial">Scan Serial\nNumber</string>
     <string name="add_edit_btn_scan_barcode">Scan Barcode</string>
     <string name="add_edit_btn_tag">Add Tag</string>
@@ -69,8 +70,8 @@
     <string name="add_edit_text_comment">Comment</string>
     <string name="add_edit_text_comment_hint">Add comment...</string>
     <!-- -end- -->
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="delete_btn_delete">Delete</string>
 
 </resources>

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
@@ -24,27 +25,20 @@ import java.text.SimpleDateFormat;
  */
 public class DetailsFragment extends Fragment
 {
-    // Fragment key-value pairs received from external fragments
-    private static final String ARG_ITEM = "item";
-    private static final String ARG_MODE = "mode";
-    private static final String ARG_ID = "id";
-
-//    private Item currentItem;
-    private String mode;
-    private String oldItemID;
-
     // Fragment binding
     private DetailsFragmentBinding binding;
 
     // Fragment ui components
-    TextView textName;
-    TextView textValue;
-    TextView textDate;
-    TextView textMake;
-    TextView textModel;
-    TextView textSerial;
-    TextView textDescription;
-    TextView textComment;
+    private TextView textName;
+    private TextView textValue;
+    private TextView textDate;
+    private TextView textMake;
+    private TextView textModel;
+    private TextView textSerial;
+    private TextView textDescription;
+    private TextView textComment;
+    private ListView tagListView;
+    private TagListAdapter tagListAdapter;
 
     /**
      * Required empty public constructor
@@ -60,25 +54,6 @@ public class DetailsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        // Load item from bundle
-//        currentItem = new Item();
-//        mode = "edit";
-//        if (getArguments() != null)
-//        {
-//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-//            mode = getArguments().getSerializable(ARG_MODE);
-//            oldItemID = getArguments().getString("id");
-//        }
-
-        // Access item from parent activities ViewModel
-//        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
-//        sharedVM.getItem().observe(requireActivity(), item -> {
-//            Log.e("DEBUG","after: " + item.getName());
-//            Log.e("DEBUG", "kys");
-////            currentItem = item;
-//        });
-
     }
 
     /**
@@ -103,6 +78,7 @@ public class DetailsFragment extends Fragment
         textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
+        tagListView = binding.getRoot().findViewById(R.id.list_tag);
 
         return binding.getRoot();
     }
@@ -116,12 +92,13 @@ public class DetailsFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        final AddEditActivity activity = (AddEditActivity) requireActivity();
 
         // Access item from parent activities ViewModel
-        AddEditViewModel sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        AddEditViewModel sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
 
-        // set item details from bundle
+        // set item details from shared activity
         textName.setText(currentItem.getName());
         textValue.setText(String.valueOf(currentItem.getValue()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -131,28 +108,27 @@ public class DetailsFragment extends Fragment
         textSerial.setText(currentItem.getSerialNumber());
         textDescription.setText(currentItem.getDescription());
         textComment.setText(currentItem.getComment());
+        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+        tagListView.setAdapter(tagListAdapter);
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(ARG_ITEM, currentItem);
-//                bundle.putString(ARG_MODE, mode);
-//                NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment, bundle);
+                // Navigate to EditFragment
+                sharedVM.setEditItem(currentItem);
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
 
         view.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ViewListActivity.class);
-                i.putExtra(ARG_ITEM, currentItem);
-                i.putExtra("onDeletion", true);
-                getActivity().setResult(Activity.RESULT_OK, i);
-                getActivity().finish();
+            public void onClick(View v)
+            {
+                // Return to ViewListActivity; notify object needs to be deleted
+                sharedVM.setDeleteFlag(true);
+                activity.returnAndClose();
             }
         });
 
@@ -161,11 +137,8 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent(getActivity(), ViewListActivity.class);
-                i.putExtra(ARG_ITEM, currentItem);
-                i.putExtra(ARG_ID, sharedVM.getId().getValue());
-                getActivity().setResult(Activity.RESULT_OK, i);
-                getActivity().finish();
+                // Return to ViewListActivity
+                activity.returnAndClose();
             }
         });
     }

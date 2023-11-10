@@ -15,9 +15,29 @@ import java.util.ArrayList;
 public class TagList implements IDatabaseList<Tag>, Serializable {
     private ArrayList<Tag> tags;
     final private TagDB tagDB;
+    private TagListAdapter adapter;
 
+    /**
+     * Factory creation method that binds the given Account to
+     * the TagList itself.
+     * @param a The account that the user is signed in with.
+     * @return an instance of the TagList object containing a connection
+     * to the database that stores all of the Tags that the user has defined.
+     */
+    public static TagList newInstance(Account a) {
+        TagDB db = TagDB.newInstance(a);
+        TagList ret = new TagList(db);
+        return ret;
+    }
 
-
+    /**
+     * Factory creation method that binds the given TagDB to
+     * the TagList itself.
+     * @param db The TagDB object that defines the user account's
+     *           connection to the database..
+     * @return an instance of the TagList object containing a connection
+     * to the database that stores all of the Tags that the user has defined.
+     */
     public static TagList newInstance(TagDB db) {
         TagList ret = new TagList(db);
         return ret;
@@ -82,7 +102,8 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
      */
     @Override
     public void updateUI() {
-
+        adapter.setList(this.tags);
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -101,8 +122,7 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
     public static final Function<QueryDocumentSnapshot, Tag> tagOfDocument
             = q -> {
         if (q.getString("COLOR") != null)
-            return new Tag(q.getString("LABEL"),
-                    Integer.decode(q.getString("COLOR")));
+            return new Tag(q.getString("LABEL"),q.getString("COLOR"));
         else return null;
     };
 
@@ -113,5 +133,9 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
     @Override
     public void startListening() {
         tagDB.startListening(this.tagDB.getCollectionReference(), this);
+    }
+
+    public void setAdapter(TagListAdapter tagListAdapter) {
+        this.adapter = tagListAdapter;
     }
 }

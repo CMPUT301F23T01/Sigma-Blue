@@ -30,6 +30,11 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
         this.colour = colour;
     }
 
+    public Tag(String tagText, String colour) {
+        this.tagText = tagText;
+        this.colour = Color.valueOf(Color.RED); //TODO, parse the string
+    }
+
     public String getTagText() {
         return tagText;
     }
@@ -76,9 +81,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
+
         if (!(obj instanceof Tag)) {
             return false;
         }
@@ -94,10 +97,23 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
      */
     @Override
     public String getDocID() {
-        return this.tagText + Integer.toHexString(this.colour.toArgb());
+            return this.tagText + Integer.toHexString(this.colour.toArgb());
     }
 
     public String getColourString() {
         return Integer.toHexString(colour.toArgb());
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean val) { isChecked = val; }
+
+    /**
+     * Toggles checked status a ListView element in the ListView of checkboxes.
+     */
+    public void toggleChecked() {
+        isChecked = !isChecked;
     }
 }

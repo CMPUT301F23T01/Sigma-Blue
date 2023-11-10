@@ -3,6 +3,7 @@ package com.example.sigma_blue;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -14,11 +15,14 @@ import java.util.Objects;
 public class AddEditActivity extends BaseActivity
 {
     // TODO: Add these modes to a global enum file
+    private static final String ARG_ACC = "account";
     private static final String ARG_ITEM = "item"; // item key accessor
     private static final String ARG_MODE = "mode"; // item mode accessor
     private static final String ARG_ID = "id"; // item id accessor
     private static final String ARG_DELETE_FLAG = "onDeletion"; // item deletion flag accessor
     private AddEditViewModel sharedVM; // Shared ViewModel
+    private Account currentAccount; // Account of the user currently logged in
+                                    // We will need pass this from ViewListActivity for DB interactions
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -29,13 +33,20 @@ public class AddEditActivity extends BaseActivity
         setContentView(R.layout.add_edit_activity);
 
         // Add bundle to shared ViewHolder
-        // item to add/edit
         Bundle bundledItem;
         if (savedInstanceState == null) { bundledItem = getIntent().getExtras(); }
         else { bundledItem = savedInstanceState; }
         Item currentItem = (Item) bundledItem.getSerializable(ARG_ITEM);
+        currentAccount = (Account) bundledItem.getSerializable(ARG_ACC);
+
+        String id = "";
+
+        if (currentItem == null) {
+            currentItem = new Item();
+        } else {
+            id = currentItem.getDocID();
+        }
         String mode = bundledItem.getString(ARG_MODE);
-        String id = currentItem.getDocID();
 
         sharedVM = new ViewModelProvider(this).get(AddEditViewModel.class);
         sharedVM.setItem(currentItem);
@@ -50,9 +61,17 @@ public class AddEditActivity extends BaseActivity
         {
             graph.setStartDestination(R.id.editFragment);
         }
-        else
+        else if (Objects.equals(mode, "multi_tag"))
+        {
+            graph.setStartDestination(R.id.tagManagerFragment);
+        }
+        else if (Objects.equals(mode, "edit"))
         {
             graph.setStartDestination(R.id.detailsFragment);
+        }
+        else
+        {
+            Log.e("DEBUG", "Bad AddEditMode");
         }
         navController.setGraph(graph, bundledItem);
     }
@@ -63,10 +82,16 @@ public class AddEditActivity extends BaseActivity
     protected void returnAndClose()
     {
         Intent i = new Intent(this, ViewListActivity.class);
+
+        // Add shared item and flags to intent
         i.putExtra(ARG_ITEM, sharedVM.getItem().getValue());
+        Log.e("DEBUG", sharedVM.getItem().getValue().toString());
         i.putExtra(ARG_MODE, sharedVM.getMode().getValue());
+        Log.e("DEBUG", sharedVM.getMode().getValue().toString());
         i.putExtra(ARG_ID, sharedVM.getId().getValue());
+        Log.e("DEBUG", sharedVM.getId().getValue().toString());
         i.putExtra(ARG_DELETE_FLAG, sharedVM.getDeleteFlag().getValue());
+        Log.e("DEBUG", sharedVM.getDeleteFlag().getValue().toString());
 
         setResult(Activity.RESULT_OK, i);
         finish();
