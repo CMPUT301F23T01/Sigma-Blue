@@ -31,6 +31,7 @@ public class AddEditActivity extends BaseActivity
 
         // Set xml view
         setContentView(R.layout.add_edit_activity);
+        setContentView(R.layout.add_edit_activity);
 
         // Add bundle to shared ViewHolder
         Bundle bundledItem;
@@ -39,9 +40,14 @@ public class AddEditActivity extends BaseActivity
         Item currentItem = (Item) bundledItem.getSerializable(ARG_ITEM);
         currentAccount = (Account) bundledItem.getSerializable(ARG_ACC);
 
-        if (Objects.isNull(currentItem)) { currentItem = new Item(); }
+        String id = "";
+
+        if (currentItem == null) {
+            currentItem = new Item();
+        } else {
+            id = currentItem.getDocID();
+        }
         String mode = bundledItem.getString(ARG_MODE);
-        String id = currentItem.getDocID();
 
         sharedVM = new ViewModelProvider(this).get(AddEditViewModel.class);
         sharedVM.setItem(currentItem);

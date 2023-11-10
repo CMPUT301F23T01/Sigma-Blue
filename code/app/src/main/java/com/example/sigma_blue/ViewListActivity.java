@@ -257,6 +257,7 @@ public class ViewListActivity extends BaseActivity {
             itemList.getAdapter().resetHighlightedItems();
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             intent.putExtra("mode", "multi_tag");
+            intent.putExtra("account", currentAccount);
             activityLauncher.launch(intent, this::applyTagResults);
         });
     }

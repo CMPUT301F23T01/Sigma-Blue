@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -116,6 +117,7 @@ public class TagManagerFragment extends Fragment {
         if (extras != null) {
             currentAccount = (Account) extras.getSerializable("account");
         } else {
+            // TODO remove this and handle the error properly
             currentAccount = new Account("user1", "password");
         }
 
@@ -127,7 +129,7 @@ public class TagManagerFragment extends Fragment {
         sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         final Item currentItem = sharedVM.getItem().getValue();
 
-        if (currentItem != null) {
+        if (!sharedVM.getId().getValue().equals("")) {
 
             // User is opening the tag manager fragment on an existing fragment.
             tagsData = currentItem.getTags();
@@ -207,7 +209,6 @@ public class TagManagerFragment extends Fragment {
                     }
                 }
 
-                currentItem.setTags(tagsConfirmed);
                 //Bundle bundle = new Bundle();
                 //bundle.putSerializable(EditFragment.ARG_TAGS, tagsConfirmed);
                 //NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
@@ -217,6 +218,7 @@ public class TagManagerFragment extends Fragment {
                 }
                 else
                 {
+                    currentItem.setTags(tagsConfirmed);
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
                 }
 
