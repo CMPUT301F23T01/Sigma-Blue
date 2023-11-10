@@ -30,6 +30,11 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
         this.colour = colour;
     }
 
+    public Tag(String tagText, String colour) {
+        this.tagText = tagText;
+        this.colour = Color.valueOf(Color.RED); //TODO, parse the string
+    }
+
     public String getTagText() {
         return tagText;
     }

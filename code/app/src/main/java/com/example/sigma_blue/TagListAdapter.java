@@ -78,4 +78,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         return tagsData.size();
     }
 
+    public void setList(ArrayList<Tag> tags) {
+        this.tagsData = tags;
+    }
 }
