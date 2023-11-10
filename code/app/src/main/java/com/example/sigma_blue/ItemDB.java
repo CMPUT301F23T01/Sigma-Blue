@@ -5,10 +5,6 @@ import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,6 +12,7 @@ import java.util.List;
  */
 public class ItemDB extends ADatabaseHandler<Item> {
 
+    private FirebaseFirestore firestoreInjection;
     private CollectionReference itemsRef;
     private Account account;
     private List<Item> items;
@@ -32,10 +29,25 @@ public class ItemDB extends ADatabaseHandler<Item> {
     }
 
     /**
+     * Firestore injection construction. Required for testing database
+     * @param f the Firestore that is being used
+     * @param a Account that the item database handler is controlling.
+     * @return a new ItemDB instance.
+     */
+    public static ItemDB newInstance(FirebaseFirestore f,
+                                     Account a) {
+        ItemDB ret = new ItemDB();
+        ret.setFirestore(f);
+        ret.setAccount(a);
+        return ret;
+    }
+
+    /**
      * Bare Constructor
      */
     private ItemDB() {
     }
+
 
     /**
      * Embed the account into the database. Only used when creating a new
@@ -44,11 +56,24 @@ public class ItemDB extends ADatabaseHandler<Item> {
      *          querying.
      */
     private void setAccount(Account a) {
-        this.itemsRef = FirebaseFirestore.getInstance()
+        /* Allows for legacy usage */
+        if (this.firestoreInjection == null) {
+            this.itemsRef = FirebaseFirestore.getInstance()
+                    .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
+                    .document(a.getUsername())
+                    .collection(DatabaseNames.ITEMS_COLLECTION.getName());
+            firestoreInjection = FirebaseFirestore.getInstance();
+        }
+        /* Injection already exists */
+        else this.itemsRef = firestoreInjection
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
                 .collection(DatabaseNames.ITEMS_COLLECTION.getName());
         this.account = a;
+    }
+
+    private void setFirestore(FirebaseFirestore f) {
+        this.firestoreInjection = f;
     }
 
     /**
@@ -56,15 +81,7 @@ public class ItemDB extends ADatabaseHandler<Item> {
      * @param item is an Item object being added to the database.
      */
     public void add(final Item item) {
-        addDocument(itemsRef, item, v -> {
-            HashMap<String, String> ret = new HashMap<>();
-            ret.put("NAME", v.getName());
-            ret.put("DATE", v.getDate().toString());
-            ret.put("MAKE", v.getMake());
-            ret.put("MODEL", v.getModel());
-            ret.put("VALUE", String.valueOf(v.getValue()));
-            return ret;
-        }, item.getDocID());
+        addDocument(itemsRef, item, Item.hashMapOfItem, item.getDocID());
         Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
     }
 
