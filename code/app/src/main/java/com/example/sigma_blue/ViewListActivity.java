@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,9 @@ public class ViewListActivity extends BaseActivity {
         public Button searchButton;
         public Button sortFilterButton;
         public Button optionsButton;
+        public Button deleteSelectedButton;
+        public Button addTagsSelectedButton;
+        public LinearLayout selectedItemsMenu;
         public FloatingActionButton addEntryButton;
         public TextView summaryView;
 
@@ -56,7 +60,9 @@ public class ViewListActivity extends BaseActivity {
             this.optionsButton = findViewById(R.id.optionButton);
             this.addEntryButton = findViewById(R.id.addButton);
             this.summaryView = findViewById(R.id.summaryTextView);
-
+            this.deleteSelectedButton = findViewById(R.id.deleteSelectedButton);
+            this.addTagsSelectedButton = findViewById(R.id.addTagsSelectedButton);
+            this.selectedItemsMenu = findViewById(R.id.selectedItemsMenu);
             /* Setting up defaults for the UI elements */
             setSummaryView(Optional.empty());
         }
@@ -91,6 +97,8 @@ public class ViewListActivity extends BaseActivity {
     private ItemList itemList;
     private Account currentAccount;
 
+    private ArrayList<Item> selectedItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
@@ -110,7 +118,7 @@ public class ViewListActivity extends BaseActivity {
 
 
         /* ItemList encapsulates both the database and the adapter */
-        this.itemList = ItemList.newInstance(currentAccount, this::handleClick);
+        this.itemList = ItemList.newInstance(currentAccount, this::handleClick, this::handleLongClick);
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
@@ -119,9 +127,11 @@ public class ViewListActivity extends BaseActivity {
         rvItemListView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
+        // set up thing for selected items
+        this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+        this.selectedItems = new ArrayList<Item>();
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
-
     }
 
     /**
@@ -132,13 +142,33 @@ public class ViewListActivity extends BaseActivity {
      * @param item Clicked on item
      */
     private void handleClick(Item item) {
-        Log.i("DEBUG", item.getName());
+        Log.i("DEBUG", item.getName() + "Sort Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         intent.putExtra("item", item);
         intent.putExtra("mode", "edit");
         activityLauncher.launch(intent, this::processNewItemResult);
     }
 
+
+    /**
+     * listened to deal with long presses
+     * @param item Item that was long pressed on
+     */
+    private void handleLongClick(Item item) {
+        Log.i("DEBUG", item.getName() + "Long Press");
+        if (selectedItems.contains(item)) {
+            selectedItems.remove(item);
+        } else {
+            selectedItems.add(item);
+        }
+
+        if (selectedItems.size() > 0) {
+            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+
+        }
+    }
     /**
      * Either adds a new item to the list or updates an existing one.
      * @param result result from the AddEditActivity
@@ -172,6 +202,14 @@ public class ViewListActivity extends BaseActivity {
 
     }
 
+    private void deleteSelectedItems() {
+        for (Item i : this.selectedItems) {
+            itemList.remove(i);
+        }
+        selectedItems.clear();
+        viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+    }
+
     /* Fragment result listeners are lambda expressions that controls what the class does when the
     * results are received.*/
     FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
@@ -191,5 +229,9 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
+        viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
+        viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
+            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+        });
     }
 }

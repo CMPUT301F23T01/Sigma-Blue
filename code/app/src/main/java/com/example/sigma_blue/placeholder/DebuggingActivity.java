@@ -94,7 +94,7 @@ public class DebuggingActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
-        itemList = ItemList.newInstance(testAccount2, v -> {});
+        itemList = ItemList.newInstance(testAccount2, v -> {}, v -> {});
         itemList.setSummaryView(viewHolder.summaryView);
         accList = AccountList.newInstance();
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
