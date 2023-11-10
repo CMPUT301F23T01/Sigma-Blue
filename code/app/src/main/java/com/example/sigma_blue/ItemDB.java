@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class ItemDB extends ADatabaseHandler<Item> {
 
+    private FirebaseFirestore firestoreInjection;
     private CollectionReference itemsRef;
     private Account account;
     private List<Item> items;
@@ -27,6 +28,20 @@ public class ItemDB extends ADatabaseHandler<Item> {
      */
     public static ItemDB newInstance(Account a) {
         ItemDB ret = new ItemDB();
+        ret.setAccount(a);
+        return ret;
+    }
+
+    /**
+     * Firestore injection construction. Required for testing database
+     * @param f the Firestore that is being used
+     * @param a Account that the item database handler is controlling.
+     * @return a new ItemDB instance.
+     */
+    public static ItemDB newInstance(FirebaseFirestore f,
+                                     Account a) {
+        ItemDB ret = new ItemDB();
+        ret.setFirestore(f);
         ret.setAccount(a);
         return ret;
     }
@@ -44,11 +59,24 @@ public class ItemDB extends ADatabaseHandler<Item> {
      *          querying.
      */
     private void setAccount(Account a) {
-        this.itemsRef = FirebaseFirestore.getInstance()
+        /* Allows for legacy usage */
+        if (this.firestoreInjection == null) {
+            this.itemsRef = FirebaseFirestore.getInstance()
+                    .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
+                    .document(a.getUsername())
+                    .collection(DatabaseNames.ITEMS_COLLECTION.getName());
+            firestoreInjection = FirebaseFirestore.getInstance();
+        }
+        /* Injection already exists */
+        else this.itemsRef = firestoreInjection
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
                 .collection(DatabaseNames.ITEMS_COLLECTION.getName());
         this.account = a;
+    }
+
+    private void setFirestore(FirebaseFirestore f) {
+        this.firestoreInjection = f;
     }
 
     /**

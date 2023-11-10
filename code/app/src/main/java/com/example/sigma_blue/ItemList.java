@@ -123,7 +123,6 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
             this.dbHandler.add(o);
         }
         updateUI();
-        Log.v("Added Item", "Added new item");
     }
 
     /**
