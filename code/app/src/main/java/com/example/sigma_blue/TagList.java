@@ -71,10 +71,11 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
 
     /**
      * Sets a new list.
-     * @param lst is an ArrayList object that is replacing it.
+     * @param lst is an list object that is replacing it.
      */
-    public void setList(ArrayList<Tag> lst) {
-        this.tags = lst;
+    @Override
+    public void setList(List<Tag> lst) {
+        this.tags = (ArrayList<Tag>) lst; // Duck tape fix. If this is implemented in main I'll kms
     }
 
     /**

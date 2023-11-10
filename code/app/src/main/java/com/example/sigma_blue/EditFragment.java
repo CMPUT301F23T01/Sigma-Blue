@@ -1,11 +1,14 @@
 package com.example.sigma_blue;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
@@ -31,9 +34,11 @@ public class EditFragment extends Fragment
     private static final String ARG_MODE = "mode";
     public static final String ARG_TAGS = "tag";
 
-    private Item currentItem;
+    private AddEditViewModel sharedVM;
+
+//    private Item currentItem;
+    private String mode;
     private String oldItemID;
-    private String newItemFlag;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -60,14 +65,14 @@ public class EditFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         // Load item from bundle
-        currentItem = new Item();
-        newItemFlag = "edit";
-        if (getArguments() != null)
-        {
-            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
-            oldItemID = currentItem.getDocID();
-            newItemFlag = (String)getArguments().getSerializable(ARG_MODE);
-        }
+//        currentItem = new Item();
+//        mode = "edit";
+//        if (getArguments() != null)
+//        {
+//            currentItem = (Item)getArguments().getSerializable(ARG_ITEM);
+//            mode = (String)getArguments().getSerializable(ARG_MODE);
+//            oldItemID = currentItem.getDocID();
+//        }
     }
 
     @Override
@@ -83,7 +88,7 @@ public class EditFragment extends Fragment
         textDate = binding.getRoot().findViewById(R.id.text_date_disp); editTextList.add(textDate);
         textMake = binding.getRoot().findViewById(R.id.text_make_disp); editTextList.add(textMake);
         textModel = binding.getRoot().findViewById(R.id.text_model_disp); editTextList.add(textModel);
-        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp); editTextList.add(textSerial);
+        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
 
@@ -95,8 +100,13 @@ public class EditFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        // set item details from bundle
-        if (Objects.equals(newItemFlag, "edit"))
+        // Access item from parent activities ViewModel
+        sharedVM = new ViewModelProvider(requireActivity()).get(AddEditViewModel.class);
+        final Item currentItem = sharedVM.getItem().getValue();
+        final String mode = sharedVM.getMode().getValue();
+
+        // set item details
+        if (Objects.equals(mode, "edit"))
         {
             textName.setText(currentItem.getName());
             textValue.setText(String.valueOf(currentItem.getValue()));
@@ -140,7 +150,16 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                if (Objects.equals(mode, "add"))
+                {
+                    Intent i = new Intent(getActivity(), ViewListActivity.class);
+                    getActivity().setResult(Activity.RESULT_OK, i);
+                    getActivity().finish();
+                }
+                else
+                {
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                }
             }
         });
 
@@ -150,9 +169,10 @@ public class EditFragment extends Fragment
             public void onClick(View v)
             {
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(ARG_TAGS, currentItem.getTags());
 //                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment, bundle);
+                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
 
             }
         });
@@ -164,23 +184,30 @@ public class EditFragment extends Fragment
             {
                 if (verifyText())
                 {
-                    Bundle bundle = new Bundle();
-                    currentItem.setName(textName.getText().toString());
-                    currentItem.setValue(Float.parseFloat(textValue.getText().toString()));
+//                    Bundle bundle = new Bundle();
+                    Item editItem = new Item();
+                    editItem.setName(textName.getText().toString());
+                    editItem.setValue(Float.parseFloat(textValue.getText().toString()));
                     SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
                     try {
-                        currentItem.setDate(sdf.parse(textDate.getText().toString()));
+                        editItem.setDate(sdf.parse(textDate.getText().toString()));
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
-                    currentItem.setMake(textMake.getText().toString());
-                    currentItem.setModel(textModel.getText().toString());
-                    currentItem.setSerialNumber(textSerial.getText().toString());
-                    currentItem.setDescription(textDescription.getText().toString());
-                    currentItem.setComment(textComment.getText().toString());
-                    bundle.putSerializable(ARG_ITEM, currentItem);
-                    bundle.putString("id", oldItemID);
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                    editItem.setMake(textMake.getText().toString());
+                    editItem.setModel(textModel.getText().toString());
+                    editItem.setSerialNumber(textSerial.getText().toString());
+                    editItem.setDescription(textDescription.getText().toString());
+                    editItem.setComment(textComment.getText().toString());
+//                    bundle.putSerializable(ARG_ITEM, currentItem);
+//                    bundle.putString(ARG_MODE, mode);
+//                    bundle.putString("id", oldItemID);
+//                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment, bundle);
+                    sharedVM.setItem(editItem);
+                    sharedVM.setMode("edit");
+                    sharedVM.setId(editItem.getDocID());
+                    sharedVM.setDeleteFlag(false);
+                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
 
             }
