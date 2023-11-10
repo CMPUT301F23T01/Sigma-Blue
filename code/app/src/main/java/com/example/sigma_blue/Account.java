@@ -1,7 +1,10 @@
 package com.example.sigma_blue;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Stores information about a user account.
@@ -10,6 +13,8 @@ public class Account implements Serializable, IDatabaseItem<Account> {
     private String username;
     private String password;
 
+    /* Document keys */
+    public static final String USERNAME = "USERNAME", PASSWORD = "PASSWORD";
 
     /**
      * This is constructor of account object
@@ -63,8 +68,34 @@ public class Account implements Serializable, IDatabaseItem<Account> {
         return Objects.equals(this.password, aPassword);
     }
 
+    /**
+     * Uniqueness based on username
+     * @return the string that represents the unique id
+     */
     @Override
     public String getDocID() {
         return username;
+    }
+
+    /**
+     * Converts a document into an Account object.
+     */
+    public static final Function<QueryDocumentSnapshot, Account>
+            accountOfDocument = q -> {
+        return new  Account(
+                q.getString(USERNAME),
+                q.getString(PASSWORD)
+        );
+    };
+
+    /**
+     * Matching account uniqueness with username.
+     * @param o is the object being compared with
+     * @return true if the other and this one have the same username.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (! (o instanceof Account)) return false;
+        else return ((Account) o).getUsername().equals(getUsername());
     }
 }

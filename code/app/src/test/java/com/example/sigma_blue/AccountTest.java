@@ -1,12 +1,23 @@
 package com.example.sigma_blue;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 
+@RunWith(MockitoJUnitRunner.class)
 public class AccountTest {
+    @Mock
+    QueryDocumentSnapshot mockDocument;
 
     @Test
     public void testAccountCheckUsername(){
@@ -39,4 +50,19 @@ public class AccountTest {
         String goodPassword = "goodPassword";
         assertTrue(testAccount.checkPassword(goodPassword));
     }
+
+    @Test
+    public void testAccountOfDocument() {
+        Account expected = new Account("Watrina",
+                "magicMushrooms");
+        Mockito.when(mockDocument.getString(Account.USERNAME))
+                .thenReturn("Watrina");
+        Mockito.when(mockDocument.getString(Account.PASSWORD))
+                .thenReturn("magicMushroom");
+
+        assertEquals(expected, Account.accountOfDocument.apply(mockDocument));
+        assertThrows(NullPointerException.class,
+                () -> Account.accountOfDocument.apply(null));
+    }
+
 }

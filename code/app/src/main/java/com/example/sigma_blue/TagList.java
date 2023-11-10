@@ -99,10 +99,7 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
      */
     @Override
     public List<Tag> loadArray(QuerySnapshot q) {
-        return TagDB.loadArray(q, v -> {
-            return new Tag(v.getString("LABEL"),
-                    Integer.valueOf(v.getString("COLOR")));
-        });
+        return TagDB.loadArray(q, tagOfDocument);
     }
 
     /**
