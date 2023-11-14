@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.Item;
 
 /**
  * Class that manages sharing of the item to be added/edited between all fragment

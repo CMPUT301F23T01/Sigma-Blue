@@ -9,7 +9,7 @@ import com.example.sigma_blue.entity.tag.TagDB;
 import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.Item;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

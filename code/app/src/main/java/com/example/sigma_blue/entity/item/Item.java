@@ -1,4 +1,4 @@
-package com.example.sigma_blue.entity.item.item;
+package com.example.sigma_blue.entity.item;
 
 
 import com.example.sigma_blue.entity.tag.Tag;

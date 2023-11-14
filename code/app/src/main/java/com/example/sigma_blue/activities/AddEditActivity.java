@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.context.AddEditViewModel;
 import com.example.sigma_blue.R;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.Item;
 
 import java.util.Objects;
 

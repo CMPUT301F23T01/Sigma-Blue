@@ -1,4 +1,4 @@
-package com.example.sigma_blue.entity.item.item;
+package com.example.sigma_blue.entity.item;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -22,8 +22,8 @@ import java.util.Optional;
 /**
  * Modified adapter class for the list of items.
  */
-public class ItemListAdapter extends
-        RecyclerView.Adapter<ItemListAdapter.RecyclerViewHolder> {
+public class ItemListRecyclerAdapter extends
+        RecyclerView.Adapter<ItemListRecyclerAdapter.RecyclerViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(Item item);
@@ -115,24 +115,24 @@ public class ItemListAdapter extends
      * @param itemList is an ItemList object that contains the types.
      * @return an ItemListAdapter object that has been instantiated.
      */
-    public static ItemListAdapter newInstance(List<Item> itemList, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
-        return new ItemListAdapter(itemList, itemClickListener, longClickListener);
+    public static ItemListRecyclerAdapter newInstance(List<Item> itemList, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
+        return new ItemListRecyclerAdapter(itemList, itemClickListener, longClickListener);
     }
-    public static ItemListAdapter newInstance() {
-        return new ItemListAdapter();
+    public static ItemListRecyclerAdapter newInstance() {
+        return new ItemListRecyclerAdapter();
     }
 
     /**
      * Basic constructor. Takes in the ItemList that will be adapted to a list view.
      * @param items is the ItemList object that will be displayed on lists through this adapter.
      */
-    public ItemListAdapter(List<Item> items, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
+    public ItemListRecyclerAdapter(List<Item> items, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
         this.items = items;
         this.clickListener = itemClickListener;
         this.longClickListener = longClickListener;
     }
 
-    public ItemListAdapter() {
+    public ItemListRecyclerAdapter() {
         this.items = new ArrayList<>();
     }
 

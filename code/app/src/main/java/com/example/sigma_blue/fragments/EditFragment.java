@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.context.AddEditViewModel;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -16,9 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.entity.item.item.Item;
-import com.example.sigma_blue.entity.item.item.ItemList;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.item.ItemList;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.entity.item.ItemListAdapter;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.fragments.FragmentLauncher;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,7 +86,8 @@ public class ViewListActivity extends BaseActivity {
     }
 
     private FragmentLauncher fragmentLauncher;
-    private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
+    private final ActivityLauncher<Intent, ActivityResult> activityLauncher
+            = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private ItemList itemList;
     private Account currentAccount;
@@ -105,8 +108,8 @@ public class ViewListActivity extends BaseActivity {
             currentAccount = new Account("UI_Test_User", "password");
         }
         /* Code section for linking UI elements */
-        RecyclerView rvItemListView = findViewById(R.id.listView);
-        this.viewHolder = this.new ViewHolder(rvItemListView);
+        ListView itemListView = findViewById(R.id.listView);
+        this.viewHolder = this.new ViewHolder(itemListView);
 
 
         /* ItemList encapsulates both the database and the adapter */
@@ -115,9 +118,7 @@ public class ViewListActivity extends BaseActivity {
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemList.getAdapter());
-        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
+        itemListView.setAdapter(ItemListAdapter.newInstance(this, itemList.getList()));
 
         // set up thing for selected items
         this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);

@@ -1,4 +1,4 @@
-package com.example.sigma_blue.entity.item.item;
+package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 import android.widget.TextView;
@@ -18,13 +18,13 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     /* Attributes */
     private List<Item> items;
     private ItemDB dbHandler;
-    private ItemListAdapter adapter;
+    private ItemListRecyclerAdapter adapter;
     private Account account;
 
     /* Factory construction */
 
     public static ItemList newInstance(Account a, ItemDB dbH,
-                                       ItemListAdapter adapt) {
+                                       ItemListRecyclerAdapter adapt) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
         ret.setAdapter(adapt);
         ret.setDatabaseHandler(dbH);
@@ -36,9 +36,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * Factory creation for when there isn't an input ArrayList of songs ready for input.
      * @return an instance of the ItemList class holding no item.
      */
-    public static ItemList newInstance(Account a, ItemListAdapter.OnItemClickListener itemClickListener, ItemListAdapter.OnLongClickListener longClickListener) {
+    public static ItemList newInstance(Account a, ItemListRecyclerAdapter.OnItemClickListener itemClickListener, ItemListRecyclerAdapter.OnLongClickListener longClickListener) {
         ItemList ret = new ItemList(new ArrayList<Item>(), a);
-        ret.setAdapter(ItemListAdapter.newInstance(ret.getList(), itemClickListener, longClickListener));
+        ret.setAdapter(ItemListRecyclerAdapter.newInstance(ret.getList(), itemClickListener, longClickListener));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;
@@ -51,9 +51,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * @return an instance of the ItemList object containing the Item objects that were present in
      * items.
      */
-    public static ItemList newInstance(Account a, ArrayList<Item> items, ItemListAdapter.OnItemClickListener itemClickListener, ItemListAdapter.OnLongClickListener longClickListener) {
+    public static ItemList newInstance(Account a, ArrayList<Item> items, ItemListRecyclerAdapter.OnItemClickListener itemClickListener, ItemListRecyclerAdapter.OnLongClickListener longClickListener) {
         ItemList ret = new ItemList(items, a);
-        ret.setAdapter(ItemListAdapter.newInstance(ret.getList(), itemClickListener, longClickListener));
+        ret.setAdapter(ItemListRecyclerAdapter.newInstance(ret.getList(), itemClickListener, longClickListener));
         ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;
@@ -194,11 +194,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
                 this);
     }
 
-    public void setAdapter(final ItemListAdapter adapter) {
+    public void setAdapter(final ItemListRecyclerAdapter adapter) {
         this.adapter = adapter;
     }
 
-    public ItemListAdapter getAdapter() {
+    public ItemListRecyclerAdapter getAdapter() {
         return this.adapter;
     }
 
