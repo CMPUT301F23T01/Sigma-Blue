@@ -11,6 +11,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import android.graphics.Color;
 
+import com.example.sigma_blue.entity.tag.Tag;
+import com.example.sigma_blue.entity.tag.TagDB;
+import com.example.sigma_blue.entity.tag.TagList;
+
 import java.util.HashMap;
 
 @RunWith(MockitoJUnitRunner.class)

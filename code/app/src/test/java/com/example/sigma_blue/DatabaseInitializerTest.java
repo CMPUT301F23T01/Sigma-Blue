@@ -2,10 +2,12 @@ package com.example.sigma_blue;
 
 import static junit.framework.TestCase.assertFalse;
 
+import com.example.sigma_blue.entity.account.Account;
+import com.example.sigma_blue.database.DatabaseInitializer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * This testing class will not work right now. Do not depend on this one.

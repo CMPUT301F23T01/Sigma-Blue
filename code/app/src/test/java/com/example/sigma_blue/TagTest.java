@@ -4,6 +4,8 @@ import static junit.framework.TestCase.assertEquals;
 
 import android.graphics.Color;
 
+import com.example.sigma_blue.entity.tag.Tag;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
