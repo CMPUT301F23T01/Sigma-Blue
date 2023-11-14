@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import android.graphics.Color;
 
+import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.tag.Tag;
+
 import org.junit.Test;
 
 import java.text.ParseException;

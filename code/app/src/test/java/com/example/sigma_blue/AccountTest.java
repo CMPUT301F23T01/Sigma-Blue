@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import com.example.sigma_blue.entity.account.Account;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.junit.Test;

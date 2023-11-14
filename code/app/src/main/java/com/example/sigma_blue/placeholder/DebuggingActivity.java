@@ -9,15 +9,13 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sigma_blue.Account;
-import com.example.sigma_blue.AccountList;
-import com.example.sigma_blue.BaseActivity;
-import com.example.sigma_blue.DatabaseInitializer;
-import com.example.sigma_blue.FragmentLauncher;
-import com.example.sigma_blue.Item;
-import com.example.sigma_blue.ItemDB;
-import com.example.sigma_blue.ItemList;
-import com.example.sigma_blue.ItemListAdapter;
+import com.example.sigma_blue.entity.account.Account;
+import com.example.sigma_blue.entity.account.AccountList;
+import com.example.sigma_blue.activities.BaseActivity;
+import com.example.sigma_blue.database.DatabaseInitializer;
+import com.example.sigma_blue.fragments.FragmentLauncher;
+import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.item.ItemList;
 import com.example.sigma_blue.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

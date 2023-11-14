@@ -6,7 +6,7 @@
 <!--    app:startDestination="@id/detailsFragment">-->
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.example.sigma_blue.DetailsFragment"
+        android:name="com.example.sigma_blue.fragments.DetailsFragment"
         android:label="details_fragment"
         tools:layout="@layout/details_fragment">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/editFragment"
-        android:name="com.example.sigma_blue.EditFragment"
+        android:name="com.example.sigma_blue.fragments.EditFragment"
         android:label="edit_fragment"
         tools:layout="@layout/edit_fragment" >
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/tagManagerFragment"
-        android:name="com.example.sigma_blue.TagManagerFragment"
+        android:name="com.example.sigma_blue.fragments.TagManagerFragment"
         android:label="TagManagerFragment" >
         <action
             android:id="@+id/action_tagManagerFragment_to_editFragment"
@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/tagAddFragment"
-        android:name="com.example.sigma_blue.TagAddFragment"
+        android:name="com.example.sigma_blue.fragments.TagAddFragment"
         android:label="TagAddFragment" >
         <action
             android:id="@+id/action_tagAddFragment_to_tagManagerFragment"
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/tagEditFragment"
-        android:name="com.example.sigma_blue.TagEditFragment"
+        android:name="com.example.sigma_blue.fragments.TagEditFragment"
         android:label="TagEditFragment" >
         <action
             android:id="@+id/action_tagEditFragment_to_tagManagerFragment"
