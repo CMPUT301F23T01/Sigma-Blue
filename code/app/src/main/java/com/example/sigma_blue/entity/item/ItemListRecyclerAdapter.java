@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:code/app/src/main/java/com/example/sigma_blue/entity/item/ItemListRecyclerAdapter.java
 package com.example.sigma_blue.entity.item;
-========
-package com.example.sigma_blue.entity.item.item;
->>>>>>>> main:code/app/src/main/java/com/example/sigma_blue/entity/item/item/ItemListAdapter.java
 
 import android.content.Context;
 import android.graphics.Color;

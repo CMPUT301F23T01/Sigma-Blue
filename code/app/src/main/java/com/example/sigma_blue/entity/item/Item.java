@@ -1,9 +1,4 @@
-<<<<<<<< HEAD:code/app/src/main/java/com/example/sigma_blue/entity/item/Item.java
 package com.example.sigma_blue.entity.item;
-========
-package com.example.sigma_blue.entity.item.item;
->>>>>>>> main:code/app/src/main/java/com/example/sigma_blue/entity/item/item/Item.java
-
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;

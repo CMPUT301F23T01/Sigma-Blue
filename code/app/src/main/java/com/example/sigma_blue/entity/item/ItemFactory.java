@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:code/app/src/main/java/com/example/sigma_blue/entity/item/ItemFactory.java
 package com.example.sigma_blue.entity.item;
-========
-package com.example.sigma_blue.entity.item.item;
->>>>>>>> main:code/app/src/main/java/com/example/sigma_blue/entity/item/item/ItemFactory.java
 
 import java.util.Date;
 

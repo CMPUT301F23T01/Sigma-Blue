@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:code/app/src/main/java/com/example/sigma_blue/entity/item/ItemList.java
 package com.example.sigma_blue.entity.item;
-========
-package com.example.sigma_blue.entity.item.item;
->>>>>>>> main:code/app/src/main/java/com/example/sigma_blue/entity/item/item/ItemList.java
 
 import android.util.Log;
 import android.widget.TextView;
