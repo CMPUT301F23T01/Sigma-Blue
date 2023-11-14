@@ -31,12 +31,14 @@ public class TagAddFragment extends Fragment {
         final Button backButton = view.findViewById(R.id.back_button);
         final Button confirmButton = view.findViewById(R.id.confirm_button);
 
+        globalContext = GlobalContext.getInstance();
         confirmButton.setEnabled(false); // User cannot outright add an empty tag on startup
 
         // TODO Maybe put a color picker for the Tag class, maybe.
         // It might also be nice to have the color picker remember the last pick.
 
         backButton.setOnClickListener(v -> {
+            globalContext.newState(globalContext.getLastState());
             getActivity().onBackPressed();
         });
 
@@ -44,10 +46,8 @@ public class TagAddFragment extends Fragment {
             String tagName = inputField.getText().toString();
             // NOTE for now, we will use the default color that is provided in the fragment.
 
-            Tag tagToSend = new Tag(tagName, tagColor);
-
-            globalContext.setCurrentTag(tagToSend);
-            globalContext.newState("tag_manager_fragment");
+            globalContext.getTagList().addTag(new Tag(tagName, tagColor));
+            globalContext.newState(globalContext.getLastState());
             NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment);
 
         });

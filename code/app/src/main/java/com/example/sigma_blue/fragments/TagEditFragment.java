@@ -45,8 +45,7 @@ public class TagEditFragment extends Fragment {
             String tagName = inputField.getText().toString();
             Color tagColour = tag.getColour();
 
-            Tag newTag = new Tag(tagName, tagColour);
-            globalContext.setCurrentTag(newTag);
+            globalContext.getTagList().addTag(new Tag(tagName, tagColour));
             globalContext.newState("tag_manager_fragment");
             getActivity().onBackPressed();
         });

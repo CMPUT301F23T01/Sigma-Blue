@@ -296,11 +296,13 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     /**
-     * Adds a new tag.
+     * Adds a new tag if it doesn't already exist
      * @param tag the tag being added.
      */
     public void addTag(Tag tag) {
-        this.tags.add(tag);
+        if (!tags.contains(tag)) {
+            this.tags.add(tag);
+        }
     }
 
     /**

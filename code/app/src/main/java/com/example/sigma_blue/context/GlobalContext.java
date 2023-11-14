@@ -57,6 +57,10 @@ public class GlobalContext {
     public ArrayList<Item> getHighlightedItems() {
         return this.highlightedItems;
     }
+    public void resetHighlightedItems() {
+        this.highlightedItems.clear();
+        this.itemList.getAdapter().resetHighlightedItems();
+    }
 
     /**
      * Switch to a new state. This doesn't actually start any activities/fragments, only updates the

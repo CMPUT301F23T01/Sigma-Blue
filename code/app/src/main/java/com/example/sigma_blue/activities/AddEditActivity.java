@@ -40,7 +40,7 @@ public class AddEditActivity extends BaseActivity
         {
             graph.setStartDestination(R.id.editFragment);
         }
-        else if (Objects.equals(globalContext.getCurrentState(), "tag_manager_fragment"))
+        else if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment"))
         {
             graph.setStartDestination(R.id.tagManagerFragment);
         }

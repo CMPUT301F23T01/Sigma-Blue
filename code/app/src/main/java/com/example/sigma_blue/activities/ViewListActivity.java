@@ -87,7 +87,8 @@ public class ViewListActivity extends BaseActivity {
         globalContext = GlobalContext.getInstance();
 
         if (globalContext.getAccount() == null) {
-            throw new VerifyException("Must have an account");
+            //throw new VerifyException("Must have an account");
+            return;
         }
 
         /* Code section for linking UI elements */
@@ -146,7 +147,7 @@ public class ViewListActivity extends BaseActivity {
         for (Item i : globalContext.getHighlightedItems()) {
             globalContext.getItemList().remove(i);
         }
-        globalContext.getHighlightedItems().clear();
+        globalContext.resetHighlightedItems();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -164,15 +165,15 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
         viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
-        /*
+
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-            itemList.getAdapter().resetHighlightedItems();
+            globalContext.resetHighlightedItems();
+            globalContext.setCurrentItem(null);
+            globalContext.newState("multi_select_tag_manager_fragment");
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
-            intent.putExtra("mode", "multi_tag");
-            intent.putExtra("account", currentAccount);
-            activityLauncher.launch(intent, this::applyTagResults);
+            startActivity(intent);
         });
-         */
+
     }
 }

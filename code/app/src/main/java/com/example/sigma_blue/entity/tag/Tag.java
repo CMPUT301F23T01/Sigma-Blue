@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     private String tagText;
     private Color colour;
-    private boolean isChecked = false; // For the TagManager.
+    private boolean isChecked = false; // For the TagManager. //TODO make this the same as the way highlighted items are handled
     public static final String LABEL = "LABEL", COLOR = "COLOR";
 
     public Tag(String tagText, int colour) {
