@@ -1,4 +1,4 @@
-package com.example.sigma_blue.entity.item.item;
+package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 import android.widget.TextView;
@@ -33,7 +33,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     /**
-     * Factory creation for when there isn't an input ArrayList of songs ready for input.
+     * Factory creation for when there isn't an input ArrayList of items ready for input.
      * @return an instance of the ItemList class holding no item.
      */
     public static ItemList newInstance(Account a, ItemListAdapter.OnItemClickListener itemClickListener, ItemListAdapter.OnLongClickListener longClickListener) {

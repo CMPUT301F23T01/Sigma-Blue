@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 
 /**
@@ -22,6 +23,7 @@ import com.example.sigma_blue.entity.tag.Tag;
  */
 public class TagAddFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
+    private GlobalContext globalContext;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -44,10 +46,9 @@ public class TagAddFragment extends Fragment {
 
             Tag tagToSend = new Tag(tagName, tagColor);
 
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(TagManagerFragment.ARG_TAG_ADD, tagToSend);
-
-            NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment, bundle);
+            globalContext.setCurrentTag(tagToSend);
+            globalContext.newState("tag_manager_fragment");
+            NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment);
 
         });
 

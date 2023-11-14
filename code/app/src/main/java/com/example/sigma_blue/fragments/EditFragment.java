@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
@@ -18,11 +17,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.context.AddEditViewModel;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
+import com.google.common.base.VerifyException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 public class EditFragment extends Fragment
 {
-    private AddEditViewModel sharedVM;
+    //private AddEditViewModel sharedVM;
 
     // Fragment binding
     private EditFragmentBinding binding;
@@ -52,8 +52,9 @@ public class EditFragment extends Fragment
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
-    private Item savedItemChanges;
+    //private Item savedItemChanges;
     private int mDay, mMonth, mYear;
+    private GlobalContext globalContext;
 
     /**
      * Required empty public constructor
@@ -109,15 +110,17 @@ public class EditFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
-        // Access item from parent activities ViewModel
-        sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
-
+        globalContext = GlobalContext.getInstance();
         // Load Item and mode
-        final Item currentItem = sharedVM.getEditItem().getValue();
-        final String mode = sharedVM.getMode().getValue();
+        Item currentItem = globalContext.getCurrentItem();
+        if (currentItem == null) {
+            currentItem = new Item();
+            globalContext.setCurrentItem(currentItem);
+        }
+        final String mode = globalContext.getCurrentState();
 
         // set item details
-        if (Objects.equals(mode, "edit"))
+        if (Objects.equals(mode, "edit_item_fragment"))
         {
             textName.setText(currentItem.getName());
             textValue.setText(String.valueOf(currentItem.getValue()));
@@ -162,10 +165,11 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (Objects.equals(mode, "add"))
+                if (Objects.equals(mode, "add_item"))
                 {
                     // Cancel new item; Return to ViewListActivity
-                    sharedVM.setItem(null); // TODO: fix communication expectations with ViewList
+                    globalContext.setCurrentItem(null);
+                    globalContext.newState("view_list_activity");
                     activity.returnAndClose();
                 }
                 else
@@ -199,10 +203,19 @@ public class EditFragment extends Fragment
                 // Load ui text and save into shared item; Navigate to DetailsFragment
                 if (verifyText())
                 {
-                    loadUiText(currentItem);
-                    sharedVM.setItem(currentItem);
-                    sharedVM.setMode("edit");
-                    sharedVM.setDeleteFlag(false);
+                    Item modifiedItem = new Item();
+                    loadUiText(modifiedItem);
+                    if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
+                        globalContext.getItemList().add(modifiedItem);
+                        globalContext.setCurrentItem(modifiedItem);
+                        globalContext.newState("details_fragment");
+                    } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
+                        globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem().getDocID());
+                        globalContext.setCurrentItem(modifiedItem);
+                        globalContext.newState("details_fragment");
+                    } else {
+                        throw new VerifyException("Bad state");
+                    }
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
             }

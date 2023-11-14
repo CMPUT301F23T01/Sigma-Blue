@@ -13,9 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.R;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Class for login version of fragment from main login page
@@ -25,13 +27,14 @@ public class LoginFragment extends DialogFragment {
     private EditText usernameInput;
     private EditText passwordInput;
     private OnFragmentInteractionListener listener;
+    private GlobalContext globalContext;
 
     /**
      * Listens for interaction with confirm button in fragment, contains method to return to
      * original activity
      */
     public interface OnFragmentInteractionListener {
-        void onLoginPressed(boolean matches, Account account);
+        void onLoginPressed(boolean matches);
     }
 
     /**
@@ -64,14 +67,12 @@ public class LoginFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.login_page_fragment, null);
 
+        globalContext = GlobalContext.getInstance();
         // views for getting user input
         usernameInput = view.findViewById(R.id.usernameEditText);
         passwordInput = view.findViewById(R.id.passwordEditText);
 
         // creates the account that the user input will be tested against
-        Bundle args = getArguments();
-        AccountList validAccounts;
-        validAccounts = (AccountList) args.getSerializable("accountList");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -81,21 +82,13 @@ public class LoginFragment extends DialogFragment {
                 .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        /*
-                         * Note: the way the fragment checks the user input against existing
-                         * accounts will need to be changed later on as this only works with one
-                         * account object existing for the app
-                         */
-
                         // gets user input
                         String username = usernameInput.getText().toString();
                         String password = passwordInput.getText().toString();
 
                         Account enteredAccount = new Account(username, password);
                         // checks if user input matches test account
-                        assert validAccounts != null;
-                        boolean matches = validAccounts.contains(enteredAccount);
+                        boolean matches = globalContext.getAccountList().contains(enteredAccount);
 
                         // creates popup message for incorrect user account information input
                         if (!matches) {
@@ -105,9 +98,11 @@ public class LoginFragment extends DialogFragment {
                                                     .invalid_username_password),
                                             Toast.LENGTH_SHORT);
                             incorrectMessage.show();
+                        } else {
+                            globalContext.login(enteredAccount);
                         }
-
-                        listener.onLoginPressed(matches, enteredAccount);
+                        globalContext.newState("login_activity");
+                        listener.onLoginPressed(matches);
                     }
                 }).create();
     }

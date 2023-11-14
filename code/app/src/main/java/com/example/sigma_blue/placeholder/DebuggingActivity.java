@@ -14,8 +14,8 @@ import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.activities.BaseActivity;
 import com.example.sigma_blue.database.DatabaseInitializer;
 import com.example.sigma_blue.fragments.FragmentLauncher;
-import com.example.sigma_blue.entity.item.item.Item;
-import com.example.sigma_blue.entity.item.item.ItemList;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.item.ItemList;
 import com.example.sigma_blue.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -131,7 +131,7 @@ public class DebuggingActivity extends BaseActivity {
                     new Item(
                             "ThinkPad", new Date(),
                             "Nice UNIX book", "", "IBM",
-                            "T460", 300f
+                            "19845739405", "T460", 300f
                     )
             );
         });  // Launch add fragment.

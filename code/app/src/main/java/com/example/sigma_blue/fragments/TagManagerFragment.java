@@ -1,15 +1,14 @@
 package com.example.sigma_blue.fragments;
 
-import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.context.AddEditViewModel;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.TagManagerFragmentBinding;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.Tag;
-import com.example.sigma_blue.entity.tag.TagDB;
 import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.Item;
+import com.google.common.base.VerifyException;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.ArrayList;
@@ -31,15 +29,10 @@ public class TagManagerFragment extends Fragment {
     private ArrayList<Tag> tagsData; // Tags that are applied to the Item, if applicable.
 
     // Shared value between parent calling activity and other fragments
-    private AddEditViewModel sharedVM;
+    private GlobalContext globalContext;
 
     // Globally defined TagList that stores all tags defined for a particular user.
     private TagList tagList;
-    private Account currentAccount;
-
-    // Key for new tags that are being created.
-    public static String ARG_TAG_ADD = "tag_add";
-
     // Fragment binding
     private TagManagerFragmentBinding binding;
 
@@ -104,57 +97,32 @@ public class TagManagerFragment extends Fragment {
         // The Account of the user that is signed in is also passed into the fragment.
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
-        // Link the TagList to the fragment itself
-        Bundle extras = activity.getIntent().getExtras();
-        if (extras != null) {
-            currentAccount = (Account) extras.getSerializable("account");
-        } else {
-            // TODO remove this and handle the error properly
-            currentAccount = new Account("user1", "password");
-        }
+        // Load the shared data
+        globalContext = GlobalContext.getInstance();
+        final Item currentItem = globalContext.getCurrentItem();
 
-        // Load the global list of tags per user into the fragment
-        tagList = new TagList(TagDB.newInstance(currentAccount));
-        tagList.startListening();
+        tagsData = (ArrayList<Tag>) globalContext.getTagList().getTags();
 
-        // Load the shared data from the parent AddEditActivity
-        sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
-        final Item currentItem = sharedVM.getItem().getValue();
-
-        if (!sharedVM.getId().getValue().equals("")) {
-
+        if (globalContext.getCurrentState().equals("add_tags_to_item")) {
             // User is opening the tag manager fragment on an existing fragment.
-            tagsData = currentItem.getTags();
             // Check tags already applied onto the item.
-            for (Tag t: tagsData) {
+            for (Tag t: currentItem.getTags()) {
                 t.setChecked(true);
             }
 
-        } else {
+        } else if (globalContext.getCurrentState().equals("tag_multi_select")){
             // The user is applying a selection of tags to multiple Items, we just want to
             // return an ArrayList of Tags that we can apply.
             // Here we simply get the globally defined tags.
-            tagsData = (ArrayList<Tag>) tagList.getTags();
+        } else {
+            throw new VerifyException("bad state");
         }
 
-
-        // Get the new Tag object from the TagAddFragment, if applicable.
-        if (getArguments() != null) {
-            Tag freshlyCreatedTag = (Tag) getArguments().getSerializable(ARG_TAG_ADD);
-            if (freshlyCreatedTag != null) {
-
-                tagList.addTag(freshlyCreatedTag);
-
-                // tagsData.add(freshlyCreatedTag);
-
-            }
-        }
 
         // Here we should obtain the union of the TagList's Tags with tagsData,
         // but for now I will just join the two
         // TODO Consider the checked status, we probably should get unique tags without regard
         //  to the isChecked status.
-        tagsData =  (ArrayList<Tag>) tagList.getTags();
 
         /* Link the adapter to the UI */
         tagListAdapter = TagListAdapter.newInstance(tagsData, getContext());
@@ -205,14 +173,16 @@ public class TagManagerFragment extends Fragment {
                 //Bundle bundle = new Bundle();
                 //bundle.putSerializable(EditFragment.ARG_TAGS, tagsConfirmed);
                 //NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment, bundle);
-                if (Objects.equals(sharedVM.getMode().getValue(), "multi_tag"))
+                if (Objects.equals(globalContext.getCurrentState(), "tag_multi_select"))
                 {
                     currentItem.setTags(tagsConfirmed);
+                    globalContext.newState("view_list_activity");
                     activity.returnAndClose();
                 }
                 else
                 {
                     currentItem.setTags(tagsConfirmed);
+                    globalContext.newState("edit_fragment");
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
                 }
 

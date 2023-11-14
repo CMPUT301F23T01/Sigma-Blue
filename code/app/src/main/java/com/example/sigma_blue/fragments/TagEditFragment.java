@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 
 /**
@@ -22,6 +23,7 @@ import com.example.sigma_blue.entity.tag.Tag;
 public class TagEditFragment extends Fragment {
     private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
     private Tag tag;
+    private GlobalContext globalContext;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -32,27 +34,21 @@ public class TagEditFragment extends Fragment {
         // TODO Maybe put a color picker for the Tag class, maybe.
         // It might also be nice to have the color picker remember the last pick.
 
-        Bundle args = getActivity().getIntent().getExtras();
-        if (args == null) {
-
-        } else {
-            tag = args.getParcelable("TAG_TO_EDIT");
-        }
-
 
         backButton.setOnClickListener(v -> {
             // exit fragment?
+            globalContext.newState("tag_manager_fragment");
             getActivity().onBackPressed();
         });
 
         confirmButton.setOnClickListener(v -> {
             String tagName = inputField.getText().toString();
-            Color tagColour = tag.getColour(); // TODO finish implementation, this will depend on how we select the color.
+            Color tagColour = tag.getColour();
 
-            // TODO Edit the existing tag, through the activity/fragment that calls this fragment.
-
+            Tag newTag = new Tag(tagName, tagColour);
+            globalContext.setCurrentTag(newTag);
+            globalContext.newState("tag_manager_fragment");
             getActivity().onBackPressed();
-
         });
 
         // The user cannot leave an empty tag

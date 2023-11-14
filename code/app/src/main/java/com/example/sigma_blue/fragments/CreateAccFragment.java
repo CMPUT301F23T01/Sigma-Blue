@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.R;
 
@@ -24,12 +25,13 @@ public class CreateAccFragment extends DialogFragment {
     private EditText usernameInput;
     private EditText passwordInput;
     private OnFragmentInteractionListener listener;
+    private GlobalContext globalContext;
 
     /**
      * Listens for interaction with confirm button in fragment, contains method to return to original activity
      */
     public interface OnFragmentInteractionListener {
-        void onConfirmPressed(Account account);
+        void onConfirmPressed();
     }
 
     /**
@@ -55,7 +57,7 @@ public class CreateAccFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.login_page_fragment, null);
-
+        globalContext = GlobalContext.getInstance();
         // views for getting user input
         usernameInput = view.findViewById(R.id.usernameEditText);
         passwordInput = view.findViewById(R.id.passwordEditText);
@@ -73,11 +75,10 @@ public class CreateAccFragment extends DialogFragment {
                         String password = passwordInput.getText().toString();
 
                         // creates new account for user
-                        Account userAccount = new Account(username, password);
-
-                        listener.onConfirmPressed(userAccount);
+                        globalContext.getAccountList().add(new Account(username, password));
+                        globalContext.newState("login_activity");
+                        listener.onConfirmPressed();
                     }
                 }).create();
     }
-
 }

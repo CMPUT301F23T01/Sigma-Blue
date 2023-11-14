@@ -25,7 +25,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import com.example.sigma_blue.activities.ViewListActivity;
-import com.example.sigma_blue.entity.item.item.ItemList;
+import com.example.sigma_blue.entity.item.ItemList;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

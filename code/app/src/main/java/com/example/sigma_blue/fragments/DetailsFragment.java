@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -13,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.sigma_blue.context.AddEditViewModel;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
-import com.example.sigma_blue.entity.item.item.Item;
+import com.example.sigma_blue.entity.item.Item;
 
 import java.text.SimpleDateFormat;
 
@@ -41,6 +40,7 @@ public class DetailsFragment extends Fragment
     private TextView textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private GlobalContext globalContext;
 
     /**
      * Required empty public constructor
@@ -97,8 +97,9 @@ public class DetailsFragment extends Fragment
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
         // Access item from parent activities ViewModel
-        AddEditViewModel sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
-        final Item currentItem = sharedVM.getItem().getValue();
+        //AddEditViewModel sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
+        globalContext = GlobalContext.getInstance();
+        final Item currentItem = globalContext.getCurrentItem();
 
         // set item details from shared activity
         textName.setText(currentItem.getName());
@@ -119,7 +120,7 @@ public class DetailsFragment extends Fragment
             public void onClick(View view)
             {
                 // Navigate to EditFragment
-                sharedVM.setEditItem(currentItem);
+                globalContext.newState("edit_item_fragment");
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
@@ -129,7 +130,8 @@ public class DetailsFragment extends Fragment
             public void onClick(View v)
             {
                 // Return to ViewListActivity; notify object needs to be deleted
-                sharedVM.setDeleteFlag(true);
+                globalContext.getItemList().remove(currentItem);
+                globalContext.setCurrentItem(null);
                 activity.returnAndClose();
             }
         });
