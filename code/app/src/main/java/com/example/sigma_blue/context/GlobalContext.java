@@ -55,7 +55,8 @@ public class GlobalContext {
      * Start the item list (this method could be removed, not sure what other people think).
      */
     public void setUpItemList() {
-        this.itemList = ItemList.newInstance(this.account, ItemDB.newInstance(this.account));
+        this.itemList = ItemList.newInstance(this.account,
+                ItemDB.newInstance(this.account));
     }
 
     /**

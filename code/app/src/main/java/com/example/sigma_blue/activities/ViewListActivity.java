@@ -80,7 +80,9 @@ public class ViewListActivity extends BaseActivity {
 
         /* ItemList encapsulates both the database and the adapter */
         globalContext.setUpItemList();
-        globalContext.getItemList().setListAdapter(new ItemListAdapter(this, viewHolder.summaryView));
+        globalContext.getItemList().setListAdapter(
+                new ItemListAdapter(this, viewHolder.summaryView),
+                globalContext.getSelectedItems());
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */
@@ -156,8 +158,8 @@ public class ViewListActivity extends BaseActivity {
                             .getItem(position);
                     this.handleLongClick(itemCache);
 
-                    this.highlightControl(view, globalContext.getSelectedItems()
-                            .contains(itemCache));  // Toggles highlight
+                    globalContext.getItemList().getListAdapter()
+                            .notifyDataSetChanged();    // Update highlight
 
                     /*Returns true if the list consumes the click. Always true
                     * in our app*/
@@ -185,16 +187,4 @@ public class ViewListActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Method that will turn on the highlight of the view if it is selected,
-     * otherwise reset it to the default background colour.
-     * @param view is the view that is being checked.
-     */
-    private void highlightControl(View view, boolean selected) {
-        @ColorInt int rowColor;
-        if (selected) rowColor = ContextCompat.getColor(this,
-                R.color.add_edit_layout_bgr_test);
-        else rowColor = ContextCompat.getColor(this, R.color.white);
-        view.setBackgroundColor(rowColor);
-    }
 }

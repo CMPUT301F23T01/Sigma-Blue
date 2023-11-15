@@ -24,10 +24,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     /* Factory construction */
 
     public static ItemList newInstance(Account a, ItemDB dbH,
-                                       ItemListAdapter adapt) {
+                                       ItemListAdapter adapt,
+                                       List<? extends Item> selectedList) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
         ret.setDatabaseHandler(dbH);
-        ret.setListAdapter(adapt);
+        ret.setListAdapter(adapt, selectedList);
         return ret;
     }
 
@@ -179,8 +180,10 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * Sets the list adapter and does a refresh.
      * @param listAdapter
      */
-    public void setListAdapter(final ItemListAdapter listAdapter) {
+    public void setListAdapter(final ItemListAdapter listAdapter,
+                               final List<? extends Item> selectedList) {
         this.listAdapter = listAdapter;
+        this.listAdapter.setSelectedItemList(selectedList);
         if (this.items != null) {
             this.listAdapter.setItemList(this.items);
             this.listAdapter.notifyDataSetChanged();

@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.R;
@@ -29,11 +31,17 @@ public class ItemListAdapter extends BaseAdapter {
     private final LayoutInflater inflater;
     private TextView sumView;
     private List<? extends Item> selectedItems;
+    private final Context context;
 
 
     public ItemListAdapter(final Context context, final TextView sumView) {
         inflater = LayoutInflater.from(context);
         this.sumView = sumView;
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     /**
@@ -104,6 +112,8 @@ public class ItemListAdapter extends BaseAdapter {
                 .inflate(R.layout.view_row, null);
         else ;  // Added reuse of the view.
         bindPosition(convertView, position);
+        highlightControl(convertView, selectedItems.contains(itemList
+                .get(position)));
         return convertView;
     }
 
@@ -127,7 +137,8 @@ public class ItemListAdapter extends BaseAdapter {
 
     /**
      * Updates the text on the sumView that is contained in the adapter
-     * @param sum
+     * @param sum is the optional object that will either be empty or contain
+     *            the sum of the values of the held object.
      */
     public void notifySumView(Optional<Float> sum) {
         if (this.sumView != null) {
@@ -163,5 +174,18 @@ public class ItemListAdapter extends BaseAdapter {
             ((TextView) view.findViewById(R.id.uniqueId)).setText(itemList
                     .get(position).getSerialNumber());
         }
+    }
+
+    /**
+     * Method that will turn on the highlight of the view if it is selected,
+     * otherwise reset it to the default background colour.
+     * @param view is the view that is being checked.
+     */
+    private void highlightControl(View view, boolean selected) {
+        @ColorInt int rowColor;
+        if (selected) rowColor = ContextCompat.getColor(getContext(),
+                R.color.add_edit_layout_bgr_test);
+        else rowColor = ContextCompat.getColor(getContext(), R.color.white);
+        view.setBackgroundColor(rowColor);
     }
 }
