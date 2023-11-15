@@ -1,5 +1,7 @@
 package com.example.sigma_blue.entity.tag;
 
+import android.widget.ListAdapter;
+
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -138,5 +140,18 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
 
     public void setAdapter(TagListAdapter tagListAdapter) {
         this.adapter = tagListAdapter;
+    }
+
+    public TagListAdapter getAdapter() {
+        return adapter;
+    }
+    /**
+     * Replace the old tag with a new one
+     * @param updatedTag replacement tag
+     * @param oldTag tag to replace
+     */
+    public void updateTag(Tag updatedTag, Tag oldTag) {
+        this.tags.remove(oldTag);
+        this.tags.add(updatedTag);
     }
 }

@@ -5,11 +5,11 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 
 import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.entity.item.item.Item;
-import com.example.sigma_blue.entity.item.item.ItemDB;
-import com.example.sigma_blue.entity.item.item.ItemFactory;
-import com.example.sigma_blue.entity.item.item.ItemList;
-import com.example.sigma_blue.entity.item.item.ItemListAdapter;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.item.ItemDB;
+import com.example.sigma_blue.entity.item.ItemFactory;
+import com.example.sigma_blue.entity.item.ItemList;
+import com.example.sigma_blue.entity.item.ItemListAdapter;
 
 import org.junit.After;
 import org.junit.Assert;

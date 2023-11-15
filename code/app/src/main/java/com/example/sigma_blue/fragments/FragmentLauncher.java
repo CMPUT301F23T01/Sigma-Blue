@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager;
  * Based on https://developer.android.com/guide/fragments/fragmentmanager.
  * This class encapsulates fragment launching related methods. The use this class, embed it into
  * the class of the activity or fragment that is calling it.
+ *
+ * Note that this is not used for the add/edit/tag fragments.
  */
 public class FragmentLauncher {
     /* The fragment manager is an object that both activities and fragments share. Holds the current

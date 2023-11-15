@@ -1,4 +1,4 @@
-package com.example.sigma_blue.entity.item.item;
+package com.example.sigma_blue.entity.item;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -255,16 +255,6 @@ public class ItemListAdapter extends
                     .setText(R.string.empty_summary_view);
         } else Log.w("Missing Summary View",
                 "Summary view not hooked to adapter");
-    }
-
-    public ArrayList<Item> getHighlightedItems() {
-        ArrayList<Item> highlightedItems = new ArrayList<Item>();
-        for (RecyclerViewHolder H : recyclerViewHolderList) {
-            if (H.getHighlighted()) {
-                highlightedItems.add(H.getItem());
-            }
-        }
-        return highlightedItems;
     }
 
     public void resetHighlightedItems() {
