@@ -93,7 +93,8 @@ public abstract class ADatabaseHandler<T> {
     /**
      * This method adds a listener to a user's item collection.
      */
-    public void startListening(final CollectionReference cR, final IDatabaseList<T> lst) {
+    public void startListening(final CollectionReference cR,
+                               final IDatabaseList<T> lst) {
         cR.addSnapshotListener(
                 (q, e) -> {
                     if (q != null) {

@@ -59,10 +59,12 @@ public class ItemListRecyclerAdapter extends
          * @param clickListener method to call on a click
          * @param longClickListener method to call on a long click
          */
-        public void bind(final Item item, final OnItemClickListener clickListener, final OnLongClickListener longClickListener) {
+        public void bind(final Item item, final OnItemClickListener clickListener,
+                         final OnLongClickListener longClickListener) {
             this.highlighted = itemView.isSelected();
             this.item = item;
-            itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
+            itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN :
+                    Color.WHITE);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -115,7 +117,9 @@ public class ItemListRecyclerAdapter extends
      * @param itemList is an ItemList object that contains the types.
      * @return an ItemListAdapter object that has been instantiated.
      */
-    public static ItemListRecyclerAdapter newInstance(List<Item> itemList, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
+    public static ItemListRecyclerAdapter newInstance(
+            List<Item> itemList, OnItemClickListener itemClickListener,
+            OnLongClickListener longClickListener) {
         return new ItemListRecyclerAdapter(itemList, itemClickListener, longClickListener);
     }
     public static ItemListRecyclerAdapter newInstance() {
@@ -126,7 +130,9 @@ public class ItemListRecyclerAdapter extends
      * Basic constructor. Takes in the ItemList that will be adapted to a list view.
      * @param items is the ItemList object that will be displayed on lists through this adapter.
      */
-    public ItemListRecyclerAdapter(List<Item> items, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
+    public ItemListRecyclerAdapter(List<Item> items,
+                                   OnItemClickListener itemClickListener,
+                                   OnLongClickListener longClickListener) {
         this.items = items;
         this.clickListener = itemClickListener;
         this.longClickListener = longClickListener;
@@ -233,29 +239,6 @@ public class ItemListRecyclerAdapter extends
         this.items = itemList;
     }
 
-    public void setSummaryView(TextView view) {
-        this.summaryView = view;
-    }
-
-    /**
-     * Returns the formatted output for the summary text view.
-     * @param sum is a float that represents the sum
-     * @return the formatted string.
-     */
-    public String formatSummary(Float sum) {
-        return String.format(Locale.ENGLISH,
-                "The total value: %7.2f", sum);
-    }
-
-    public void updateSumView(Optional<Float> sum) {
-        if (this.summaryView != null) {
-            if (sum.isPresent()) this.summaryView
-                    .setText(formatSummary(sum.get()));
-            else this.summaryView
-                    .setText(R.string.empty_summary_view);
-        } else Log.w("Missing Summary View",
-                "Summary view not hooked to adapter");
-    }
 
     public ArrayList<Item> getHighlightedItems() {
         ArrayList<Item> highlightedItems = new ArrayList<Item>();

@@ -1,6 +1,7 @@
 package com.example.sigma_blue.entity.item;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,31 +11,19 @@ import android.widget.TextView;
 import com.example.sigma_blue.R;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 public class ItemListAdapter extends BaseAdapter {
     private List<? extends Item> itemList;
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
+    private TextView sumView;
+    private List<Integer> highlightIndex;
 
-    public static ItemListAdapter newInstance(Context context) {
-        return new ItemListAdapter(context);
-    }
 
-    public static ItemListAdapter newInstance(Context context,
-                                              List<? extends Item> itemList) {
-        return new ItemListAdapter(context, itemList);
-    }
-
-    private ItemListAdapter(Context context) {
+    public ItemListAdapter(final Context context, final TextView sumView) {
         inflater = LayoutInflater.from(context);
-    }
-
-    /**
-     * Constructor with array input.
-     * @param itemList List that is being adapted to the list view
-     */
-    private ItemListAdapter(Context context, List<? extends Item> itemList) {
-        inflater = LayoutInflater.from(context);
-        this.itemList = itemList;
+        this.sumView = sumView;
     }
 
     /**
@@ -92,11 +81,47 @@ public class ItemListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        if (convertView == null) view = this.inflater.inflate(R.layout.view_row,
-                parent);
-        else view = convertView;
+        // TODO: Reuse the view by using convertView and parent in the future
+        view = this.inflater.inflate(R.layout.view_row, null);
         bindPosition(view, position);   // Binds the item at the position
         return view;
+    }
+
+    /**
+     * Returns the formatted output for the summary text view.
+     * @param sum is a float that represents the sum
+     * @return the formatted string.
+     */
+    public String formatSummary(Float sum) {
+        return String.format(Locale.ENGLISH,
+                "The total value: %7.2f", sum);
+    }
+
+    /**
+     * Updates the text on the sumView that is contained in the adapter
+     * @param sum
+     */
+    public void notifySumView(Optional<Float> sum) {
+        if (this.sumView != null) {
+            if (sum.isPresent()) this.sumView
+                    .setText(formatSummary(sum.get()));
+            else this.sumView
+                    .setText(R.string.empty_summary_view);
+        } else Log.w("Missing Summary View",
+                "Summary view not hooked to adapter");
+    }
+
+    /**
+     * Sets the summary view (TextView that contains the total value of items
+     * held).
+     * @param sumView is the TextView that will display the summation
+     */
+    public void setSummaryView(TextView sumView) {
+        this.sumView = sumView;
+    }
+
+    public TextView getSummaryView() {
+        return this.sumView;
     }
 
     /**
@@ -110,9 +135,9 @@ public class ItemListAdapter extends BaseAdapter {
             ((TextView) view.findViewById(R.id.itemName)).setText(itemList
                     .get(position).getName());
             ((TextView) view.findViewById(R.id.itemMake)).setText(itemList
-                    .get(position).getName());
+                    .get(position).getMake());
             ((TextView) view.findViewById(R.id.uniqueId)).setText(itemList
-                    .get(position).getName());
+                    .get(position).getSerialNumber());
         }
     }
 }

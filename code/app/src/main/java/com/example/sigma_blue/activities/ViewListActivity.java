@@ -12,20 +12,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.annotation.ColorInt;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.fragments.FragmentLauncher;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +37,7 @@ public class ViewListActivity extends BaseActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder {
         public Button searchButton;
         public Button sortFilterButton;
         public Button optionsButton;
@@ -43,12 +46,13 @@ public class ViewListActivity extends BaseActivity {
         public LinearLayout selectedItemsMenu;
         public FloatingActionButton addEntryButton;
         public TextView summaryView;
+        public ListView listListView;
 
         /**
          * Construction of this nested class will bind the UI element to a 'package'
          */
-        private ViewHolder(View itemView) {
-            super(itemView);
+        private ViewHolder() {
+            this.listListView = findViewById(R.id.listView);
             this.searchButton = findViewById(R.id.searchButton);
             this.sortFilterButton = findViewById(R.id.sortButton);
             this.optionsButton = findViewById(R.id.optionButton);
@@ -57,31 +61,6 @@ public class ViewListActivity extends BaseActivity {
             this.deleteSelectedButton = findViewById(R.id.deleteSelectedButton);
             this.addTagsSelectedButton = findViewById(R.id.addTagsSelectedButton);
             this.selectedItemsMenu = findViewById(R.id.selectedItemsMenu);
-            /* Setting up defaults for the UI elements */
-            setSummaryView(Optional.empty());
-        }
-
-        /**
-         * This method updates the summary text view with the sum value. This
-         * value can be empty.
-         * @param sum is an Optional wrapper which will either contain the sum,
-         *            or nothing.
-         */
-        public void setSummaryView(Optional<Float> sum) {
-            if (sum.isPresent())this.summaryView
-                    .setText(formatSummary(sum.get()));
-            else this.summaryView
-                    .setText(R.string.empty_summary_view);
-        }
-
-        /**
-         * Returns the formatted output for the summary text view.
-         * @param sum is a float that represents the sum
-         * @return the formatted string.
-         */
-        public String formatSummary(Float sum) {
-            return String.format(Locale.ENGLISH,
-                    "The total value: %7.2f", sum);
         }
     }
 
@@ -91,15 +70,18 @@ public class ViewListActivity extends BaseActivity {
     private ViewHolder viewHolder;              // Encapsulation of the Views
     private ItemList itemList;
     private Account currentAccount;
+    private List<Integer> selectedIndex;
 
     private ArrayList<Item> selectedItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_list);
+        super.onCreate(savedInstanceState); // Activity super
+        setContentView(R.layout.view_list); // sets up the activity layout
+        selectedIndex = new ArrayList<>();
 
+        /* Obtaining the passed in data */
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             currentAccount = (Account) extras.getSerializable("account");
@@ -107,18 +89,19 @@ public class ViewListActivity extends BaseActivity {
             Log.e("DEBUG", "No Account object in bundle!");
             currentAccount = new Account("UI_Test_User", "password");
         }
-        /* Code section for linking UI elements */
-        ListView itemListView = findViewById(R.id.listView);
-        this.viewHolder = this.new ViewHolder(itemListView);
 
+        /* Code section for linking UI elements */
+        this.viewHolder = this.new ViewHolder();
 
         /* ItemList encapsulates both the database and the adapter */
-        this.itemList = ItemList.newInstance(currentAccount, this::handleClick, this::handleLongClick);
+        this.itemList = ItemList.newInstance(currentAccount,
+                ItemDB.newInstance(currentAccount),
+                new ItemListAdapter(this, viewHolder.summaryView));
         itemList.setSummaryView(viewHolder.summaryView);
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Linking the adapter to the UI */
-        itemListView.setAdapter(ItemListAdapter.newInstance(this, itemList.getList()));
+        viewHolder.listListView.setAdapter(itemList.getListAdapter());
 
         // set up thing for selected items
         this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -150,11 +133,11 @@ public class ViewListActivity extends BaseActivity {
     private void handleLongClick(Item item) {
         Log.i("DEBUG", item.getName() + "Long Press");
 
-        if (itemList.getAdapter().getHighlightedItems().size() > 0) {
-            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-        }
+//        if (itemList.getRecyclerAdapter().getHighlightedItems().size() > 0) {
+//            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
+//        } else {
+//            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+//        }
     }
 
     /**
@@ -214,20 +197,21 @@ public class ViewListActivity extends BaseActivity {
             Log.e("DEBUG", "Apply tags, but no tags returned");
         }
 
-        if (!isNull(tags)) {
-            for (Tag t : tags) {
-                for (Item i : itemList.getAdapter().getHighlightedItems()) {
-                    i.addTag(t);
-                }
-            }
-        }
+//        if (!isNull(tags)) {
+//            for (Tag t : tags) {
+//                for (Item i : itemList.getRecyclerAdapter().getHighlightedItems()) {
+//                    i.addTag(t);
+//                }
+//            }
+//        }
     }
     /* Fragment result listeners are lambda expressions that controls what the class does when the
     * results are received.*/
     FragmentResultListener addFragmentResultListener = (requestKey, result) -> {};
 
     /**
-     * This method sets all the on click listeners for all the interactive UI elements.
+     * This method sets all the on click listeners for all the interactive UI
+     * elements.
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
@@ -241,7 +225,8 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
-        viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
+        viewHolder.deleteSelectedButton.setOnClickListener(v -> {
+            this.deleteSelectedItems();});
         /*
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -252,6 +237,57 @@ public class ViewListActivity extends BaseActivity {
             activityLauncher.launch(intent, this::applyTagResults);
         });
          */
+
+        /* The List View related control flow */
+        viewHolder.listListView.setLongClickable(true); // Turning on long click
+
+        viewHolder.listListView // This is for short clicks on a row
+                .setOnItemClickListener((parent, view, position, id) -> {
+                    Item item = itemList.getItem(position);
+                    Log.i("DEBUG", item.getName() + "Sort Press");
+                    Intent intent = new Intent(ViewListActivity
+                            .this, AddEditActivity.class);
+                    intent.putExtra("item", item);
+                    intent.putExtra("account", currentAccount);
+                    intent.putExtra("mode", "edit");
+                    activityLauncher.launch(intent, this::processNewItemResult);
+        });
+
+        /* The long click listener */
+        viewHolder.listListView.setOnItemLongClickListener(
+                (parent, view, position, id) -> {
+                    boolean contained = selectedIndex.contains(position);
+                    highlightControl(view, !contained);
+                    view.setSelected(!contained);
+                    if (contained) selectedIndex.remove(Integer
+                            .valueOf(position));
+                    else selectedIndex.add(Integer.valueOf(position));
+
+                    // Selected menu visibility when at least one selected
+                    if (this.selectedIndex.size() > 0) {
+                        viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
+                    } else {
+                        viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+                    }
+
+                    return true;
+                });
+    }
+
+    /**
+     * Method that will turn on the highlight of the view if it is selected,
+     * otherwise reset it to the default background colour.
+     * @param view is the view that is being checked.
+     */
+    private void highlightControl(View view, boolean selected) {
+        @ColorInt int rowColor;
+        if (selected) rowColor = MaterialColors
+                .getColor(view, com.google.android.material.R.attr
+                        .colorSecondary);
+        else rowColor = MaterialColors
+                .getColor(view, com.google.android.material.R.attr
+                        .colorOnBackground);
+        view.setBackgroundColor(rowColor);
     }
 
     /**

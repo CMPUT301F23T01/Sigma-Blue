@@ -18,43 +18,16 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     /* Attributes */
     private List<Item> items;
     private ItemDB dbHandler;
-    private ItemListRecyclerAdapter adapter;
+    private ItemListAdapter listAdapter;
     private Account account;
 
     /* Factory construction */
 
     public static ItemList newInstance(Account a, ItemDB dbH,
-                                       ItemListRecyclerAdapter adapt) {
+                                       ItemListAdapter adapt) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setAdapter(adapt);
+        ret.setListAdapter(adapt);
         ret.setDatabaseHandler(dbH);
-        ret.startListening();
-        return ret;
-    }
-
-    /**
-     * Factory creation for when there isn't an input ArrayList of songs ready for input.
-     * @return an instance of the ItemList class holding no item.
-     */
-    public static ItemList newInstance(Account a, ItemListRecyclerAdapter.OnItemClickListener itemClickListener, ItemListRecyclerAdapter.OnLongClickListener longClickListener) {
-        ItemList ret = new ItemList(new ArrayList<Item>(), a);
-        ret.setAdapter(ItemListRecyclerAdapter.newInstance(ret.getList(), itemClickListener, longClickListener));
-        ret.setDatabaseHandler(ItemDB.newInstance(a));
-        ret.startListening();
-        return ret;
-    }
-
-    /**
-     * Factory creation that will bind the ItemList to an ArrayList of Item object that has been
-     * pre-initialized.
-     * @param items is an ArrayList of the Item object that has been pre-initialized.
-     * @return an instance of the ItemList object containing the Item objects that were present in
-     * items.
-     */
-    public static ItemList newInstance(Account a, ArrayList<Item> items, ItemListRecyclerAdapter.OnItemClickListener itemClickListener, ItemListRecyclerAdapter.OnLongClickListener longClickListener) {
-        ItemList ret = new ItemList(items, a);
-        ret.setAdapter(ItemListRecyclerAdapter.newInstance(ret.getList(), itemClickListener, longClickListener));
-        ret.setDatabaseHandler(ItemDB.newInstance(a));
         ret.startListening();
         return ret;
     }
@@ -167,8 +140,10 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * Updates the UI to match the current data in the ItemList.
      */
     public void updateUI() {
-        adapter.notifyDataSetChanged();
-        adapter.updateSumView(sumValues.apply(items));
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+            listAdapter.notifySumView(sumValues.apply(this.items));
+        };
     }
 
     /**
@@ -194,12 +169,20 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
                 this);
     }
 
-    public void setAdapter(final ItemListRecyclerAdapter adapter) {
-        this.adapter = adapter;
+    /**
+     * Sets the list adapter and does a refresh.
+     * @param listAdapter
+     */
+    public void setListAdapter(final ItemListAdapter listAdapter) {
+        this.listAdapter = listAdapter;
+        if (this.items != null) {
+            this.listAdapter.setItemList(this.items);
+            this.listAdapter.notifyDataSetChanged();
+        }
     }
 
-    public ItemListRecyclerAdapter getAdapter() {
-        return this.adapter;
+    public ItemListAdapter getListAdapter() {
+        return this.listAdapter;
     }
 
     /* Database method */
@@ -210,7 +193,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      */
     public void setList(final List<Item> list) {
         this.items = list;
-        this.adapter.setList(list);
+        this.listAdapter.setItemList(list);
     }
 
     public List<Item> getList() {
@@ -218,7 +201,8 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     public void setSummaryView(TextView summaryView) {
-        this.adapter.setSummaryView(summaryView);
+        this.listAdapter.setSummaryView(summaryView);
+        this.listAdapter.notifySumView(sumValues.apply(this.items));
     }
 
     /**

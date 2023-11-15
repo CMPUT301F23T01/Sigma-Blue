@@ -9,6 +9,7 @@ import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemFactory;
 import com.example.sigma_blue.entity.item.ItemList;
+import com.example.sigma_blue.entity.item.ItemListAdapter;
 import com.example.sigma_blue.entity.item.ItemListRecyclerAdapter;
 
 import org.junit.After;
@@ -33,7 +34,7 @@ public class ItemListTest {
     @Mock
     ItemDB mockDBHandler;
     @Mock
-    ItemListRecyclerAdapter itemListAdapter;
+    ItemListAdapter itemListAdapter;
 
     /**
      * Recreating the Class Under Test
