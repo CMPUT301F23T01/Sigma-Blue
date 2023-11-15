@@ -9,8 +9,6 @@ import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
 
-import com.example.sigma_blue.entity.item.ItemListAdapter;
-
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
 
@@ -118,7 +116,7 @@ public class GlobalContext {
      * Method for doing a set difference of the items stored and the selected
      * items.
      */
-    public void confirmItemDelete() {
+    public void deleteSelectedItems() {
         for (Item i : this.getSelectedItems()) {
             this.getItemList().remove(i);
         }

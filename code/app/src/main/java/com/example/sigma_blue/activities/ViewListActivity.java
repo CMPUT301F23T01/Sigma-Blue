@@ -3,7 +3,6 @@ package com.example.sigma_blue.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -16,20 +15,9 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 
-import androidx.annotation.ColorInt;
-import androidx.core.content.ContextCompat;
-
 import com.example.sigma_blue.entity.item.ItemListAdapter;
-import com.google.android.material.color.MaterialColors;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.common.base.VerifyException;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 
 public class ViewListActivity extends BaseActivity {
@@ -125,7 +113,7 @@ public class ViewListActivity extends BaseActivity {
      */
     private void deleteSelectedItems() {
 
-        globalContext.confirmItemDelete();
+        globalContext.deleteSelectedItems();
 
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
@@ -200,4 +188,3 @@ public class ViewListActivity extends BaseActivity {
     }
 
 }
-
