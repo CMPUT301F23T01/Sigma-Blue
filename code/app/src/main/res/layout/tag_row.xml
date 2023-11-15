@@ -9,12 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="false"
         android:gravity="center_vertical">
 
         <CheckBox
             android:id="@+id/tagCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
             android:buttonTint="@color/add_edit_btn_bgr_test" />
 
         <TextView

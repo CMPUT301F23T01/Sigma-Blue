@@ -12,16 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.GlobalContext;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TagListAdapter extends ArrayAdapter<Tag> {
 
     /* Attributes */
     private ArrayList<Tag> tagsData;
     private Context context;
-    private ArrayList<Tag> selectedTags;
-
     /* Factories and Constructors */
 
     /**
@@ -43,7 +45,6 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         super(context, 0, tagsData);
         this.context = context;
         this.tagsData = tagsData;
-        this.selectedTags = new ArrayList<Tag>();
     }
 
     @NonNull
@@ -52,6 +53,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         View view = convertView;
         Tag tag = tagsData.get(position);
 
+        GlobalContext globalContext = GlobalContext.getInstance();
         // Inflate the custom layout.
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -65,8 +67,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
 
         tagColor.setBackgroundColor(tag.getColour().toArgb());
         tagTitle.setText(tag.getTagText());
-        tagCheckBox.setChecked(tag.isChecked());
-
+        tagCheckBox.setChecked(globalContext.getHighlightedTags().contains(tag));
         return view;
     }
 

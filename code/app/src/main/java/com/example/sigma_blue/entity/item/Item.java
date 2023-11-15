@@ -60,7 +60,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, float value) {
+                                   String model, String serial, float value) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -69,6 +69,7 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setDescription(description);
         ret.setMake(make);
         ret.setModel(model);
+        ret.setSerialNumber(serial);
         ret.setValue(value);
 
         return ret;
@@ -76,7 +77,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final float value) {
+                                   final String serial, final float value) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -85,6 +86,7 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setDescription(null);
         ret.setMake(make);
         ret.setModel(model);
+        ret.setSerialNumber(serial);
         ret.setValue(value);
 
         return ret;
@@ -105,12 +107,13 @@ public class Item implements Comparable<Item>, Serializable,
      * @param value
      * this is the estimated value of the item
      */
-    public Item(String name, Date date, String description, String comment, String make, String model, float value) {
+    public Item(String name, Date date, String description, String comment, String make, String serial, String model, float value) {
         this.name = name;
         this.date = date;
         this.description = description;
         this.make = make;
         this.model = model;
+        this.serialNumber = serial;
         this.value = value;
         this.comment = comment;
 
@@ -132,7 +135,7 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item()
     {
-        this("",new Date(),"","","","",0f);
+        this("",new Date(),"","","", "","",0f);
     }
 
     /**
@@ -292,11 +295,13 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     /**
-     * Adds a new tag.
+     * Adds a new tag if it doesn't already exist
      * @param tag the tag being added.
      */
     public void addTag(Tag tag) {
-        this.tags.add(tag);
+        if (!tags.contains(tag)) {
+            this.tags.add(tag);
+        }
     }
 
     /**
@@ -416,6 +421,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString("DESCRIPTION"),
                     q.getString("MAKE"),
                     q.getString("MODEL"),
+                    q.getString("SERIAL"),
                     Float.parseFloat(q.getString("VALUE"))
             );
         } catch (ParseException e) {
@@ -426,6 +432,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString("DESCRIPTION"),
                     q.getString("MAKE"),
                     q.getString("MODEL"),
+                    q.getString("SERIAL"),
                     Float.parseFloat(q.getString("VALUE"))
             );
         }

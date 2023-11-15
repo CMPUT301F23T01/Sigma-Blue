@@ -17,7 +17,6 @@ import java.util.function.Function;
 public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     private String tagText;
     private Color colour;
-    private boolean isChecked = false; // For the TagManager.
     public static final String LABEL = "LABEL", COLOR = "COLOR";
 
     public Tag(String tagText, int colour) {
@@ -107,18 +106,5 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
 
     public String getColourString() {
         return Integer.toHexString(colour.toArgb());
-    }
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean val) { isChecked = val; }
-
-    /**
-     * Toggles checked status a ListView element in the ListView of checkboxes.
-     */
-    public void toggleChecked() {
-        isChecked = !isChecked;
     }
 }

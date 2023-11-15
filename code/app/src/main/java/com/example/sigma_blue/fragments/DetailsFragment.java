@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -13,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.sigma_blue.context.AddEditViewModel;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
@@ -41,6 +40,7 @@ public class DetailsFragment extends Fragment
     private TextView textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private GlobalContext globalContext;
 
     /**
      * Required empty public constructor
@@ -96,11 +96,10 @@ public class DetailsFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
-        // Access item from parent activities ViewModel
-        AddEditViewModel sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
-        final Item currentItem = sharedVM.getItem().getValue();
+        globalContext = GlobalContext.getInstance();
+        final Item currentItem = globalContext.getCurrentItem();
 
-        // set item details from shared activity
+        // set item details from global context
         textName.setText(currentItem.getName());
         textValue.setText(String.valueOf(currentItem.getValue()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -119,7 +118,7 @@ public class DetailsFragment extends Fragment
             public void onClick(View view)
             {
                 // Navigate to EditFragment
-                sharedVM.setEditItem(currentItem);
+                globalContext.newState("edit_item_fragment");
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
@@ -129,7 +128,9 @@ public class DetailsFragment extends Fragment
             public void onClick(View v)
             {
                 // Return to ViewListActivity; notify object needs to be deleted
-                sharedVM.setDeleteFlag(true);
+                globalContext.getItemList().remove(currentItem);
+                globalContext.setCurrentItem(null);
+                globalContext.newState("list_view_activity");
                 activity.returnAndClose();
             }
         });
@@ -140,6 +141,7 @@ public class DetailsFragment extends Fragment
             public void onClick(View v)
             {
                 // Return to ViewListActivity
+                globalContext.newState("list_view_activity");
                 activity.returnAndClose();
             }
         });

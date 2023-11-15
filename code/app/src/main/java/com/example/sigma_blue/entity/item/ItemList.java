@@ -26,9 +26,14 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     public static ItemList newInstance(Account a, ItemDB dbH,
                                        ItemListAdapter adapt) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setListAdapter(adapt);
         ret.setDatabaseHandler(dbH);
-        ret.startListening();
+        ret.setListAdapter(adapt);
+        return ret;
+    }
+
+    public static ItemList newInstance(Account a, ItemDB dbH) {
+        ItemList ret = new ItemList(new ArrayList<>(), a);
+        ret.setDatabaseHandler(dbH);
         return ret;
     }
 
@@ -39,6 +44,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     public ItemList(ArrayList<Item> items, Account account) {
         this.items = items;
     }
+
 
     /* Adapter interface methods */
 
@@ -179,6 +185,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
             this.listAdapter.setItemList(this.items);
             this.listAdapter.notifyDataSetChanged();
         }
+        this.startListening();
     }
 
     public ItemListAdapter getListAdapter() {
@@ -208,17 +215,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     /**
      * Swaps out an item for a new one.
      * @param updatedItem New Item to put in the list
-     * @param oldDocID Search for an item with this DocID to replace
+     * @param oldItem Search for an item with this DocID to replace
      */
-    public void updateItem(Item updatedItem, String oldDocID) {
-        for (int i = 0; i < this.items.size(); i++) {
-            if (Objects.equals(this.items.get(i).getDocID(), oldDocID)) {
-                dbHandler.remove(this.items.get(i));
-                dbHandler.add(updatedItem);
-
-                this.items.set(i, updatedItem);
-            }
-        }
+    public void updateItem(Item updatedItem, Item oldItem) {
+        this.items.remove(oldItem);
+        this.items.add(updatedItem);
         updateUI();
     }
 }
