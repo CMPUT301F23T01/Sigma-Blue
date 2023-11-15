@@ -131,9 +131,9 @@ public class ViewListActivity extends BaseActivity {
      */
     private void handleLongClick(Item item) {
         Log.i("DEBUG", item.getName() + "Long Press");
-        globalContext.highlightItem(item);
+        globalContext.toggleHighlightItem(item);
 
-        if (globalContext.getItemList().getAdapter().getHighlightedItems().size() > 0) {
+        if (globalContext.getHighlightedItems().size() > 0) {
             viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
         } else {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -168,7 +168,6 @@ public class ViewListActivity extends BaseActivity {
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-            globalContext.resetHighlightedItems();
             globalContext.setCurrentItem(null);
             globalContext.newState("multi_select_tag_manager_fragment");
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);

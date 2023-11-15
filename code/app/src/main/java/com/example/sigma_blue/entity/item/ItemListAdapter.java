@@ -257,16 +257,6 @@ public class ItemListAdapter extends
                 "Summary view not hooked to adapter");
     }
 
-    public ArrayList<Item> getHighlightedItems() {
-        ArrayList<Item> highlightedItems = new ArrayList<Item>();
-        for (RecyclerViewHolder H : recyclerViewHolderList) {
-            if (H.getHighlighted()) {
-                highlightedItems.add(H.getItem());
-            }
-        }
-        return highlightedItems;
-    }
-
     public void resetHighlightedItems() {
         for (RecyclerViewHolder H : recyclerViewHolderList) {
             H.resetHighlight();

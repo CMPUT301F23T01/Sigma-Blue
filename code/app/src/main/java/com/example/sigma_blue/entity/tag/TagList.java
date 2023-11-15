@@ -142,7 +142,16 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         this.adapter = tagListAdapter;
     }
 
-    public ListAdapter getAdapter() {
+    public TagListAdapter getAdapter() {
         return adapter;
+    }
+    /**
+     * Replace the old tag with a new one
+     * @param updatedTag replacement tag
+     * @param oldTag tag to replace
+     */
+    public void updateTag(Tag updatedTag, Tag oldTag) {
+        this.tags.remove(oldTag);
+        this.tags.add(updatedTag);
     }
 }

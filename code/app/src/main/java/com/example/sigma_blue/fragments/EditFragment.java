@@ -165,15 +165,13 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (Objects.equals(mode, "add_item"))
-                {
+                if (Objects.equals(mode, "add_item_fragment")) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState("view_list_activity");
                     activity.returnAndClose();
-                }
-                else
-                {
+
+                } else {
                     // Navigate to Item Details
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
@@ -207,15 +205,15 @@ public class EditFragment extends Fragment
                     loadUiText(modifiedItem);
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
                         globalContext.getItemList().add(modifiedItem);
-                        globalContext.setCurrentItem(modifiedItem);
-                        globalContext.newState("details_fragment");
+
                     } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
-                        globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem().getDocID());
-                        globalContext.setCurrentItem(modifiedItem);
-                        globalContext.newState("details_fragment");
+                        globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
+
                     } else {
                         throw new VerifyException("Bad state");
                     }
+                    globalContext.setCurrentItem(modifiedItem);
+                    globalContext.newState("details_fragment");
                     NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                 }
             }

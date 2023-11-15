@@ -34,19 +34,19 @@ public class TagEditFragment extends Fragment {
         // TODO Maybe put a color picker for the Tag class, maybe.
         // It might also be nice to have the color picker remember the last pick.
 
+        globalContext = GlobalContext.getInstance();
 
         backButton.setOnClickListener(v -> {
             // exit fragment?
-            globalContext.newState("tag_manager_fragment");
+            globalContext.newState(globalContext.getLastState());
             getActivity().onBackPressed();
         });
 
         confirmButton.setOnClickListener(v -> {
             String tagName = inputField.getText().toString();
-            Color tagColour = tag.getColour();
 
-            globalContext.getTagList().addTag(new Tag(tagName, tagColour));
-            globalContext.newState("tag_manager_fragment");
+            globalContext.getTagList().updateTag(new Tag(tagName, tagColor), globalContext.getHighlightedTags().get(0));
+            globalContext.newState(globalContext.getLastState());
             getActivity().onBackPressed();
         });
 

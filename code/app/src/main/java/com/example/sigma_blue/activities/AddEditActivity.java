@@ -31,7 +31,6 @@ public class AddEditActivity extends BaseActivity
         setContentView(R.layout.add_edit_activity);
 
         globalContext = GlobalContext.getInstance();
-        Item currentItem = globalContext.getCurrentItem();
 
         // Setup nav controller
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);

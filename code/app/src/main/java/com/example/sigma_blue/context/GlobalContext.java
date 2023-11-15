@@ -24,11 +24,12 @@ public class GlobalContext {
     private Account account;
     private AccountList accountList;
     private ItemList itemList;
-    private TagList tagList;
     private ArrayList<Item> highlightedItems;
-    private ArrayList<String> stateHistory; // store a history for debugging
+    private TagList tagList;
+    private ArrayList<Tag> highlightedTags;
     private Item currentItem;
     private Tag currentTag;
+    private ArrayList<String> stateHistory; // store a history for debugging
 
     public static GlobalContext getInstance() {
         if (instance == null) {
@@ -48,11 +49,16 @@ public class GlobalContext {
     }
     public GlobalContext() {
         this.highlightedItems = new ArrayList<>();
+        this.highlightedTags = new ArrayList<>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
     }
-    public void highlightItem(Item item) {
-        this.highlightedItems.add(item);
+    public void toggleHighlightItem(Item item) {
+        if (!this.highlightedItems.contains(item)){
+            this.highlightedItems.add(item);
+        } else {
+            this.highlightedItems.remove(item);
+        }
     }
     public ArrayList<Item> getHighlightedItems() {
         return this.highlightedItems;
@@ -60,6 +66,20 @@ public class GlobalContext {
     public void resetHighlightedItems() {
         this.highlightedItems.clear();
         this.itemList.getAdapter().resetHighlightedItems();
+    }
+    public void toggleHighlightTag(Tag tag) {
+        if (!this.highlightedTags.contains(tag)){
+            this.highlightedTags.add(tag);
+        } else {
+            this.highlightedTags.remove(tag);
+        }
+        this.getTagList().getAdapter().notifyDataSetChanged();
+    }
+    public ArrayList<Tag> getHighlightedTags() {
+        return this.highlightedTags;
+    }
+    public void resetHighlightedTags() {
+        this.highlightedTags.clear();
     }
 
     /**
@@ -107,13 +127,5 @@ public class GlobalContext {
 
     public void setCurrentItem(Item currentItem) {
         this.currentItem = currentItem;
-    }
-
-    public Tag getCurrentTag() {
-        return currentTag;
-    }
-
-    public void setCurrentTag(Tag currentTag) {
-        this.currentTag = currentTag;
     }
 }
