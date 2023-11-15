@@ -18,7 +18,9 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     /* Attributes */
     private List<Item> items;
     private ItemDB dbHandler;
+
     private ItemListAdapter listAdapter;
+
     private Account account;
 
     /* Factory construction */
@@ -45,7 +47,6 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     public ItemList(ArrayList<Item> items, Account account) {
         this.items = items;
     }
-
 
     /* Adapter interface methods */
 
@@ -193,6 +194,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
 
     public ItemListAdapter getListAdapter() {
         return this.listAdapter;
+
     }
 
     /* Database method */

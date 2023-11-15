@@ -5,8 +5,12 @@ import android.util.Log;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.entity.item.Item;
+
 import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
+
+import com.example.sigma_blue.entity.item.ItemListAdapter;
+
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
 
@@ -57,6 +61,7 @@ public class GlobalContext {
     public void setUpItemList() {
         this.itemList = ItemList.newInstance(this.account,
                 ItemDB.newInstance(this.account));
+
     }
 
     /**
@@ -73,13 +78,17 @@ public class GlobalContext {
      * Toggle if an item is in the list of highlighted items or not.
      * @param item
      */
+
     public void toggleInsertSelectedItem(Item item) {
+
         if (!this.highlightedItems.contains(item)){
             this.highlightedItems.add(item);
         } else {
             this.highlightedItems.remove(item);
         }
+
         this.getItemList().getListAdapter().notifyDataSetChanged();
+
     }
 
     /**
@@ -87,6 +96,7 @@ public class GlobalContext {
      * @return a List of the selected item
      */
     public ArrayList<Item> getSelectedItems() {
+
         return this.highlightedItems;
     }
 
@@ -114,6 +124,7 @@ public class GlobalContext {
         }
         this.resetSelectedItems();
         this.notifyItemChanged();
+
     }
 
     /**
@@ -127,6 +138,7 @@ public class GlobalContext {
             this.highlightedTags.remove(tag);
         }
         //this.getTagList().getAdapter().notifyDataSetChanged();
+
     }
 
     /**
@@ -143,6 +155,7 @@ public class GlobalContext {
     public void resetHighlightedTags() {
         this.highlightedTags.clear();
         //this.getTagList().getAdapter().notifyDataSetChanged();
+
     }
 
     /**
@@ -182,6 +195,7 @@ public class GlobalContext {
     public TagList getTagList() {
         return tagList;
     }
+
 
     /**
      * Get the Item that is being viewed by the detailed view page.

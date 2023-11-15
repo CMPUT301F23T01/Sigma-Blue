@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.R;
@@ -134,6 +135,7 @@ public class ItemListAdapter extends BaseAdapter {
         return String.format(Locale.ENGLISH,
                 "The total value: %7.2f", sum);
     }
+
 
     /**
      * Updates the text on the sumView that is contained in the adapter

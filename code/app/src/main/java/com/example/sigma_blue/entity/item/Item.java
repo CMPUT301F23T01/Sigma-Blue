@@ -1,5 +1,6 @@
 package com.example.sigma_blue.entity.item;
 
+
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;

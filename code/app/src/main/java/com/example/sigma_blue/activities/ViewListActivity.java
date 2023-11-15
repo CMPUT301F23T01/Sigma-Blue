@@ -15,15 +15,22 @@ import androidx.activity.result.ActivityResult;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
+
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 import com.google.android.material.color.MaterialColors;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.base.VerifyException;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+
 
 public class ViewListActivity extends BaseActivity {
 
@@ -57,6 +64,7 @@ public class ViewListActivity extends BaseActivity {
     }
     private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
+
     private GlobalContext globalContext;        // Global context object
 
     @Override
@@ -73,6 +81,7 @@ public class ViewListActivity extends BaseActivity {
             //throw new VerifyException("Must have an account");
             return;
         }
+
 
         /* Code section for linking UI elements */
         ListView itemListView = findViewById(R.id.listView);
@@ -115,7 +124,9 @@ public class ViewListActivity extends BaseActivity {
      * Delete the selected items. Fully deletes them with no confirm
      */
     private void deleteSelectedItems() {
+
         globalContext.confirmItemDelete();
+
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -136,6 +147,7 @@ public class ViewListActivity extends BaseActivity {
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
             this.deleteSelectedItems());
+
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -188,3 +200,4 @@ public class ViewListActivity extends BaseActivity {
     }
 
 }
+

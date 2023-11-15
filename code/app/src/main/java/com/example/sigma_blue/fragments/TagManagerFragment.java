@@ -4,17 +4,23 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.TagManagerFragmentBinding;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.Tag;
+
+import com.example.sigma_blue.entity.tag.TagList;
+
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.entity.item.Item;
 import com.google.common.base.VerifyException;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -201,7 +207,9 @@ public class TagManagerFragment extends Fragment {
         // check each of the tags and check if they are checked
 
         if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
+
             for (Item i : globalContext.getSelectedItems()) {
+
                 i.setTags(globalContext.getHighlightedTags());
                 globalContext.getItemList().updateItem(i, i); // this works since changing the tags doesn't impact the 'id' of an item
             }
