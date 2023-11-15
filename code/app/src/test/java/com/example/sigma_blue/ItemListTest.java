@@ -10,7 +10,6 @@ import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemFactory;
 import com.example.sigma_blue.entity.item.ItemList;
 import com.example.sigma_blue.entity.item.ItemListAdapter;
-import com.example.sigma_blue.entity.item.ItemListRecyclerAdapter;
 
 import org.junit.After;
 import org.junit.Assert;
