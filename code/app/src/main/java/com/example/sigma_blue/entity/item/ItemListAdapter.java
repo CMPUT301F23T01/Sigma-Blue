@@ -28,7 +28,7 @@ public class ItemListAdapter extends BaseAdapter {
     private List<? extends Item> itemList;
     private final LayoutInflater inflater;
     private TextView sumView;
-    private List<Integer> highlightIndex;
+    private List<? extends Item> selectedItems;
 
 
     public ItemListAdapter(final Context context, final TextView sumView) {
@@ -43,6 +43,16 @@ public class ItemListAdapter extends BaseAdapter {
      */
     public void setItemList(List<? extends Item> itemList) {
         this.itemList = itemList;
+    }
+
+    /**
+     * The list of selected items. (Likely the same list as the one held by the
+     * global context).
+     * @param selectedList is the list of selected items. Assumption that it
+     *                     will always be a subset of the itemList.
+     */
+    public void setSelectedItemList(List<? extends Item> selectedList) {
+        this.selectedItems = selectedList;
     }
 
     /**
@@ -90,11 +100,19 @@ public class ItemListAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
-        // TODO: Reuse the view by using convertView and parent in the future
-        view = this.inflater.inflate(R.layout.view_row, null);
-        bindPosition(view, position);   // Binds the item at the position
-        return view;
+        if (convertView == null) convertView = getLayoutInflater()
+                .inflate(R.layout.view_row, null);
+        else ;  // Added reuse of the view.
+        bindPosition(convertView, position);
+        return convertView;
+    }
+
+    /**
+     * layout inflater getter
+     * @return return the layout inflater.
+     */
+    public LayoutInflater getLayoutInflater() {
+        return this.inflater;
     }
 
     /**
@@ -128,10 +146,6 @@ public class ItemListAdapter extends BaseAdapter {
      */
     public void setSummaryView(TextView sumView) {
         this.sumView = sumView;
-    }
-
-    public TextView getSummaryView() {
-        return this.sumView;
     }
 
     /**

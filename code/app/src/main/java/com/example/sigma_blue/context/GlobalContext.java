@@ -7,7 +7,6 @@ import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
-import com.example.sigma_blue.entity.item.ItemListAdapter;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
 
@@ -73,7 +72,7 @@ public class GlobalContext {
      * Toggle if an item is in the list of highlighted items or not.
      * @param item
      */
-    public void toggleHighlightItem(Item item) {
+    public void toggleInsertSelectedItem(Item item) {
         if (!this.highlightedItems.contains(item)){
             this.highlightedItems.add(item);
         } else {
@@ -84,23 +83,41 @@ public class GlobalContext {
 
     /**
      * Return list of highlighted items
-     * @return
+     * @return a List of the selected item
      */
-    public ArrayList<Item> getHighlightedItems() {
+    public ArrayList<Item> getSelectedItems() {
         return this.highlightedItems;
     }
 
     /**
      * Clear highlighted items
      */
-    public void resetHighlightedItems() {
+    public void resetSelectedItems() {
         this.highlightedItems.clear();
+    }
+
+    /**
+     * Updates the item list through the view adapter.
+     */
+    public void notifyItemChanged() {
         this.getItemList().getListAdapter().notifyDataSetChanged();
     }
 
     /**
+     * Method for doing a set difference of the items stored and the selected
+     * items.
+     */
+    public void confirmItemDelete() {
+        for (Item i : this.getSelectedItems()) {
+            this.getItemList().remove(i);
+        }
+        this.resetSelectedItems();
+        this.notifyItemChanged();
+    }
+
+    /**
      * Toggle if a tag is in the list of highlighted tags or not
-     * @param tag
+     * @param tag is the tag object that has been selected
      */
     public void toggleHighlightTag(Tag tag) {
         if (!this.highlightedTags.contains(tag)){
@@ -165,6 +182,10 @@ public class GlobalContext {
         return tagList;
     }
 
+    /**
+     * Get the Item that is being viewed by the detailed view page.
+     * @return the Item object that is being viewed
+     */
     public Item getCurrentItem() {
         return currentItem;
     }

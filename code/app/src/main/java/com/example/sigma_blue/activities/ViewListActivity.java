@@ -3,6 +3,7 @@ package com.example.sigma_blue.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -10,32 +11,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import androidx.annotation.ColorInt;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
 
-import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.entity.item.Item;
-import com.example.sigma_blue.entity.item.ItemDB;
-import com.example.sigma_blue.entity.item.ItemList;
-import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.item.ItemListAdapter;
-import com.example.sigma_blue.entity.tag.Tag;
-import com.example.sigma_blue.fragments.FragmentLauncher;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.common.base.VerifyException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 public class ViewListActivity extends BaseActivity {
 
@@ -69,7 +57,8 @@ public class ViewListActivity extends BaseActivity {
     }
     private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
-    private GlobalContext globalContext;
+    private GlobalContext globalContext;        // Global context object
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
@@ -119,29 +108,12 @@ public class ViewListActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    /**
-     * listened to deal with long presses
-     * @param item Item that was long pressed on
-     */
-    private void handleLongClick(Item item) {
-        Log.i("DEBUG", item.getName() + "Long Press");
-        globalContext.toggleHighlightItem(item);
-
-        if (globalContext.getHighlightedItems().size() > 0) {
-            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-        }
-    }
 
     /**
      * Delete the selected items. Fully deletes them with no confirm
      */
     private void deleteSelectedItems() {
-        for (Item i : globalContext.getHighlightedItems()) {
-            globalContext.getItemList().remove(i);
-        }
-        globalContext.resetHighlightedItems();
+        globalContext.confirmItemDelete();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -155,10 +127,13 @@ public class ViewListActivity extends BaseActivity {
             globalContext.newState("add_item_fragment");
             startActivity(intent);
         });  // Launch add activity.
+
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
-        viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
+
+        viewHolder.deleteSelectedButton.setOnClickListener(v ->
+            this.deleteSelectedItems());
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -167,22 +142,47 @@ public class ViewListActivity extends BaseActivity {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             startActivity(intent);
         });
-        /* The List View related control flow */
-        viewHolder.listListView.setLongClickable(true); // Turning on long click
 
         viewHolder.listListView // This is for short clicks on a row
                 .setOnItemClickListener((parent, view, position, id) -> {
-                    this.handleClick(globalContext.getItemList().getItem(position));
+                    this.handleClick(globalContext.getItemList()
+                            .getItem(position));
         });
 
         /* The long click listener */
         viewHolder.listListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> {
-                    this.handleLongClick(globalContext.getItemList().getItem(position));
+                    final Item itemCache = globalContext.getItemList()
+                            .getItem(position);
+                    this.handleLongClick(itemCache);
+
+                    this.highlightControl(view, globalContext.getSelectedItems()
+                            .contains(itemCache));  // Toggles highlight
+
+                    /*Returns true if the list consumes the click. Always true
+                    * in our app*/
                     return true;
-                    // return true if the list 'consumes' the click, which it always
-                    // does in our app
                 });
+    }
+
+    private void clearHighlights() {
+        Log.v("UI ACTION", "Clearing highlights");
+        globalContext.resetSelectedItems();
+    }
+
+    /**
+     * listened to deal with long presses
+     * @param item Item that was long pressed on
+     */
+    private void handleLongClick(Item item) {
+        Log.i("DEBUG", item.getName() + " Long Press");
+        globalContext.toggleInsertSelectedItem(item);
+
+        if (globalContext.getSelectedItems().size() > 0) {
+            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -192,12 +192,9 @@ public class ViewListActivity extends BaseActivity {
      */
     private void highlightControl(View view, boolean selected) {
         @ColorInt int rowColor;
-        if (selected) rowColor = MaterialColors
-                .getColor(view, com.google.android.material.R.attr
-                        .colorSecondary);
-        else rowColor = MaterialColors
-                .getColor(view, com.google.android.material.R.attr
-                        .colorOnBackground);
+        if (selected) rowColor = ContextCompat.getColor(this,
+                R.color.add_edit_layout_bgr_test);
+        else rowColor = ContextCompat.getColor(this, R.color.white);
         view.setBackgroundColor(rowColor);
     }
 }
