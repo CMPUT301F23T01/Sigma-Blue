@@ -35,20 +35,15 @@ public class AddEditActivity extends BaseActivity
         // Setup nav controller
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);
         NavGraph graph = navController.getNavInflater().inflate(R.navigation.nav_graph);
-        if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment"))
-        {
+
+        //depending on the requested state go the the correct fragment
+        if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
             graph.setStartDestination(R.id.editFragment);
-        }
-        else if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment"))
-        {
+        } else if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
             graph.setStartDestination(R.id.tagManagerFragment);
-        }
-        else if (Objects.equals(globalContext.getCurrentState(), "details_fragment"))
-        {
+        } else if (Objects.equals(globalContext.getCurrentState(), "details_fragment")) {
             graph.setStartDestination(R.id.detailsFragment);
-        }
-        else
-        {
+        } else {
             Log.e("DEBUG", "Bad AddEditMode");
         }
         navController.setGraph(graph);
@@ -57,8 +52,7 @@ public class AddEditActivity extends BaseActivity
     /**
      * return item back to ViewListActivity and close activity
      */
-    public void returnAndClose()
-    {
+    public void returnAndClose() {
         Intent i = new Intent(this, ViewListActivity.class);
 
         globalContext.newState("view_list_activity");
@@ -67,8 +61,7 @@ public class AddEditActivity extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

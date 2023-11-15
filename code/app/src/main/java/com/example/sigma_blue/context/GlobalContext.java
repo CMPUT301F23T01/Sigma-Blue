@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 /**
  * Guidelines:
- *   - ALL state shared between two or more activities/fragments should be here.
+ *   - ALL state shared between two or more activities/fragments/classes should be here.
  *   - Call newState() right before switching to a new activity/fragment. The new state should be
- *     the name of the state being switched to.
- *   -
+ *     the name of the state being switched to. Eventually I'll make an enum for the states.
+ *   - add "private GlobalContext globalContext" to every class you use global context.
  */
 public class GlobalContext {
     private static GlobalContext instance;
@@ -31,6 +31,10 @@ public class GlobalContext {
     private Tag currentTag;
     private ArrayList<String> stateHistory; // store a history for debugging
 
+    /**
+     * The intended way to use this class. Singleton design pattern.
+     * @return the global context
+     */
     public static GlobalContext getInstance() {
         if (instance == null) {
             instance = new GlobalContext();
@@ -38,21 +42,39 @@ public class GlobalContext {
         return instance;
     }
 
+    /**
+     * Set the current account and start the tag list.
+     * @param account account to log in as
+     */
     public void login(Account account) {
         this.account = account;
         this.tagList = TagList.newInstance(account);
     }
 
+    /**
+     * Start the item list (this method could be removed, not sure what other people think).
+     * @param itemClickListener
+     * @param longClickListener
+     */
     public void setUpItemList(ItemListAdapter.OnItemClickListener itemClickListener, ItemListAdapter.OnLongClickListener longClickListener) {
         this.itemList = ItemList.newInstance(this.account, itemClickListener, longClickListener);
         this.itemList.startListening();
     }
+
+    /**
+     * Start everything empty on construction.
+     */
     public GlobalContext() {
         this.highlightedItems = new ArrayList<>();
         this.highlightedTags = new ArrayList<>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
     }
+
+    /**
+     * Toggle if an item is in the list of highlighted items or not.
+     * @param item
+     */
     public void toggleHighlightItem(Item item) {
         if (!this.highlightedItems.contains(item)){
             this.highlightedItems.add(item);
@@ -60,13 +82,27 @@ public class GlobalContext {
             this.highlightedItems.remove(item);
         }
     }
+
+    /**
+     * Return list of highlighted items
+     * @return
+     */
     public ArrayList<Item> getHighlightedItems() {
         return this.highlightedItems;
     }
+
+    /**
+     * Clear highlighted items
+     */
     public void resetHighlightedItems() {
         this.highlightedItems.clear();
         this.itemList.getAdapter().resetHighlightedItems();
     }
+
+    /**
+     * Toggle if a tag is in the list of highlighted tags or not
+     * @param tag
+     */
     public void toggleHighlightTag(Tag tag) {
         if (!this.highlightedTags.contains(tag)){
             this.highlightedTags.add(tag);
@@ -75,11 +111,21 @@ public class GlobalContext {
         }
         this.getTagList().getAdapter().notifyDataSetChanged();
     }
+
+    /**
+     * Return list of highlighted tags
+     * @return
+     */
     public ArrayList<Tag> getHighlightedTags() {
         return this.highlightedTags;
     }
+
+    /**
+     * Clear list of highlighted tags
+     */
     public void resetHighlightedTags() {
         this.highlightedTags.clear();
+        this.getTagList().getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -108,7 +154,6 @@ public class GlobalContext {
     public void setAccount(Account account) {
         this.account = account;
     }
-
     public AccountList getAccountList() {
         return accountList;
     }

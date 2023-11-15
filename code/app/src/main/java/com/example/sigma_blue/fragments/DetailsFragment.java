@@ -96,12 +96,10 @@ public class DetailsFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
-        // Access item from parent activities ViewModel
-        //AddEditViewModel sharedVM = new ViewModelProvider(activity).get(AddEditViewModel.class);
         globalContext = GlobalContext.getInstance();
         final Item currentItem = globalContext.getCurrentItem();
 
-        // set item details from shared activity
+        // set item details from global context
         textName.setText(currentItem.getName());
         textValue.setText(String.valueOf(currentItem.getValue()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -132,6 +130,7 @@ public class DetailsFragment extends Fragment
                 // Return to ViewListActivity; notify object needs to be deleted
                 globalContext.getItemList().remove(currentItem);
                 globalContext.setCurrentItem(null);
+                globalContext.newState("list_view_activity");
                 activity.returnAndClose();
             }
         });
@@ -142,6 +141,7 @@ public class DetailsFragment extends Fragment
             public void onClick(View v)
             {
                 // Return to ViewListActivity
+                globalContext.newState("list_view_activity");
                 activity.returnAndClose();
             }
         });

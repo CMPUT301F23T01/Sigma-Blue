@@ -87,6 +87,8 @@ public class ViewListActivity extends BaseActivity {
         globalContext = GlobalContext.getInstance();
 
         if (globalContext.getAccount() == null) {
+            // sometimes another thread ends up here with an empty global context
+            // TODO: figure out why/how that happens.
             //throw new VerifyException("Must have an account");
             return;
         }
@@ -173,6 +175,5 @@ public class ViewListActivity extends BaseActivity {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             startActivity(intent);
         });
-
     }
 }

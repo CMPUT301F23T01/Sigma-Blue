@@ -178,20 +178,19 @@ public class EditFragment extends Fragment
             }
         });
 
-        /*
+
         view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 // Save current ui state
-                loadUiText(currentItem);
-                sharedVM.setEditItem(currentItem);
+                loadUiText(globalContext.getCurrentItem());
                 // Open TagManager
+                globalContext.newState("tag_manager_fragment");
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
-         */
 
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener()
         {
@@ -201,6 +200,8 @@ public class EditFragment extends Fragment
                 // Load ui text and save into shared item; Navigate to DetailsFragment
                 if (verifyText())
                 {
+                    // need a new item as to not overwrite the old one. If the old one is overwritten
+                    // then we don't know which item in the list needs to be deleted if doing an edit.
                     Item modifiedItem = new Item();
                     loadUiText(modifiedItem);
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
@@ -208,7 +209,6 @@ public class EditFragment extends Fragment
 
                     } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
                         globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
-
                     } else {
                         throw new VerifyException("Bad state");
                     }
