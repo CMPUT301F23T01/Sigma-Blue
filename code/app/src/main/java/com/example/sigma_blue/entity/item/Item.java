@@ -335,8 +335,21 @@ public class Item implements Comparable<Item>, Serializable,
      * @return String used as the database identifier.
      */
     public String getDocID() {
-        if (this.make == null || this.model == null) return name;
-        else return name+make+model;
+        String docID = "";
+        if (name != null) {
+            docID += name;
+        }
+        if (make != null) {
+            docID += make;
+        }
+        if (model != null) {
+            docID += model;
+        }
+        if (serialNumber != null) {
+            docID += serialNumber;
+        }
+
+        return docID;
     }
 
 
@@ -357,9 +370,9 @@ public class Item implements Comparable<Item>, Serializable,
         if (!(o instanceof Item)) {
             return false;
         }
-        // two items are equals to each other if their name is the same
+        // two items are equals to each other if their docid is the same
         Item I = (Item) o;
-        return this.getName().equals(I.getName());
+        return this.getDocID().equals(I.getDocID());
     }
 
 
