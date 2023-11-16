@@ -62,8 +62,13 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
      * Method called in CreateAccFragment to close fragment
      */
     @Override
-    public void onConfirmPressed() {
-        Snackbar confirmSnackbar = Snackbar.make(findViewById(R.id.login_main), "Account Created", Snackbar.LENGTH_LONG);
+    public void onConfirmPressed(boolean successful) {
+        Snackbar confirmSnackbar;
+        if (successful) {
+            confirmSnackbar = Snackbar.make(findViewById(R.id.login_main), "Account Created", Snackbar.LENGTH_LONG);
+        } else {
+            confirmSnackbar = Snackbar.make(findViewById(R.id.login_main), "Account with that username already exists.", Snackbar.LENGTH_LONG);
+        }
         confirmSnackbar.show();
     }
 
