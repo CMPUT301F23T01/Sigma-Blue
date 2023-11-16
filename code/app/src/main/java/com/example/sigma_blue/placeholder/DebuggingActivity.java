@@ -92,18 +92,18 @@ public class DebuggingActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
-        itemList = ItemList.newInstance(testAccount2, v -> {}, v -> {});
+//        itemList = ItemList.newInstance(testAccount2, v -> {}, v -> {});
         itemList.setSummaryView(viewHolder.summaryView);
         accList = AccountList.newInstance();
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
-        RecyclerView rvItemListView = findViewById(R.id.listView);
+//        RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemList.getAdapter());
-        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
+//        rvItemListView.setAdapter(itemList.getRecyclerAdapter());
+//        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
+//                LinearLayoutManager.VERTICAL, false));
 
         /* Setting up the on click listeners*/
         setUIOnClickListeners();

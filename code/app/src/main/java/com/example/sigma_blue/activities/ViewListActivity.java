@@ -6,26 +6,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.common.base.VerifyException;
 
-import java.util.Locale;
-import java.util.Optional;
+import com.example.sigma_blue.entity.item.ItemListAdapter;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 public class ViewListActivity extends BaseActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder {
         public Button searchButton;
         public Button sortFilterButton;
         public Button optionsButton;
@@ -34,12 +33,13 @@ public class ViewListActivity extends BaseActivity {
         public LinearLayout selectedItemsMenu;
         public FloatingActionButton addEntryButton;
         public TextView summaryView;
+        public ListView listListView;
 
         /**
          * Construction of this nested class will bind the UI element to a 'package'
          */
-        private ViewHolder(View itemView) {
-            super(itemView);
+        private ViewHolder() {
+            this.listListView = findViewById(R.id.listView);
             this.searchButton = findViewById(R.id.searchButton);
             this.sortFilterButton = findViewById(R.id.sortButton);
             this.optionsButton = findViewById(R.id.optionButton);
@@ -48,41 +48,18 @@ public class ViewListActivity extends BaseActivity {
             this.deleteSelectedButton = findViewById(R.id.deleteSelectedButton);
             this.addTagsSelectedButton = findViewById(R.id.addTagsSelectedButton);
             this.selectedItemsMenu = findViewById(R.id.selectedItemsMenu);
-            /* Setting up defaults for the UI elements */
-            setSummaryView(Optional.empty());
-        }
-
-        /**
-         * This method updates the summary text view with the sum value. This
-         * value can be empty.
-         * @param sum is an Optional wrapper which will either contain the sum,
-         *            or nothing.
-         */
-        public void setSummaryView(Optional<Float> sum) {
-            if (sum.isPresent())this.summaryView
-                    .setText(formatSummary(sum.get()));
-            else this.summaryView
-                    .setText(R.string.empty_summary_view);
-        }
-
-        /**
-         * Returns the formatted output for the summary text view.
-         * @param sum is a float that represents the sum
-         * @return the formatted string.
-         */
-        public String formatSummary(Float sum) {
-            return String.format(Locale.ENGLISH,
-                    "The total value: %7.2f", sum);
         }
     }
     private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
-    private GlobalContext globalContext;
+
+    private GlobalContext globalContext;        // Global context object
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Setting up the basics of the activity */
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_list);
+        super.onCreate(savedInstanceState); // Activity super
+        setContentView(R.layout.view_list); // sets up the activity layout
 
         globalContext = GlobalContext.getInstance();
 
@@ -93,22 +70,25 @@ public class ViewListActivity extends BaseActivity {
             return;
         }
 
+
         /* Code section for linking UI elements */
-        RecyclerView rvItemListView = findViewById(R.id.listView);
-        this.viewHolder = this.new ViewHolder(rvItemListView);
+        ListView itemListView = findViewById(R.id.listView);
+        this.viewHolder = this.new ViewHolder();
 
         /* ItemList encapsulates both the database and the adapter */
-        globalContext.setUpItemList(this::handleClick, this::handleLongClick);
+        globalContext.setUpItemList();
+        globalContext.getItemList().setListAdapter(
+                new ItemListAdapter(this, viewHolder.summaryView),
+                globalContext.getSelectedItems());
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(globalContext.getItemList().getAdapter());
-        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
+        itemListView.setAdapter(globalContext.getItemList().getListAdapter());
 
         // set up thing for selected items
         this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);
         /* Setting up the on click listeners*/
+
         setUIOnClickListeners();
     }
 
@@ -127,29 +107,14 @@ public class ViewListActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    /**
-     * listened to deal with long presses
-     * @param item Item that was long pressed on
-     */
-    private void handleLongClick(Item item) {
-        Log.i("DEBUG", item.getName() + "Long Press");
-        globalContext.toggleHighlightItem(item);
-
-        if (globalContext.getHighlightedItems().size() > 0) {
-            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
-        }
-    }
 
     /**
      * Delete the selected items. Fully deletes them with no confirm
      */
     private void deleteSelectedItems() {
-        for (Item i : globalContext.getHighlightedItems()) {
-            globalContext.getItemList().remove(i);
-        }
-        globalContext.resetHighlightedItems();
+
+        globalContext.deleteSelectedItems();
+
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -163,10 +128,14 @@ public class ViewListActivity extends BaseActivity {
             globalContext.newState("add_item_fragment");
             startActivity(intent);
         });  // Launch add activity.
+
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {});
         viewHolder.optionsButton.setOnClickListener(v -> {});
-        viewHolder.deleteSelectedButton.setOnClickListener(v -> {this.deleteSelectedItems();});
+
+        viewHolder.deleteSelectedButton.setOnClickListener(v ->
+            this.deleteSelectedItems());
+
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -175,5 +144,47 @@ public class ViewListActivity extends BaseActivity {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             startActivity(intent);
         });
+
+        viewHolder.listListView // This is for short clicks on a row
+                .setOnItemClickListener((parent, view, position, id) -> {
+                    this.handleClick(globalContext.getItemList()
+                            .getItem(position));
+        });
+
+        /* The long click listener */
+        viewHolder.listListView.setOnItemLongClickListener(
+                (parent, view, position, id) -> {
+                    final Item itemCache = globalContext.getItemList()
+                            .getItem(position);
+                    this.handleLongClick(itemCache);
+
+                    globalContext.getItemList().getListAdapter()
+                            .notifyDataSetChanged();    // Update highlight
+
+                    /*Returns true if the list consumes the click. Always true
+                    * in our app*/
+                    return true;
+                });
     }
+
+    private void clearHighlights() {
+        Log.v("UI ACTION", "Clearing highlights");
+        globalContext.resetSelectedItems();
+    }
+
+    /**
+     * listened to deal with long presses
+     * @param item Item that was long pressed on
+     */
+    private void handleLongClick(Item item) {
+        Log.i("DEBUG", item.getName() + " Long Press");
+        globalContext.toggleInsertSelectedItem(item);
+
+        if (globalContext.getSelectedItems().size() > 0) {
+            viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+        }
+    }
+
 }

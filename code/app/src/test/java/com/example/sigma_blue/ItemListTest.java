@@ -43,7 +43,7 @@ public class ItemListTest {
         Account testAccount = new Account("Watrina 4",
                 "fdsoijj191");
         itemListUT = ItemList.newInstance(testAccount, mockDBHandler,
-                itemListAdapter);
+                itemListAdapter, new ArrayList<>());
     }
 
     @Before
@@ -98,6 +98,7 @@ public class ItemListTest {
                 "Lenovo ThinkPad",
                 "It's cool",
                 "Lenovo",
+                "",
                 "T470",
                 300f
         );

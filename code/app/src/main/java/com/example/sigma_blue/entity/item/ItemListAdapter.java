@@ -9,232 +9,121 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.R;
 
 import java.util.ArrayList;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import com.example.sigma_blue.R;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-/**
- * Modified adapter class for the list of items.
- */
-public class ItemListAdapter extends
-        RecyclerView.Adapter<ItemListAdapter.RecyclerViewHolder> {
-
-    public interface OnItemClickListener {
-        void onItemClick(Item item);
-    }
-    public interface OnLongClickListener {
-        void onLongClick(Item item);
-    }
-    private static OnItemClickListener clickListener;
-    private static OnLongClickListener longClickListener;
-    private ArrayList<RecyclerViewHolder> recyclerViewHolderList;
+public class ItemListAdapter extends BaseAdapter {
+    private List<? extends Item> itemList;
+    private final LayoutInflater inflater;
+    private TextView sumView;
+    private List<? extends Item> selectedItems;
+    private final Context context;
 
 
-    /* Caching the views in the adapter. */
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
-        TextView make;
-        TextView id;
-        Boolean highlighted;
-        Item item;
-
-        /* Constructor that accepts the entire row */
-        public RecyclerViewHolder(View itemView) {
-            super(itemView);
-            name = itemView.findViewById(R.id.itemName);
-            make = itemView.findViewById(R.id.itemMake);
-            id = itemView.findViewById(R.id.uniqueId);
-        }
-
-        /**
-         * binds the provided listener to the specific item row. Since ItemList is the class used
-         * in activities the listener gets passed in from there
-         * @param item Item that will be displayed on a row
-         * @param clickListener method to call on a click
-         * @param longClickListener method to call on a long click
-         */
-        public void bind(final Item item, final OnItemClickListener clickListener, final OnLongClickListener longClickListener) {
-            this.highlighted = itemView.isSelected();
-            this.item = item;
-            itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
-
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    highlighted = !highlighted;
-                    itemView.setSelected(!itemView.isSelected());
-                    itemView.setBackgroundColor(itemView.isSelected() ? Color.CYAN : Color.WHITE);
-                    longClickListener.onLongClick(item);
-                    return true;
-                }
-
-            });
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    clickListener.onItemClick(item);
-                }
-            });
-        }
-
-        /**
-         * 'un-highlight' this item
-         */
-        public void resetHighlight() {
-            itemView.setSelected(false);
-            itemView.setBackgroundColor(Color.WHITE);
-            highlighted = false;
-        }
-
-        public boolean getHighlighted() {
-            return this.highlighted;
-        }
-
-        public Item getItem() {
-            return this.item;
-        }
+    public ItemListAdapter(final Context context, final TextView sumView) {
+        inflater = LayoutInflater.from(context);
+        this.sumView = sumView;
+        this.context = context;
     }
 
-    /* Attributes */
-    private List<Item> items;
-
-    /* Due to the usage of listeners when updating from the database, it is
-    * much simpler to embed the summary view into the adapter */
-    private TextView summaryView;
-
-    /* Factories and Constructors */
+    public Context getContext() {
+        return context;
+    }
 
     /**
-     * Base factory. Takes in an ItemList object and returns the adapter for it.
-     * @param itemList is an ItemList object that contains the types.
-     * @return an ItemListAdapter object that has been instantiated.
+     * Sets itemList
+     * @param itemList Some sort of list that contains a subclass of the item
+     *                 class.
      */
-    public static ItemListAdapter newInstance(List<Item> itemList, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
-        return new ItemListAdapter(itemList, itemClickListener, longClickListener);
-    }
-    public static ItemListAdapter newInstance() {
-        return new ItemListAdapter();
+    public void setItemList(List<? extends Item> itemList) {
+        this.itemList = itemList;
     }
 
     /**
-     * Basic constructor. Takes in the ItemList that will be adapted to a list view.
-     * @param items is the ItemList object that will be displayed on lists through this adapter.
+     * The list of selected items. (Likely the same list as the one held by the
+     * global context).
+     * @param selectedList is the list of selected items. Assumption that it
+     *                     will always be a subset of the itemList.
      */
-    public ItemListAdapter(List<Item> items, OnItemClickListener itemClickListener, OnLongClickListener longClickListener) {
-        this.items = items;
-        this.clickListener = itemClickListener;
-        this.longClickListener = longClickListener;
-    }
-
-    public ItemListAdapter() {
-        this.items = new ArrayList<>();
+    public void setSelectedItemList(List<? extends Item> selectedList) {
+        this.selectedItems = selectedList;
     }
 
     /**
-     * Called when RecyclerView needs a new {@link RecyclerViewHolder} of the given type to represent
-     * an item.
-     * <p>
-     * This new ViewHolder should be constructed with a new View that can represent the items
-     * of the given type. You can either create a new View manually or inflate it from an XML
-     * layout file.
-     * <p>
-     * The new ViewHolder will be used to display items of the adapter using
-     * {@link #onBindViewHolder(RecyclerViewHolder, int, List)}. Since it will be re-used to display
-     * different items in the data set, it is a good idea to cache references to sub views of
-     * the View to avoid unnecessary {@link View#findViewById(int)} calls.
-     *
-     * @param parent   The ViewGroup into which the new View will be added after it is bound to
-     *                 an adapter position.
-     * @param viewType The view type of the new View.
-     * @return A new ViewHolder that holds a View of the given view type.
-     * @see #getItemViewType(int)
-     * @see #onBindViewHolder(RecyclerViewHolder, int)
-     */
-    @NonNull
-    @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (this.recyclerViewHolderList == null) {
-            recyclerViewHolderList = new ArrayList<RecyclerViewHolder>();
-        }
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        /* Need to inflate the custom layout */
-        View itemView = inflater.inflate(R.layout.view_row, parent,
-                false);
-        RecyclerViewHolder r = new RecyclerViewHolder(itemView);
-        this.recyclerViewHolderList.add(r);
-        return r;
-    }
-
-    /**
-     * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link RecyclerViewHolder#itemView} to reflect the item at the given
-     * position.
-     * <p>
-     * Note that unlike {@link ListView}, RecyclerView will not call this method
-     * again if the position of the item changes in the data set unless the item itself is
-     * invalidated or the new position cannot be determined. For this reason, you should only
-     * use the <code>position</code> parameter while acquiring the related data item inside
-     * this method and should not keep a copy of it. If you need the position of an item later
-     * on (e.g. in a click listener), use {@link RecyclerViewHolder#getAdapterPosition()} which will
-     * have the updated adapter position.
-     * <p>
-     * Override {@link #onBindViewHolder(RecyclerViewHolder, int, List)} instead if Adapter can
-     * handle efficient partial bind.
-     *
-     * @param holder   The ViewHolder which should be updated to represent the contents of the
-     *                 item at the given position in the data set.
-     * @param position The position of the item within the adapter's data set.
+     * Gets the amount of items stored in the list being adapted
+     * @return the int representation of number of items
      */
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder,
-                                 int position) {
-        /* Caching the item that will be used to fill up the row */
-        Item item = items.get(position);
-
-        /* Assigning the content of the view holder */
-        holder.name.setText(item.getName());
-        holder.make.setText(item.getMake());
-        holder.id.setText(String.valueOf(item.getValue()));
-        holder.bind(item, this.clickListener, this.longClickListener);
+    public int getCount() {
+        return itemList.size();
     }
 
     /**
-     * Get the row id associated with the specified position in the list.
-     *
+     * Returns the item
+     * @param position Position of the item whose data we want within the adapter's
+     * data set.
+     * @return
+     */
+    @Override
+    public Object getItem(int position) {
+        return itemList.get(position);
+    }
+
+    /**
+     * Returns the row ID, which is not the same as uniqueness ID.
      * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return The id of the item at the specified position.
+     * @return the intger that is
      */
     @Override
     public long getItemId(int position) {
-        if (position < items.size()) return items.get(position)
-                .getDocID().hashCode();
-        else return -1;
+        return position;
     }
 
     /**
-     * Returns the total number of items in the data set held by the adapter.
-     *
-     * @return The total number of items in this adapter.
+     * This method is for binding row to view
+     * @param position The position of the item within the adapter's data set of the item whose view
+     *        we want.
+     * @param convertView The old view to reuse, if possible. Note: You should check that this view
+     *        is non-null and of an appropriate type before using. If it is not possible to convert
+     *        this view to display the correct data, this method can create a new view.
+     *        Heterogeneous lists can specify their number of view types, so that this View is
+     *        always of the right type (see {@link #getViewTypeCount()} and
+     *        {@link #getItemViewType(int)}).
+     * @param parent The parent that this view will eventually be attached to
+     * @return return new row view
      */
     @Override
-    public int getItemCount() {
-        return items.size();
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) convertView = getLayoutInflater()
+                .inflate(R.layout.view_row, null);
+        else ;  // Added reuse of the view.
+        bindPosition(convertView, position);
+        highlightControl(convertView, selectedItems.contains(itemList
+                .get(position)));
+        return convertView;
     }
 
-    public void setList(List<Item> itemList) {
-        this.items = itemList;
-    }
-
-    public void setSummaryView(TextView view) {
-        this.summaryView = view;
+    /**
+     * layout inflater getter
+     * @return return the layout inflater.
+     */
+    public LayoutInflater getLayoutInflater() {
+        return this.inflater;
     }
 
     /**
@@ -247,19 +136,58 @@ public class ItemListAdapter extends
                 "The total value: %7.2f", sum);
     }
 
-    public void updateSumView(Optional<Float> sum) {
-        if (this.summaryView != null) {
-            if (sum.isPresent()) this.summaryView
+
+    /**
+     * Updates the text on the sumView that is contained in the adapter
+     * @param sum is the optional object that will either be empty or contain
+     *            the sum of the values of the held object.
+     */
+    public void notifySumView(Optional<Float> sum) {
+        if (this.sumView != null) {
+            if (sum.isPresent()) this.sumView
                     .setText(formatSummary(sum.get()));
-            else this.summaryView
+            else this.sumView
                     .setText(R.string.empty_summary_view);
         } else Log.w("Missing Summary View",
                 "Summary view not hooked to adapter");
     }
 
-    public void resetHighlightedItems() {
-        for (RecyclerViewHolder H : recyclerViewHolderList) {
-            H.resetHighlight();
+    /**
+     * Sets the summary view (TextView that contains the total value of items
+     * held).
+     * @param sumView is the TextView that will display the summation
+     */
+    public void setSummaryView(TextView sumView) {
+        this.sumView = sumView;
+    }
+
+    /**
+     * Method for binding the item at the specified location to the given view
+     * @param view is the view being bound
+     * @param position is the position that is being checked
+     */
+    private void bindPosition(View view, int position) {
+        if (position > itemList.size()) throw new IllegalArgumentException();
+        else {
+            ((TextView) view.findViewById(R.id.itemName)).setText(itemList
+                    .get(position).getName());
+            ((TextView) view.findViewById(R.id.itemMake)).setText(itemList
+                    .get(position).getMake());
+            ((TextView) view.findViewById(R.id.uniqueId)).setText(itemList
+                    .get(position).getSerialNumber());
         }
+    }
+
+    /**
+     * Method that will turn on the highlight of the view if it is selected,
+     * otherwise reset it to the default background colour.
+     * @param view is the view that is being checked.
+     */
+    private void highlightControl(View view, boolean selected) {
+        @ColorInt int rowColor;
+        if (selected) rowColor = ContextCompat.getColor(getContext(),
+                R.color.add_edit_layout_bgr_test);
+        else rowColor = ContextCompat.getColor(getContext(), R.color.white);
+        view.setBackgroundColor(rowColor);
     }
 }
