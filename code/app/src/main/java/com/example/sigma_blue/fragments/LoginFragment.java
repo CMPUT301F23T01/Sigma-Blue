@@ -89,16 +89,7 @@ public class LoginFragment extends DialogFragment {
                         Account enteredAccount = new Account(username, password);
                         // checks if user input matches test account
                         boolean matches = globalContext.getAccountList().contains(enteredAccount);
-
-                        // creates popup message for incorrect user account information input
-                        if (!matches) {
-                            Toast incorrectMessage = Toast
-                                    .makeText(getActivity(),
-                                            getResources().getString(R.string
-                                                    .invalid_username_password),
-                                            Toast.LENGTH_SHORT);
-                            incorrectMessage.show();
-                        } else {
+                        if (matches) {
                             globalContext.login(enteredAccount);
                         }
                         globalContext.newState("login_activity");
