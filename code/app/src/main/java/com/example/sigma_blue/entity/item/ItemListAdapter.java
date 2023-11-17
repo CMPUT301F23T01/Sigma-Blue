@@ -1,27 +1,19 @@
 package com.example.sigma_blue.entity.item;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.R;
 
-import java.util.ArrayList;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
-
-import com.example.sigma_blue.R;
 
 import java.util.List;
 import java.util.Locale;

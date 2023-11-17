@@ -167,11 +167,6 @@ public class ViewListActivity extends BaseActivity {
                 });
     }
 
-    private void clearHighlights() {
-        Log.v("UI ACTION", "Clearing highlights");
-        globalContext.resetSelectedItems();
-    }
-
     /**
      * listened to deal with long presses
      * @param item Item that was long pressed on
