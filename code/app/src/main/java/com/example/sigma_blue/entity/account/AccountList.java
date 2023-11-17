@@ -67,7 +67,7 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         } else {
             boolean match = false;
             for (Account acc : accList) {
-                if (acc.checkPassword(account.getPassword()) && acc.checkUsername(account.getUsername())) {
+                if (acc.checkUsername(account.getUsername())) {
                     match = true;
                 }
             }

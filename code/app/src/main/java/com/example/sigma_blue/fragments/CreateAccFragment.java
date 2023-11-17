@@ -16,6 +16,9 @@ import androidx.fragment.app.DialogFragment;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.entity.account.AccountList;
+
+import org.checkerframework.checker.units.qual.A;
 
 /**
  * Class for handling the create account version of fragment from main login page
@@ -31,7 +34,7 @@ public class CreateAccFragment extends DialogFragment {
      * Listens for interaction with confirm button in fragment, contains method to return to original activity
      */
     public interface OnFragmentInteractionListener {
-        void onConfirmPressed();
+        void onConfirmPressed(boolean successful);
     }
 
     /**
@@ -75,9 +78,15 @@ public class CreateAccFragment extends DialogFragment {
                         String password = passwordInput.getText().toString();
 
                         // creates new account for user
-                        globalContext.getAccountList().add(new Account(username, password));
-                        globalContext.newState("login_activity");
-                        listener.onConfirmPressed();
+                        Account newAccount = new Account(username, password);
+                        if (globalContext.getAccountList().contains(newAccount)) {
+                            globalContext.newState("login_activity");
+                            listener.onConfirmPressed(false);
+                        } else {
+                            globalContext.getAccountList().add(new Account(username, password));
+                            globalContext.newState("login_activity");
+                            listener.onConfirmPressed(true);
+                        }
                     }
                 }).create();
     }
