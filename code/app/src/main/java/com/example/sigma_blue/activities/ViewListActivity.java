@@ -17,7 +17,9 @@ import com.example.sigma_blue.R;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
+import com.example.sigma_blue.query.SortField;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.Query;
 
 
 public class ViewListActivity extends BaseActivity {
@@ -130,7 +132,10 @@ public class ViewListActivity extends BaseActivity {
         });  // Launch add activity.
 
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
-        viewHolder.sortFilterButton.setOnClickListener(v -> {});
+        viewHolder.sortFilterButton.setOnClickListener(v -> {
+            globalContext.getItemList().startQueryListening(SortField.MAKE,
+                    Query.Direction.ASCENDING);
+        });
         viewHolder.optionsButton.setOnClickListener(v -> {});
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
@@ -141,7 +146,8 @@ public class ViewListActivity extends BaseActivity {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
             globalContext.setCurrentItem(null);
             globalContext.newState("multi_select_tag_manager_fragment");
-            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            Intent intent = new Intent(ViewListActivity.this,
+                    AddEditActivity.class);
             startActivity(intent);
         });
 
