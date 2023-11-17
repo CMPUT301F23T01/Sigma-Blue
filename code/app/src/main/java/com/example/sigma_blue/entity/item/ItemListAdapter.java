@@ -23,7 +23,6 @@ public class ItemListAdapter extends BaseAdapter {
     /* The the lists that are relevant to the item list adapter */
     private List<? extends Item> itemList;      // All the items
     private List<? extends Item> selectedItems; // The list of selected items
-    private List<? extends Item> viewList;      // This shown list
 
     private final LayoutInflater inflater;
     private TextView sumView;
@@ -58,7 +57,6 @@ public class ItemListAdapter extends BaseAdapter {
      */
     public void setItemList(List<? extends Item> itemList) {
         this.itemList = itemList;
-        this.viewList = this.itemList;
     }
 
     /**
@@ -84,7 +82,7 @@ public class ItemListAdapter extends BaseAdapter {
      * Returns the item
      * @param position Position of the item whose data we want within the adapter's
      * data set.
-     * @return
+     * @return the item stored at that location
      */
     @Override
     public Object getItem(int position) {
@@ -94,7 +92,7 @@ public class ItemListAdapter extends BaseAdapter {
     /**
      * Returns the row ID, which is not the same as uniqueness ID.
      * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return the intger that is
+     * @return the integer that is
      */
     @Override
     public long getItemId(int position) {
@@ -177,7 +175,7 @@ public class ItemListAdapter extends BaseAdapter {
         Item rowItem;
         if (position > itemList.size()) throw new IllegalArgumentException();
         else {
-            rowItem = viewList.get(position);   // Caching is less expensive
+            rowItem = itemList.get(position);   // Caching is less expensive
             ((TextView) view.findViewById(R.id.itemName)).setText(rowItem
                     .getName());
             ((TextView) view.findViewById(R.id.itemMake)).setText(rowItem
