@@ -404,9 +404,9 @@ public class Item implements Comparable<Item>, Serializable,
      * Function for converting Item object into HashMap, which is compatible
      * with Firestore database.
      */
-    public static final Function<Item, HashMap<String, String>> hashMapOfItem =
+    public static final Function<Item, HashMap<String, Object>> hashMapOfItem =
             item -> {
-                HashMap<String, String> ret = new HashMap<>();
+                HashMap<String, Object> ret = new HashMap<>();
                 ret.put(dbName, item.getName());
                 ret.put(dbDate, simpledf.format(item.getDate()));
                 ret.put(dbMake, item.getMake());
@@ -414,7 +414,7 @@ public class Item implements Comparable<Item>, Serializable,
                 ret.put(dbComment, item.getComment());
                 ret.put(dbDescription, item.getDescription());
                 ret.put(dbSerial, item.getSerialNumber());
-                ret.put(dbValue, String.valueOf(item.getValue()));
+                ret.put(dbValue, item.getValue());
                 return ret;
             };
 
@@ -433,7 +433,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbMake),
                     q.getString(dbModel),
                     q.getString(dbSerial),
-                    Float.parseFloat(q.getString(dbValue))
+                    q.getDouble(dbValue).floatValue()
             );
         } catch (ParseException e) {
             return Item.newInstance(
@@ -444,7 +444,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbMake),
                     q.getString(dbModel),
                     q.getString(dbSerial),
-                    Float.parseFloat(q.getString(dbValue))
+                    q.getDouble(dbValue).floatValue()
             );
         }
     };

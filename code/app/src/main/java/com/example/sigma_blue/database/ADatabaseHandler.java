@@ -37,7 +37,7 @@ public abstract class ADatabaseHandler<T> {
                                        final T item,
                                        final Function<T,
                                                HashMap<String,
-                                               String>> fn,
+                                               Object>> fn,
                                        final String docID) {
         cr.document(docID).set(fn.apply(item));
     }
