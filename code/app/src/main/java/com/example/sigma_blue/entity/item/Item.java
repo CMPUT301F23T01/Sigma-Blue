@@ -402,9 +402,9 @@ public class Item implements Comparable<Item>, Serializable,
                 ret.put(dbDate, simpledf.format(item.getDate()));
                 ret.put(dbMake, item.getMake());
                 ret.put(dbModel, item.getModel());
-                ret.put("COMMENT", item.getComment());
+                ret.put(dbComment, item.getComment());
                 ret.put(dbDescription, item.getDescription());
-                ret.put("SERIAL", item.getSerialNumber());
+                ret.put(dbSerial, item.getSerialNumber());
                 ret.put(dbValue, String.valueOf(item.getValue()));
                 return ret;
             };
