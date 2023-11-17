@@ -98,11 +98,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * an Optional wrapper. Done this way to enforce explicit handling of the
      * case where there is no items in the list.
      */
-    public static final Function<List<Item>, Optional<Float>> sumValues =
+    public static final Function<List<Item>, Optional<Double>> sumValues =
         lst -> {
             if (lst.isEmpty()) return Optional.empty();
             else return Optional.of(lst.stream().map(Item::getValue)
-                    .reduce(0f, Float::sum));
+                    .reduce(0d, Double::sum));
         };
 
     /* Setters and Getters */

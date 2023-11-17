@@ -268,7 +268,7 @@ public class EditFragment extends Fragment
     private void loadUiText(@NonNull Item item)
     {
         item.setName(textName.getText().toString());
-        item.setValue(Float.parseFloat(textValue.getText().toString()));
+        item.setValue(Double.parseDouble(textValue.getText().toString()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         try
         {

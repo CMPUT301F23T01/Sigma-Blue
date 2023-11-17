@@ -32,7 +32,7 @@ public class Item implements Comparable<Item>, Serializable,
     private String name;
     private Date date;
     private String description, make, model;
-    private float value;
+    private Double value;
     private String serialNumber, comment;
 
     private List<Tag> tags;
@@ -57,14 +57,14 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setDescription(null);
         ret.setMake(null);
         ret.setModel(null);
-        ret.setValue(0f);
+        ret.setValue(0d);
 
         return ret;
     }
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, float value,
+                                   String model, String serial, Double value,
                                    List<String> tags) {
         Item ret = new Item(t);
 
@@ -84,7 +84,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, float value) {
+                                   String model, String serial, Double value) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -101,7 +101,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final String serial, final float value) {
+                                   final String serial, final Double value) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -132,7 +132,7 @@ public class Item implements Comparable<Item>, Serializable,
      * this is the estimated value of the item
      */
     public Item(String name, Date date, String description, String comment,
-                String make, String serial, String model, float value) {
+                String make, String serial, String model, Double value) {
         this.name = name;
         this.date = date;
         this.description = description;
@@ -160,7 +160,8 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item()
     {
-        this("",new Date(),"","","", "","",0f);
+        this("",new Date(),"","","", "",
+                "",0d);
     }
 
     /**
@@ -258,7 +259,7 @@ public class Item implements Comparable<Item>, Serializable,
      * @return
      * Return the value
      */
-    public float getValue() {
+    public Double getValue() {
         return value;
     }
 
@@ -271,7 +272,7 @@ public class Item implements Comparable<Item>, Serializable,
      * @param value
      * This is a estimated to set
      */
-    public void setValue(float value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
@@ -319,9 +320,9 @@ public class Item implements Comparable<Item>, Serializable,
      * Returns the list of tag names
      * @return
      */
-    public List<String> getTagNames() {
-        return tags.stream().map(Tag::getDocID).collect(Collectors
-                .toList());
+    public ArrayList<String> getTagNames() {
+        return new ArrayList<>(tags.stream().map(Tag::getDocID).collect(Collectors
+                .toList()));
     }
 
     /**
@@ -476,7 +477,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbMake),
                     q.getString(dbModel),
                     q.getString(dbSerial),
-                    q.getDouble(dbValue).floatValue(),
+                    q.getDouble(dbValue),
                     (List<String>)q.get(dbTags)
             );
         } catch (ParseException e) {
@@ -488,7 +489,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbMake),
                     q.getString(dbModel),
                     q.getString(dbSerial),
-                    q.getDouble(dbValue).floatValue(),
+                    q.getDouble(dbValue),
                     (List<String>)q.get(dbTags)
             );
         }
