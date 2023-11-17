@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItemTest {
@@ -32,7 +33,19 @@ public class ItemTest {
         arrayOfTags.add(new Tag("three", mockColor));
         arrayOfTags.add(new Tag("four", mockColor));
 
+        ArrayList<String> arrayOfNames = arrayOfTags.stream().map(e -> e
+                .getTagText()).collect(Collectors.toCollection(ArrayList::new));
+
         Item testItem = Item.newInstance("name");
+        testItem.setTags(arrayOfTags);
+
+        testItem.getTags().stream().forEach(e -> {
+            assert(arrayOfTags.contains(e));
+        });
+
+        testItem.getTagNames().stream().forEach(e -> {
+            assert(arrayOfNames.contains(e));
+        });
     }
 
     @Test
