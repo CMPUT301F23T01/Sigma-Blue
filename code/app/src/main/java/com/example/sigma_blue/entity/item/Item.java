@@ -29,15 +29,11 @@ public class Item implements Comparable<Item>, Serializable,
     private float value;
     private String serialNumber, comment;
 
-
     private ArrayList<Tag> tags;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
         decide the photograph storing method of the item
-        (DONE)decide the type of the tag
-            add these two attributes
-
      */
 
     /**
