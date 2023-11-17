@@ -22,6 +22,7 @@ import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
 import java.text.ParseException;
@@ -205,16 +206,24 @@ public class EditFragment extends Fragment
                     Item modifiedItem = new Item();
                     loadUiText(modifiedItem);
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
-                        globalContext.getItemList().add(modifiedItem);
-
+                        if (globalContext.getItemList().getList().contains(modifiedItem)) {
+                            Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
+                            errorSnackbar.show();
+                        } else {
+                            globalContext.getItemList().add(modifiedItem);
+                            globalContext.setCurrentItem(modifiedItem);
+                            globalContext.newState("view_list_activity");
+                            activity.returnAndClose();
+                        }
                     } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
                         globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
+                        globalContext.setCurrentItem(modifiedItem);
+                        globalContext.newState("details_fragment");
+                        NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
                         throw new VerifyException("Bad state");
                     }
-                    globalContext.setCurrentItem(modifiedItem);
-                    globalContext.newState("details_fragment");
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+
                 }
             }
         });
