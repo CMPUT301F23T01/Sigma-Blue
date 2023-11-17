@@ -20,13 +20,22 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class ItemListAdapter extends BaseAdapter {
-    private List<? extends Item> itemList;
+    /* The the lists that are relevant to the item list adapter */
+    private List<? extends Item> itemList;      // All the items
+    private List<? extends Item> selectedItems; // The list of selected items
+    private List<? extends Item> viewList;      // This shown list
+
     private final LayoutInflater inflater;
     private TextView sumView;
-    private List<? extends Item> selectedItems;
     private final Context context;
 
-
+    /**
+     * The constructor of the adapter.
+     * @param context is the activity context in which the adapter is binding to
+     *                this adapter
+     * @param sumView   is the summary text view that is displaying the total
+     *                  value of the application.
+     */
     public ItemListAdapter(final Context context, final TextView sumView) {
         inflater = LayoutInflater.from(context);
         this.sumView = sumView;
@@ -37,6 +46,11 @@ public class ItemListAdapter extends BaseAdapter {
         return context;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();   // Need the original to still run
+    }
+
     /**
      * Sets itemList
      * @param itemList Some sort of list that contains a subclass of the item
@@ -44,6 +58,7 @@ public class ItemListAdapter extends BaseAdapter {
      */
     public void setItemList(List<? extends Item> itemList) {
         this.itemList = itemList;
+        this.viewList = this.itemList;
     }
 
     /**
@@ -159,14 +174,16 @@ public class ItemListAdapter extends BaseAdapter {
      * @param position is the position that is being checked
      */
     private void bindPosition(View view, int position) {
+        Item rowItem;
         if (position > itemList.size()) throw new IllegalArgumentException();
         else {
-            ((TextView) view.findViewById(R.id.itemName)).setText(itemList
-                    .get(position).getName());
-            ((TextView) view.findViewById(R.id.itemMake)).setText(itemList
-                    .get(position).getMake());
-            ((TextView) view.findViewById(R.id.uniqueId)).setText(itemList
-                    .get(position).getSerialNumber());
+            rowItem = viewList.get(position);   // Caching is less expensive
+            ((TextView) view.findViewById(R.id.itemName)).setText(rowItem
+                    .getName());
+            ((TextView) view.findViewById(R.id.itemMake)).setText(rowItem
+                    .getMake());
+            ((TextView) view.findViewById(R.id.uniqueId)).setText(rowItem
+                    .getSerialNumber());
         }
     }
 
