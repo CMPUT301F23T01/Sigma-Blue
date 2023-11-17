@@ -21,6 +21,7 @@ import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,6 +54,7 @@ public class EditFragment extends Fragment
     private EditText textDescription;
     private EditText textComment;
     private ListView tagListView;
+    private List<Tag> tagList;
     private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
     //private Item savedItemChanges;
@@ -131,7 +134,8 @@ public class EditFragment extends Fragment
             textSerial.setText(currentItem.getSerialNumber());
             textDescription.setText(currentItem.getDescription());
             textComment.setText(currentItem.getComment());
-            tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+            tagList = currentItem.getTags();
+            tagListAdapter = TagListAdapter.newInstance(tagList, getContext());
             tagListView.setAdapter(tagListAdapter);
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -281,5 +285,6 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
+        item.setTags(tagList);
     }
 }
