@@ -1,8 +1,8 @@
 package com.example.sigma_blue.database;
 
-import com.example.sigma_blue.database.IDatabaseItem;
-import com.example.sigma_blue.database.IDatabaseList;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -17,6 +17,7 @@ import java.util.function.Function;
  *           Tag
  */
 public abstract class ADatabaseHandler<T> {
+    private ListenerRegistration registration;
 
     /**
      * Generic method for adding a new document to a collection being pointed
@@ -92,14 +93,27 @@ public abstract class ADatabaseHandler<T> {
 
     /**
      * This method adds a listener to a user's item collection.
+     * CollectionReference extends Query, meaning that we could factor out the
+     * more general case with a query
      */
-    public void startListening(final CollectionReference cR,
+    public void startListening(final Query query,
                                final IDatabaseList<T> lst) {
-        cR.addSnapshotListener(
-                (q, e) -> {
-                    if (q != null) {
-                        lst.setList(lst.loadArray(q));
+        clearRegistration();
+        registration = query.addSnapshotListener(
+                (qs, excp) -> {
+                    if (qs != null) {
+                        lst.setList(lst.loadArray(qs));
                         lst.updateUI();
-                    }});
+                    }
+                }
+        );
+    }
+
+    /**
+     * Clear the previous listener. Used when trying to install a new listener
+     */
+    private void clearRegistration() {
+        if (registration != null) registration.remove();
+        else ;
     }
 }
