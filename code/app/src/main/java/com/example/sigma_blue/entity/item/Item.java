@@ -1,6 +1,8 @@
 package com.example.sigma_blue.entity.item;
 
 
+import android.util.Log;
+
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -11,7 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Class that stores information about a single item
@@ -21,7 +26,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static final String dbName = "NAME", dbDate = "DATE",
             dbDescription = "DESCRIPTION", dbMake = "MAKE", dbValue = "VALUE",
-    dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL";
+            dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL",
+            dbTags = "TAGS";
 
     private String name;
     private Date date;
@@ -29,7 +35,7 @@ public class Item implements Comparable<Item>, Serializable,
     private float value;
     private String serialNumber, comment;
 
-    private ArrayList<Tag> tags;
+    private List<Tag> tags;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
@@ -52,6 +58,26 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setMake(null);
         ret.setModel(null);
         ret.setValue(0f);
+
+        return ret;
+    }
+
+    public static Item newInstance(String t, Date date, String comment,
+                                   String description, String make,
+                                   String model, String serial, float value,
+                                   List<String> tags) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(date);
+        ret.setComment(comment);
+        ret.setDescription(description);
+        ret.setMake(make);
+        ret.setModel(model);
+        ret.setSerialNumber(serial);
+        ret.setValue(value);
+        ret.setTags(tags.stream().map(e -> new Tag(e, 0xFFFF0000))
+                .collect(Collectors.toList()));
 
         return ret;
     }
@@ -105,7 +131,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param value
      * this is the estimated value of the item
      */
-    public Item(String name, Date date, String description, String comment, String make, String serial, String model, float value) {
+    public Item(String name, Date date, String description, String comment,
+                String make, String serial, String model, float value) {
         this.name = name;
         this.date = date;
         this.description = description;
@@ -235,6 +262,10 @@ public class Item implements Comparable<Item>, Serializable,
         return value;
     }
 
+    public String getFormattedValue() {
+        return String.format(Locale.ENGLISH, "%.2f", value);
+    }
+
     /**
      * This sets the estimated value of item
      * @param value
@@ -280,15 +311,24 @@ public class Item implements Comparable<Item>, Serializable,
         this.comment = comment;
     }
 
-    public ArrayList<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
+    }
+
+    /**
+     * Returns the list of tag names
+     * @return
+     */
+    public List<String> getTagNames() {
+        return tags.stream().map(Tag::getDocID).collect(Collectors
+                .toList());
     }
 
     /**
      * Swaps the list of tags.
      * @param tags List containing tags.
      */
-    public void setTags(ArrayList<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
@@ -398,7 +438,7 @@ public class Item implements Comparable<Item>, Serializable,
      * Simple date format for string conversion.
      */
     public static final SimpleDateFormat simpledf =
-            new SimpleDateFormat("yyyy-MM-dd");
+            new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     /**
      * Function for converting Item object into HashMap, which is compatible
@@ -415,6 +455,9 @@ public class Item implements Comparable<Item>, Serializable,
                 ret.put(dbDescription, item.getDescription());
                 ret.put(dbSerial, item.getSerialNumber());
                 ret.put(dbValue, item.getValue());
+                ret.put(dbTags, item.getTagNames());
+                Log.e("TAG NAMES", item.getTagNames().stream()
+                        .reduce("", (acc, ele) -> acc + ele));
                 return ret;
             };
 
@@ -433,7 +476,8 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbMake),
                     q.getString(dbModel),
                     q.getString(dbSerial),
-                    q.getDouble(dbValue).floatValue()
+                    q.getDouble(dbValue).floatValue(),
+                    (List<String>)q.get(dbTags)
             );
         } catch (ParseException e) {
             return Item.newInstance(
@@ -444,7 +488,8 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbMake),
                     q.getString(dbModel),
                     q.getString(dbSerial),
-                    q.getDouble(dbValue).floatValue()
+                    q.getDouble(dbValue).floatValue(),
+                    (List<String>)q.get(dbTags)
             );
         }
     };

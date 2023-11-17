@@ -166,7 +166,9 @@ public class TagManagerFragment extends Fragment {
                     }
                     else {
                         globalContext.newState("edit_item_fragment");
-                        NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
+                        NavHostFragment.findNavController(
+                                TagManagerFragment.this).navigate(R.id
+                                .action_tagManagerFragment_to_editFragment);
                     }
                 }
             }
@@ -209,7 +211,6 @@ public class TagManagerFragment extends Fragment {
         if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
 
             for (Item i : globalContext.getSelectedItems()) {
-
                 i.setTags(globalContext.getHighlightedTags());
                 globalContext.getItemList().updateItem(i, i); // this works since changing the tags doesn't impact the 'id' of an item
             }

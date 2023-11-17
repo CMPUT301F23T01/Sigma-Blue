@@ -18,11 +18,12 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class TagListAdapter extends ArrayAdapter<Tag> {
 
     /* Attributes */
-    private ArrayList<Tag> tagsData;
+    private List<Tag> tagsData;
     private Context context;
     /* Factories and Constructors */
 
@@ -31,7 +32,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
      * @param tagsData an ArrayList of Tags, containing the tags for each item.
      * @return a TagListAdapter object that has been instantiated.
      */
-    public static TagListAdapter newInstance(ArrayList<Tag> tagsData, Context context) {
+    public static TagListAdapter newInstance(List<Tag> tagsData, Context context) {
         return new TagListAdapter(tagsData, context);
     }
 
@@ -41,7 +42,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
      * @param context the Context of the calling fragment or activity that the adapter is linked to.
      * @param tagsData the ArrayList providing the tag data that we will display with this adapter.
      */
-    public TagListAdapter(ArrayList<Tag> tagsData, Context context) {
+    public TagListAdapter(List<Tag> tagsData, Context context) {
         super(context, 0, tagsData);
         this.context = context;
         this.tagsData = tagsData;
@@ -76,7 +77,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         return tagsData.size();
     }
 
-    public void setList(ArrayList<Tag> tags) {
+    public void setList(List<Tag> tags) {
         this.tagsData = tags;
     }
 }

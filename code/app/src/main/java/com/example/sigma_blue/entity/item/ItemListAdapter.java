@@ -181,7 +181,7 @@ public class ItemListAdapter extends BaseAdapter {
             ((TextView) view.findViewById(R.id.itemMake)).setText(rowItem
                     .getMake());
             ((TextView) view.findViewById(R.id.uniqueId)).setText(rowItem
-                    .getSerialNumber());
+                    .getFormattedValue());  // Showing value for now
         }
     }
 

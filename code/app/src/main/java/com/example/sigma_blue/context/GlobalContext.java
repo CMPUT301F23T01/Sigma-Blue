@@ -76,7 +76,6 @@ public class GlobalContext {
      * Toggle if an item is in the list of highlighted items or not.
      * @param item
      */
-
     public void toggleInsertSelectedItem(Item item) {
 
         if (!this.highlightedItems.contains(item)){

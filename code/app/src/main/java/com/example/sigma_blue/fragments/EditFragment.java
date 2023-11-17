@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -199,12 +200,13 @@ public class EditFragment extends Fragment
             public void onClick(View v)
             {
                 // Load ui text and save into shared item; Navigate to DetailsFragment
-                if (verifyText())
-                {
-                    // need a new item as to not overwrite the old one. If the old one is overwritten
-                    // then we don't know which item in the list needs to be deleted if doing an edit.
+                if (verifyText()) {
+                    // need a new item as to not overwrite the old one. If the
+                    // old one is overwritten then we don't know which item in
+                    // the list needs to be deleted if doing an edit.
                     Item modifiedItem = new Item();
                     loadUiText(modifiedItem);
+                    // State control for adding items
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
                         if (globalContext.getItemList().getList().contains(modifiedItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
@@ -215,13 +217,16 @@ public class EditFragment extends Fragment
                             globalContext.newState("view_list_activity");
                             activity.returnAndClose();
                         }
-                    } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
+                    } else if (Objects.equals(globalContext.getCurrentState(),
+                            "edit_item_fragment")) {    // Edit state
                         globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
                         globalContext.setCurrentItem(modifiedItem);
                         globalContext.newState("details_fragment");
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
-                        throw new VerifyException("Bad state");
+                        Log.e("BAD STATE",
+                                "Edit and the item doesn't exist");
+                        throw new VerifyException("Bad state"); // Unhandled
                     }
 
                 }
@@ -242,8 +247,7 @@ public class EditFragment extends Fragment
      * Verifies that no text field is empty when saving edits
      * @return flag verifying that required EditText's are populated
      */
-    private boolean verifyText()
-    {
+    private boolean verifyText() {
         String emptyErrText = "Must enter a value before saving";
         boolean flag = true;
         for (EditText e : editTextList)
