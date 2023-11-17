@@ -19,14 +19,15 @@ import java.util.function.Function;
 public class Item implements Comparable<Item>, Serializable,
         IDatabaseItem<Item> {
 
+    public static final String dbName = "NAME", dbDate = "DATE",
+            dbDescription = "DESCRIPTION", dbMake = "MAKE", dbValue = "VALUE",
+    dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL";
+
     private String name;
     private Date date;
-    private String description;
-    private String make;
-    private String model;
+    private String description, make, model;
     private float value;
-    private String serialNumber;
-    private String comment;
+    private String serialNumber, comment;
 
 
     private ArrayList<Tag> tags;
@@ -397,14 +398,14 @@ public class Item implements Comparable<Item>, Serializable,
     public static final Function<Item, HashMap<String, String>> hashMapOfItem =
             item -> {
                 HashMap<String, String> ret = new HashMap<>();
-                ret.put("NAME", item.getName());
-                ret.put("DATE", simpledf.format(item.getDate()));
-                ret.put("MAKE", item.getMake());
-                ret.put("MODEL", item.getModel());
+                ret.put(dbName, item.getName());
+                ret.put(dbDate, simpledf.format(item.getDate()));
+                ret.put(dbMake, item.getMake());
+                ret.put(dbModel, item.getModel());
                 ret.put("COMMENT", item.getComment());
-                ret.put("DESCRIPTION", item.getDescription());
+                ret.put(dbDescription, item.getDescription());
                 ret.put("SERIAL", item.getSerialNumber());
-                ret.put("VALUE", String.valueOf(item.getValue()));
+                ret.put(dbValue, String.valueOf(item.getValue()));
                 return ret;
             };
 
@@ -416,25 +417,25 @@ public class Item implements Comparable<Item>, Serializable,
             itemOfQueryDocument = q -> {
         try {
             return Item.newInstance(
-                    q.getString("NAME"),
-                    simpledf.parse(q.getString("DATE")),
-                    q.getString("COMMENT"),
-                    q.getString("DESCRIPTION"),
-                    q.getString("MAKE"),
-                    q.getString("MODEL"),
-                    q.getString("SERIAL"),
-                    Float.parseFloat(q.getString("VALUE"))
+                    q.getString(dbName),
+                    simpledf.parse(q.getString(dbDate)),
+                    q.getString(dbComment),
+                    q.getString(dbDescription),
+                    q.getString(dbMake),
+                    q.getString(dbModel),
+                    q.getString(dbSerial),
+                    Float.parseFloat(q.getString(dbValue))
             );
         } catch (ParseException e) {
             return Item.newInstance(
-                    q.getString("NAME"),
+                    q.getString(dbName),
                     new Date(),
-                    q.getString("COMMENT"),
-                    q.getString("DESCRIPTION"),
-                    q.getString("MAKE"),
-                    q.getString("MODEL"),
-                    q.getString("SERIAL"),
-                    Float.parseFloat(q.getString("VALUE"))
+                    q.getString(dbComment),
+                    q.getString(dbDescription),
+                    q.getString(dbMake),
+                    q.getString(dbModel),
+                    q.getString(dbSerial),
+                    Float.parseFloat(q.getString(dbValue))
             );
         }
     };
