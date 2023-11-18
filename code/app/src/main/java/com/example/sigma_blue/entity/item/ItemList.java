@@ -6,6 +6,9 @@ import android.widget.TextView;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.adapter.IAdaptable;
 import com.example.sigma_blue.database.IDatabaseList;
+import com.example.sigma_blue.query.QueryGenerator;
+import com.example.sigma_blue.query.SortField;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -20,8 +23,15 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     private ItemDB dbHandler;
 
     private ItemListAdapter listAdapter;
+    private ViewListModes displayMode;
 
-    private Account account;
+
+    public enum ViewListModes {
+        NONE, SORT, FILTER;
+
+        private ViewListModes() {
+        }
+    }
 
     /* Factory construction */
 
@@ -46,6 +56,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      */
     public ItemList(ArrayList<Item> items, Account account) {
         this.items = items;
+        this.displayMode = ViewListModes.NONE;
     }
 
     /* Adapter interface methods */
@@ -87,11 +98,11 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * an Optional wrapper. Done this way to enforce explicit handling of the
      * case where there is no items in the list.
      */
-    public static final Function<List<Item>, Optional<Float>> sumValues =
+    public static final Function<List<Item>, Optional<Double>> sumValues =
         lst -> {
             if (lst.isEmpty()) return Optional.empty();
             else return Optional.of(lst.stream().map(Item::getValue)
-                    .reduce(0f, Float::sum));
+                    .reduce(0d, Double::sum));
         };
 
     /* Setters and Getters */
@@ -116,7 +127,8 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
             this.dbHandler.remove(items.get(position));
             this.items.remove(position);
         } else {
-            Log.e("Remove Item", "Invalid remove action: negative index or index out of range");
+            Log.e("Remove Item",
+                    "Invalid remove action: negative index or index out of range");
         }
         updateUI();
         Log.v("Removed Item", "Removed an item from item list");
@@ -175,6 +187,18 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     public void startListening() {
         dbHandler.startListening(this.dbHandler.getCollectionReference(),
                 this);
+    }
+
+    /**
+     * The first prototype method for listening to the database via sorting
+     * @param sortBy
+     * @param direction
+     */
+    public void startQueryListening(SortField sortBy,
+                                    Query.Direction direction) {
+        Query query = new QueryGenerator(sortBy, direction,
+                this.dbHandler.getCollectionReference()).get();
+        dbHandler.startListening(query, this);
     }
 
     /**

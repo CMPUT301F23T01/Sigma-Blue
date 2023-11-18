@@ -72,7 +72,7 @@ public class ItemListTest {
      */
     @Test
     public void sumValuesTest() {
-        itemF.setFactoryValue(10f);
+        itemF.setFactoryValue(10d);
 
         assertFalse(itemListUT.sumValues.apply(itemListUT.getList()).isPresent());
 
@@ -100,7 +100,7 @@ public class ItemListTest {
                 "Lenovo",
                 "",
                 "T470",
-                300f
+                300d
         );
     }
 }

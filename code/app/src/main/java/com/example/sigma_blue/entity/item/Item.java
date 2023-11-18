@@ -1,6 +1,8 @@
 package com.example.sigma_blue.entity.item;
 
 
+import android.util.Log;
+
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -11,7 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Class that stores information about a single item
@@ -19,24 +24,22 @@ import java.util.function.Function;
 public class Item implements Comparable<Item>, Serializable,
         IDatabaseItem<Item> {
 
+    public static final String dbName = "NAME", dbDate = "DATE",
+            dbDescription = "DESCRIPTION", dbMake = "MAKE", dbValue = "VALUE",
+            dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL",
+            dbTags = "TAGS";
+
     private String name;
     private Date date;
-    private String description;
-    private String make;
-    private String model;
-    private float value;
-    private String serialNumber;
-    private String comment;
+    private String description, make, model;
+    private Double value;
+    private String serialNumber, comment;
 
-
-    private ArrayList<Tag> tags;
+    private List<Tag> tags;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
         decide the photograph storing method of the item
-        (DONE)decide the type of the tag
-            add these two attributes
-
      */
 
     /**
@@ -54,14 +57,34 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setDescription(null);
         ret.setMake(null);
         ret.setModel(null);
-        ret.setValue(0f);
+        ret.setValue(0d);
 
         return ret;
     }
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, float value) {
+                                   String model, String serial, Double value,
+                                   List<String> tags) {
+        Item ret = new Item(t);
+
+        /* Default setting */
+        ret.setDate(date);
+        ret.setComment(comment);
+        ret.setDescription(description);
+        ret.setMake(make);
+        ret.setModel(model);
+        ret.setSerialNumber(serial);
+        ret.setValue(value);
+        ret.setTags(tags.stream().map(e -> new Tag(e, 0xFFFF0000))
+                .collect(Collectors.toList()));
+
+        return ret;
+    }
+
+    public static Item newInstance(String t, Date date, String comment,
+                                   String description, String make,
+                                   String model, String serial, Double value) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -78,7 +101,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final String serial, final float value) {
+                                   final String serial, final Double value) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -108,7 +131,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param value
      * this is the estimated value of the item
      */
-    public Item(String name, Date date, String description, String comment, String make, String serial, String model, float value) {
+    public Item(String name, Date date, String description, String comment,
+                String make, String serial, String model, Double value) {
         this.name = name;
         this.date = date;
         this.description = description;
@@ -136,7 +160,8 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item()
     {
-        this("",new Date(),"","","", "","",0f);
+        this("",new Date(),"","","", "",
+                "",0d);
     }
 
     /**
@@ -234,8 +259,12 @@ public class Item implements Comparable<Item>, Serializable,
      * @return
      * Return the value
      */
-    public float getValue() {
+    public Double getValue() {
         return value;
+    }
+
+    public String getFormattedValue() {
+        return String.format(Locale.ENGLISH, "%.2f", value);
     }
 
     /**
@@ -243,7 +272,7 @@ public class Item implements Comparable<Item>, Serializable,
      * @param value
      * This is a estimated to set
      */
-    public void setValue(float value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
@@ -283,15 +312,24 @@ public class Item implements Comparable<Item>, Serializable,
         this.comment = comment;
     }
 
-    public ArrayList<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
+    }
+
+    /**
+     * Returns the list of tag names
+     * @return
+     */
+    public ArrayList<String> getTagNames() {
+        return new ArrayList<>(tags.stream().map(Tag::getDocID).collect(Collectors
+                .toList()));
     }
 
     /**
      * Swaps the list of tags.
      * @param tags List containing tags.
      */
-    public void setTags(ArrayList<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
@@ -401,23 +439,26 @@ public class Item implements Comparable<Item>, Serializable,
      * Simple date format for string conversion.
      */
     public static final SimpleDateFormat simpledf =
-            new SimpleDateFormat("yyyy-MM-dd");
+            new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     /**
      * Function for converting Item object into HashMap, which is compatible
      * with Firestore database.
      */
-    public static final Function<Item, HashMap<String, String>> hashMapOfItem =
+    public static final Function<Item, HashMap<String, Object>> hashMapOfItem =
             item -> {
-                HashMap<String, String> ret = new HashMap<>();
-                ret.put("NAME", item.getName());
-                ret.put("DATE", simpledf.format(item.getDate()));
-                ret.put("MAKE", item.getMake());
-                ret.put("MODEL", item.getModel());
-                ret.put("COMMENT", item.getComment());
-                ret.put("DESCRIPTION", item.getDescription());
-                ret.put("SERIAL", item.getSerialNumber());
-                ret.put("VALUE", String.valueOf(item.getValue()));
+                HashMap<String, Object> ret = new HashMap<>();
+                ret.put(dbName, item.getName());
+                ret.put(dbDate, simpledf.format(item.getDate()));
+                ret.put(dbMake, item.getMake());
+                ret.put(dbModel, item.getModel());
+                ret.put(dbComment, item.getComment());
+                ret.put(dbDescription, item.getDescription());
+                ret.put(dbSerial, item.getSerialNumber());
+                ret.put(dbValue, item.getValue());
+                ret.put(dbTags, item.getTagNames());
+                Log.e("TAG NAMES", item.getTagNames().stream()
+                        .reduce("", (acc, ele) -> acc + ele));
                 return ret;
             };
 
@@ -429,25 +470,27 @@ public class Item implements Comparable<Item>, Serializable,
             itemOfQueryDocument = q -> {
         try {
             return Item.newInstance(
-                    q.getString("NAME"),
-                    simpledf.parse(q.getString("DATE")),
-                    q.getString("COMMENT"),
-                    q.getString("DESCRIPTION"),
-                    q.getString("MAKE"),
-                    q.getString("MODEL"),
-                    q.getString("SERIAL"),
-                    Float.parseFloat(q.getString("VALUE"))
+                    q.getString(dbName),
+                    simpledf.parse(q.getString(dbDate)),
+                    q.getString(dbComment),
+                    q.getString(dbDescription),
+                    q.getString(dbMake),
+                    q.getString(dbModel),
+                    q.getString(dbSerial),
+                    q.getDouble(dbValue),
+                    (List<String>)q.get(dbTags)
             );
         } catch (ParseException e) {
             return Item.newInstance(
-                    q.getString("NAME"),
+                    q.getString(dbName),
                     new Date(),
-                    q.getString("COMMENT"),
-                    q.getString("DESCRIPTION"),
-                    q.getString("MAKE"),
-                    q.getString("MODEL"),
-                    q.getString("SERIAL"),
-                    Float.parseFloat(q.getString("VALUE"))
+                    q.getString(dbComment),
+                    q.getString(dbDescription),
+                    q.getString(dbMake),
+                    q.getString(dbModel),
+                    q.getString(dbSerial),
+                    q.getDouble(dbValue),
+                    (List<String>)q.get(dbTags)
             );
         }
     };

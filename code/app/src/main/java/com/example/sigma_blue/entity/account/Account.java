@@ -93,9 +93,9 @@ public class Account implements Serializable, IDatabaseItem<Account> {
     /**
      * Function that converts Account to HashMap of String and String.
      */
-    public static final Function<Account, HashMap<String, String>>
+    public static final Function<Account, HashMap<String, Object>>
             hashMapOfAccount = a -> {
-        HashMap<String, String> ret = new HashMap<>();
+        HashMap<String, Object> ret = new HashMap<>();
         ret.put(USERNAME, a.getUsername());
         ret.put(PASSWORD, a.getPassword());
         return ret;

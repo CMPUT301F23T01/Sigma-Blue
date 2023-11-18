@@ -131,7 +131,7 @@ public class DebuggingActivity extends BaseActivity {
                     new Item(
                             "ThinkPad", new Date(),
                             "Nice UNIX book", "", "IBM",
-                            "19845739405", "T460", 300f
+                            "19845739405", "T460", 300.0
                     )
             );
         });  // Launch add fragment.

@@ -1,7 +1,5 @@
 package com.example.sigma_blue.entity.tag;
 
-import android.widget.ListAdapter;
-
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
