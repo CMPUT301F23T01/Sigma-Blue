@@ -4,9 +4,11 @@ import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.database.DatabaseNames;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Interfaces with the database to keep the tags up to date. Should this be included in TagList?
@@ -57,6 +59,16 @@ public class TagDB extends ADatabaseHandler<Tag> {
     @Override
     public void add(Tag item) {
         addDocument(tagRef, item, Tag.hashMapOfTag, item.getDocID());
+    }
+
+    /**
+     * Returns the document reference used for referencing by other documents
+     * @param item is the Tag object that is providing the document reference
+     * @return
+     */
+    public DocumentReference getDocRef(Tag item) {
+        // Building with the assumption of the tag existing (may need change)
+        return tagRef.document(item.getDocID());
     }
 
     /**

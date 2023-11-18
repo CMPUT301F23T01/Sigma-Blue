@@ -46,8 +46,8 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
         return colour;
     }
 
-    public static final Function<Tag, HashMap<String, String>> hashMapOfTag = t -> {
-        HashMap<String, String> ret = new HashMap<>();
+    public static final Function<Tag, HashMap<String, Object>> hashMapOfTag = t -> {
+        HashMap<String, Object> ret = new HashMap<>();
         ret.put(LABEL, t.getTagText());
         ret.put(COLOR, t.getColourString());
         return ret;

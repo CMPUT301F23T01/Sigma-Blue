@@ -136,7 +136,7 @@ public class ItemListAdapter extends BaseAdapter {
      * @param sum is a float that represents the sum
      * @return the formatted string.
      */
-    public String formatSummary(Float sum) {
+    public String formatSummary(Double sum) {
         return String.format(Locale.ENGLISH,
                 "The total value: %7.2f", sum);
     }
@@ -147,7 +147,7 @@ public class ItemListAdapter extends BaseAdapter {
      * @param sum is the optional object that will either be empty or contain
      *            the sum of the values of the held object.
      */
-    public void notifySumView(Optional<Float> sum) {
+    public void notifySumView(Optional<Double> sum) {
         if (this.sumView != null) {
             if (sum.isPresent()) this.sumView
                     .setText(formatSummary(sum.get()));
@@ -181,7 +181,7 @@ public class ItemListAdapter extends BaseAdapter {
             ((TextView) view.findViewById(R.id.itemMake)).setText(rowItem
                     .getMake());
             ((TextView) view.findViewById(R.id.uniqueId)).setText(rowItem
-                    .getSerialNumber());
+                    .getFormattedValue());  // Showing value for now
         }
     }
 
