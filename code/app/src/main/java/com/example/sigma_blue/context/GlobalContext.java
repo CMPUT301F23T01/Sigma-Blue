@@ -152,7 +152,7 @@ public class GlobalContext {
      */
     public void resetHighlightedTags() {
         this.highlightedTags.clear();
-        //this.getTagList().getAdapter().notifyDataSetChanged();
+        // this.getTagList().getAdapter().notifyDataSetChanged();
 
     }
 

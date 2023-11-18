@@ -204,6 +204,7 @@ public class EditFragment extends Fragment
                     // need a new item as to not overwrite the old one. If the old one is overwritten
                     // then we don't know which item in the list needs to be deleted if doing an edit.
                     Item modifiedItem = new Item();
+                    modifiedItem.setTags(globalContext.getHighlightedTags());
                     loadUiText(modifiedItem);
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
                         if (globalContext.getItemList().getList().contains(modifiedItem)) {
