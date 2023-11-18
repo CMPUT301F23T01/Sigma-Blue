@@ -140,8 +140,6 @@ public class TagManagerFragment extends Fragment {
 
                     updateTagListView();
 
-                    // Returns true if the list consumes the click.
-                    // return true;
                 });
 
         // Direct user to go to the tag add fragment

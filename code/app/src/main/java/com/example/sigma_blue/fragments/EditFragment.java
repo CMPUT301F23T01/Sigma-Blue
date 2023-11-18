@@ -20,6 +20,7 @@ import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -53,7 +55,7 @@ public class EditFragment extends Fragment
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
-    //private Item savedItemChanges;
+    private List<Tag> tagList;
     private int mDay, mMonth, mYear;
     private GlobalContext globalContext;
 
@@ -130,6 +132,7 @@ public class EditFragment extends Fragment
             textSerial.setText(currentItem.getSerialNumber());
             textDescription.setText(currentItem.getDescription());
             textComment.setText(currentItem.getComment());
+            tagList = currentItem.getTags();
             tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
             tagListView.setAdapter(tagListAdapter);
         }
@@ -204,7 +207,6 @@ public class EditFragment extends Fragment
                     // need a new item as to not overwrite the old one. If the old one is overwritten
                     // then we don't know which item in the list needs to be deleted if doing an edit.
                     Item modifiedItem = new Item();
-                    modifiedItem.setTags(globalContext.getHighlightedTags());
                     loadUiText(modifiedItem);
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
                         if (globalContext.getItemList().getList().contains(modifiedItem)) {
@@ -278,5 +280,6 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
+        item.setTags((ArrayList<Tag>) tagList);
     }
 }
