@@ -2,6 +2,7 @@ package com.example.sigma_blue.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
+import com.example.sigma_blue.activities.PhotoTakingActivity;
+import com.example.sigma_blue.activities.ViewListActivity;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
@@ -193,6 +197,13 @@ public class EditFragment extends Fragment
             }
         });
 
+        view.findViewById(R.id.item_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleFigureClick(globalContext.getCurrentItem());
+            }
+        });
+
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -277,5 +288,19 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
+    }
+
+    /**
+     * listener used to deal with the user clicking on a thing in the list. This method is passed to
+     * the ItemList constructor as a callback function, but not called directly from anywhere.
+     * see <a href="https://stackoverflow.com/questions/24471109/recyclerview-onclick">...</a>,
+     * answer from Marurban
+     * @param item Clicked on item
+     */
+    private void handleFigureClick(Item item) {
+        Log.i("DEBUG", item.getName() + "Short Press");
+        Intent intent = new Intent(this.getContext(), PhotoTakingActivity.class);
+        globalContext.newState("add_photo");
+        startActivity(intent);
     }
 }

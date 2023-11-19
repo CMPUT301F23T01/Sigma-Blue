@@ -309,6 +309,16 @@
                     app:layout_constraintTop_toBottomOf="@+id/text_value" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/DetialsLongLayout"
+                app:srcCompat="@android:drawable/ic_dialog_alert"
+                tools:src="@tools:sample/avatars" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
