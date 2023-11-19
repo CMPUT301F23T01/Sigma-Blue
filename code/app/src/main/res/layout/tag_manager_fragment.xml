@@ -59,6 +59,7 @@
             android:id="@+id/tagManagerListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:longClickable="true"
             android:visibility="visible" />
 
     </androidx.cardview.widget.CardView>

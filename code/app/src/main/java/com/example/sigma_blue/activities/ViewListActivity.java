@@ -17,6 +17,7 @@ import com.example.sigma_blue.R;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
+import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.SortField;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
@@ -52,7 +53,10 @@ public class ViewListActivity extends BaseActivity {
             this.selectedItemsMenu = findViewById(R.id.selectedItemsMenu);
         }
     }
-    private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
+
+    // Used for launching new activities. Potentially unused right now
+    private final ActivityLauncher<Intent, ActivityResult> activityLauncher
+            = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
 
     private GlobalContext globalContext;        // Global context object
@@ -71,7 +75,6 @@ public class ViewListActivity extends BaseActivity {
             //throw new VerifyException("Must have an account");
             return;
         }
-
 
         /* Code section for linking UI elements */
         ListView itemListView = findViewById(R.id.listView);
@@ -112,11 +115,10 @@ public class ViewListActivity extends BaseActivity {
 
     /**
      * Delete the selected items. Fully deletes them with no confirm
+     * TODO: If have time, add a confirm button
      */
     private void deleteSelectedItems() {
-
         globalContext.deleteSelectedItems();
-
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -133,14 +135,18 @@ public class ViewListActivity extends BaseActivity {
 
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v -> {
-            globalContext.getItemList().startQueryListening(SortField.MAKE,
-                    Query.Direction.ASCENDING);
+            Query query = globalContext.getItemList().getCollectionReference();
+
+            // TODO: These are placeholder queries until the UI has been made
+            globalContext.getItemList().startListening(QueryGenerator
+                    .filterRangeQuery(query, Item.dbDate,
+                            "2023-11-17", "2023-11-18"));
         });
+
         viewHolder.optionsButton.setOnClickListener(v -> {});
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
             this.deleteSelectedItems());
-
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -178,7 +184,7 @@ public class ViewListActivity extends BaseActivity {
      * @param item Item that was long pressed on
      */
     private void handleLongClick(Item item) {
-        Log.i("DEBUG", item.getName() + " Long Press");
+//        Log.i("DEBUG", item.getName() + " Long Press");
         globalContext.toggleInsertSelectedItem(item);
 
         if (globalContext.getSelectedItems().size() > 0) {

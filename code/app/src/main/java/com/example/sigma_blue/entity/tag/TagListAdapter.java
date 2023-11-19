@@ -1,6 +1,7 @@
 package com.example.sigma_blue.entity.tag;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
@@ -23,6 +26,7 @@ import java.util.List;
 public class TagListAdapter extends ArrayAdapter<Tag> {
 
     /* Attributes */
+    private List<? extends Tag> selectedTags; // List of selected items, likely the same as the global context.
     private List<Tag> tagsData;
     private Context context;
     /* Factories and Constructors */
@@ -64,11 +68,20 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         // Obtain UI elements from custom layout and represent the items appropriately.
         TextView tagTitle = view.findViewById(R.id.tagName);
         View tagColor = view.findViewById(R.id.tagColor);
-        CheckBox tagCheckBox = view.findViewById(R.id.tagCheckBox);
+        //CheckBox tagCheckBox = view.findViewById(R.id.tagCheckBox);
 
         tagColor.setBackgroundColor(tag.getColour().toArgb());
         tagTitle.setText(tag.getTagText());
-        tagCheckBox.setChecked(globalContext.getHighlightedTags().contains(tag));
+        //tagCheckBox.setChecked(globalContext.getHighlightedTags().contains(tag));
+
+        // Highlight the tag if selected.
+        boolean isTagSelected = false;
+        if (selectedTags == null) {
+            Log.e("ERROR", "Selected tags are null!");
+        } else {
+            isTagSelected = selectedTags.contains(tag);
+        }
+        highlightControl(view, isTagSelected);
         return view;
     }
 
@@ -79,5 +92,28 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
 
     public void setList(List<Tag> tags) {
         this.tagsData = tags;
+    }
+
+    /**
+     * List of selected tags (should be the same as the one held
+     * by the global context)
+     * @param selectedTagsList is the list of selected tags.
+     */
+    public void setSelectedTags(List<? extends Tag> selectedTagsList) {
+        this.selectedTags = selectedTagsList;
+    }
+
+    /**
+     * Method that will turn on the highlight of the view if it is selected,
+     * otherwise, reset it to the default background color.
+     * @param view is the view that is being checked.
+     * @param selected
+     */
+    private void highlightControl(View view, boolean selected) {
+        @ColorInt int rowColor;
+        if (selected) rowColor = ContextCompat.getColor(getContext(),
+                R.color.add_edit_layout_bgr_test);
+        else rowColor = ContextCompat.getColor(getContext(), R.color.white);
+        view.setBackgroundColor(rowColor);
     }
 }
