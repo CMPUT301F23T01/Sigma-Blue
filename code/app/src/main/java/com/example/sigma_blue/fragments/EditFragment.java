@@ -118,8 +118,12 @@ public class EditFragment extends Fragment
         globalContext = GlobalContext.getInstance();
         // Load Item and mode
         Item currentItem = globalContext.getCurrentItem();
+        // If the user is creating a new item.
         if (currentItem == null) {
             currentItem = new Item();
+            if (tagList == null) {
+                tagList = currentItem.getTags();
+            }
             globalContext.setCurrentItem(currentItem);
         }
         final String mode = globalContext.getCurrentState();
@@ -140,6 +144,8 @@ public class EditFragment extends Fragment
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
+
+
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
