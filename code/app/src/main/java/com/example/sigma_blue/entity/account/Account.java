@@ -119,4 +119,9 @@ public class Account implements Serializable, IDatabaseItem<Account> {
     public Function<IDatabaseItem<Account>, HashMap<String, Object>> getHashMapOfEntity() {
         return this.hashMapOfEntity;
     }
+
+    @Override
+    public Account getInstance() {
+        return this;
+    }
 }
