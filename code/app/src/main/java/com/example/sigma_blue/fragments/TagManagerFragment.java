@@ -92,8 +92,9 @@ public class TagManagerFragment extends Fragment {
         activity = (AddEditActivity) requireActivity();
 
         // Load the shared data
+        // This line removes the current item's selected tags for some reason
         globalContext = GlobalContext.getInstance();
-        globalContext.resetHighlightedTags(); // probably not needed, but just to be sure
+        // globalContext.resetHighlightedTags(); // probably not needed, but just to be sure
 
         if (globalContext.getCurrentState().equals("tag_manager_fragment")) {
             // User is opening the tag manager fragment on an existing fragment.
@@ -110,7 +111,7 @@ public class TagManagerFragment extends Fragment {
 
         /* Link the adapter to the UI */
         globalContext.getTagList().setAdapter(
-                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getTags(), getContext()),
+                TagListAdapter.newInstance(globalContext.getTagList().getTags(), getContext()),
                 globalContext.getHighlightedTags());
 
         tagsListView.setAdapter(globalContext.getTagList().getAdapter());
@@ -176,7 +177,6 @@ public class TagManagerFragment extends Fragment {
                     updateItemsWithTags();
                     if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
                         globalContext.newState("view_list_activity");
-                        globalContext.resetHighlightedTags();
                         activity.returnAndClose();
                     }
                     else {
@@ -227,7 +227,7 @@ public class TagManagerFragment extends Fragment {
 
             for (Item i : globalContext.getSelectedItems()) {
                 i.setTags(globalContext.getHighlightedTags());
-                globalContext.getItemList().updateItem(i, i); // this works since changing the tags doesn't impact the 'id' of an item
+                globalContext.getItemList().    updateItem(i, i); // this works since changing the tags doesn't impact the 'id' of an item
             }
         }
         else {
