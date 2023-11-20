@@ -258,4 +258,13 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         this.items.add(updatedItem);
         updateUI();
     }
+
+    /**
+     * Clean all the tags in all stored items
+     */
+    public void cleanAllItemTags() {
+        for (Item i : this.items) {
+            i.cleanTags();
+        }
+    }
 }

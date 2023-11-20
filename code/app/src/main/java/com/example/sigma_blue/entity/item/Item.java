@@ -3,6 +3,7 @@ package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,8 +35,8 @@ public class Item implements Comparable<Item>, Serializable,
     private String description, make, model;
     private Double value;
     private String serialNumber, comment;
-
     private List<Tag> tags;
+    private GlobalContext globalContext;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
@@ -133,6 +134,7 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name, Date date, String description, String comment,
                 String make, String serial, String model, Double value) {
+        this.globalContext = GlobalContext.getInstance();
         this.name = name;
         this.date = date;
         this.description = description;
@@ -468,8 +470,9 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public static final Function<QueryDocumentSnapshot, Item>
             itemOfQueryDocument = q -> {
+        Item newItem;
         try {
-            return Item.newInstance(
+            newItem = Item.newInstance(
                     q.getString(dbName),
                     simpledf.parse(q.getString(dbDate)),
                     q.getString(dbComment),
@@ -481,7 +484,7 @@ public class Item implements Comparable<Item>, Serializable,
                     (List<String>)q.get(dbTags)
             );
         } catch (ParseException e) {
-            return Item.newInstance(
+            newItem = Item.newInstance(
                     q.getString(dbName),
                     new Date(),
                     q.getString(dbComment),
@@ -493,5 +496,21 @@ public class Item implements Comparable<Item>, Serializable,
                     (List<String>)q.get(dbTags)
             );
         }
+        newItem.cleanTags();
+        return newItem;
     };
+
+    /**
+     * When tags are deleted from the DB they are not removed from items.
+     * This method removes any tags that are not in the tag list.
+     */
+    public void cleanTags() {
+        ArrayList<Tag> newTags = new ArrayList<>();
+        for (Tag t : this.tags) {
+            if (globalContext.getTagList().containsTag(t)) {
+                newTags.add(t);
+            }
+        }
+        this.tags = newTags;
+    }
 }
