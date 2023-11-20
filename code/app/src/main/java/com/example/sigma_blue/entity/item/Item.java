@@ -3,7 +3,7 @@ package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 
-import com.example.sigma_blue.entity.account.Account;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,8 +35,8 @@ public class Item implements Comparable<Item>, Serializable,
     private String description, make, model;
     private Double value;
     private String serialNumber, comment;
-
     private List<Tag> tags;
+    private GlobalContext globalContext;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
@@ -134,6 +134,7 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name, Date date, String description, String comment,
                 String make, String serial, String model, Double value) {
+        this.globalContext = GlobalContext.getInstance();
         this.name = name;
         this.date = date;
         this.description = description;
@@ -446,19 +447,19 @@ public class Item implements Comparable<Item>, Serializable,
      * Function for converting Item object into HashMap, which is compatible
      * with Firestore database.
      */
-    public static final Function<IDatabaseItem<Item>, HashMap<String, Object>> hashMapOfEntity =
+    public static final Function<Item, HashMap<String, Object>> hashMapOfItem =
             item -> {
                 HashMap<String, Object> ret = new HashMap<>();
-                ret.put(dbName, ((Item) item).getName());
-                ret.put(dbDate, simpledf.format(((Item) item).getDate()));
-                ret.put(dbMake, ((Item) item).getMake());
-                ret.put(dbModel, ((Item) item).getModel());
-                ret.put(dbComment, ((Item) item).getComment());
-                ret.put(dbDescription, ((Item) item).getDescription());
-                ret.put(dbSerial, ((Item) item).getSerialNumber());
-                ret.put(dbValue, ((Item) item).getValue());
-                ret.put(dbTags, ((Item) item).getTagNames());
-                Log.e("TAG NAMES", ((Item) item).getTagNames().stream()
+                ret.put(dbName, item.getName());
+                ret.put(dbDate, simpledf.format(item.getDate()));
+                ret.put(dbMake, item.getMake());
+                ret.put(dbModel, item.getModel());
+                ret.put(dbComment, item.getComment());
+                ret.put(dbDescription, item.getDescription());
+                ret.put(dbSerial, item.getSerialNumber());
+                ret.put(dbValue, item.getValue());
+                ret.put(dbTags, item.getTagNames());
+                Log.e("TAG NAMES", item.getTagNames().stream()
                         .reduce("", (acc, ele) -> acc + ele));
                 return ret;
             };
@@ -469,8 +470,9 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public static final Function<QueryDocumentSnapshot, Item>
             itemOfQueryDocument = q -> {
+        Item newItem;
         try {
-            return Item.newInstance(
+            newItem = Item.newInstance(
                     q.getString(dbName),
                     simpledf.parse(q.getString(dbDate)),
                     q.getString(dbComment),
@@ -482,7 +484,7 @@ public class Item implements Comparable<Item>, Serializable,
                     (List<String>)q.get(dbTags)
             );
         } catch (ParseException e) {
-            return Item.newInstance(
+            newItem = Item.newInstance(
                     q.getString(dbName),
                     new Date(),
                     q.getString(dbComment),
@@ -494,13 +496,20 @@ public class Item implements Comparable<Item>, Serializable,
                     (List<String>)q.get(dbTags)
             );
         }
+        newItem.cleanTags();
+        return newItem;
     };
 
     /**
-     * return the hashmap function
-     * @return
+     * When tags are deleted from the DB they are not removed from items.
+     * This method removes any tags that are not in the tag list.
      */
-    public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
-        return this.hashMapOfEntity;
+    public void cleanTags() {
+        ArrayList<Tag> newTags = new ArrayList<>();
+        for (Tag t : this.tags) {
+            if (globalContext.getTagList().containsTag(t)) {
+                newTags.add(t);
+            }
+        }
+        this.tags = newTags;
     }
-}
