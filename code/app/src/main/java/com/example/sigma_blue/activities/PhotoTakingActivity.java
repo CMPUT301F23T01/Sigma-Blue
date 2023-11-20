@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +36,9 @@ public class PhotoTakingActivity extends BaseActivity{
 
         super.onCreate(savedInstanceState); // Activity super
         globalContext = GlobalContext.getInstance();
+
+        // Set xml view
+        setContentView(R.layout.photo_loading_activity);
 
         dispatchTakePictureIntent();
 
