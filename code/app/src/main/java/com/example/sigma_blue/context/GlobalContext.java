@@ -31,6 +31,7 @@ public class GlobalContext {
     private ArrayList<Tag> highlightedTags;
     private Item currentItem;
     private Tag currentTag;
+
     private ArrayList<String> stateHistory; // store a history for debugging
 
     /**
