@@ -10,6 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
@@ -17,6 +21,7 @@ import com.example.sigma_blue.R;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
+import com.example.sigma_blue.fragments.QueryFragment;
 import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.SortField;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -60,6 +65,7 @@ public class ViewListActivity extends BaseActivity {
     private ViewHolder viewHolder;              // Encapsulation of the Views
 
     private GlobalContext globalContext;        // Global context object
+    private FragmentManager fragmentManager;    // For getting queries
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +129,27 @@ public class ViewListActivity extends BaseActivity {
     }
 
     /**
+     * This method shows the query fragment for the user to choose either a sort
+     * or a filter, or maybe both.
+     */
+    private void displayQueryFragment() {
+        QueryFragment queryFragment = new QueryFragment();
+        globalContext.newState("query_fragment");
+        startFragmentTransaction(queryFragment, "query_fragment");
+    }
+
+    /**
+     * Launches DialogFragment.
+     * @param fragment the dialog fragment class being launched
+     * @param tag the tag of the fragment
+     */
+    private void startFragmentTransaction(DialogFragment fragment, String tag) {
+        if (fragmentManager == null)
+            fragmentManager = getSupportFragmentManager();
+        fragment.show(fragmentManager, tag);
+    }
+
+    /**
      * This method sets all the on click listeners for all the interactive UI elements.
      */
     private void setUIOnClickListeners() {
@@ -134,14 +161,8 @@ public class ViewListActivity extends BaseActivity {
         });  // Launch add activity.
 
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
-        viewHolder.sortFilterButton.setOnClickListener(v -> {
-            Query query = globalContext.getItemList().getCollectionReference();
-
-            // TODO: These are placeholder queries until the UI has been made
-            globalContext.getItemList().startListening(QueryGenerator
-                    .filterRangeQuery(query, Item.dbDate,
-                            "2023-11-17", "2023-11-18"));
-        });
+        viewHolder.sortFilterButton.setOnClickListener(v ->
+                this.displayQueryFragment());
 
         viewHolder.optionsButton.setOnClickListener(v -> {});
 
