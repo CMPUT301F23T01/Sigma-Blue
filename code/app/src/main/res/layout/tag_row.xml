@@ -9,13 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:clickable="false"
+        android:focusable="false"
         android:gravity="center_vertical">
-
-        <CheckBox
-            android:id="@+id/tagCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/add_edit_btn_bgr_test" />
 
         <TextView
             android:id="@+id/tagName"
@@ -29,7 +25,9 @@
             android:layout_weight="1"
             android:text="@string/placeholder_tag_1"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:clickable="false"
+            android:focusable="false" />
 
         <View
             android:id="@+id/tagColor"
@@ -37,7 +35,9 @@
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="#ffd600" />
+            android:background="#ffd600"
+            android:clickable="false"
+            android:focusable="false" />
 
 
     </LinearLayout>

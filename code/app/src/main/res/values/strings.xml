@@ -69,9 +69,35 @@
     <string name="add_edit_text_description_hint">Add description...</string>
     <string name="add_edit_text_comment">Comment</string>
     <string name="add_edit_text_comment_hint">Add comment...</string>
+    <string name="invalid_username_password">Incorrect Username or Password</string>
     <!-- -end- -->
 
+    <string name="ascending_title_text">Ascending</string>
+    <string name="descending_title_text">Descending</string>
+    <string name="filter_by_title_text">Filter By:</string>
+    <string name="start_date_title_text">Start Date</string>
+    <string name="end_date_title_text">End Date</string>
+    <string name="reset_button_text">Reset</string>
+    <string name="filter_tags_title_text">Tags</string>
+    <string name="make_title_text">Make</string>
+    <string name="filter_make_hint_text">Enter Make</string>
+    <string name="filter_keywords_title_text">Description Keywords</string>
+    <string name="filter_keywords_hint_text">Enter Keywords</string>
+    <string name="sort_by_title_text">Sort By:</string>
+
+    <!-- Strings in sorting elements spinner -->
+    <string-array name="SortingElements">
+        <item>Select Sorting Elements</item>
+        <item>Date</item>
+        <item>Make</item>
+        <item>Estimated Value</item>
+        <item>Description</item>
+        <item>Tags</item>
+    </string-array>
+    <!-- -end- -->
+    
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sample_serial_num">1234567</string>
 
 </resources>

@@ -9,15 +9,13 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sigma_blue.Account;
-import com.example.sigma_blue.AccountList;
-import com.example.sigma_blue.BaseActivity;
-import com.example.sigma_blue.DatabaseInitializer;
-import com.example.sigma_blue.FragmentLauncher;
-import com.example.sigma_blue.Item;
-import com.example.sigma_blue.ItemDB;
-import com.example.sigma_blue.ItemList;
-import com.example.sigma_blue.ItemListAdapter;
+import com.example.sigma_blue.entity.account.Account;
+import com.example.sigma_blue.entity.account.AccountList;
+import com.example.sigma_blue.activities.BaseActivity;
+import com.example.sigma_blue.database.DatabaseInitializer;
+import com.example.sigma_blue.fragments.FragmentLauncher;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.item.ItemList;
 import com.example.sigma_blue.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -94,18 +92,18 @@ public class DebuggingActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* Setting up the data. TODO: Make this use the database */
-        itemList = ItemList.newInstance(testAccount2, v -> {}, v -> {});
+//        itemList = ItemList.newInstance(testAccount2, v -> {}, v -> {});
         itemList.setSummaryView(viewHolder.summaryView);
         accList = AccountList.newInstance();
         fragmentLauncher = FragmentLauncher.newInstance(this);  // Embedding the fragment
 
         /* Code section for linking UI elements */
-        RecyclerView rvItemListView = findViewById(R.id.listView);
+//        RecyclerView rvItemListView = findViewById(R.id.listView);
 
         /* Linking the adapter to the UI */
-        rvItemListView.setAdapter(itemList.getAdapter());
-        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
+//        rvItemListView.setAdapter(itemList.getRecyclerAdapter());
+//        rvItemListView.setLayoutManager(new LinearLayoutManager(this,
+//                LinearLayoutManager.VERTICAL, false));
 
         /* Setting up the on click listeners*/
         setUIOnClickListeners();
@@ -133,7 +131,7 @@ public class DebuggingActivity extends BaseActivity {
                     new Item(
                             "ThinkPad", new Date(),
                             "Nice UNIX book", "", "IBM",
-                            "T460", 300f
+                            "19845739405", "T460", 300.0
                     )
             );
         });  // Launch add fragment.
