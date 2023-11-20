@@ -513,4 +513,3 @@ public class Item implements Comparable<Item>, Serializable,
         }
         this.tags = newTags;
     }
-}
