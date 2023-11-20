@@ -238,7 +238,7 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v) {
                 handleFigureClick(globalContext.getCurrentItem());
-                
+
                 //PHOTO TAKING ACTIVITY
                 // for back to main logic, can be improved in the future
                 activity.finish();
