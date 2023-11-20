@@ -16,6 +16,7 @@ import com.example.sigma_blue.context.GlobalContext;
  * communicate with the backend.
  */
 public class QueryFragment extends DialogFragment {
+    private GlobalContext globalContext;
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
@@ -51,7 +52,7 @@ public class QueryFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        globalContext = GlobalContext.getInstance();
     }
 
     /**
