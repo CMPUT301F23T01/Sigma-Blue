@@ -1,14 +1,18 @@
 package com.example.sigma_blue.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +22,10 @@ import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.entity.item.Item;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 
@@ -40,7 +48,9 @@ public class DetailsFragment extends Fragment
     private TextView textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private ImageView itemImage;
     private GlobalContext globalContext;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * Required empty public constructor
@@ -81,6 +91,7 @@ public class DetailsFragment extends Fragment
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
         tagListView = binding.getRoot().findViewById(R.id.list_tag);
+        itemImage = binding.getRoot().findViewById(R.id.item_ImageDetail);
 
         return binding.getRoot();
     }
@@ -111,6 +122,32 @@ public class DetailsFragment extends Fragment
         textComment.setText(currentItem.getComment());
         tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
         tagListView.setAdapter(tagListAdapter);
+
+        // ITEM IMAGE
+        // trying to get the path of image, and put it on the add item
+        String tempImagePath = globalContext.getCurrentItem().getPhotoPath();
+        // set the image of the item
+        // Create a storage reference from our app
+        if (tempImagePath != null) {
+            StorageReference storageRef = storage.getReference();
+            StorageReference itemImageRef = storageRef.child(tempImagePath);
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+            itemImageRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    // Data for "images/island.jpg" is returns, use this as needed
+                    Log.i("ImageDownload", "Image download succeed");
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    itemImage.setImageBitmap(bitmap);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {

@@ -252,6 +252,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/text_value" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:id="@+id/item_ImageDetail"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:src="@android:drawable/ic_menu_help"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/DetialsLongLayout"
+                app:srcCompat="@android:drawable/ic_menu_gallery" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
