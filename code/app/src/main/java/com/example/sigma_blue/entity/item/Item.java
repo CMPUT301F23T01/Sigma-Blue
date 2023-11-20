@@ -3,6 +3,7 @@ package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 
+import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -445,19 +446,19 @@ public class Item implements Comparable<Item>, Serializable,
      * Function for converting Item object into HashMap, which is compatible
      * with Firestore database.
      */
-    public static final Function<Item, HashMap<String, Object>> hashMapOfItem =
+    public static final Function<IDatabaseItem<Item>, HashMap<String, Object>> hashMapOfEntity =
             item -> {
                 HashMap<String, Object> ret = new HashMap<>();
-                ret.put(dbName, item.getName());
-                ret.put(dbDate, simpledf.format(item.getDate()));
-                ret.put(dbMake, item.getMake());
-                ret.put(dbModel, item.getModel());
-                ret.put(dbComment, item.getComment());
-                ret.put(dbDescription, item.getDescription());
-                ret.put(dbSerial, item.getSerialNumber());
-                ret.put(dbValue, item.getValue());
-                ret.put(dbTags, item.getTagNames());
-                Log.e("TAG NAMES", item.getTagNames().stream()
+                ret.put(dbName, ((Item) item).getName());
+                ret.put(dbDate, simpledf.format(((Item) item).getDate()));
+                ret.put(dbMake, ((Item) item).getMake());
+                ret.put(dbModel, ((Item) item).getModel());
+                ret.put(dbComment, ((Item) item).getComment());
+                ret.put(dbDescription, ((Item) item).getDescription());
+                ret.put(dbSerial, ((Item) item).getSerialNumber());
+                ret.put(dbValue, ((Item) item).getValue());
+                ret.put(dbTags, ((Item) item).getTagNames());
+                Log.e("TAG NAMES", ((Item) item).getTagNames().stream()
                         .reduce("", (acc, ele) -> acc + ele));
                 return ret;
             };
@@ -494,4 +495,12 @@ public class Item implements Comparable<Item>, Serializable,
             );
         }
     };
+
+    /**
+     * return the hashmap function
+     * @return
+     */
+    public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
+        return this.hashMapOfEntity;
+    }
 }

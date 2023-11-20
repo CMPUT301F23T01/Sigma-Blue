@@ -17,7 +17,6 @@ import java.util.Optional;
 public class TagDB extends ADatabaseHandler<Tag> {
 
     private final Account account;
-    private final CollectionReference tagRef;
 
     public static TagDB newInstance(Account a) {
         TagDB ret = new TagDB(a);
@@ -31,34 +30,10 @@ public class TagDB extends ADatabaseHandler<Tag> {
      */
     private TagDB(Account a) {
         account = a;
-        tagRef = FirebaseFirestore.getInstance()
+        ref = FirebaseFirestore.getInstance()
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
                 .collection(DatabaseNames.TAGS_COLLECTION.getName());
-    }
-
-    /**
-     * Update the database with the current tags
-     */
-    public void saveToDB(TagList tList) {};
-
-    /**
-     * Update the
-     * @return new list of tags from the database.
-     */
-    public ArrayList<Tag> refreshFromDB(){
-        ArrayList<Tag> tags = new ArrayList<>();
-        tags.add(new Tag("Generic Tag", 0xffff0000));
-        return tags;
-    };
-
-    /**
-     * Adds a new item to the database
-     * @param item Tag being stored
-     */
-    @Override
-    public void add(Tag item) {
-        addDocument(tagRef, item, Tag.hashMapOfTag, item.getDocID());
     }
 
     /**
@@ -68,16 +43,7 @@ public class TagDB extends ADatabaseHandler<Tag> {
      */
     public DocumentReference getDocRef(Tag item) {
         // Building with the assumption of the tag existing (may need change)
-        return tagRef.document(item.getDocID());
-    }
-
-    /**
-     * Removes the specified item from the database
-     * @param item the Tag class
-     */
-    @Override
-    public void remove(Tag item) {
-        removeDocument(tagRef, item);
+        return ref.document(item.getDocID());
     }
 
     /**
@@ -86,14 +52,6 @@ public class TagDB extends ADatabaseHandler<Tag> {
      */
     @Override
     public CollectionReference getCollectionReference() {
-        return this.tagRef;
-    }
-
-    /**
-     * Returns the account is being hosted.
-     * @return an Account object representing the tag that is being viewed.
-     */
-    private Account getAccount() {
-        return account;
+        return this.ref;
     }
 }
