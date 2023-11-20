@@ -9,4 +9,5 @@ import java.util.function.Function;
 public interface IDatabaseItem<T> {
     public String getDocID();
     public Function<IDatabaseItem<T>, HashMap<String, Object>> getHashMapOfEntity();
+    public T getInstance();
 }
