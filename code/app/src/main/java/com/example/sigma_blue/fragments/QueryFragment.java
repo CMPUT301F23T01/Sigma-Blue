@@ -40,7 +40,6 @@ public class QueryFragment extends DialogFragment {
         }
     }
 
-    private GlobalContext globalContext;    // Our singleton solution
     private ViewHolder viewHolder;          // The view holder
 
     /**
