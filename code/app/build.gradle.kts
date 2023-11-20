@@ -47,6 +47,10 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.9.1")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
 
+    // Add the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-storage")
+
 
     androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
