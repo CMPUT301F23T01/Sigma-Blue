@@ -5,6 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -16,13 +20,18 @@ import com.example.sigma_blue.context.GlobalContext;
  * communicate with the backend.
  */
 public class QueryFragment extends DialogFragment {
-    private GlobalContext globalContext;
+    private GlobalContext globalContext;    // Used for transferring data
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
      */
     private class ViewHolder {
-        Button backButton;
+        Button backButton, resetButton;
+        EditText descriptionFilterET;
+        Spinner sortCriteriaSpinner, tagFilterSpinner;
+        CheckBox ascendingBox, descendingBox;
+        DatePicker startDatePicker, endDatePicker;
+
 
         /**
          * Needs the parent view to be inflated before this class can be
