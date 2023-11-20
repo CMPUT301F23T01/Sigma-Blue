@@ -43,6 +43,13 @@ public class AddEditActivity extends BaseActivity
             graph.setStartDestination(R.id.tagManagerFragment);
         } else if (Objects.equals(globalContext.getCurrentState(), "details_fragment")) {
             graph.setStartDestination(R.id.detailsFragment);
+
+            //PHOTO TAKING ACTIVITY
+            //This if branch is added for returning back from photo taking, in edit item fragment.
+            //Can be changed for better logic later
+        } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
+            graph.setStartDestination(R.id.detailsFragment);
+
         } else {
             Log.e("DEBUG", "Bad AddEditMode");
         }

@@ -27,6 +27,7 @@ public class Item implements Comparable<Item>, Serializable,
     private float value;
     private String serialNumber;
     private String comment;
+    private String photoPath;
 
 
     private ArrayList<Tag> tags;
@@ -55,13 +56,14 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setMake(null);
         ret.setModel(null);
         ret.setValue(0f);
+        ret.setPhotoPath(null);
 
         return ret;
     }
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, float value) {
+                                   String model, String serial, float value, String photoPath) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -72,13 +74,14 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setModel(model);
         ret.setSerialNumber(serial);
         ret.setValue(value);
+        ret.setPhotoPath(photoPath);
 
         return ret;
     }
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final String serial, final float value) {
+                                   final String serial, final float value, final String photoPath) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -89,6 +92,7 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setModel(model);
         ret.setSerialNumber(serial);
         ret.setValue(value);
+        ret.setPhotoPath(photoPath);
 
         return ret;
     }
@@ -321,6 +325,14 @@ public class Item implements Comparable<Item>, Serializable,
         return false;
     }
 
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
     /**
      * Method that checks if the Item contains a given tag
      * @param tag is the Tag object we are checking for
@@ -418,6 +430,7 @@ public class Item implements Comparable<Item>, Serializable,
                 ret.put("DESCRIPTION", item.getDescription());
                 ret.put("SERIAL", item.getSerialNumber());
                 ret.put("VALUE", String.valueOf(item.getValue()));
+                ret.put("IMAGE", item.getPhotoPath());
                 return ret;
             };
 
@@ -436,7 +449,8 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString("MAKE"),
                     q.getString("MODEL"),
                     q.getString("SERIAL"),
-                    Float.parseFloat(q.getString("VALUE"))
+                    Float.parseFloat(q.getString("VALUE")),
+                    q.getString("IMAGE")
             );
         } catch (ParseException e) {
             return Item.newInstance(
@@ -447,7 +461,8 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString("MAKE"),
                     q.getString("MODEL"),
                     q.getString("SERIAL"),
-                    Float.parseFloat(q.getString("VALUE"))
+                    Float.parseFloat(q.getString("VALUE")),
+                    q.getString("IMAGE")
             );
         }
     };

@@ -3,6 +3,8 @@ package com.example.sigma_blue.fragments;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
@@ -26,8 +29,12 @@ import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,10 +63,13 @@ public class EditFragment extends Fragment
     private EditText textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private ImageView itemImage;
     private ArrayList<EditText> editTextList;
     //private Item savedItemChanges;
     private int mDay, mMonth, mYear;
     private GlobalContext globalContext;
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * Required empty public constructor
@@ -100,6 +110,7 @@ public class EditFragment extends Fragment
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
         tagListView = binding.getRoot().findViewById((R.id.list_tag));
+        itemImage = binding.getRoot().findViewById(R.id.item_image);
 
         return binding.getRoot();
     }
@@ -139,6 +150,32 @@ public class EditFragment extends Fragment
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
+
+        //ITEM IMAGE RELATED CHANGES
+        // trying to get the path of image, and put it on the add item
+        String tempImagePath = globalContext.getCurrentItem().getPhotoPath();
+        // set the image of the item
+        // Create a storage reference from our app
+        if (tempImagePath != null) {
+            StorageReference storageRef = storage.getReference();
+            StorageReference itemImageRef = storageRef.child(tempImagePath);
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+            itemImageRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    // Data for "images/island.jpg" is returns, use this as needed
+                    Log.i("ImageDownload", "Image download succeed");
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    itemImage.setImageBitmap(bitmap);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
@@ -201,6 +238,10 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v) {
                 handleFigureClick(globalContext.getCurrentItem());
+                
+                //PHOTO TAKING ACTIVITY
+                // for back to main logic, can be improved in the future
+                activity.finish();
             }
         });
 
@@ -288,6 +329,8 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
+        //Photo Added, should have better way
+        item.setPhotoPath(globalContext.getCurrentItem().getPhotoPath());
     }
 
     /**
@@ -300,7 +343,8 @@ public class EditFragment extends Fragment
     private void handleFigureClick(Item item) {
         Log.i("DEBUG", item.getName() + "Short Press");
         Intent intent = new Intent(this.getContext(), PhotoTakingActivity.class);
-        globalContext.newState("add_photo");
+        // TODO ISSUE: not going to change the state at this time, seems messed up existing logic between activities/frags
+        //globalContext.newState("add_photo");
         startActivity(intent);
     }
 }
