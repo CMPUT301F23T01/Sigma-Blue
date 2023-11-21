@@ -39,7 +39,25 @@ public class QueryFragment extends DialogFragment {
          * @param entireView is the parent view (dialog box fragment)
          */
         public ViewHolder(View entireView) {
+            bindViews(entireView);
+        }
+
+        /**
+         * Method binds all the encapsulated views with the inflated layout.
+         * @param entireView the view of the fragment
+         */
+        private void bindViews(View entireView) {
             backButton = entireView.findViewById(R.id.query_cancel_button);
+            resetButton = entireView.findViewById(R.id.sortingResetButton);
+            descriptionFilterET = entireView.findViewById(R.id
+                    .descFilterEditText);
+            sortCriteriaSpinner = entireView.findViewById(R.id
+                    .sortCriteriaSpinner);
+            tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
+            ascendingBox = entireView.findViewById(R.id.ascendCheckbox);
+            descendingBox = entireView.findViewById(R.id.descendCheckbox);
+            startDatePicker = entireView.findViewById(R.id.startDatePicker);
+            endDatePicker = entireView.findViewById(R.id.endDatePicker);
         }
 
         /**
