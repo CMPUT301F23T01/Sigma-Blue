@@ -92,15 +92,16 @@ public class TagManagerFragment extends Fragment {
         activity = (AddEditActivity) requireActivity();
 
         // Load the shared data
+        // This line removes the current item's selected tags for some reason
         globalContext = GlobalContext.getInstance();
-        globalContext.resetHighlightedTags(); // probably not needed, but just to be sure
+        // globalContext.resetHighlightedTags(); // probably not needed, but just to be sure
 
         if (globalContext.getCurrentState().equals("tag_manager_fragment")) {
             // User is opening the tag manager fragment on an existing fragment.
             // Check tags already applied onto the item.
-            for (Tag t: globalContext.getCurrentItem().getTags()) {
-                globalContext.toggleHighlightTag(t);
-            }
+            //for (Tag t: globalContext.getCurrentItem().getTags()) {
+            //    globalContext.toggleHighlightTag(t);
+            //}
 
         } else if (globalContext.getCurrentState().equals("multi_select_tag_manager_fragment")){
             // Don't check anything
@@ -114,6 +115,7 @@ public class TagManagerFragment extends Fragment {
                 globalContext.getHighlightedTags());
 
         tagsListView.setAdapter(globalContext.getTagList().getAdapter());
+        //tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         globalContext.getTagList().startListening();
 
         updateTagListView();
@@ -121,7 +123,6 @@ public class TagManagerFragment extends Fragment {
         /* On click listeners */
 
         // Handle the checkbox, and the checked state for the user selecting an item
-        // TODO Reuse the multiple item select that was used in ItemListActivity
         /*
         tagsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
