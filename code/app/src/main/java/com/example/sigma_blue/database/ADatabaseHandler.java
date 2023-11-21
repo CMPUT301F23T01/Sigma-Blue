@@ -1,6 +1,10 @@
 package com.example.sigma_blue.database;
 
+import com.example.sigma_blue.entity.account.Account;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,7 +22,7 @@ import java.util.function.Function;
  */
 public abstract class ADatabaseHandler<T> {
     private ListenerRegistration registration;
-
+    protected CollectionReference ref;
     /**
      * Generic method for adding a new document to a collection being pointed
      * to.
@@ -77,13 +81,17 @@ public abstract class ADatabaseHandler<T> {
      * Adds a new document to the database
      * @param item item being added
      */
-    public abstract void add(final T item);
+    public void add(final IDatabaseItem<T> item) {
+        addDocument(ref, item, item.getHashMapOfEntity(), item.getDocID());
+    }
 
     /**
      * Removes the document from the database
      * @param item
      */
-    public abstract void remove(final T item);
+    public void remove(final IDatabaseItem<T> item) {
+        removeDocument(ref, item);
+    }
 
     /**
      * Returns the database collection reference.
@@ -113,7 +121,15 @@ public abstract class ADatabaseHandler<T> {
      * Clear the previous listener. Used when trying to install a new listener
      */
     private void clearRegistration() {
-        if (registration != null) registration.remove();
-        else ;
+        if (registration != null) {
+            registration.remove();
+        }
+    }
+
+    /**
+     * Get the document reference for the entity. Assumes the entity exists.
+     */
+    public DocumentReference getDocRef(IDatabaseItem<T> item) {
+        return ref.document(item.getDocID());
     }
 }

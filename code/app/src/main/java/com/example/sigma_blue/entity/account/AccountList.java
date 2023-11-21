@@ -60,19 +60,28 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
      * @return match is a boolean that returns true if the account is contained in the list, and false if not
      */
     public boolean contains(Account account) {
-        // TODO: Bach come back and refactor
         if (accList == null) {
             Log.w("DEBUG", "Checking null accounts list");
             return false;
         } else {
-            boolean match = false;
-            for (Account acc : accList) {
-                if (acc.checkUsername(account.getUsername())) {
-                    match = true;
-                }
-            }
-            return match;
+            return accList.contains(account);
         }
+    }
+
+    /**
+     * Method for checking if a username/password pair is valid.
+     */
+    public boolean validAccount(Account account) {
+        if (!this.contains(account)) {
+            return false;
+        }
+        boolean valid = false;
+        for (Account a : this.accList) {
+            if (a.checkUsername(account.getUsername()) && a.checkPassword(account.getPassword())) {
+                return true;
+            }
+        }
+        return valid;
     }
 
     /**
