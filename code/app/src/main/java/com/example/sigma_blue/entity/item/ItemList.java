@@ -8,6 +8,7 @@ import com.example.sigma_blue.adapter.IAdaptable;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.SortField;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -181,8 +182,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     /**
-     * Starts listening to the database. Will update the content of this class,
-     * and the adapter on change in the database.
+     * The default startListening. Will simply start to listen to the
      */
     public void startListening() {
         dbHandler.startListening(this.dbHandler.getCollectionReference(),
@@ -190,14 +190,21 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     }
 
     /**
-     * The first prototype method for listening to the database via sorting
-     * @param sortBy
-     * @param direction
+     * Needed when making new queries
+     * @return the collection reference of the user
      */
-    public void startQueryListening(SortField sortBy,
-                                    Query.Direction direction) {
-        Query query = new QueryGenerator(sortBy, direction,
-                this.dbHandler.getCollectionReference()).get();
+    public CollectionReference getCollectionReference() {
+        return dbHandler.getCollectionReference();
+    }
+
+    /**
+     * Overload of the startListening method. This method will take a query
+     * object which contains the query that is being made to the database
+     * @param query is a Firestore Query object that is being used to make the
+     *              query.
+     * @see com.example.sigma_blue.query.QueryGenerator
+     */
+    public void startListening(Query query) {
         dbHandler.startListening(query, this);
     }
 
@@ -250,5 +257,14 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         this.items.remove(oldItem);
         this.items.add(updatedItem);
         updateUI();
+    }
+
+    /**
+     * Clean all the tags in all stored items
+     */
+    public void cleanAllItemTags() {
+        for (Item i : this.items) {
+            i.cleanTags();
+        }
     }
 }

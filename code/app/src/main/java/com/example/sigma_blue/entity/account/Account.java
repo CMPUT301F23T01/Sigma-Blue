@@ -93,11 +93,11 @@ public class Account implements Serializable, IDatabaseItem<Account> {
     /**
      * Function that converts Account to HashMap of String and String.
      */
-    public static final Function<Account, HashMap<String, Object>>
-            hashMapOfAccount = a -> {
+    public static final Function<IDatabaseItem<Account>, HashMap<String, Object>>
+            hashMapOfEntity = a -> {
         HashMap<String, Object> ret = new HashMap<>();
-        ret.put(USERNAME, a.getUsername());
-        ret.put(PASSWORD, a.getPassword());
+        ret.put(USERNAME, ((Account) a).getUsername());
+        ret.put(PASSWORD, ((Account) a).getPassword());
         return ret;
     };
 
@@ -110,5 +110,18 @@ public class Account implements Serializable, IDatabaseItem<Account> {
     public boolean equals(Object o) {
         if (! (o instanceof Account)) return false;
         else return ((Account) o).getUsername().equals(getUsername());
+    }
+
+    /**
+     * return the hashmap function
+     * @return
+     */
+    public Function<IDatabaseItem<Account>, HashMap<String, Object>> getHashMapOfEntity() {
+        return this.hashMapOfEntity;
+    }
+
+    @Override
+    public Account getInstance() {
+        return this;
     }
 }

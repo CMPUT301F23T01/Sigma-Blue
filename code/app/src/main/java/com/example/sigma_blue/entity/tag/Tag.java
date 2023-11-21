@@ -4,6 +4,7 @@ package com.example.sigma_blue.entity.tag;
 import android.graphics.Color;
 
 import com.example.sigma_blue.database.IDatabaseItem;
+import com.example.sigma_blue.entity.item.Item;
 
 import java.io.Serializable;
 
@@ -46,10 +47,11 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
         return colour;
     }
 
-    public static final Function<Tag, HashMap<String, Object>> hashMapOfTag = t -> {
+    public static final Function<IDatabaseItem<Tag>, HashMap<String, Object>>
+            hashMapOfEntity = t -> {
         HashMap<String, Object> ret = new HashMap<>();
-        ret.put(LABEL, t.getTagText());
-        ret.put(COLOR, t.getColourString());
+        ret.put(LABEL, ((Tag) t).getTagText());
+        ret.put(COLOR, ((Tag) t).getColourString());
         return ret;
     };
 
@@ -106,5 +108,17 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
 
     public String getColourString() {
         return Integer.toHexString(colour.toArgb());
+    }
+    /**
+     * return the hashmap function
+     * @return
+     */
+    public Function<IDatabaseItem<Tag>, HashMap<String, Object>> getHashMapOfEntity() {
+        return this.hashMapOfEntity;
+    }
+
+    @Override
+    public Tag getInstance() {
+        return this;
     }
 }

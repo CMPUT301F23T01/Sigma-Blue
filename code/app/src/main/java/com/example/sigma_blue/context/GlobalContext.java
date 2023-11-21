@@ -31,6 +31,7 @@ public class GlobalContext {
     private ArrayList<Tag> highlightedTags;
     private Item currentItem;
     private Tag currentTag;
+
     private ArrayList<String> stateHistory; // store a history for debugging
 
     /**
@@ -93,7 +94,6 @@ public class GlobalContext {
      * @return a List of the selected item
      */
     public ArrayList<Item> getSelectedItems() {
-
         return this.highlightedItems;
     }
 
@@ -135,7 +135,6 @@ public class GlobalContext {
             this.highlightedTags.remove(tag);
         }
         //this.getTagList().getAdapter().notifyDataSetChanged();
-
     }
 
     /**
@@ -152,7 +151,6 @@ public class GlobalContext {
     public void resetHighlightedTags() {
         this.highlightedTags.clear();
         // this.getTagList().getAdapter().notifyDataSetChanged();
-
     }
 
     /**
@@ -184,15 +182,12 @@ public class GlobalContext {
     public AccountList getAccountList() {
         return accountList;
     }
-
     public ItemList getItemList() {
         return itemList;
     }
-
     public TagList getTagList() {
         return tagList;
     }
-
 
     /**
      * Get the Item that is being viewed by the detailed view page.
@@ -201,7 +196,6 @@ public class GlobalContext {
     public Item getCurrentItem() {
         return currentItem;
     }
-
     public void setCurrentItem(Item currentItem) {
         this.currentItem = currentItem;
     }

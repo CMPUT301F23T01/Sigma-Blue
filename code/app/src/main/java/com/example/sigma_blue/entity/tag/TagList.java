@@ -49,14 +49,6 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         this.tags = new ArrayList<>();
     }
 
-    public void saveTagsToDB() {
-        tagDB.saveToDB(this);
-    }
-
-    public void refreshTagsFromDB() {
-        this.tags = tagDB.refreshFromDB();
-    }
-
     public void addTag(Tag tag) {
         if (!tags.contains(tag)) {
             tags.add(tag);

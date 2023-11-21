@@ -111,10 +111,11 @@ public class TagManagerFragment extends Fragment {
 
         /* Link the adapter to the UI */
         globalContext.getTagList().setAdapter(
-                TagListAdapter.newInstance(globalContext.getTagList().getTags(), getContext()),
+                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getTags(), getContext()),
                 globalContext.getHighlightedTags());
 
         tagsListView.setAdapter(globalContext.getTagList().getAdapter());
+        //tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         globalContext.getTagList().startListening();
 
         updateTagListView();
@@ -227,7 +228,7 @@ public class TagManagerFragment extends Fragment {
 
             for (Item i : globalContext.getSelectedItems()) {
                 i.setTags(globalContext.getHighlightedTags());
-                globalContext.getItemList().    updateItem(i, i); // this works since changing the tags doesn't impact the 'id' of an item
+                globalContext.getItemList().updateItem(i, i); // this works since changing the tags doesn't impact the 'id' of an item
             }
         }
         else {

@@ -3,6 +3,7 @@ package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,8 +35,8 @@ public class Item implements Comparable<Item>, Serializable,
     private String description, make, model;
     private Double value;
     private String serialNumber, comment;
-
     private List<Tag> tags;
+    private GlobalContext globalContext;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
@@ -45,6 +46,7 @@ public class Item implements Comparable<Item>, Serializable,
     /**
      * newInstance pattern used so that construction is decoupled from outside
      * interface.
+     *
      * @param t Just the name of the object.
      * @return the constructed item.
      */
@@ -118,21 +120,17 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This is constructor of item object, take in required parameters only
-     * @param name
-     * This is name of the item
-     * @param date
-     * This is purchase date of the item
-     * @param description
-     * This is the description of the item
-     * @param make
-     * This is the make of the item
-     * @param model
-     * This is the model of the item
-     * @param value
-     * this is the estimated value of the item
+     *
+     * @param name        This is name of the item
+     * @param date        This is purchase date of the item
+     * @param description This is the description of the item
+     * @param make        This is the make of the item
+     * @param model       This is the model of the item
+     * @param value       this is the estimated value of the item
      */
     public Item(String name, Date date, String description, String comment,
                 String make, String serial, String model, Double value) {
+        this.globalContext = GlobalContext.getInstance();
         this.name = name;
         this.date = date;
         this.description = description;
@@ -147,6 +145,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * Simpler construction, where the other parts can be included.
+     *
      * @param name is the name of the object.
      */
     public Item(String name) {
@@ -158,16 +157,15 @@ public class Item implements Comparable<Item>, Serializable,
     /**
      * Constructor for an empty item
      */
-    public Item()
-    {
-        this("",new Date(),"","","", "",
-                "",0d);
+    public Item() {
+        this("", new Date(), "", "", "", "",
+                "", 0d);
     }
 
     /**
      * This returns the name of item
-     * @return
-     * Return the name
+     *
+     * @return Return the name
      */
     public String getName() {
         return name;
@@ -175,8 +173,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the name of item
-     * @param name
-     * This is a name to set
+     *
+     * @param name This is a name to set
      */
     public void setName(String name) {
         this.name = name;
@@ -184,8 +182,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the purchase date of item
-     * @return
-     * Return the date of purchase
+     *
+     * @return Return the date of purchase
      */
     public Date getDate() {
         return date;
@@ -193,8 +191,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the purchase date of item
-     * @param date
-     * This is a purchase date to set
+     *
+     * @param date This is a purchase date to set
      */
     public void setDate(Date date) {
         this.date = date;
@@ -202,8 +200,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the description of item
-     * @return
-     * Return the description
+     *
+     * @return Return the description
      */
     public String getDescription() {
         return description;
@@ -211,8 +209,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the description of item
-     * @param description
-     * This is a description to set
+     *
+     * @param description This is a description to set
      */
     public void setDescription(String description) {
         this.description = description;
@@ -220,8 +218,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the make of item
-     * @return
-     * Return the make
+     *
+     * @return Return the make
      */
     public String getMake() {
         return make;
@@ -229,8 +227,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the make of item
-     * @param make
-     * This is a make to set
+     *
+     * @param make This is a make to set
      */
     public void setMake(String make) {
         this.make = make;
@@ -238,8 +236,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the model of item
-     * @return
-     * Return the model
+     *
+     * @return Return the model
      */
     public String getModel() {
         return model;
@@ -247,8 +245,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the model of item
-     * @param model
-     * This is a model to set
+     *
+     * @param model This is a model to set
      */
     public void setModel(String model) {
         this.model = model;
@@ -256,8 +254,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the estimated value of item
-     * @return
-     * Return the value
+     *
+     * @return Return the value
      */
     public Double getValue() {
         return value;
@@ -269,8 +267,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the estimated value of item
-     * @param value
-     * This is a estimated to set
+     *
+     * @param value This is a estimated to set
      */
     public void setValue(Double value) {
         this.value = value;
@@ -278,8 +276,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the serial number of item
-     * @return
-     * Return the serial number
+     *
+     * @return Return the serial number
      */
     public String getSerialNumber() {
         return serialNumber;
@@ -287,8 +285,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the serial number of item
-     * @param serialNumber
-     * This is a serial number to set
+     *
+     * @param serialNumber This is a serial number to set
      */
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
@@ -296,8 +294,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This returns the comment of item
-     * @return
-     * Return the comment
+     *
+     * @return Return the comment
      */
     public String getComment() {
         return comment;
@@ -305,8 +303,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the comment of item
-     * @param comment
-     * This is a comment to set
+     *
+     * @param comment This is a comment to set
      */
     public void setComment(String comment) {
         this.comment = comment;
@@ -318,6 +316,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * Returns the list of tag names
+     *
      * @return
      */
     public ArrayList<String> getTagNames() {
@@ -327,6 +326,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * Swaps the list of tags.
+     *
      * @param tags List containing tags.
      */
     public void setTags(List<Tag> tags) {
@@ -335,6 +335,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * Adds a new tag if it doesn't already exist
+     *
      * @param tag the tag being added.
      */
     public void addTag(Tag tag) {
@@ -345,15 +346,15 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * This sets the comment of item
-     * @param tag
-     * This is a tag to delete
+     *
+     * @param tag This is a tag to delete
      * @return boolean
      * if the tag is found and successfully deleted, return true
      * if the tag is not found, return false
      */
     public boolean deleteTag(Tag tag) {
-        if (this.tags.contains((Object)tag)){
-            this.tags.remove((Object)tag);
+        if (this.tags.contains((Object) tag)) {
+            this.tags.remove((Object) tag);
             return true;
         }
         return false;
@@ -361,15 +362,17 @@ public class Item implements Comparable<Item>, Serializable,
 
     /**
      * Method that checks if the Item contains a given tag
+     *
      * @param tag is the Tag object we are checking for
-     * @return this.tags.contains((Object)tag) is a boolean that has value true if the Item contains the tag, false if not
+     * @return this.tags.contains(( Object)tag) is a boolean that has value true if the Item contains the tag, false if not
      */
-    public boolean hasTag(Tag tag){
-        return this.tags.contains((Object)tag);
+    public boolean hasTag(Tag tag) {
+        return this.tags.contains((Object) tag);
     }
 
     /**
      * Returns the unique DocID of the item.
+     *
      * @return String used as the database identifier.
      */
     public String getDocID() {
@@ -390,14 +393,19 @@ public class Item implements Comparable<Item>, Serializable,
         return docID;
     }
 
+    @Override
+    public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
+        return hashMapOfItem;
+    }
+
 
     /**
      * This overrides equals method of super class
-     * @param o
-     * This the object for equals method
+     *
+     * @param o This the object for equals method
      */
     @Override
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
 
         // if is the object self
         if (this == o) {
@@ -417,6 +425,7 @@ public class Item implements Comparable<Item>, Serializable,
     /**
      * Comparable interface override. Returns -1 if lower value than the other,
      * 0 if equal, and 1 if greater than.
+     *
      * @param item the object to be compared.
      * @return the compared values
      */
@@ -428,6 +437,7 @@ public class Item implements Comparable<Item>, Serializable,
     /**
      * Returns a hash code that entails uniqueness. Currently based on the name
      * of the item.
+     *
      * @return an integer that is the hashCode.
      */
     @Override
@@ -441,12 +451,16 @@ public class Item implements Comparable<Item>, Serializable,
     public static final SimpleDateFormat simpledf =
             new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
+    public Item getInstance() {
+        return this;
+    }
     /**
      * Function for converting Item object into HashMap, which is compatible
      * with Firestore database.
      */
-    public static final Function<Item, HashMap<String, Object>> hashMapOfItem =
-            item -> {
+    public static final Function<IDatabaseItem<Item>, HashMap<String, Object>> hashMapOfItem =
+            dbItem -> {
+                Item item = dbItem.getInstance();
                 HashMap<String, Object> ret = new HashMap<>();
                 ret.put(dbName, item.getName());
                 ret.put(dbDate, simpledf.format(item.getDate()));
@@ -468,8 +482,9 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public static final Function<QueryDocumentSnapshot, Item>
             itemOfQueryDocument = q -> {
+        Item newItem;
         try {
-            return Item.newInstance(
+            newItem = Item.newInstance(
                     q.getString(dbName),
                     simpledf.parse(q.getString(dbDate)),
                     q.getString(dbComment),
@@ -478,10 +493,10 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbModel),
                     q.getString(dbSerial),
                     q.getDouble(dbValue),
-                    (List<String>)q.get(dbTags)
+                    (List<String>) q.get(dbTags)
             );
         } catch (ParseException e) {
-            return Item.newInstance(
+            newItem = Item.newInstance(
                     q.getString(dbName),
                     new Date(),
                     q.getString(dbComment),
@@ -490,8 +505,24 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbModel),
                     q.getString(dbSerial),
                     q.getDouble(dbValue),
-                    (List<String>)q.get(dbTags)
+                    (List<String>) q.get(dbTags)
             );
         }
+        newItem.cleanTags();
+        return newItem;
     };
+
+    /**
+     * When tags are deleted from the DB they are not removed from items.
+     * This method removes any tags that are not in the tag list.
+     */
+    public void cleanTags() {
+        ArrayList<Tag> newTags = new ArrayList<>();
+        for (Tag t : this.tags) {
+            if (globalContext.getTagList().containsTag(t)) {
+                newTags.add(t);
+            }
+        }
+        this.tags = newTags;
+    }
 }
