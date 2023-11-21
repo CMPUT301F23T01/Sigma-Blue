@@ -508,7 +508,7 @@ public class Item implements Comparable<Item>, Serializable,
                     (List<String>) q.get(dbTags)
             );
         }
-        newItem.cleanTags();
+        // newItem.cleanTags();
         return newItem;
     };
 

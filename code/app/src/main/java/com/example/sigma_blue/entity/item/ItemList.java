@@ -254,8 +254,10 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
      * @param oldItem Search for an item with this DocID to replace
      */
     public void updateItem(Item updatedItem, Item oldItem) {
-        this.items.remove(oldItem);
-        this.items.add(updatedItem);
+        // Remove and add the item from the local machine, as well as the database.
+        // Internal note: this.items is not intended to be directly modified.
+        this.remove(oldItem);
+        this.add(updatedItem);
         updateUI();
     }
 

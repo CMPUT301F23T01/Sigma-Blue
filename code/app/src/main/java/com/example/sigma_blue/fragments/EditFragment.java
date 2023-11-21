@@ -121,8 +121,9 @@ public class EditFragment extends Fragment
         // If the user is creating a new item.
         if (currentItem == null) {
             currentItem = new Item();
+
             if (tagList == null) {
-                tagList = currentItem.getTags();
+                tagList = currentItem.getTags(); // Get default empty tag list.
             }
             globalContext.setCurrentItem(currentItem);
         }
