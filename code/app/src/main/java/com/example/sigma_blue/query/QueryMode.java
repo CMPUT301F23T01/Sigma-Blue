@@ -1,12 +1,17 @@
 package com.example.sigma_blue.query;
 
+import com.google.firebase.firestore.Query;
+
 /**
  * This class will store the current query mode that the list view is in.
+ * Needed for clean control of the query view UI.
  * TODO: Put in the global context
  */
 public class QueryMode {
-    SortField currentSort;
-    final FilterState filterState;    // Keeping track of the applied filters
+    Boolean sort, filter;           // Should be able to be in four diff states
+    SortField currentSort;          // What is currently being sorted.
+    Query.Direction direction;      // Defaults to ASCENDING
+    final FilterState filterState;  // Keeping track of the applied filters
 
     public QueryMode() {
         // Initialization
@@ -22,5 +27,36 @@ public class QueryMode {
     public void clearQuery() {
         currentSort = SortField.NAME;
         filterState.resetState();
+        direction = Query.Direction.ASCENDING;  // Default sort direction
+        sort = false;
+        filter = false;
+    }
+
+    public void sortOn() {
+        sort = true;
+    }
+
+    public void sortOff() {
+        sort = false;
+    }
+
+    public void filterOn(FilterState filterState) {
+        filter = true;
+    }
+
+    /**
+     * Get rid of all filter options
+     */
+    public void filterOff() {
+        filter = false;
+        filterState.resetState();
+    }
+
+    public void setAscend() {
+        direction = Query.Direction.ASCENDING;
+    }
+
+    public void setDescend() {
+        direction = Query.Direction.DESCENDING;
     }
 }

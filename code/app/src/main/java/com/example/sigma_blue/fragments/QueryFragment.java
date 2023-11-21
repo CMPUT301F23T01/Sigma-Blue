@@ -40,6 +40,7 @@ public class QueryFragment extends DialogFragment {
          */
         public ViewHolder(View entireView) {
             bindViews(entireView);
+            flipAscendBox(true);
         }
 
         /**
@@ -60,11 +61,30 @@ public class QueryFragment extends DialogFragment {
             endDatePicker = entireView.findViewById(R.id.endDatePicker);
         }
 
+        private void flipAscendBox(boolean p) {
+            ascendingBox.setChecked(p);
+            descendingBox.setChecked(!p);
+        }
+
         /**
          * Method sets up the UI interactions.
          */
         public void setUIListeners() {
+            /* Closes the dialog fragment and return to the previous page */
             backButton.setOnClickListener(view -> dismiss());   // Go back
+
+            /* Resets the query. Uses the database default */
+            resetButton.setOnClickListener(view -> {
+                globalContext.getItemList().startListening();
+            });
+
+            ascendingBox.setOnClickListener(view -> {
+                flipAscendBox(true);    // Turns descend off
+            });
+
+            descendingBox.setOnClickListener(view -> {
+                flipAscendBox(false);   // Turns ascend off
+            });
         }
     }
 
