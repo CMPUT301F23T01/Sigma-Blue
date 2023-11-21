@@ -518,6 +518,10 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public void cleanTags() {
         ArrayList<Tag> newTags = new ArrayList<>();
+        if (globalContext == null) {
+            globalContext = GlobalContext.getInstance();
+        }
+
         for (Tag t : this.tags) {
             if (globalContext.getTagList().containsTag(t)) {
                 newTags.add(t);

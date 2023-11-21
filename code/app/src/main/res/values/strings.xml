@@ -53,6 +53,7 @@
     <string name="add_edit_btn_scan_serial">Scan Serial\nNumber</string>
     <string name="add_edit_btn_scan_barcode">Scan Barcode</string>
     <string name="add_edit_btn_tag">Add Tag</string>
+    <string name="add_edit_text_tag">Tags</string>
     <string name="add_edit_text_name">Name</string>
     <string name="add_edit_text_name_hint">Item Name</string>
     <string name="add_edit_text_value">Estimated Value</string>
