@@ -99,9 +99,9 @@ public class TagManagerFragment extends Fragment {
         if (globalContext.getCurrentState().equals("tag_manager_fragment")) {
             // User is opening the tag manager fragment on an existing fragment.
             // Check tags already applied onto the item.
-            for (Tag t: globalContext.getCurrentItem().getTags()) {
-                globalContext.toggleHighlightTag(t);
-            }
+            //for (Tag t: globalContext.getCurrentItem().getTags()) {
+            //    globalContext.toggleHighlightTag(t);
+            //}
 
         } else if (globalContext.getCurrentState().equals("multi_select_tag_manager_fragment")){
             // Don't check anything
