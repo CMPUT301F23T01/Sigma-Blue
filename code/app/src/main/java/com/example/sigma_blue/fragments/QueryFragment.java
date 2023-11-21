@@ -40,7 +40,7 @@ public class QueryFragment extends DialogFragment {
          */
         public ViewHolder(View entireView) {
             bindViews(entireView);
-            flipAscendBox(true);
+            resetQuery();
         }
 
         /**
@@ -61,9 +61,26 @@ public class QueryFragment extends DialogFragment {
             endDatePicker = entireView.findViewById(R.id.endDatePicker);
         }
 
-        private void flipAscendBox(boolean p) {
+        /**
+         * Flips between the check checkboxes
+         * @param p when true will make checkbox ascending, with descending off.
+         *          When false, the descending checkbox is selected and the
+         *          ascending checkbox is off.
+         */
+        public void flipAscendBox(boolean p) {
             ascendingBox.setChecked(p);
             descendingBox.setChecked(!p);
+        }
+
+        /**
+         * Resets the query. Everything is returned to default value, along with
+         * the global state.
+         */
+        private void resetQuery() {
+            globalContext.getItemList().startListening();
+            sortCriteriaSpinner.setSelection(0);
+            tagFilterSpinner.setSelection(0);
+            flipAscendBox(true);
         }
 
         /**
@@ -75,15 +92,17 @@ public class QueryFragment extends DialogFragment {
 
             /* Resets the query. Uses the database default */
             resetButton.setOnClickListener(view -> {
-                globalContext.getItemList().startListening();
+                resetQuery();
             });
 
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
+                globalContext.getQueryState().setAscend();
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
+                globalContext.getQueryState().setDescend();
             });
         }
     }

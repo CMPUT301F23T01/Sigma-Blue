@@ -52,10 +52,16 @@ public class QueryMode {
         filterState.resetState();
     }
 
+    /**
+     * Flips the switch to make the sorting be ascending
+     */
     public void setAscend() {
         direction = Query.Direction.ASCENDING;
     }
 
+    /**
+     * Flips teh switch to make the sort be descending
+     */
     public void setDescend() {
         direction = Query.Direction.DESCENDING;
     }
