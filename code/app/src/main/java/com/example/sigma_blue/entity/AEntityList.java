@@ -78,6 +78,19 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     }
 
     /**
+     * Delete the item from the Database
+     * @param deletedEntity the item to be deleted
+     */
+    public void remove(T deletedEntity) {
+        for (int i  = 0; i < this.entityList.size(); i++) {
+            if (entityList.get(i).equals(deletedEntity)) {
+                this.remove(i);
+            }
+        }
+        updateUI();
+    }
+
+    /**
      * Sets up a listening thread for changes to the database collection. This
      * method will update the state of the tag list.
      */
@@ -113,19 +126,6 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
 
     public void setDbHandler(ADatabaseHandler<T> dbHandler) {
         this.dbHandler = dbHandler;
-    }
-
-    /**
-     * Delete the item from the Database
-     * @param deletedItem the item to be deleted
-     */
-    public void remove(Item deletedItem) {
-        for (int i = 0; i < this.entityList.size(); i++) {
-            if (Objects.equals(((IDatabaseItem<T>)this.entityList.get(i)).getDocID(), deletedItem.getDocID())) {
-                this.remove(i);
-            }
-        }
-        updateUI();
     }
 
     /**

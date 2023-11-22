@@ -36,6 +36,7 @@ public class TagManagerFragment extends Fragment {
     // Fragment UI components
     private Button tagCreateButton;
     private Button tagEditButton;
+    private Button tagDeleteButton;
     private Button backButton;
     private Button confirmButton;
     private ListView tagsListView;
@@ -71,6 +72,7 @@ public class TagManagerFragment extends Fragment {
         // Bind the UI components
         tagCreateButton = binding.getRoot().findViewById(R.id.tagManageCreateButton);
         tagEditButton = binding.getRoot().findViewById(R.id.tagManageEditButton);
+        tagDeleteButton = binding.getRoot().findViewById(R.id.tagManageTagDeleteButton);
         backButton = binding.getRoot().findViewById(R.id.tagManageBackButton);
         confirmButton = binding.getRoot().findViewById(R.id.tagManageConfirmButton);
         tagsListView = binding.getRoot().findViewById(R.id.tagManagerListView);
@@ -188,6 +190,16 @@ public class TagManagerFragment extends Fragment {
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_tagEditFragment);
                 } else {
                     //TODO show a useful error
+                }
+            }
+        });
+
+        tagDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Tag t : globalContext.getHighlightedTags()) {
+                    globalContext.getTagList().remove(t);
+                    globalContext.getItemList().cleanAllItemTags(); // remove dead tag from items
                 }
             }
         });
