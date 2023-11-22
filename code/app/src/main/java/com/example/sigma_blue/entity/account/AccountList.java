@@ -14,12 +14,12 @@ import java.util.List;
  * Similar to ItemList and TagList. Stores a list of all user accounts. Allows
  * for persistent storage of accounts.
  */
-public class AccountList extends AEntityList<Account> implements Serializable, IDatabaseList<Account> {
+public class AccountList extends AEntityList<Account> {
     /**
      * newInstance method to hide construction
      * @return a new AccountList instance
      */
-    public static AccountList newInstance() {
+    public static AEntityList<Account> newInstance() {
         return new AccountList();
     }
 

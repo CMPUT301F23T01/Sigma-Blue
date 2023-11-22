@@ -93,7 +93,7 @@ public class ViewListActivity extends BaseActivity {
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */
-        itemListView.setAdapter(globalContext.getItemList().getListAdapter());
+        itemListView.setAdapter(globalContext.getItemList().getAdapter());
 
         // set up thing for selected items
         this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -190,7 +190,7 @@ public class ViewListActivity extends BaseActivity {
                             .getList().get(position);
                     this.handleLongClick(itemCache);
 
-                    globalContext.getItemList().getListAdapter()
+                    globalContext.getItemList().getAdapter()
                             .notifyDataSetChanged();    // Update highlight
 
                     /*Returns true if the list consumes the click. Always true

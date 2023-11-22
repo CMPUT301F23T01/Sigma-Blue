@@ -4,6 +4,8 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.sigma_blue.adapter.ASelectableListAdapter;
+import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
@@ -18,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ItemList extends AEntityList<Item> implements IDatabaseList<Item>, Serializable {
+public class ItemList extends AEntityList<Item> {
     /* Attributes */
     private ViewListModes displayMode;
 
@@ -32,28 +34,33 @@ public class ItemList extends AEntityList<Item> implements IDatabaseList<Item>, 
 
     /* Factory construction */
 
-    public static ItemList newInstance(Account a, ItemDB dbH,
+    public static ItemList newInstance(ItemDB dbH,
                                        ItemListAdapter adapt) {
-        ItemList ret = new ItemList(new ArrayList<>(), a);
+        ItemList ret = new ItemList();
         ret.setDbHandler(dbH);
         ret.setAdapter(adapt);
 
         return ret;
     }
 
-    public static ItemList newInstance(Account a, ItemDB dbH) {
-        ItemList ret = new ItemList(new ArrayList<>(), a);
+    public static ItemList newInstance(ItemDB dbH) {
+        ItemList ret = new ItemList();
         ret.setDbHandler(dbH);
         return ret;
     }
 
+    public static ItemList newInstance() {
+        return new ItemList();
+    }
+
     /**
-     * Class constructor. Designed to take in the ArrayList of items for better testing.
-     * @param items is an ArrayList of Item objects that the ItemList will hold.
+     * Class constructor.
      */
-    public ItemList(ArrayList<Item> items, Account account) {
-        this.entityList = items;
+    public ItemList() {
+        this.entityList = new ArrayList<Item>();
         this.displayMode = ViewListModes.NONE;
+        this.globalContext = GlobalContext.getInstance();
+        this.dbHandler = ItemDB.newInstance(globalContext.getAccount());
     }
 
     /**
@@ -107,35 +114,6 @@ public class ItemList extends AEntityList<Item> implements IDatabaseList<Item>, 
      */
     public CollectionReference getCollectionReference() {
         return dbHandler.getCollectionReference();
-    }
-
-    /**
-     * Overload of the startListening method. This method will take a query
-     * object which contains the query that is being made to the database
-     * @param query is a Firestore Query object that is being used to make the
-     *              query.
-     * @see com.example.sigma_blue.query.QueryGenerator
-     */
-    public void startListening(Query query) {
-        dbHandler.startListening(query, this);
-    }
-
-//    /**
-//     * Sets the list adapter and does a refresh.
-//     * @param listAdapter
-//     */
-//    public void setListAdapter(final ItemListAdapter listAdapter,
-//                               final List<? extends Item> selectedList) {
-//        this.adapter = listAdapter;
-//        if (this.entityList != null) {
-//            this.adapter.setList(this.entityList);
-//            this.adapter.notifyDataSetChanged();
-//        }
-//        this.startListening();
-//    }
-
-    public ItemListAdapter getListAdapter() {
-        return (ItemListAdapter) this.adapter;
     }
 
     public void setSummaryView(TextView summaryView) {

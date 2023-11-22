@@ -3,21 +3,25 @@ package com.example.sigma_blue.entity;
 import android.util.Log;
 
 import com.example.sigma_blue.adapter.ASelectableListAdapter;
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.example.sigma_blue.database.IDatabaseList;
+import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.google.firebase.firestore.Query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AEntityList<T> {
+public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     protected ArrayList<T> entityList;
     protected ADatabaseHandler<T> dbHandler;
     protected ASelectableListAdapter<T> adapter;
+    protected GlobalContext globalContext;
     /**
      * Both updates the list held in this class and the adapter element.
      * @param list is the list that is replacing the current list.
@@ -112,4 +116,10 @@ public abstract class AEntityList<T> {
         }
         updateUI();
     }
+
+    /**
+     * Default instance creation. Should use the account in global context (if account needed).
+     * This method should also set up the db handler and adapter.
+     */
+    //public abstract AEntityList<T> newInstance();
 }

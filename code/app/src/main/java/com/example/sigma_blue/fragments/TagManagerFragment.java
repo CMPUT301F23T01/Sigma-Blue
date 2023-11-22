@@ -121,16 +121,6 @@ public class TagManagerFragment extends Fragment {
 
         /* On click listeners */
 
-        // Handle the checkbox, and the checked state for the user selecting an item
-        /*
-        tagsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                globalContext.toggleHighlightTag(globalContext.getTagList().getTags().get(position));
-                updateTagListView();
-            }
-        });
-         */
         // The user must long click each tag list to select tags.
         tagsListView.setOnItemClickListener(
                 (parent, view1, position, id) -> {
@@ -159,7 +149,7 @@ public class TagManagerFragment extends Fragment {
                     globalContext.newState("view_list_activity");
                     // Reset the selected items.
                     globalContext.resetSelectedItems();
-                    globalContext.getItemList().getListAdapter().notifyDataSetChanged();
+                    globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 } else {
                     globalContext.newState("edit_item_fragment");
@@ -177,7 +167,9 @@ public class TagManagerFragment extends Fragment {
                     if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
                         globalContext.newState("view_list_activity");
                         globalContext.resetHighlightedTags();
+                        globalContext.resetSelectedItems();
                         globalContext.getTagList().getAdapter().notifyDataSetChanged();
+                        globalContext.getItemList().getAdapter().notifyDataSetChanged();
                         activity.returnAndClose();
                     }
                     else {
@@ -227,8 +219,9 @@ public class TagManagerFragment extends Fragment {
         if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
 
             for (Item i : globalContext.getSelectedItems()) {
-                i.setTags(globalContext.getHighlightedTags());
-                globalContext.getItemList().updateEntity(i, i); // this works since changing the tags doesn't impact the 'id' of an item
+                for (Tag t : globalContext.getHighlightedTags()) {
+                    i.addTag(t);
+                }
             }
         }
         else {

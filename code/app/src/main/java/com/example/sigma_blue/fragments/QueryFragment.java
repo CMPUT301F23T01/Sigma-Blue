@@ -80,5 +80,4 @@ public class QueryFragment extends DialogFragment {
 
         return fragmentView;
     }
-
 }

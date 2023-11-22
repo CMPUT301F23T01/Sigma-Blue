@@ -1,5 +1,6 @@
 package com.example.sigma_blue.entity.tag;
 
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
-public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Serializable {
+public class TagList extends AEntityList<Tag> {
     /**
      * Factory creation method that binds the given Account to
      * the TagList itself.
@@ -25,6 +26,16 @@ public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Ser
     public static TagList newInstance(Account a) {
         TagDB db = TagDB.newInstance(a);
         TagList ret = new TagList(db);
+        return ret;
+    }
+
+    /**
+     * Factory creation method. Uses the current account in global context
+     * @return an instance of the TagList object containing a connection
+     * to the database that stores all of the Tags that the user has defined.
+     */
+    public static TagList newInstance() {
+        TagList ret = new TagList();
         return ret;
     }
 
@@ -43,6 +54,12 @@ public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Ser
 
     public TagList(TagDB tagDB) {
         this.dbHandler = tagDB;
+        this.entityList = new ArrayList<>();
+    }
+
+    public TagList() {
+        this.globalContext = GlobalContext.getInstance();
+        this.dbHandler = new TagDB(globalContext.getAccount());
         this.entityList = new ArrayList<>();
     }
 
