@@ -10,6 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
@@ -17,7 +21,11 @@ import com.example.sigma_blue.R;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
+import com.example.sigma_blue.fragments.QueryFragment;
+import com.example.sigma_blue.query.QueryGenerator;
+import com.example.sigma_blue.query.SortField;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.Query;
 
 
 public class ViewListActivity extends BaseActivity {
@@ -50,10 +58,14 @@ public class ViewListActivity extends BaseActivity {
             this.selectedItemsMenu = findViewById(R.id.selectedItemsMenu);
         }
     }
-    private final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
+
+    // Used for launching new activities. Potentially unused right now
+    private final ActivityLauncher<Intent, ActivityResult> activityLauncher
+            = ActivityLauncher.registerActivityForResult(this);
     private ViewHolder viewHolder;              // Encapsulation of the Views
 
     private GlobalContext globalContext;        // Global context object
+    private FragmentManager fragmentManager;    // For getting queries
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +81,6 @@ public class ViewListActivity extends BaseActivity {
             //throw new VerifyException("Must have an account");
             return;
         }
-
 
         /* Code section for linking UI elements */
         ListView itemListView = findViewById(R.id.listView);
@@ -110,12 +121,32 @@ public class ViewListActivity extends BaseActivity {
 
     /**
      * Delete the selected items. Fully deletes them with no confirm
+     * TODO: If have time, add a confirm button
      */
     private void deleteSelectedItems() {
-
         globalContext.deleteSelectedItems();
-
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
+    }
+
+    /**
+     * This method shows the query fragment for the user to choose either a sort
+     * or a filter, or maybe both.
+     */
+    private void displayQueryFragment() {
+        QueryFragment queryFragment = new QueryFragment();
+        globalContext.newState("query_fragment");
+        startFragmentTransaction(queryFragment, "query_fragment");
+    }
+
+    /**
+     * Launches DialogFragment.
+     * @param fragment the dialog fragment class being launched
+     * @param tag the tag of the fragment
+     */
+    private void startFragmentTransaction(DialogFragment fragment, String tag) {
+        if (fragmentManager == null)
+            fragmentManager = getSupportFragmentManager();
+        fragment.show(fragmentManager, tag);
     }
 
     /**
@@ -130,18 +161,20 @@ public class ViewListActivity extends BaseActivity {
         });  // Launch add activity.
 
         viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
-        viewHolder.sortFilterButton.setOnClickListener(v -> {});
+        viewHolder.sortFilterButton.setOnClickListener(v ->
+                this.displayQueryFragment());
+
         viewHolder.optionsButton.setOnClickListener(v -> {});
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
             this.deleteSelectedItems());
 
-
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
             globalContext.setCurrentItem(null);
             globalContext.newState("multi_select_tag_manager_fragment");
-            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            Intent intent = new Intent(ViewListActivity.this,
+                    AddEditActivity.class);
             startActivity(intent);
         });
 
@@ -167,17 +200,12 @@ public class ViewListActivity extends BaseActivity {
                 });
     }
 
-    private void clearHighlights() {
-        Log.v("UI ACTION", "Clearing highlights");
-        globalContext.resetSelectedItems();
-    }
-
     /**
      * listened to deal with long presses
      * @param item Item that was long pressed on
      */
     private void handleLongClick(Item item) {
-        Log.i("DEBUG", item.getName() + " Long Press");
+//        Log.i("DEBUG", item.getName() + " Long Press");
         globalContext.toggleInsertSelectedItem(item);
 
         if (globalContext.getSelectedItems().size() > 0) {

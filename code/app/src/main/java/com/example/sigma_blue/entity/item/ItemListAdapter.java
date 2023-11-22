@@ -1,40 +1,40 @@
 package com.example.sigma_blue.entity.item;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.R;
 
-import java.util.ArrayList;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
-
-import com.example.sigma_blue.R;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 public class ItemListAdapter extends BaseAdapter {
-    private List<? extends Item> itemList;
+    /* The the lists that are relevant to the item list adapter */
+    private List<? extends Item> itemList;      // All the items
+    private List<? extends Item> selectedItems; // The list of selected items
+
     private final LayoutInflater inflater;
     private TextView sumView;
-    private List<? extends Item> selectedItems;
     private final Context context;
 
-
+    /**
+     * The constructor of the adapter.
+     * @param context is the activity context in which the adapter is binding to
+     *                this adapter
+     * @param sumView   is the summary text view that is displaying the total
+     *                  value of the application.
+     */
     public ItemListAdapter(final Context context, final TextView sumView) {
         inflater = LayoutInflater.from(context);
         this.sumView = sumView;
@@ -43,6 +43,11 @@ public class ItemListAdapter extends BaseAdapter {
 
     public Context getContext() {
         return context;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();   // Need the original to still run
     }
 
     /**
@@ -77,7 +82,7 @@ public class ItemListAdapter extends BaseAdapter {
      * Returns the item
      * @param position Position of the item whose data we want within the adapter's
      * data set.
-     * @return
+     * @return the item stored at that location
      */
     @Override
     public Object getItem(int position) {
@@ -87,7 +92,7 @@ public class ItemListAdapter extends BaseAdapter {
     /**
      * Returns the row ID, which is not the same as uniqueness ID.
      * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return the intger that is
+     * @return the integer that is
      */
     @Override
     public long getItemId(int position) {
@@ -131,7 +136,7 @@ public class ItemListAdapter extends BaseAdapter {
      * @param sum is a float that represents the sum
      * @return the formatted string.
      */
-    public String formatSummary(Float sum) {
+    public String formatSummary(Double sum) {
         return String.format(Locale.ENGLISH,
                 "The total value: %7.2f", sum);
     }
@@ -142,7 +147,7 @@ public class ItemListAdapter extends BaseAdapter {
      * @param sum is the optional object that will either be empty or contain
      *            the sum of the values of the held object.
      */
-    public void notifySumView(Optional<Float> sum) {
+    public void notifySumView(Optional<Double> sum) {
         if (this.sumView != null) {
             if (sum.isPresent()) this.sumView
                     .setText(formatSummary(sum.get()));
@@ -167,14 +172,16 @@ public class ItemListAdapter extends BaseAdapter {
      * @param position is the position that is being checked
      */
     private void bindPosition(View view, int position) {
+        Item rowItem;
         if (position > itemList.size()) throw new IllegalArgumentException();
         else {
-            ((TextView) view.findViewById(R.id.itemName)).setText(itemList
-                    .get(position).getName());
-            ((TextView) view.findViewById(R.id.itemMake)).setText(itemList
-                    .get(position).getMake());
-            ((TextView) view.findViewById(R.id.uniqueId)).setText(itemList
-                    .get(position).getSerialNumber());
+            rowItem = itemList.get(position);   // Caching is less expensive
+            ((TextView) view.findViewById(R.id.itemName)).setText(rowItem
+                    .getName());
+            ((TextView) view.findViewById(R.id.itemMake)).setText(rowItem
+                    .getMake());
+            ((TextView) view.findViewById(R.id.uniqueId)).setText(rowItem
+                    .getFormattedValue());  // Showing value for now
         }
     }
 

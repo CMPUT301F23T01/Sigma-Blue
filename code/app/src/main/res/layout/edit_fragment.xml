@@ -63,7 +63,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/DetialsLongLayout"
+                android:id="@+id/SecondaryDetails2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +123,7 @@
                 android:id="@+id/ScanningLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/DetailsShortLayout">
+                app:layout_constraintTop_toBottomOf="@+id/Details_2">
 
                 <Button
                     android:id="@+id/button_serial"
@@ -153,7 +153,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/DetailsShortLayout"
+                android:id="@+id/Details_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -324,7 +324,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/BottomBarLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@color/add_edit_layout_bgr_test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
