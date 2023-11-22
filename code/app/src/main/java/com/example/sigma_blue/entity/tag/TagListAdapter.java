@@ -67,7 +67,7 @@ public class TagListAdapter extends ASelectableListAdapter<Tag> {
         //tagCheckBox.setChecked(globalContext.getHighlightedTags().contains(tag));
 
         // Highlight the tag if selected.
-        highlightControl(view, globalContext.getHighlightedTags().contains(tag));
+        highlightControl(view, globalContext.getSelectedTags().getSelected().contains(tag));
         return view;
     }
 }
