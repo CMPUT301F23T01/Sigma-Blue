@@ -213,9 +213,8 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
     public void setListAdapter(final ItemListAdapter listAdapter,
                                final List<? extends Item> selectedList) {
         this.listAdapter = listAdapter;
-        this.listAdapter.setSelectedItemList(selectedList);
         if (this.items != null) {
-            this.listAdapter.setItemList(this.items);
+            this.listAdapter.setList(this.items);
             this.listAdapter.notifyDataSetChanged();
         }
         this.startListening();
@@ -231,8 +230,7 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
      */
     public void setList(final List<Item> list) {
         this.items = list;
-        this.listAdapter.setItemList(list);
-        this.listAdapter.notifyDataSetChanged();
+        this.listAdapter.setList(list);
     }
 
     public List<Item> getList() {

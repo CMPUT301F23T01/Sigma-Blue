@@ -129,10 +129,8 @@ public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Ser
         tagDB.startListening(this.tagDB.getCollectionReference(), this);
     }
 
-    public void setAdapter(final TagListAdapter tagListAdapter,
-                           final List<? extends Tag> selectedList) {
+    public void setAdapter(final TagListAdapter tagListAdapter) {
         this.adapter = tagListAdapter;
-        this.adapter.setSelectedTags(selectedList);
     }
 
     public TagListAdapter getAdapter() {
