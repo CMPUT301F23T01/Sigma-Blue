@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.adapter.ASelectableListAdapter;
 import com.example.sigma_blue.context.GlobalContext;
 
 import org.checkerframework.checker.units.qual.A;
@@ -23,14 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TagListAdapter extends ArrayAdapter<Tag> {
-
-    /* Attributes */
-    private List<? extends Tag> selectedTags; // List of selected items, likely the same as the global context.
-    private List<Tag> tagsData;
-    private Context context;
-    /* Factories and Constructors */
-
+public class TagListAdapter extends ASelectableListAdapter<Tag> {
     /**
      * Base factory that takes in a tagList object and returns the adapter for it
      * @param tagsData an ArrayList of Tags, containing the tags for each item.
@@ -41,22 +35,20 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
     }
 
     /**
-     * Basic constructor that takes in the TagList that will be adapted to a list view.
+     * Basic constructor that takes in the list that will be adapted to a list view.
      *
      * @param context the Context of the calling fragment or activity that the adapter is linked to.
-     * @param tagsData the ArrayList providing the tag data that we will display with this adapter.
+     * @param entityData the ArrayList providing the entity data that we will display with this adapter.
      */
-    public TagListAdapter(List<Tag> tagsData, Context context) {
-        super(context, 0, tagsData);
-        this.context = context;
-        this.tagsData = tagsData;
+    public TagListAdapter(List<Tag> entityData, Context context) {
+        super(entityData, context);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
-        Tag tag = tagsData.get(position);
+        Tag tag = entityData.get(position);
 
         GlobalContext globalContext = GlobalContext.getInstance();
         // Inflate the custom layout.
@@ -75,45 +67,7 @@ public class TagListAdapter extends ArrayAdapter<Tag> {
         //tagCheckBox.setChecked(globalContext.getHighlightedTags().contains(tag));
 
         // Highlight the tag if selected.
-        boolean isTagSelected = false;
-        if (selectedTags == null) {
-            Log.e("ERROR", "Selected tags are null!");
-        } else {
-            isTagSelected = selectedTags.contains(tag);
-        }
-        highlightControl(view, isTagSelected);
+        highlightControl(view, globalContext.getHighlightedTags().contains(tag));
         return view;
-    }
-
-    @Override
-    public int getCount() {
-        return tagsData.size();
-    }
-
-    public void setList(List<Tag> tags) {
-        this.tagsData = tags;
-    }
-
-    /**
-     * List of selected tags (should be the same as the one held
-     * by the global context)
-     * @param selectedTagsList is the list of selected tags.
-     */
-    public void setSelectedTags(List<? extends Tag> selectedTagsList) {
-        this.selectedTags = selectedTagsList;
-    }
-
-    /**
-     * Method that will turn on the highlight of the view if it is selected,
-     * otherwise, reset it to the default background color.
-     * @param view is the view that is being checked.
-     * @param selected
-     */
-    private void highlightControl(View view, boolean selected) {
-        @ColorInt int rowColor;
-        if (selected) rowColor = ContextCompat.getColor(getContext(),
-                R.color.add_edit_layout_bgr_test);
-        else rowColor = ContextCompat.getColor(getContext(), R.color.white);
-        view.setBackgroundColor(rowColor);
     }
 }
