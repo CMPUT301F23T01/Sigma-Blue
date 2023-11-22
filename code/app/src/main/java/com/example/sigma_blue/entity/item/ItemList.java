@@ -127,6 +127,7 @@ public class ItemList extends AEntityList<Item> {
     public void cleanAllItemTags() {
         for (Item i : this.entityList) {
             i.cleanTags();
+            syncEntity(i);
         }
     }
 }
