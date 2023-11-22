@@ -52,15 +52,7 @@ public class GlobalContext {
     public void login(Account account) {
         this.account = account;
         this.tagList = TagList.newInstance(account);
-    }
-
-    /**
-     * Start the item list (this method could be removed, not sure what other people think).
-     */
-    public void setUpItemList() {
-        this.itemList = ItemList.newInstance(this.account,
-                ItemDB.newInstance(this.account));
-
+        this.itemList = ItemList.newInstance(this.account, ItemDB.newInstance(this.account));
     }
 
     /**
@@ -86,7 +78,6 @@ public class GlobalContext {
         }
 
         this.getItemList().getListAdapter().notifyDataSetChanged();
-
     }
 
     /**
@@ -105,13 +96,6 @@ public class GlobalContext {
     }
 
     /**
-     * Updates the item list through the view adapter.
-     */
-    public void notifyItemChanged() {
-        this.getItemList().getListAdapter().notifyDataSetChanged();
-    }
-
-    /**
      * Method for doing a set difference of the items stored and the selected
      * items.
      */
@@ -120,8 +104,7 @@ public class GlobalContext {
             this.getItemList().remove(i);
         }
         this.resetSelectedItems();
-        this.notifyItemChanged();
-
+        this.getItemList().getListAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -134,7 +117,7 @@ public class GlobalContext {
         } else {
             this.highlightedTags.remove(tag);
         }
-        //this.getTagList().getAdapter().notifyDataSetChanged();
+        this.getTagList().getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -150,7 +133,7 @@ public class GlobalContext {
      */
     public void resetHighlightedTags() {
         this.highlightedTags.clear();
-        // this.getTagList().getAdapter().notifyDataSetChanged();
+        this.getTagList().getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -173,12 +156,6 @@ public class GlobalContext {
     public String getLastState() {
         return stateHistory.get(stateHistory.size() - 2);
     }
-    public Account getAccount() {
-        return account;
-    }
-    public void setAccount(Account account) {
-        this.account = account;
-    }
     public AccountList getAccountList() {
         return accountList;
     }
@@ -198,5 +175,9 @@ public class GlobalContext {
     }
     public void setCurrentItem(Item currentItem) {
         this.currentItem = currentItem;
+    }
+
+    public Account getAccount() {
+        return account;
     }
 }
