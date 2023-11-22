@@ -15,10 +15,6 @@ import java.util.ArrayList;
  * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
 public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Serializable {
-    private ArrayList<Tag> tags;
-    final private TagDB tagDB;
-    private TagListAdapter adapter;
-
     /**
      * Factory creation method that binds the given Account to
      * the TagList itself.
@@ -46,49 +42,8 @@ public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Ser
     }
 
     public TagList(TagDB tagDB) {
-        this.tagDB = tagDB;
-        this.tags = new ArrayList<>();
-    }
-
-    public void addTag(Tag tag) {
-        if (!tags.contains(tag)) {
-            tags.add(tag);
-            tagDB.add(tag);
-        }
-    }
-
-    public void removeTag(Tag tag) {
-        if (tags.contains(tag)) {
-            tagDB.remove(tag);
-            tags.remove(tag);
-        }
-    }
-
-    public void removeTag(int position) {
-        tags.remove(position);
-    }
-
-//    public boolean containsTag(Tag tag) {
-//        return tags.contains(tag);
-//    }
-
-    public List<Tag> getTags() {
-        return this.tags;
-    }
-
-//    public int getCount() { return tags.size(); }
-//
-//    public Tag getItem(int position) {
-//        return tags.get(position);
-//    }
-
-    /**
-     * Sets a new list.
-     * @param lst is an list object that is replacing it.
-     */
-    @Override
-    public void setList(List<Tag> lst) {
-        this.tags = (ArrayList<Tag>) lst; // Duck tape fix. If this is implemented in main I'll kms
+        this.dbHandler = tagDB;
+        this.entityList = new ArrayList<>();
     }
 
     /**
@@ -96,7 +51,7 @@ public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Ser
      */
     @Override
     public void updateUI() {
-        adapter.setList(this.tags);
+        adapter.setList(this.entityList);
         adapter.notifyDataSetChanged();
     }
 
@@ -119,30 +74,4 @@ public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Ser
             return new Tag(q.getString("LABEL"),q.getString("COLOR"));
         else return null;
     };
-
-    /**
-     * Sets up a listening thread for changes to the database collection. This
-     * method will update the state of the tag list.
-     */
-    @Override
-    public void startListening() {
-        tagDB.startListening(this.tagDB.getCollectionReference(), this);
-    }
-
-    public void setAdapter(final TagListAdapter tagListAdapter) {
-        this.adapter = tagListAdapter;
-    }
-
-    public TagListAdapter getAdapter() {
-        return adapter;
-    }
-    /**
-     * Replace the old tag with a new one
-     * @param updatedTag replacement tag
-     * @param oldTag tag to replace
-     */
-    public void updateTag(Tag updatedTag, Tag oldTag) {
-        this.tags.remove(oldTag);
-        this.tags.add(updatedTag);
-    }
 }

@@ -87,9 +87,9 @@ public class ViewListActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* ItemList encapsulates both the database and the adapter */
-        globalContext.getItemList().setListAdapter(
-                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView),
-                globalContext.getSelectedItems());
+        globalContext.getItemList().setAdapter(
+                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView));
+        globalContext.getItemList().startListening();
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */

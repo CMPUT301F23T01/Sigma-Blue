@@ -230,7 +230,7 @@ public class EditFragment extends Fragment
                         }
                     } else if (Objects.equals(globalContext.getCurrentState(),
                             "edit_item_fragment")) {    // Edit state
-                        globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
+                        globalContext.getItemList().updateEntity(modifiedItem, globalContext.getCurrentItem());
                         globalContext.setCurrentItem(modifiedItem);
                         globalContext.newState("details_fragment");
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);

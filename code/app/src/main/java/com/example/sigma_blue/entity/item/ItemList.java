@@ -3,6 +3,8 @@ package com.example.sigma_blue.entity.item;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.sigma_blue.adapter.ASelectableListAdapter;
+import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.google.firebase.firestore.CollectionReference;
@@ -16,12 +18,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ItemList implements IDatabaseList<Item>, Serializable {
+public class ItemList extends AEntityList<Item> implements IDatabaseList<Item>, Serializable {
     /* Attributes */
-    private List<Item> items;
-    private ItemDB dbHandler;
-
-    private ItemListAdapter listAdapter;
     private ViewListModes displayMode;
 
 
@@ -35,17 +33,17 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
     /* Factory construction */
 
     public static ItemList newInstance(Account a, ItemDB dbH,
-                                       ItemListAdapter adapt,
-                                       List<? extends Item> selectedList) {
+                                       ItemListAdapter adapt) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setDatabaseHandler(dbH);
-        ret.setListAdapter(adapt, selectedList);
+        ret.setDbHandler(dbH);
+        ret.setAdapter(adapt);
+
         return ret;
     }
 
     public static ItemList newInstance(Account a, ItemDB dbH) {
         ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setDatabaseHandler(dbH);
+        ret.setDbHandler(dbH);
         return ret;
     }
 
@@ -54,40 +52,8 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
      * @param items is an ArrayList of Item objects that the ItemList will hold.
      */
     public ItemList(ArrayList<Item> items, Account account) {
-        this.items = items;
+        this.entityList = items;
         this.displayMode = ViewListModes.NONE;
-    }
-
-    /* Adapter interface methods */
-
-//    @Override
-//    public int getCount() {
-//        return items.size();
-//    }
-
-//    /**
-//     * The getItem method returns the Item object (casted to Object) that is stored in the array
-//     * list at the position.
-//     * @param position is the index that the item is being retrieved from.
-//     * @return the Item stored at the index as an Object object.
-//     */
-//    @Override
-//    public Item getItem(int position) {
-//        return items.get(position);
-//    }
-//
-//    @Override
-//    public int getItemId(int position) {
-//        return position;
-//    }
-
-    /**
-     * Returns the amount of elements held in the items ArrayList.
-     * @return an integer primitive representing the number of element held in
-     * the items ArrayList.
-     */
-    public int size() {
-        return items.size();
     }
 
     /**
@@ -104,64 +70,24 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
                     .reduce(0d, Double::sum));
         };
 
-    /* Setters and Getters */
-
-    /**
-     * TODO: Handle addition of the exact same object (unique)
-     * @param o is the new item being added. If o is null, then it will not be added to the itemList
-     */
-    public void add(Item o) {
-        if (o != null) {
-            this.items.add(o);
-            this.dbHandler.add(o);
-        }
-        updateUI();
-    }
-
-    /**
-     * @param position is the index which is being removed from the list.
-     */
-    public void remove(final int position) {
-        if (position > -1 && position < size()) {
-            this.dbHandler.remove(items.get(position));
-            this.items.remove(position);
-        } else {
-            Log.e("Remove Item",
-                    "Invalid remove action: negative index or index out of range");
-        }
-        updateUI();
-        Log.v("Removed Item", "Removed an item from item list");
-    }
-
-    /**
-     * Delete the item from the Database
-     * @param deletedItem the item to be deleted
-     */
-    public void remove(Item deletedItem) {
-        for (int i = 0; i < this.items.size(); i++) {
-            if (Objects.equals(this.items.get(i).getDocID(), deletedItem.getDocID())) {
-                this.remove(i);
-            }
-        }
-        updateUI();
-    }
 
     /**
      * This method removes all the items owned by the user. Made for testing.
      */
     public void removeAll() {
-        this.items.stream()
+        this.entityList.stream()
                 .forEach(item -> dbHandler.remove(item));
-        this.items.clear();
+        this.entityList.clear();
     }
 
     /**
      * Updates the UI to match the current data in the ItemList.
      */
+    @Override
     public void updateUI() {
-        if (listAdapter != null) {
-            listAdapter.notifyDataSetChanged();
-            listAdapter.notifySumView(sumValues.apply(this.items));
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.entityList));
         };
     }
 
@@ -173,18 +99,6 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
     @Override
     public List<Item> loadArray(QuerySnapshot q) {
         return ItemDB.loadArray(q, Item.itemOfQueryDocument);
-    }
-
-    public void setDatabaseHandler(final ItemDB dbH) {
-        this.dbHandler = dbH;
-    }
-
-    /**
-     * The default startListening. Will simply start to listen to the
-     */
-    public void startListening() {
-        dbHandler.startListening(this.dbHandler.getCollectionReference(),
-                this);
     }
 
     /**
@@ -206,60 +120,34 @@ public class ItemList implements IDatabaseList<Item>, Serializable {
         dbHandler.startListening(query, this);
     }
 
-    /**
-     * Sets the list adapter and does a refresh.
-     * @param listAdapter
-     */
-    public void setListAdapter(final ItemListAdapter listAdapter,
-                               final List<? extends Item> selectedList) {
-        this.listAdapter = listAdapter;
-        if (this.items != null) {
-            this.listAdapter.setList(this.items);
-            this.listAdapter.notifyDataSetChanged();
-        }
-        this.startListening();
-    }
+//    /**
+//     * Sets the list adapter and does a refresh.
+//     * @param listAdapter
+//     */
+//    public void setListAdapter(final ItemListAdapter listAdapter,
+//                               final List<? extends Item> selectedList) {
+//        this.adapter = listAdapter;
+//        if (this.entityList != null) {
+//            this.adapter.setList(this.entityList);
+//            this.adapter.notifyDataSetChanged();
+//        }
+//        this.startListening();
+//    }
 
     public ItemListAdapter getListAdapter() {
-        return this.listAdapter;
-    }
-
-    /**
-     * Both updates the list held in this class and the adapter element.
-     * @param list is the list that is replacing the current list.
-     */
-    public void setList(final List<Item> list) {
-        this.items = list;
-        this.listAdapter.setList(list);
-    }
-
-    public List<Item> getList() {
-        return this.items;
+        return (ItemListAdapter) this.adapter;
     }
 
     public void setSummaryView(TextView summaryView) {
-        this.listAdapter.setSummaryView(summaryView);
-        this.listAdapter.notifySumView(sumValues.apply(this.items));
-    }
-
-    /**
-     * Swaps out an item for a new one.
-     * @param updatedItem New Item to put in the list
-     * @param oldItem Search for an item with this DocID to replace
-     */
-    public void updateItem(Item updatedItem, Item oldItem) {
-        // Remove and add the item from the local machine, as well as the database.
-        // Internal note: this.items is not intended to be directly modified.
-        this.remove(oldItem);
-        this.add(updatedItem);
-        updateUI();
+        ((ItemListAdapter) this.adapter).setSummaryView(summaryView);
+        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.entityList));
     }
 
     /**
      * Clean all the tags in all stored items
      */
     public void cleanAllItemTags() {
-        for (Item i : this.items) {
+        for (Item i : this.entityList) {
             i.cleanTags();
         }
     }
