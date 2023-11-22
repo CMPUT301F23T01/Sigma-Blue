@@ -177,7 +177,8 @@ public class TagManagerFragment extends Fragment {
                     if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
                         globalContext.newState("view_list_activity");
                         globalContext.resetHighlightedTags();
-                        globalContext.notifyItemChanged();
+                        globalContext.getItemList().getListAdapter()
+                                .notifyDataSetChanged();
                         activity.returnAndClose();
                     }
                     else {
