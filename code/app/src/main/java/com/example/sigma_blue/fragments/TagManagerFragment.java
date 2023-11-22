@@ -111,8 +111,7 @@ public class TagManagerFragment extends Fragment {
 
         /* Link the adapter to the UI */
         globalContext.getTagList().setAdapter(
-                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getTags(), getContext()),
-                globalContext.getHighlightedTags());
+                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getTags(), getContext()));
 
         tagsListView.setAdapter(globalContext.getTagList().getAdapter());
         //tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -178,6 +177,7 @@ public class TagManagerFragment extends Fragment {
                     if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
                         globalContext.newState("view_list_activity");
                         globalContext.resetHighlightedTags();
+                        globalContext.notifyItemChanged();
                         activity.returnAndClose();
                     }
                     else {
