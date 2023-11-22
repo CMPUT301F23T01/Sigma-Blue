@@ -25,17 +25,16 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         return new AccountList();
     }
 
-    /**
-     * Dependency injection constructor.
-     * @param aDB database handler
-     * @param aLst local list
-     */
-    public AccountList(AccountDB aDB, List<Account> aLst) {
-        accountDB = aDB;
-        accList = aLst;
-    }
+//    /**
+//     * Dependency injection constructor.
+//     * @param aDB database handler
+//     * @param aLst local list
+//     */
+//    public AccountList(AccountDB aDB, List<Account> aLst) {
+//        accountDB = aDB;
+//        accList = aLst;
+//    }
 
-    // placholder for now
     /**
      * Constructor for an AccountList
      */
@@ -54,25 +53,25 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
         this.accountDB.add(account);
     }
 
-    /**
-     * Method for checking if a given Account object exists in the AccountList
-     * @param account is the Account object we are checking for existance in AccountList
-     * @return match is a boolean that returns true if the account is contained in the list, and false if not
-     */
-    public boolean contains(Account account) {
-        if (accList == null) {
-            Log.w("DEBUG", "Checking null accounts list");
-            return false;
-        } else {
-            return accList.contains(account);
-        }
-    }
+//    /**
+//     * Method for checking if a given Account object exists in the AccountList
+//     * @param account is the Account object we are checking for existance in AccountList
+//     * @return match is a boolean that returns true if the account is contained in the list, and false if not
+//     */
+//    public boolean contains(Account account) {
+//        if (accList == null) {
+//            Log.w("DEBUG", "Checking null accounts list");
+//            return false;
+//        } else {
+//            return accList.contains(account);
+//        }
+//    }
 
     /**
      * Method for checking if a username/password pair is valid.
      */
     public boolean validAccount(Account account) {
-        if (!this.contains(account)) {
+        if (!this.getAccList().contains(account)) {
             return false;
         }
         boolean valid = false;
@@ -95,11 +94,10 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
     }
 
     /**
-     * Method for updating any ui element associated with the method.
+     * Does nothing as no UI for the account list
      */
     @Override
-    public void updateUI() {
-    }
+    public void updateUI() {}
 
     /**
      * Loads the database collection into a List of objects.
@@ -118,5 +116,9 @@ public class AccountList implements Serializable, IDatabaseList<Account> {
     @Override
     public void startListening() {
         accountDB.startListening(accountDB.getCollectionReference(), this);
+    }
+
+    public List<Account> getAccList() {
+        return accList;
     }
 }

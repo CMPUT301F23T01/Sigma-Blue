@@ -1,5 +1,6 @@
 package com.example.sigma_blue.entity.tag;
 
+import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
-public class TagList implements IDatabaseList<Tag>, Serializable {
+public class TagList extends AEntityList<Tag> implements IDatabaseList<Tag>, Serializable {
     private ArrayList<Tag> tags;
     final private TagDB tagDB;
     private TagListAdapter adapter;
@@ -67,19 +68,19 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         tags.remove(position);
     }
 
-    public boolean containsTag(Tag tag) {
-        return tags.contains(tag);
-    }
+//    public boolean containsTag(Tag tag) {
+//        return tags.contains(tag);
+//    }
 
     public List<Tag> getTags() {
         return this.tags;
     }
 
-    public int getCount() { return tags.size(); }
-
-    public Tag getItem(int position) {
-        return tags.get(position);
-    }
+//    public int getCount() { return tags.size(); }
+//
+//    public Tag getItem(int position) {
+//        return tags.get(position);
+//    }
 
     /**
      * Sets a new list.

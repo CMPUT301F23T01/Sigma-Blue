@@ -4,21 +4,19 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.adapter.IAdaptable;
 import com.example.sigma_blue.database.IDatabaseList;
-import com.example.sigma_blue.query.QueryGenerator;
-import com.example.sigma_blue.query.SortField;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
+public class ItemList implements IDatabaseList<Item>, Serializable {
     /* Attributes */
     private List<Item> items;
     private ItemDB dbHandler;
@@ -62,26 +60,26 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
 
     /* Adapter interface methods */
 
-    @Override
-    public int getCount() {
-        return items.size();
-    }
+//    @Override
+//    public int getCount() {
+//        return items.size();
+//    }
 
-    /**
-     * The getItem method returns the Item object (casted to Object) that is stored in the array
-     * list at the position.
-     * @param position is the index that the item is being retrieved from.
-     * @return the Item stored at the index as an Object object.
-     */
-    @Override
-    public Item getItem(int position) {
-        return items.get(position);
-    }
-
-    @Override
-    public int getItemId(int position) {
-        return position;
-    }
+//    /**
+//     * The getItem method returns the Item object (casted to Object) that is stored in the array
+//     * list at the position.
+//     * @param position is the index that the item is being retrieved from.
+//     * @return the Item stored at the index as an Object object.
+//     */
+//    @Override
+//    public Item getItem(int position) {
+//        return items.get(position);
+//    }
+//
+//    @Override
+//    public int getItemId(int position) {
+//        return position;
+//    }
 
     /**
      * Returns the amount of elements held in the items ArrayList.
@@ -225,10 +223,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
 
     public ItemListAdapter getListAdapter() {
         return this.listAdapter;
-
     }
-
-    /* Database method */
 
     /**
      * Both updates the list held in this class and the adapter element.
@@ -237,6 +232,7 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
     public void setList(final List<Item> list) {
         this.items = list;
         this.listAdapter.setItemList(list);
+        this.listAdapter.notifyDataSetChanged();
     }
 
     public List<Item> getList() {

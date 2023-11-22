@@ -181,14 +181,14 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.listListView // This is for short clicks on a row
                 .setOnItemClickListener((parent, view, position, id) -> {
                     this.handleClick(globalContext.getItemList()
-                            .getItem(position));
+                            .getList().get(position));
         });
 
         /* The long click listener */
         viewHolder.listListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> {
                     final Item itemCache = globalContext.getItemList()
-                            .getItem(position);
+                            .getList().get(position);
                     this.handleLongClick(itemCache);
 
                     globalContext.getItemList().getListAdapter()
