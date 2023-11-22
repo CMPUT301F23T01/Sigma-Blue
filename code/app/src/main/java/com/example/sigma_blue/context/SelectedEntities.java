@@ -20,7 +20,7 @@ public class SelectedEntities<T> {
         return selected;
     }
     public void resetSelected() {
-        selected.clear();
+        selected = new ArrayList<T>();
     }
     public boolean empty() {
         return selected.size() == 0;

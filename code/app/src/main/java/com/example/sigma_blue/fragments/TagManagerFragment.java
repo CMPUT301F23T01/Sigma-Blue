@@ -176,6 +176,7 @@ public class TagManagerFragment extends Fragment {
                 }
                 else {
                     globalContext.newState("edit_item_fragment");
+                    globalContext.getSelectedTags().resetSelected();
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
                             .action_tagManagerFragment_to_editFragment);
@@ -236,7 +237,7 @@ public class TagManagerFragment extends Fragment {
             }
         }
         else {
-            globalContext.getCurrentItem().setTags(globalContext.getCurrentItem().getTags());
+            globalContext.getCurrentItem().setTags(globalContext.getSelectedTags().getSelected());
             globalContext.getItemList().syncEntity(globalContext.getCurrentItem());
         }
     }

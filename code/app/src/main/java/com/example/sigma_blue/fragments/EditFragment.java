@@ -54,7 +54,6 @@ public class EditFragment extends Fragment
     private EditText textDescription;
     private EditText textComment;
     private ListView tagListView;
-    private List<Tag> tagList;
     private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
     //private Item savedItemChanges;
@@ -122,9 +121,6 @@ public class EditFragment extends Fragment
         if (currentItem == null) {
             currentItem = new Item();
 
-            if (tagList == null) {
-                tagList = currentItem.getTags(); // Get default empty tag list.
-            }
             globalContext.setCurrentItem(currentItem);
         }
         final String mode = globalContext.getCurrentState();
@@ -139,8 +135,7 @@ public class EditFragment extends Fragment
             textSerial.setText(currentItem.getSerialNumber());
             textDescription.setText(currentItem.getDescription());
             textComment.setText(currentItem.getComment());
-            tagList = currentItem.getTags();
-            tagListAdapter = TagListAdapter.newInstance(tagList, getContext());
+            tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
             tagListView.setAdapter(tagListAdapter);
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -292,6 +287,5 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
-        item.setTags(tagList);
     }
 }
