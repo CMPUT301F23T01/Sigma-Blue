@@ -90,6 +90,7 @@ public class LoginFragment extends DialogFragment {
                         // checks if user input matches test account
                         boolean matches = globalContext.getAccountList().validAccount(enteredAccount);
                         if (matches) {
+                            globalContext.setAccount(enteredAccount);
                             globalContext.login(enteredAccount);
                         }
                         globalContext.newState("login_activity");

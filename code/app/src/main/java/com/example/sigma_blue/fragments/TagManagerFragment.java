@@ -160,7 +160,7 @@ public class TagManagerFragment extends Fragment {
                     globalContext.newState("view_list_activity");
                     // Reset the selected items.
                     globalContext.resetSelectedItems();
-                    globalContext.notifyItemChanged();
+                    globalContext.getItemList().getListAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 } else {
                     globalContext.newState("edit_item_fragment");
