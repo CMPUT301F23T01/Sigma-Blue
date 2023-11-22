@@ -56,7 +56,7 @@ public class ItemList extends AEntityList<Item> {
     /**
      * Class constructor.
      */
-    public ItemList() {
+    private ItemList() {
         this.entityList = new ArrayList<Item>();
         this.displayMode = ViewListModes.NONE;
         this.globalContext = GlobalContext.getInstance();

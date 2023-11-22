@@ -93,7 +93,18 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     public void updateEntity(T newE, T oldE) {
         this.entityList.remove(oldE);
         this.entityList.add(newE);
+        this.dbHandler.remove((IDatabaseItem<T>) oldE);
+        this.dbHandler.add((IDatabaseItem<T>) newE);
         updateUI();
+    }
+
+    /**
+     * Resynchronizes the item with its DB equivalent. Same as updateEntity(i, i);
+     * @return
+     */
+    public void syncEntity(T e){
+        this.dbHandler.remove((IDatabaseItem<T>) e);
+        this.dbHandler.add((IDatabaseItem<T>) e);
     }
 
     public ADatabaseHandler<T> getDbHandler() {

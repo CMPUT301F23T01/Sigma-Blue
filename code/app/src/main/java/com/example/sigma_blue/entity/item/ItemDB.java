@@ -21,7 +21,6 @@ public class ItemDB extends ADatabaseHandler<Item> {
 
     private FirebaseFirestore firestoreInjection;
     private Account account;
-    private List<Item> items;
 
     /**
      * newInstance method for hiding construction.
