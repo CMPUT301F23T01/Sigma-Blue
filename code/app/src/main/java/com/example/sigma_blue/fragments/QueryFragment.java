@@ -5,6 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -16,13 +20,18 @@ import com.example.sigma_blue.context.GlobalContext;
  * communicate with the backend.
  */
 public class QueryFragment extends DialogFragment {
-    private GlobalContext globalContext;
+    private GlobalContext globalContext;    // Used for transferring data
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
      */
     private class ViewHolder {
-        Button backButton;
+        Button backButton, resetButton;
+        EditText descriptionFilterET;
+        Spinner sortCriteriaSpinner, tagFilterSpinner;
+        CheckBox ascendingBox, descendingBox;
+        DatePicker startDatePicker, endDatePicker;
+
 
         /**
          * Needs the parent view to be inflated before this class can be
@@ -30,14 +39,71 @@ public class QueryFragment extends DialogFragment {
          * @param entireView is the parent view (dialog box fragment)
          */
         public ViewHolder(View entireView) {
+            bindViews(entireView);
+            resetQuery();
+        }
+
+        /**
+         * Method binds all the encapsulated views with the inflated layout.
+         * @param entireView the view of the fragment
+         */
+        private void bindViews(View entireView) {
             backButton = entireView.findViewById(R.id.query_cancel_button);
+            resetButton = entireView.findViewById(R.id.sortingResetButton);
+            descriptionFilterET = entireView.findViewById(R.id
+                    .descFilterEditText);
+            sortCriteriaSpinner = entireView.findViewById(R.id
+                    .sortCriteriaSpinner);
+            tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
+            ascendingBox = entireView.findViewById(R.id.ascendCheckbox);
+            descendingBox = entireView.findViewById(R.id.descendCheckbox);
+            startDatePicker = entireView.findViewById(R.id.startDatePicker);
+            endDatePicker = entireView.findViewById(R.id.endDatePicker);
+        }
+
+        /**
+         * Flips between the check checkboxes
+         * @param p when true will make checkbox ascending, with descending off.
+         *          When false, the descending checkbox is selected and the
+         *          ascending checkbox is off.
+         */
+        public void flipAscendBox(boolean p) {
+            ascendingBox.setChecked(p);
+            descendingBox.setChecked(!p);
+        }
+
+        /**
+         * Resets the query. Everything is returned to default value, along with
+         * the global state.
+         */
+        private void resetQuery() {
+            globalContext.getItemList().startListening();
+            sortCriteriaSpinner.setSelection(0);
+            tagFilterSpinner.setSelection(0);
+            flipAscendBox(true);
         }
 
         /**
          * Method sets up the UI interactions.
          */
         public void setUIListeners() {
+            /* Closes the dialog fragment and return to the previous page */
             backButton.setOnClickListener(view -> dismiss());   // Go back
+
+            /* Resets the query. Uses the database default */
+            resetButton.setOnClickListener(view -> {
+                resetQuery();
+            });
+
+            ascendingBox.setOnClickListener(view -> {
+                flipAscendBox(true);    // Turns descend off
+                globalContext.getQueryState().setAscend();
+            });
+
+            descendingBox.setOnClickListener(view -> {
+                flipAscendBox(false);   // Turns ascend off
+                globalContext.getQueryState().setDescend();
+            });
         }
     }
 

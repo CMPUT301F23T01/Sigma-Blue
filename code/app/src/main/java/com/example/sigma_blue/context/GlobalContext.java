@@ -11,6 +11,8 @@ import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
+import com.example.sigma_blue.query.QueryGenerator;
+import com.example.sigma_blue.query.QueryMode;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class GlobalContext {
     private SelectedEntities<Tag> selectedTags;
     private Item currentItem;
     private Tag currentTag;
+    private QueryMode queryState;
 
     private ArrayList<String> stateHistory; // store a history for debugging
 
@@ -92,6 +95,17 @@ public class GlobalContext {
     public ItemList getItemList() {
         return itemList;
     }
+
+    /**
+     * Setter for the query mode.
+     * @return the query mode object, which keeps track of the current query
+     * state.
+     */
+    public QueryMode getQueryState() {
+        if (queryState == null) queryState = new QueryMode();   // lazy cons
+       return this.queryState;
+    }
+
     public TagList getTagList() {
         return tagList;
     }

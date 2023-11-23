@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
@@ -138,8 +139,9 @@ public class ViewListActivity extends BaseActivity {
      */
     private void displayQueryFragment() {
         QueryFragment queryFragment = new QueryFragment();
-        globalContext.newState("query_fragment");
-        startFragmentTransaction(queryFragment, "query_fragment");
+        globalContext.newState(ApplicationState.SORT_MENU.toString());
+        startFragmentTransaction(queryFragment, ApplicationState.SORT_MENU
+                .toString());
     }
 
     /**
