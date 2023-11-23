@@ -12,6 +12,7 @@ public class QueryMode {
     SortField currentSort;          // What is currently being sorted.
     Query.Direction direction;      // Defaults to ASCENDING
     final FilterState filterState;  // Keeping track of the applied filters
+    private QueryGenerator queryFactory;    // Generation of new queries
 
     public QueryMode() {
         // Initialization

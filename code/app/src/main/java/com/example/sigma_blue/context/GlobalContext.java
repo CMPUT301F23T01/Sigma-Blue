@@ -11,6 +11,7 @@ import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
+import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.QueryMode;
 
 import java.util.ArrayList;
