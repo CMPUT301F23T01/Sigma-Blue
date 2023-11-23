@@ -96,13 +96,6 @@ public class TagManagerFragment extends Fragment {
         // Load the shared data
         globalContext = GlobalContext.getInstance();
 
-        /* Link the adapter to the UI */
-        globalContext.getTagList().setAdapter(
-                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getEntityList(), getContext()));
-
-        tagsListView.setAdapter(globalContext.getTagList().getAdapter());
-        globalContext.getTagList().startListening();
-
         globalContext.resetHighlightedTags();
 
         if (globalContext.getCurrentState().equals("tag_manager_fragment")) {
@@ -117,6 +110,15 @@ public class TagManagerFragment extends Fragment {
         } else {
             throw new VerifyException("bad state");
         }
+
+        /* Link the adapter to the UI */
+        globalContext.getTagList().setAdapter(
+                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getEntityList(), getContext()));
+
+
+        tagsListView.setAdapter(globalContext.getTagList().getAdapter());
+        //tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        globalContext.getTagList().startListening();
 
         updateTagListView();
 
@@ -178,6 +180,7 @@ public class TagManagerFragment extends Fragment {
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
                             .action_tagManagerFragment_to_editFragment);
+
                 }
             }
         });
