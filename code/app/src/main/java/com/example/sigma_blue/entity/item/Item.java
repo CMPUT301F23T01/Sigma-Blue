@@ -30,19 +30,8 @@ public class Item implements Comparable<Item>, Serializable,
             dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL",
             dbTags = "TAGS";
 
-    private String name;
+    private String description, make, model, photoPath, name;
     private Date date;
-    private String description;
-    private String make;
-    private String model;
-    private float value;
-    private String serialNumber;
-    private String comment;
-    private String photoPath;
-
-
-    private ArrayList<Tag> tags;
-    private String description, make, model;
     private Double value;
     private String serialNumber, comment;
     private List<Tag> tags;
@@ -69,7 +58,6 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setDescription(null);
         ret.setMake(null);
         ret.setModel(null);
-        ret.setValue(0f);
         ret.setPhotoPath(null);
         ret.setValue(0d);
 
@@ -78,8 +66,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, float value, String photoPath) {
-                                   String model, String serial, Double value,
+                                   String model, String serial, Double value, String photoPath,
                                    List<String> tags) {
         Item ret = new Item(t);
 
@@ -102,7 +89,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, Double value) {
+                                   String model, String serial, Double value, String photoPath) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -120,7 +107,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final String serial, final float value, final String photoPath) {
+                                   final String serial, final Double value, final String photoPath) {
         Item ret = new Item(t);
 
         /* Default setting */
