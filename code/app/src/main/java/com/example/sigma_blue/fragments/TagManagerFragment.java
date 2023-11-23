@@ -180,6 +180,7 @@ public class TagManagerFragment extends Fragment {
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
                             .action_tagManagerFragment_to_editFragment);
+
                 }
             }
         });

@@ -90,6 +90,7 @@ public class ViewListActivity extends BaseActivity {
         globalContext.getItemList().setAdapter(
                 new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView));
         globalContext.getItemList().startListening();
+
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */
