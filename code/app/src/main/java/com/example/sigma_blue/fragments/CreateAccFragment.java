@@ -79,7 +79,7 @@ public class CreateAccFragment extends DialogFragment {
 
                         // creates new account for user
                         Account newAccount = new Account(username, password);
-                        if (globalContext.getAccountList().contains(newAccount)) {
+                        if (globalContext.getAccountList().getEntityList().contains(newAccount)) {
                             globalContext.newState("login_activity");
                             listener.onConfirmPressed(false);
                         } else {

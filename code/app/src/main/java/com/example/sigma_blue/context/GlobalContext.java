@@ -13,6 +13,7 @@ import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.QueryMode;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
@@ -54,8 +55,8 @@ public class GlobalContext {
      */
     public void login(Account account) {
         this.account = account;
-        this.tagList = TagList.newInstance(account);
-        this.itemList = ItemList.newInstance(this.account, ItemDB.newInstance(this.account));
+        this.tagList = TagList.newInstance();
+        this.itemList = ItemList.newInstance();
     }
 
     /**
@@ -80,7 +81,7 @@ public class GlobalContext {
             this.highlightedItems.remove(item);
         }
 
-        this.getItemList().getListAdapter().notifyDataSetChanged();
+        this.getItemList().getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -107,7 +108,7 @@ public class GlobalContext {
             this.getItemList().remove(i);
         }
         this.resetSelectedItems();
-        this.getItemList().getListAdapter().notifyDataSetChanged();
+        this.getItemList().getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -190,8 +191,10 @@ public class GlobalContext {
     public void setCurrentItem(Item currentItem) {
         this.currentItem = currentItem;
     }
-
     public Account getAccount() {
         return account;
+    }
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }
