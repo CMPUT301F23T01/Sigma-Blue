@@ -87,13 +87,14 @@ public class ViewListActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* ItemList encapsulates both the database and the adapter */
-        globalContext.getItemList().setListAdapter(
-                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView),
-                globalContext.getSelectedItems());
+        globalContext.getItemList().setAdapter(
+                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView));
+        globalContext.getItemList().startListening();
+
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */
-        itemListView.setAdapter(globalContext.getItemList().getListAdapter());
+        itemListView.setAdapter(globalContext.getItemList().getAdapter());
 
         // set up thing for selected items
         this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -180,17 +181,17 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.listListView // This is for short clicks on a row
                 .setOnItemClickListener((parent, view, position, id) -> {
                     this.handleClick(globalContext.getItemList()
-                            .getItem(position));
+                            .getList().get(position));
         });
 
         /* The long click listener */
         viewHolder.listListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> {
                     final Item itemCache = globalContext.getItemList()
-                            .getItem(position);
+                            .getList().get(position);
                     this.handleLongClick(itemCache);
 
-                    globalContext.getItemList().getListAdapter()
+                    globalContext.getItemList().getAdapter()
                             .notifyDataSetChanged();    // Update highlight
 
                     /*Returns true if the list consumes the click. Always true

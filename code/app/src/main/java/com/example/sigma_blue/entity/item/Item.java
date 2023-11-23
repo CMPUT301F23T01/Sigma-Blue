@@ -523,7 +523,7 @@ public class Item implements Comparable<Item>, Serializable,
         }
 
         for (Tag t : this.tags) {
-            if (globalContext.getTagList().containsTag(t)) {
+            if (globalContext.getTagList().getEntityList().contains(t)) {
                 newTags.add(t);
             }
         }
