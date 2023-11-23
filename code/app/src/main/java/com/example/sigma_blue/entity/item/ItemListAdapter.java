@@ -65,7 +65,7 @@ public class ItemListAdapter extends ASelectableListAdapter<Item> {
         }
         bindPosition(convertView, position);
         // Highlight the tag if selected.
-        highlightControl(convertView, globalContext.getSelectedItems().contains(entityData.get(position)));
+        highlightControl(convertView, globalContext.getSelectedItems().getSelected().contains(entityData.get(position)));
 
         return convertView;
     }

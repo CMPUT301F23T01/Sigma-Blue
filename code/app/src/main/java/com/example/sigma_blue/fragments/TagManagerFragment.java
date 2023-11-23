@@ -96,29 +96,28 @@ public class TagManagerFragment extends Fragment {
         // Load the shared data
         globalContext = GlobalContext.getInstance();
 
-        globalContext.resetHighlightedTags();
+        /* Link the adapter to the UI */
+        globalContext.getTagList().setAdapter(
+                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getEntityList(), getContext()));
+
+        tagsListView.setAdapter(globalContext.getTagList().getAdapter());
+        globalContext.getTagList().startListening();
+
+        globalContext.getSelectedTags().resetSelected();
 
         if (globalContext.getCurrentState().equals("tag_manager_fragment")) {
             // User is opening the tag manager fragment on an existing fragment.
             // Check tags already applied onto the item.
             for (Tag t: globalContext.getCurrentItem().getTags()) {
-                globalContext.toggleHighlightTag(t);
+                globalContext.getSelectedTags().toggleHighlight(t);
             }
+            globalContext.getTagList().getAdapter().notifyDataSetChanged();
 
         } else if (globalContext.getCurrentState().equals("multi_select_tag_manager_fragment")){
             // Don't check anything
         } else {
             throw new VerifyException("bad state");
         }
-
-        /* Link the adapter to the UI */
-        globalContext.getTagList().setAdapter(
-                TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getEntityList(), getContext()));
-
-
-        tagsListView.setAdapter(globalContext.getTagList().getAdapter());
-        //tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        globalContext.getTagList().startListening();
 
         updateTagListView();
 
@@ -151,7 +150,7 @@ public class TagManagerFragment extends Fragment {
                 if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
                     globalContext.newState("view_list_activity");
                     // Reset the selected items.
-                    globalContext.resetSelectedItems();
+                    globalContext.getSelectedItems().resetSelected();
                     globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 } else {
@@ -169,14 +168,15 @@ public class TagManagerFragment extends Fragment {
                 updateItemsWithTags();
                 if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
                     globalContext.newState("view_list_activity");
-                    globalContext.resetHighlightedTags();
-                    globalContext.resetSelectedItems();
+                    globalContext.getSelectedTags().resetSelected();
+                    globalContext.getSelectedItems().resetSelected();
                     globalContext.getTagList().getAdapter().notifyDataSetChanged();
                     globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 }
                 else {
                     globalContext.newState("edit_item_fragment");
+                    globalContext.getSelectedTags().resetSelected();
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
                             .action_tagManagerFragment_to_editFragment);
@@ -188,7 +188,7 @@ public class TagManagerFragment extends Fragment {
         tagEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (globalContext.getHighlightedTags().size() == 1) {
+                if (globalContext.getSelectedTags().size() == 1) {
                     globalContext.newState("edit_tag_fragment");
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_tagEditFragment);
                 } else {
@@ -200,7 +200,7 @@ public class TagManagerFragment extends Fragment {
         tagDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (Tag t : globalContext.getHighlightedTags()) {
+                for (Tag t : globalContext.getSelectedTags().getSelected()) {
                     globalContext.getTagList().remove(t);
                     globalContext.getItemList().cleanAllItemTags(); // remove dead tag from items
                 }
@@ -214,7 +214,7 @@ public class TagManagerFragment extends Fragment {
      */
     private boolean updateTagListView() {
         globalContext.getTagList().getAdapter().notifyDataSetChanged();
-        int checkedTags = globalContext.getHighlightedTags().size();
+        int checkedTags = globalContext.getSelectedItems().size();
         if (checkedTags >= 1) {
             tagEditButton.setEnabled(true);
             return true;
@@ -230,15 +230,15 @@ public class TagManagerFragment extends Fragment {
         // check each of the tags and check if they are checked
 
         if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
-            for (Item i : globalContext.getSelectedItems()) {
-                for (Tag t : globalContext.getHighlightedTags()) {
+            for (Item i : globalContext.getSelectedItems().getSelected()) {
+                for (Tag t : globalContext.getSelectedTags().getSelected()) {
                     i.addTag(t);
                 }
                 globalContext.getItemList().syncEntity(i);
             }
         }
         else {
-            globalContext.getCurrentItem().setTags(globalContext.getHighlightedTags());
+            globalContext.getCurrentItem().setTags(globalContext.getSelectedTags().getSelected());
             globalContext.getItemList().syncEntity(globalContext.getCurrentItem());
         }
     }
@@ -258,6 +258,7 @@ public class TagManagerFragment extends Fragment {
      */
     private void handleClick(Tag tag) {
         Log.i("DEBUG", tag.getTagText() + " pressed");
-        globalContext.toggleHighlightTag(tag);
+        globalContext.getSelectedTags().toggleHighlight(tag);
+        globalContext.getTagList().getAdapter().notifyDataSetChanged();
     }
 }

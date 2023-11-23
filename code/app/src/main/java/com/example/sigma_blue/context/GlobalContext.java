@@ -27,9 +27,9 @@ public class GlobalContext {
     private Account account;
     private AccountList accountList;
     private ItemList itemList;
-    private ArrayList<Item> highlightedItems;
+    private SelectedEntities<Item> selectedItems;
     private TagList tagList;
-    private ArrayList<Tag> highlightedTags;
+    private SelectedEntities<Tag> selectedTags;
     private Item currentItem;
     private Tag currentTag;
 
@@ -60,81 +60,10 @@ public class GlobalContext {
      * Start everything empty on construction.
      */
     public GlobalContext() {
-        this.highlightedItems = new ArrayList<>();
-        this.highlightedTags = new ArrayList<>();
+        this.selectedItems = new SelectedEntities<Item>();
+        this.selectedTags = new SelectedEntities<Tag>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
-    }
-
-    /**
-     * Toggle if an item is in the list of highlighted items or not.
-     * @param item
-     */
-    public void toggleInsertSelectedItem(Item item) {
-
-        if (!this.highlightedItems.contains(item)){
-            this.highlightedItems.add(item);
-        } else {
-            this.highlightedItems.remove(item);
-        }
-
-        this.getItemList().getAdapter().notifyDataSetChanged();
-    }
-
-    /**
-     * Return list of highlighted items
-     * @return a List of the selected item
-     */
-    public ArrayList<Item> getSelectedItems() {
-        return this.highlightedItems;
-    }
-
-    /**
-     * Clear highlighted items
-     */
-    public void resetSelectedItems() {
-        this.highlightedItems.clear();
-    }
-
-    /**
-     * Method for doing a set difference of the items stored and the selected
-     * items.
-     */
-    public void deleteSelectedItems() {
-        for (Item i : this.getSelectedItems()) {
-            this.getItemList().remove(i);
-        }
-        this.resetSelectedItems();
-        this.getItemList().getAdapter().notifyDataSetChanged();
-    }
-
-    /**
-     * Toggle if a tag is in the list of highlighted tags or not
-     * @param tag is the tag object that has been selected
-     */
-    public void toggleHighlightTag(Tag tag) {
-        if (!this.highlightedTags.contains(tag)){
-            this.highlightedTags.add(tag);
-        } else {
-            this.highlightedTags.remove(tag);
-        }
-        this.getTagList().getAdapter().notifyDataSetChanged();
-    }
-
-    /**
-     * Return list of highlighted tags
-     * @return
-     */
-    public ArrayList<Tag> getHighlightedTags() {
-        return this.highlightedTags;
-    }
-
-    /**
-     * Clear list of highlighted tags
-     */
-    public void resetHighlightedTags() {
-        this.highlightedTags.clear();
-        this.getTagList().getAdapter().notifyDataSetChanged();
     }
 
     /**
@@ -182,5 +111,12 @@ public class GlobalContext {
     }
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public SelectedEntities<Item> getSelectedItems() {
+        return selectedItems;
+    }
+    public SelectedEntities<Tag> getSelectedTags() {
+        return selectedTags;
     }
 }

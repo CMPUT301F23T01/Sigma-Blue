@@ -124,7 +124,11 @@ public class ViewListActivity extends BaseActivity {
      * TODO: If have time, add a confirm button
      */
     private void deleteSelectedItems() {
-        globalContext.deleteSelectedItems();
+        for (Item i : globalContext.getSelectedItems().getSelected()) {
+            globalContext.getItemList().remove(i);
+        }
+        globalContext.getSelectedItems().resetSelected();
+        globalContext.getItemList().getAdapter().notifyDataSetChanged();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -206,9 +210,9 @@ public class ViewListActivity extends BaseActivity {
      */
     private void handleLongClick(Item item) {
 //        Log.i("DEBUG", item.getName() + " Long Press");
-        globalContext.toggleInsertSelectedItem(item);
+        globalContext.getSelectedItems().toggleHighlight(item);
 
-        if (globalContext.getSelectedItems().size() > 0) {
+        if (!globalContext.getSelectedItems().empty()) {
             viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
         } else {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
