@@ -35,8 +35,7 @@ public class TagList extends AEntityList<Tag> {
      * to the database that stores all of the Tags that the user has defined.
      */
     public static TagList newInstance() {
-        TagList ret = new TagList();
-        return ret;
+        return new TagList();
     }
 
     /**
@@ -52,14 +51,14 @@ public class TagList extends AEntityList<Tag> {
         return ret;
     }
 
-    public TagList(TagDB tagDB) {
+    private TagList(TagDB tagDB) {
         this.dbHandler = tagDB;
         this.entityList = new ArrayList<>();
     }
 
-    public TagList() {
+    private TagList() {
         this.globalContext = GlobalContext.getInstance();
-        this.dbHandler = new TagDB(globalContext.getAccount());
+        this.dbHandler = TagDB.newInstance(globalContext.getAccount());
         this.entityList = new ArrayList<>();
     }
 
