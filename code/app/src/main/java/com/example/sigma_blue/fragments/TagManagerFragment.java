@@ -113,6 +113,7 @@ public class TagManagerFragment extends Fragment {
         globalContext.getTagList().setAdapter(
                 TagListAdapter.newInstance((ArrayList<Tag>) globalContext.getTagList().getEntityList(), getContext()));
 
+
         tagsListView.setAdapter(globalContext.getTagList().getAdapter());
         //tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         globalContext.getTagList().startListening();
@@ -170,6 +171,7 @@ public class TagManagerFragment extends Fragment {
                         globalContext.resetSelectedItems();
                         globalContext.getTagList().getAdapter().notifyDataSetChanged();
                         globalContext.getItemList().getAdapter().notifyDataSetChanged();
+
                         activity.returnAndClose();
                     }
                     else {
