@@ -1,97 +1,45 @@
 package com.example.sigma_blue.entity.item;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.adapter.ASelectableListAdapter;
 
-import java.util.ArrayList;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
-
-import com.example.sigma_blue.R;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-public class ItemListAdapter extends BaseAdapter {
-    private List<? extends Item> itemList;
-    private final LayoutInflater inflater;
+public class ItemListAdapter extends ASelectableListAdapter<Item> {
+    /* The the lists that are relevant to the item list adapter */
     private TextView sumView;
-    private List<? extends Item> selectedItems;
-    private final Context context;
 
-
-    public ItemListAdapter(final Context context, final TextView sumView) {
-        inflater = LayoutInflater.from(context);
+    /**
+     * The constructor of the adapter.
+     * @param context is the activity context in which the adapter is binding to
+     *                this adapter
+     * @param sumView   is the summary text view that is displaying the total
+     *                  value of the application.
+     */
+    public ItemListAdapter(List<Item> entityData, final Context context, final TextView sumView) {
+        super(entityData, context);
         this.sumView = sumView;
-        this.context = context;
     }
 
-    public Context getContext() {
-        return context;
-    }
-
-    /**
-     * Sets itemList
-     * @param itemList Some sort of list that contains a subclass of the item
-     *                 class.
-     */
-    public void setItemList(List<? extends Item> itemList) {
-        this.itemList = itemList;
-    }
-
-    /**
-     * The list of selected items. (Likely the same list as the one held by the
-     * global context).
-     * @param selectedList is the list of selected items. Assumption that it
-     *                     will always be a subset of the itemList.
-     */
-    public void setSelectedItemList(List<? extends Item> selectedList) {
-        this.selectedItems = selectedList;
-    }
-
-    /**
-     * Gets the amount of items stored in the list being adapted
-     * @return the int representation of number of items
-     */
     @Override
-    public int getCount() {
-        return itemList.size();
-    }
-
-    /**
-     * Returns the item
-     * @param position Position of the item whose data we want within the adapter's
-     * data set.
-     * @return
-     */
-    @Override
-    public Object getItem(int position) {
-        return itemList.get(position);
-    }
-
-    /**
-     * Returns the row ID, which is not the same as uniqueness ID.
-     * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return the intger that is
-     */
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();   // Need the original to still run
     }
 
     /**
@@ -107,23 +55,19 @@ public class ItemListAdapter extends BaseAdapter {
      * @param parent The parent that this view will eventually be attached to
      * @return return new row view
      */
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) convertView = getLayoutInflater()
-                .inflate(R.layout.view_row, null);
-        else ;  // Added reuse of the view.
+        if (convertView == null) {
+            // only inflate if needed
+            LayoutInflater inflater = LayoutInflater.from(context);
+            convertView = inflater.inflate(R.layout.view_row, parent, false);
+        }
         bindPosition(convertView, position);
-        highlightControl(convertView, selectedItems.contains(itemList
-                .get(position)));
-        return convertView;
-    }
+        // Highlight the tag if selected.
+        highlightControl(convertView, globalContext.getSelectedItems().getSelected().contains(entityData.get(position)));
 
-    /**
-     * layout inflater getter
-     * @return return the layout inflater.
-     */
-    public LayoutInflater getLayoutInflater() {
-        return this.inflater;
+        return convertView;
     }
 
     /**
@@ -131,7 +75,7 @@ public class ItemListAdapter extends BaseAdapter {
      * @param sum is a float that represents the sum
      * @return the formatted string.
      */
-    public String formatSummary(Float sum) {
+    public String formatSummary(Double sum) {
         return String.format(Locale.ENGLISH,
                 "The total value: %7.2f", sum);
     }
@@ -142,7 +86,7 @@ public class ItemListAdapter extends BaseAdapter {
      * @param sum is the optional object that will either be empty or contain
      *            the sum of the values of the held object.
      */
-    public void notifySumView(Optional<Float> sum) {
+    public void notifySumView(Optional<Double> sum) {
         if (this.sumView != null) {
             if (sum.isPresent()) this.sumView
                     .setText(formatSummary(sum.get()));
@@ -167,27 +111,16 @@ public class ItemListAdapter extends BaseAdapter {
      * @param position is the position that is being checked
      */
     private void bindPosition(View view, int position) {
-        if (position > itemList.size()) throw new IllegalArgumentException();
+        Item rowItem;
+        if (position > entityData.size()) throw new IllegalArgumentException();
         else {
-            ((TextView) view.findViewById(R.id.itemName)).setText(itemList
-                    .get(position).getName());
-            ((TextView) view.findViewById(R.id.itemMake)).setText(itemList
-                    .get(position).getMake());
-            ((TextView) view.findViewById(R.id.uniqueId)).setText(itemList
-                    .get(position).getSerialNumber());
+            rowItem = entityData.get(position);   // Caching is less expensive
+            ((TextView) view.findViewById(R.id.itemName)).setText(rowItem
+                    .getName());
+            ((TextView) view.findViewById(R.id.itemMake)).setText(rowItem
+                    .getMake());
+            ((TextView) view.findViewById(R.id.uniqueId)).setText(rowItem
+                    .getFormattedValue());  // Showing value for now
         }
-    }
-
-    /**
-     * Method that will turn on the highlight of the view if it is selected,
-     * otherwise reset it to the default background colour.
-     * @param view is the view that is being checked.
-     */
-    private void highlightControl(View view, boolean selected) {
-        @ColorInt int rowColor;
-        if (selected) rowColor = ContextCompat.getColor(getContext(),
-                R.color.add_edit_layout_bgr_test);
-        else rowColor = ContextCompat.getColor(getContext(), R.color.white);
-        view.setBackgroundColor(rowColor);
     }
 }

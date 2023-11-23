@@ -1,8 +1,12 @@
 package com.example.sigma_blue.database;
 
-import com.example.sigma_blue.database.IDatabaseItem;
-import com.example.sigma_blue.database.IDatabaseList;
+import com.example.sigma_blue.entity.account.Account;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -17,7 +21,8 @@ import java.util.function.Function;
  *           Tag
  */
 public abstract class ADatabaseHandler<T> {
-
+    private ListenerRegistration registration;
+    protected CollectionReference ref;
     /**
      * Generic method for adding a new document to a collection being pointed
      * to.
@@ -36,7 +41,7 @@ public abstract class ADatabaseHandler<T> {
                                        final T item,
                                        final Function<T,
                                                HashMap<String,
-                                               String>> fn,
+                                               Object>> fn,
                                        final String docID) {
         cr.document(docID).set(fn.apply(item));
     }
@@ -76,13 +81,17 @@ public abstract class ADatabaseHandler<T> {
      * Adds a new document to the database
      * @param item item being added
      */
-    public abstract void add(final T item);
+    public void add(final IDatabaseItem<T> item) {
+        addDocument(ref, item, item.getHashMapOfEntity(), item.getDocID());
+    }
 
     /**
      * Removes the document from the database
      * @param item
      */
-    public abstract void remove(final T item);
+    public void remove(final IDatabaseItem<T> item) {
+        removeDocument(ref, item);
+    }
 
     /**
      * Returns the database collection reference.
@@ -92,14 +101,35 @@ public abstract class ADatabaseHandler<T> {
 
     /**
      * This method adds a listener to a user's item collection.
+     * CollectionReference extends Query, meaning that we could factor out the
+     * more general case with a query
      */
-    public void startListening(final CollectionReference cR,
+    public void startListening(final Query query,
                                final IDatabaseList<T> lst) {
-        cR.addSnapshotListener(
-                (q, e) -> {
-                    if (q != null) {
-                        lst.setList(lst.loadArray(q));
+        clearRegistration();
+        registration = query.addSnapshotListener(
+                (qs, excp) -> {
+                    if (qs != null) {
+                        lst.setList((ArrayList<T>) lst.loadArray(qs));
                         lst.updateUI();
-                    }});
+                    }
+                }
+        );
+    }
+
+    /**
+     * Clear the previous listener. Used when trying to install a new listener
+     */
+    private void clearRegistration() {
+        if (registration != null) {
+            registration.remove();
+        }
+    }
+
+    /**
+     * Get the document reference for the entity. Assumes the entity exists.
+     */
+    public DocumentReference getDocRef(IDatabaseItem<T> item) {
+        return ref.document(item.getDocID());
     }
 }

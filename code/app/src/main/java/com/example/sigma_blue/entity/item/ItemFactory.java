@@ -12,7 +12,7 @@ public class ItemFactory {
     String factoryDescription;
     String factoryMake;
     String factoryModel;
-    Float factoryValue;
+    Double factoryValue;
 
     public static ItemFactory newInstance(Date d) {
         ItemFactory ret = new ItemFactory();
@@ -30,7 +30,7 @@ public class ItemFactory {
         factoryDescription = "";
         factoryMake = "";
         factoryModel = "";
-        factoryValue = 0f;
+        factoryValue = 0d;
 
     }
 
@@ -40,7 +40,7 @@ public class ItemFactory {
      */
     public Item emptyItem() {
         return new Item("", new Date(), "", "","","", "",
-                0f);
+                0d);
     }
 
     /**
@@ -74,7 +74,7 @@ public class ItemFactory {
      * Default value setter
      * @param f is new value
      */
-    public void setFactoryValue(float f) {
+    public void setFactoryValue(Double f) {
         factoryValue = f;
     }
 
@@ -87,7 +87,7 @@ public class ItemFactory {
         return (Date) factoryDate.clone();  // Clone so no dangling reference.
     }
 
-    private float getFactoryValue() {
+    private Double getFactoryValue() {
         return factoryValue;
     }
 }

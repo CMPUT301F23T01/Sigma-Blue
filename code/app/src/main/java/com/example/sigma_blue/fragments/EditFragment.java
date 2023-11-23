@@ -27,6 +27,7 @@ import com.example.sigma_blue.activities.ViewListActivity;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,6 +41,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -129,8 +131,10 @@ public class EditFragment extends Fragment
         globalContext = GlobalContext.getInstance();
         // Load Item and mode
         Item currentItem = globalContext.getCurrentItem();
+        // If the user is creating a new item.
         if (currentItem == null) {
             currentItem = new Item();
+
             globalContext.setCurrentItem(currentItem);
         }
         final String mode = globalContext.getCurrentState();
@@ -176,6 +180,7 @@ public class EditFragment extends Fragment
                 }
             });
         }
+
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
@@ -251,12 +256,13 @@ public class EditFragment extends Fragment
             public void onClick(View v)
             {
                 // Load ui text and save into shared item; Navigate to DetailsFragment
-                if (verifyText())
-                {
-                    // need a new item as to not overwrite the old one. If the old one is overwritten
-                    // then we don't know which item in the list needs to be deleted if doing an edit.
+                if (verifyText()) {
+                    // need a new item as to not overwrite the old one. If the
+                    // old one is overwritten then we don't know which item in
+                    // the list needs to be deleted if doing an edit.
                     Item modifiedItem = new Item();
                     loadUiText(modifiedItem);
+                    // State control for adding items
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
                         if (globalContext.getItemList().getList().contains(modifiedItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
@@ -267,13 +273,16 @@ public class EditFragment extends Fragment
                             globalContext.newState("view_list_activity");
                             activity.returnAndClose();
                         }
-                    } else if (Objects.equals(globalContext.getCurrentState(), "edit_item_fragment")) {
-                        globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
+                    } else if (Objects.equals(globalContext.getCurrentState(),
+                            "edit_item_fragment")) {    // Edit state
+                        globalContext.getItemList().updateEntity(modifiedItem, globalContext.getCurrentItem());
                         globalContext.setCurrentItem(modifiedItem);
                         globalContext.newState("details_fragment");
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
-                        throw new VerifyException("Bad state");
+                        Log.e("BAD STATE",
+                                "Edit and the item doesn't exist");
+                        throw new VerifyException("Bad state"); // Unhandled
                     }
 
                 }
@@ -294,8 +303,7 @@ public class EditFragment extends Fragment
      * Verifies that no text field is empty when saving edits
      * @return flag verifying that required EditText's are populated
      */
-    private boolean verifyText()
-    {
+    private boolean verifyText() {
         String emptyErrText = "Must enter a value before saving";
         boolean flag = true;
         for (EditText e : editTextList)
@@ -316,7 +324,7 @@ public class EditFragment extends Fragment
     private void loadUiText(@NonNull Item item)
     {
         item.setName(textName.getText().toString());
-        item.setValue(Float.parseFloat(textValue.getText().toString()));
+        item.setValue(Double.parseDouble(textValue.getText().toString()));
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         try
         {

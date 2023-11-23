@@ -11,6 +11,9 @@ import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
+import com.example.sigma_blue.query.QueryGenerator;
+import com.example.sigma_blue.query.QueryMode;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
@@ -26,11 +29,13 @@ public class GlobalContext {
     private Account account;
     private AccountList accountList;
     private ItemList itemList;
-    private ArrayList<Item> highlightedItems;
+    private SelectedEntities<Item> selectedItems;
     private TagList tagList;
-    private ArrayList<Tag> highlightedTags;
+    private SelectedEntities<Tag> selectedTags;
     private Item currentItem;
     private Tag currentTag;
+    private QueryMode queryState;
+
     private ArrayList<String> stateHistory; // store a history for debugging
 
     /**
@@ -50,110 +55,18 @@ public class GlobalContext {
      */
     public void login(Account account) {
         this.account = account;
-        this.tagList = TagList.newInstance(account);
-    }
-
-    /**
-     * Start the item list (this method could be removed, not sure what other people think).
-     */
-    public void setUpItemList() {
-        this.itemList = ItemList.newInstance(this.account,
-                ItemDB.newInstance(this.account));
-
+        this.tagList = TagList.newInstance();
+        this.itemList = ItemList.newInstance();
     }
 
     /**
      * Start everything empty on construction.
      */
     public GlobalContext() {
-        this.highlightedItems = new ArrayList<>();
-        this.highlightedTags = new ArrayList<>();
+        this.selectedItems = new SelectedEntities<Item>();
+        this.selectedTags = new SelectedEntities<Tag>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
-    }
-
-    /**
-     * Toggle if an item is in the list of highlighted items or not.
-     * @param item
-     */
-
-    public void toggleInsertSelectedItem(Item item) {
-
-        if (!this.highlightedItems.contains(item)){
-            this.highlightedItems.add(item);
-        } else {
-            this.highlightedItems.remove(item);
-        }
-
-        this.getItemList().getListAdapter().notifyDataSetChanged();
-
-    }
-
-    /**
-     * Return list of highlighted items
-     * @return a List of the selected item
-     */
-    public ArrayList<Item> getSelectedItems() {
-
-        return this.highlightedItems;
-    }
-
-    /**
-     * Clear highlighted items
-     */
-    public void resetSelectedItems() {
-        this.highlightedItems.clear();
-    }
-
-    /**
-     * Updates the item list through the view adapter.
-     */
-    public void notifyItemChanged() {
-        this.getItemList().getListAdapter().notifyDataSetChanged();
-    }
-
-    /**
-     * Method for doing a set difference of the items stored and the selected
-     * items.
-     */
-    public void deleteSelectedItems() {
-        for (Item i : this.getSelectedItems()) {
-            this.getItemList().remove(i);
-        }
-        this.resetSelectedItems();
-        this.notifyItemChanged();
-
-    }
-
-    /**
-     * Toggle if a tag is in the list of highlighted tags or not
-     * @param tag is the tag object that has been selected
-     */
-    public void toggleHighlightTag(Tag tag) {
-        if (!this.highlightedTags.contains(tag)){
-            this.highlightedTags.add(tag);
-        } else {
-            this.highlightedTags.remove(tag);
-        }
-        //this.getTagList().getAdapter().notifyDataSetChanged();
-
-    }
-
-    /**
-     * Return list of highlighted tags
-     * @return
-     */
-    public ArrayList<Tag> getHighlightedTags() {
-        return this.highlightedTags;
-    }
-
-    /**
-     * Clear list of highlighted tags
-     */
-    public void resetHighlightedTags() {
-        this.highlightedTags.clear();
-        //this.getTagList().getAdapter().notifyDataSetChanged();
-
     }
 
     /**
@@ -176,24 +89,26 @@ public class GlobalContext {
     public String getLastState() {
         return stateHistory.get(stateHistory.size() - 2);
     }
-    public Account getAccount() {
-        return account;
-    }
-    public void setAccount(Account account) {
-        this.account = account;
-    }
     public AccountList getAccountList() {
         return accountList;
     }
-
     public ItemList getItemList() {
         return itemList;
+    }
+
+    /**
+     * Setter for the query mode.
+     * @return the query mode object, which keeps track of the current query
+     * state.
+     */
+    public QueryMode getQueryState() {
+        if (queryState == null) queryState = new QueryMode();   // lazy cons
+       return this.queryState;
     }
 
     public TagList getTagList() {
         return tagList;
     }
-
 
     /**
      * Get the Item that is being viewed by the detailed view page.
@@ -202,8 +117,20 @@ public class GlobalContext {
     public Item getCurrentItem() {
         return currentItem;
     }
-
     public void setCurrentItem(Item currentItem) {
         this.currentItem = currentItem;
+    }
+    public Account getAccount() {
+        return account;
+    }
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public SelectedEntities<Item> getSelectedItems() {
+        return selectedItems;
+    }
+    public SelectedEntities<Tag> getSelectedTags() {
+        return selectedTags;
     }
 }
