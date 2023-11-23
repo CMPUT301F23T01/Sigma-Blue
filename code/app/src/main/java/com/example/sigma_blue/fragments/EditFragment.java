@@ -44,6 +44,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 /**
  * Class for handling fragment for editing an Item objects values
  */
@@ -288,8 +291,41 @@ public class EditFragment extends Fragment
                 }
             }
         });
+
+        view.findViewById(R.id.button_barcode).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                IntentIntegrator integrator = IntentIntegrator.forSupportFragment(EditFragment.this);
+
+                integrator.setOrientationLocked(true);
+                integrator.setPrompt("Scan Barcode");
+                integrator.setBeepEnabled(true);
+
+                integrator.initiateScan();
+            }
+        });
     }
 
+    /**
+     * Method for retrieving results from barcode scanning activity
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result.getContents() != null) {
+            textSerial.setText(result.getContents());
+        }
+    }
+    
     /**
      * Method for destroying fragment
      */
