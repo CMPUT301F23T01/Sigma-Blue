@@ -10,8 +10,13 @@
 
     <!-- Custom app colors -->
     <color name="add_edit_btn_bgr_test">#1454c4</color>
+<!--    <color name="add_edit_btn_bgr_test">#1F5673</color>-->
     <color name="add_edit_btn_text_test">#FFFFFF</color>
     <color name="add_edit_layout_bgr_test">#92BAFF</color>
+<!--    <color name="add_edit_layout_bgr_test">#759FBC</color>-->
     <color name="add_edit_layout_contrast_test">#99ceff</color>
+
+    <color name="blue_prime">#276C91</color>
+    <color name="blue_light">#759FBC</color>
 
 </resources>
