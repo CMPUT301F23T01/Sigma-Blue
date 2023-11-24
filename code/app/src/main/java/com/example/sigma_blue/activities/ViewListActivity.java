@@ -115,7 +115,7 @@ public class ViewListActivity extends BaseActivity {
         Log.i("DEBUG", item.getName() + "Short Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         globalContext.setCurrentItem(item);
-        globalContext.newState("details_fragment");
+        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
         startActivity(intent);
     }
 
@@ -139,7 +139,7 @@ public class ViewListActivity extends BaseActivity {
      */
     private void displayQueryFragment() {
         QueryFragment queryFragment = new QueryFragment();
-        globalContext.newState(ApplicationState.SORT_MENU.toString());
+        globalContext.newState(ApplicationState.SORT_MENU);
         startFragmentTransaction(queryFragment, ApplicationState.SORT_MENU
                 .toString());
     }
@@ -162,7 +162,7 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.addEntryButton.setOnClickListener(v -> {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             globalContext.setCurrentItem(null);
-            globalContext.newState("add_item_fragment");
+            globalContext.newState(ApplicationState.ADD_ITEM_FRAGMENT);
             startActivity(intent);
         });  // Launch add activity.
 
@@ -178,7 +178,10 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
             globalContext.setCurrentItem(null);
-            globalContext.newState("multi_select_tag_manager_fragment");
+            globalContext.newState(ApplicationState
+                    .MULTI_SELECT_TAG_MANAGER_FRAGMENT);
+            Log.i("NEW STATE", ApplicationState
+                    .MULTI_SELECT_TAG_MANAGER_FRAGMENT.toString());
             Intent intent = new Intent(ViewListActivity.this,
                     AddEditActivity.class);
             startActivity(intent);
