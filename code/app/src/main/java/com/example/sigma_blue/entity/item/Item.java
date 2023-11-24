@@ -78,9 +78,12 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setModel(model);
         ret.setSerialNumber(serial);
         ret.setValue(value);
-        ret.setTags(tags.stream().map(e -> new Tag(e, 0xFFFF0000))
-                .collect(Collectors.toList()));
 
+        for (String s : tags) {
+            // parse the string in a messy way
+            Tag newTag = new Tag(s.substring(0, s.length()-8), s.substring(s.length()-8));
+            ret.addTag(newTag);
+        }
         return ret;
     }
 
@@ -508,7 +511,9 @@ public class Item implements Comparable<Item>, Serializable,
                     (List<String>) q.get(dbTags)
             );
         }
-        newItem.cleanTags();
+        //newItem.cleanTags();
+        // when loading from the db no tags are loaded yet (tag list hasn't started listening) so all
+        // tags get filtered out.
         return newItem;
     };
 
@@ -518,8 +523,12 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public void cleanTags() {
         ArrayList<Tag> newTags = new ArrayList<>();
+        if (globalContext == null) {
+            globalContext = GlobalContext.getInstance();
+        }
+
         for (Tag t : this.tags) {
-            if (globalContext.getTagList().containsTag(t)) {
+            if (globalContext.getTagList().getEntityList().contains(t)) {
                 newTags.add(t);
             }
         }

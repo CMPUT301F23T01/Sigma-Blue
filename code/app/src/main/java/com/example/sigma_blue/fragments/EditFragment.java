@@ -2,6 +2,7 @@ package com.example.sigma_blue.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
+import com.example.sigma_blue.activities.ViewListActivity;
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
@@ -33,6 +36,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * Class for handling fragment for editing an Item objects values
@@ -54,7 +60,6 @@ public class EditFragment extends Fragment
     private EditText textDescription;
     private EditText textComment;
     private ListView tagListView;
-    private List<Tag> tagList;
     private TagListAdapter tagListAdapter;
     private ArrayList<EditText> editTextList;
     //private Item savedItemChanges;
@@ -105,6 +110,22 @@ public class EditFragment extends Fragment
     }
 
     /**
+     * Binding the current item to the ui.
+     * @param currentItem is the item that is being edited.
+     */
+    private void editItemUIBindings(final Item currentItem) {
+        textName.setText(currentItem.getName());
+        textValue.setText(String.valueOf(currentItem.getValue()));
+        textMake.setText(currentItem.getMake());
+        textModel.setText(currentItem.getModel());
+        textSerial.setText(currentItem.getSerialNumber());
+        textDescription.setText(currentItem.getDescription());
+        textComment.setText(currentItem.getComment());
+        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+        tagListView.setAdapter(tagListAdapter);
+    }
+
+    /**
      * Method to set details of item in fragment and handle button interactions
      * @param view is the View of the fragment
      * @param savedInstanceState is a Bundle passed that holds data of activity
@@ -121,31 +142,17 @@ public class EditFragment extends Fragment
         // If the user is creating a new item.
         if (currentItem == null) {
             currentItem = new Item();
-            if (tagList == null) {
-                tagList = currentItem.getTags();
-            }
+
             globalContext.setCurrentItem(currentItem);
         }
-        final String mode = globalContext.getCurrentState();
+        final ApplicationState mode = globalContext.getCurrentState();
 
         // set item details
-        if (Objects.equals(mode, "edit_item_fragment"))
-        {
-            textName.setText(currentItem.getName());
-            textValue.setText(String.valueOf(currentItem.getValue()));
-            textMake.setText(currentItem.getMake());
-            textModel.setText(currentItem.getModel());
-            textSerial.setText(currentItem.getSerialNumber());
-            textDescription.setText(currentItem.getDescription());
-            textComment.setText(currentItem.getComment());
-            tagList = currentItem.getTags();
-            tagListAdapter = TagListAdapter.newInstance(tagList, getContext());
-            tagListView.setAdapter(tagListAdapter);
+        if (mode == ApplicationState.EDIT_ITEM_FRAGMENT) {
+            editItemUIBindings(currentItem);
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
-
-
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
@@ -177,15 +184,19 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (Objects.equals(mode, "add_item_fragment")) {
+                if (mode == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
-                    globalContext.newState("view_list_activity");
+                    globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
+                            .toString());
                     activity.returnAndClose();
 
                 } else {
                     // Navigate to Item Details
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                    NavHostFragment.findNavController(EditFragment.this)
+                            .navigate(R.id
+                                    .action_editFragment_to_detailsFragment);
                 }
             }
         });
@@ -199,7 +210,9 @@ public class EditFragment extends Fragment
                 // Save current ui state
                 loadUiText(globalContext.getCurrentItem());
                 // Open TagManager
-                globalContext.newState("tag_manager_fragment");
+                globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
+                Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
+                        .toString());
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
@@ -217,21 +230,28 @@ public class EditFragment extends Fragment
                     Item modifiedItem = new Item();
                     loadUiText(modifiedItem);
                     // State control for adding items
-                    if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
+                    if (globalContext.getCurrentState() == ApplicationState
+                            .ADD_ITEM_FRAGMENT) {
                         if (globalContext.getItemList().getList().contains(modifiedItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
                             errorSnackbar.show();
                         } else {
                             globalContext.getItemList().add(modifiedItem);
                             globalContext.setCurrentItem(modifiedItem);
-                            globalContext.newState("view_list_activity");
+                            globalContext.newState(ApplicationState
+                                    .VIEW_LIST_ACTIVITY);
+                            Log.i("NEW STATE", ApplicationState
+                                    .VIEW_LIST_ACTIVITY.toString());
                             activity.returnAndClose();
                         }
-                    } else if (Objects.equals(globalContext.getCurrentState(),
-                            "edit_item_fragment")) {    // Edit state
-                        globalContext.getItemList().updateItem(modifiedItem, globalContext.getCurrentItem());
+                    } else if (globalContext.getCurrentState() ==
+                            ApplicationState.EDIT_ITEM_FRAGMENT) {
+                        globalContext.getItemList().updateEntity(modifiedItem, globalContext.getCurrentItem());
                         globalContext.setCurrentItem(modifiedItem);
-                        globalContext.newState("details_fragment");
+                        globalContext.newState(ApplicationState
+                                .DETAILS_FRAGMENT);
+                        Log.i("NEW STATE", ApplicationState
+                                .DETAILS_FRAGMENT.toString());
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
                         Log.e("BAD STATE",
@@ -242,8 +262,41 @@ public class EditFragment extends Fragment
                 }
             }
         });
+
+        view.findViewById(R.id.button_barcode).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                IntentIntegrator integrator = IntentIntegrator.forSupportFragment(EditFragment.this);
+
+                integrator.setOrientationLocked(true);
+                integrator.setPrompt("Scan Barcode");
+                integrator.setBeepEnabled(true);
+
+                integrator.initiateScan();
+            }
+        });
     }
 
+    /**
+     * Method for retrieving results from barcode scanning activity
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result.getContents() != null) {
+            textSerial.setText(result.getContents());
+        }
+    }
+    
     /**
      * Method for destroying fragment
      */
@@ -291,6 +344,5 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
-        item.setTags(tagList);
     }
 }

@@ -4,6 +4,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 
+import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.entity.item.ItemDB;
@@ -27,6 +28,7 @@ public class ItemListTest {
     /* Under test */
     ItemList itemListUT;
     ItemFactory itemF;
+    GlobalContext globalContext;
     ArrayList<Item> fakeItemDB;
 
     /* Mock classes */
@@ -42,8 +44,8 @@ public class ItemListTest {
     public void makeItemList() {
         Account testAccount = new Account("Watrina 4",
                 "fdsoijj191");
-        itemListUT = ItemList.newInstance(testAccount, mockDBHandler,
-                itemListAdapter, new ArrayList<>());
+        globalContext.setAccount(testAccount);
+        itemListUT = ItemList.newInstance(mockDBHandler, itemListAdapter);
     }
 
     @Before
