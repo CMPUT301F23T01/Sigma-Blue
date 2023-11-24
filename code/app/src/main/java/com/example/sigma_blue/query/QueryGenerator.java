@@ -62,8 +62,8 @@ public class QueryGenerator {
      * @param field This is the document field that is being matched
      * @param keyword This is the keyword being used for filtering
      */
-    public void filterEqualsQuery(String field, String keyword) {
-        setQuery(query.whereEqualTo(field, keyword));
+    public static Query filterEqualsQuery(Query query, String field, String keyword) {
+        return query.whereEqualTo(field, keyword);
     }
 
     /**

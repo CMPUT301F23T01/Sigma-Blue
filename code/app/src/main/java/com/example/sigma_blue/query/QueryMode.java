@@ -1,7 +1,6 @@
 package com.example.sigma_blue.query;
 
 import com.example.sigma_blue.database.ADatabaseHandler;
-import com.example.sigma_blue.database.IDatabaseItem;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.utility.Pair;
@@ -69,10 +68,17 @@ public class QueryMode {
      */
     public void receiveSortQuery(SortField sortMode) {
         if (sortMode != null) currentSort = sortMode;
-        queryUpdateSort();
+        queryUpdate();
     }
 
-    public void queryUpdateSort() {
+    public void receiveFilterQuery(FilterField filterMode) {
+        switch(filterMode) {
+            default:
+                throw new RuntimeException("Uncovered case");
+        }
+    }
+
+    public void queryUpdate() {
         resetQueryObject();   // Need to reset before running
         if (currentSort != SortField.NO_SELECTION) {
             currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
@@ -107,7 +113,7 @@ public class QueryMode {
      */
     public void setAscend() {
         direction = Query.Direction.ASCENDING;
-        queryUpdateSort();
+        queryUpdate();
     }
 
     /**
@@ -115,6 +121,6 @@ public class QueryMode {
      */
     public void setDescend() {
         direction = Query.Direction.DESCENDING;
-        queryUpdateSort();
+        queryUpdate();
     }
 }

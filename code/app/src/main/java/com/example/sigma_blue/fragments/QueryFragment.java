@@ -1,7 +1,6 @@
 package com.example.sigma_blue.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
@@ -38,7 +36,7 @@ public class QueryFragment extends DialogFragment {
      */
     private class ViewHolder {
         Button backButton, resetButton;
-        EditText descriptionFilterET;
+        EditText descriptionFilterET, makeFilterET;
         Spinner sortCriteriaSpinner, tagFilterSpinner;
         CheckBox ascendingBox, descendingBox;
         DatePicker startDatePicker, endDatePicker;
@@ -54,7 +52,7 @@ public class QueryFragment extends DialogFragment {
         public ViewHolder(View entireView) {
             bindViews(entireView);
             setAdapters();
-            resetQuery();
+            resetQueryUI();
             regenerateSelection();
         }
 
@@ -67,6 +65,7 @@ public class QueryFragment extends DialogFragment {
             resetButton = entireView.findViewById(R.id.sortingResetButton);
             descriptionFilterET = entireView.findViewById(R.id
                     .descFilterEditText);
+            makeFilterET = entireView.findViewById(R.id.makeFilterEditText);
             sortCriteriaSpinner = entireView.findViewById(R.id
                     .sortCriteriaSpinner);
             tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
@@ -103,7 +102,7 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Creates the
+         * Creates the sorting choice adapter.
          */
         private void createSortAdapter() {
             adapter = new ArrayAdapter<>(getContext(), android.R.layout
@@ -123,13 +122,21 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Resets the query. Everything is returned to default value, along with
-         * the global state.
+         * Resets the query UI. This just puts the UI at a known default state
          */
-        private void resetQuery() {
+        private void resetQueryUI() {
             sortCriteriaSpinner.setSelection(0);
             tagFilterSpinner.setSelection(0);
             flipAscendBox(true);
+        }
+
+        /**
+         * Actually clear the database query, and then resets the UI to be the
+         * default value.
+         */
+        private void resetQuery() {
+            globalContext.getQueryState().clearQuery();
+            regenerateSelection();
         }
 
         /**
@@ -159,9 +166,7 @@ public class QueryFragment extends DialogFragment {
             backButton.setOnClickListener(view -> dismiss());   // Go back
 
             /* Resets the query. Uses the database default */
-            resetButton.setOnClickListener(view -> {
-                resetQuery();
-            });
+            resetButton.setOnClickListener(view -> resetQuery());
 
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
@@ -236,7 +241,7 @@ public class QueryFragment extends DialogFragment {
      * @param savedInstance If non-null, this fragment is being re-constructed
      * from a previous saved state as given here.
      *
-     * @return
+     * @return the generated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
