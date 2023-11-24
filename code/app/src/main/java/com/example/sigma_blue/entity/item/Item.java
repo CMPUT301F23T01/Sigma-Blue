@@ -3,7 +3,6 @@ package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 
-import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -36,7 +35,6 @@ public class Item implements Comparable<Item>, Serializable,
     private String serialNumber, comment;
     private List<Tag> tags;
     private ArrayList<String> imagePaths;
-    private GlobalContext globalContext;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
@@ -140,7 +138,6 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name, Date date, String description, String comment,
                 String make, String serial, String model, Double value) {
-        this.globalContext = GlobalContext.getInstance();
         this.name = name;
         this.date = date;
         this.description = description;
@@ -172,6 +169,24 @@ public class Item implements Comparable<Item>, Serializable,
     public Item() {
         this("", new Date(), "", "", "", "",
                 "", 0d);
+    }
+
+    /**
+     * Copy constructer
+     * @param other item to copy from
+     */
+    public Item(Item other) {
+        this.name = other.getName();
+        this.date = other.getDate();
+        this.description = other.getDescription();
+        this.make = other.getMake();
+        this.model = other.getModel();
+        this.serialNumber = other.getSerialNumber();
+        this.value = other.getValue();
+        this.comment = other.getComment();
+
+        this.tags = new ArrayList<Tag>(other.getTags());
+        this.imagePaths = new ArrayList<String>(other.getImagePaths());
     }
 
     /**
@@ -550,14 +565,11 @@ public class Item implements Comparable<Item>, Serializable,
      * When tags are deleted from the DB they are not removed from items.
      * This method removes any tags that are not in the tag list.
      */
-    public void cleanTags() {
+    public void cleanTags(ArrayList<Tag> validTags) {
         ArrayList<Tag> newTags = new ArrayList<>();
-        if (globalContext == null) {
-            globalContext = GlobalContext.getInstance();
-        }
 
         for (Tag t : this.tags) {
-            if (globalContext.getTagList().getEntityList().contains(t)) {
+            if (validTags.contains(t)) {
                 newTags.add(t);
             }
         }

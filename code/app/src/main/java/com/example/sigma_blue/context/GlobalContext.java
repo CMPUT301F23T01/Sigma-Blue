@@ -37,6 +37,7 @@ public class GlobalContext {
     private TagList tagList;
     private SelectedEntities<Tag> selectedTags;
     private Item currentItem;
+    private Item modifiedItem;
     private Tag currentTag;
     private QueryMode queryState;
     private ImageDB imageDB; // probably bad
@@ -153,5 +154,13 @@ public class GlobalContext {
     }
     public SelectedEntities<Tag> getSelectedTags() {
         return selectedTags;
+    }
+
+    public Item getModifiedItem() {
+        return modifiedItem;
+    }
+
+    public void setModifiedItem(Item modifiedItem) {
+        this.modifiedItem = modifiedItem;
     }
 }

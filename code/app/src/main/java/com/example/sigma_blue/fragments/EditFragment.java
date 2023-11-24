@@ -143,16 +143,16 @@ public class EditFragment extends Fragment
 
         globalContext = GlobalContext.getInstance();
         // Load Item and mode
-        Item currentItem = globalContext.getCurrentItem();
+        Item modifiedItem = globalContext.getModifiedItem();
         // If the user is creating a new item.
-        if (currentItem == null) {
-            currentItem = new Item();
+        if (modifiedItem == null) {
+            modifiedItem = new Item();
 
-            globalContext.setCurrentItem(currentItem);
+            globalContext.setModifiedItem(modifiedItem);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        textDate.setText(sdf.format(currentItem.getDate()));
+        textDate.setText(sdf.format(modifiedItem.getDate()));
 
         //ITEM IMAGE RELATED CHANGES
         // trying to get the path of image, and put it on the add item
@@ -253,14 +253,8 @@ public class EditFragment extends Fragment
                     // old one is overwritten then we don't know which item in
                     // the list needs to be deleted if doing an edit.
                     Item oldItem = globalContext.getCurrentItem();
-                    Item newItem = new Item();
+                    Item newItem = globalContext.getModifiedItem();
                     loadUiText(newItem);
-                    for (Tag t : oldItem.getTags()) {
-                        newItem.addTag(t);
-                    }
-                    for (String i : oldItem.getImagePaths()) {
-                        newItem.addImagePath(i);
-                    }
 
                     // State control for adding items
                     if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
@@ -278,10 +272,7 @@ public class EditFragment extends Fragment
                     } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
                         globalContext.getItemList().updateEntity(newItem, oldItem);
                         globalContext.setCurrentItem(newItem);
-                        globalContext.newState(ApplicationState
-                                .DETAILS_FRAGMENT);
-                        Log.i("NEW STATE", ApplicationState
-                                .DETAILS_FRAGMENT.toString());
+                        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
                         Log.e("BAD STATE",
@@ -309,7 +300,7 @@ public class EditFragment extends Fragment
     public void onResume() {
         super.onResume();
         if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
-            editItemUIBindings(globalContext.getCurrentItem());
+            editItemUIBindings(globalContext.getModifiedItem());
         }
     }
 
@@ -362,10 +353,13 @@ public class EditFragment extends Fragment
         item.setComment(textComment.getText().toString());
     }
 
+    //TODO. make it so that you don't need to have a valid item before adding a picture
     private void handleImageClick() {
-        Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
-        loadUiText(globalContext.getCurrentItem());
-        globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
-        startActivity(intent);
+        if (verifyText()) {
+            Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
+            loadUiText(globalContext.getCurrentItem());
+            globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
+            startActivity(intent);
+        }
     }
 }

@@ -68,7 +68,7 @@ public class ImageTakingActivity extends BaseActivity{
                     Snackbar failedBarcodeSnackbar = Snackbar.make(findViewById(R.id.login_main), "Failed to scan", Snackbar.LENGTH_LONG);
                     failedBarcodeSnackbar.show();
                 } else {
-                    globalContext.getCurrentItem().setSerialNumber((String) result.getContents());
+                    globalContext.getModifiedItem().setSerialNumber((String) result.getContents());
                 }
                 //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
                 globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
@@ -107,13 +107,15 @@ public class ImageTakingActivity extends BaseActivity{
             finish();
 
         } else if (requestCode == REQUEST_BARCODE_SCAN && resultCode == RESULT_OK) {
-            if(extras.get("data") != null) {
-                globalContext.getCurrentItem().setSerialNumber((String) extras.get("data"));
-                //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
-                globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
-                //startActivity(intent);
-                finish();
-            }
+            // TODO: FIX
+            // doesn't work as of now. The callback registering is a temporary fix
+//            if(extras.get("data") != null) {
+//                globalContext.setSerialNumber((String) extras.get("data"));
+//                //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
+//                globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
+//                //startActivity(intent);
+//                finish();
+//            }
         }
     }
 
