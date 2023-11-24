@@ -92,6 +92,7 @@ public class GlobalContext {
     public AccountList getAccountList() {
         return accountList;
     }
+
     public ItemList getItemList() {
         return itemList;
     }
