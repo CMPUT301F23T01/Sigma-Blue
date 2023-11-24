@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
+import com.example.sigma_blue.entity.image.ImageDB;
 import com.example.sigma_blue.entity.item.Item;
 
 import com.example.sigma_blue.entity.item.ItemDB;
@@ -35,6 +36,7 @@ public class GlobalContext {
     private Item currentItem;
     private Tag currentTag;
     private QueryMode queryState;
+    private ImageDB imageDB; // probably bad
 
     private ArrayList<String> stateHistory; // store a history for debugging
 
@@ -67,6 +69,7 @@ public class GlobalContext {
         this.selectedTags = new SelectedEntities<Tag>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
+        this.imageDB = new ImageDB();
     }
 
     /**
@@ -84,7 +87,11 @@ public class GlobalContext {
         stateHistory.add(state);
     }
     public String getCurrentState() {
-        return stateHistory.get(stateHistory.size() - 1);
+        if (stateHistory.size() >= 1) {
+            return stateHistory.get(stateHistory.size() - 1);
+        } else {
+            return "none";
+        }
     }
     public String getLastState() {
         return stateHistory.get(stateHistory.size() - 2);
@@ -95,7 +102,7 @@ public class GlobalContext {
     public ItemList getItemList() {
         return itemList;
     }
-
+    public ImageDB getImageDB() {return imageDB;}
     /**
      * Setter for the query mode.
      * @return the query mode object, which keeps track of the current query

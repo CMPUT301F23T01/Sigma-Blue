@@ -28,13 +28,14 @@ public class Item implements Comparable<Item>, Serializable,
     public static final String dbName = "NAME", dbDate = "DATE",
             dbDescription = "DESCRIPTION", dbMake = "MAKE", dbValue = "VALUE",
             dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL",
-            dbTags = "TAGS";
+            dbTags = "TAGS", dbImages = "IMAGES";
 
-    private String description, make, model, photoPath, name;
+    private String description, make, model, name;
     private Date date;
     private Double value;
     private String serialNumber, comment;
     private List<Tag> tags;
+    private ArrayList<String> imagePaths;
     private GlobalContext globalContext;
 
     /*TODO
@@ -58,7 +59,6 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setDescription(null);
         ret.setMake(null);
         ret.setModel(null);
-        ret.setPhotoPath(null);
         ret.setValue(0d);
 
         return ret;
@@ -66,8 +66,8 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, Double value, String photoPath,
-                                   List<String> tags) {
+                                   String model, String serial, Double value,
+                                   List<String> imagePaths, List<String> tags) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -84,12 +84,19 @@ public class Item implements Comparable<Item>, Serializable,
             Tag newTag = new Tag(s.substring(0, s.length()-8), s.substring(s.length()-8));
             ret.addTag(newTag);
         }
+
+        // workaround to allow for loading documents from before images were a thing
+        if (imagePaths != null) {
+            for (String s : imagePaths) {
+                ret.addImagePath(s);
+            }
+        }
         return ret;
     }
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, Double value, String photoPath) {
+                                   String model, String serial, Double value ) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -100,14 +107,13 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setModel(model);
         ret.setSerialNumber(serial);
         ret.setValue(value);
-        ret.setPhotoPath(photoPath);
 
         return ret;
     }
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final String serial, final Double value, final String photoPath) {
+                                   final String serial, final Double value ) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -118,7 +124,6 @@ public class Item implements Comparable<Item>, Serializable,
         ret.setModel(model);
         ret.setSerialNumber(serial);
         ret.setValue(value);
-        ret.setPhotoPath(photoPath);
 
         return ret;
     }
@@ -146,6 +151,7 @@ public class Item implements Comparable<Item>, Serializable,
         this.comment = comment;
 
         this.tags = new ArrayList<Tag>();
+        this.imagePaths = new ArrayList<String>();
     }
 
     /**
@@ -157,6 +163,7 @@ public class Item implements Comparable<Item>, Serializable,
         /* Making just the most vital components */
         this.name = name;
         this.tags = new ArrayList<>();
+        this.imagePaths = new ArrayList<>();
     }
 
     /**
@@ -365,12 +372,21 @@ public class Item implements Comparable<Item>, Serializable,
         return false;
     }
 
-    public String getPhotoPath() {
-        return photoPath;
+    public ArrayList<String> getImagePaths() {
+        return this.imagePaths;
     }
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
+    public void addImagePath(String i) {
+        this.imagePaths.add(i);
+    }
+
+    public boolean removeImagePath(String i) {
+        if (this.imagePaths.contains(i)){
+            this.imagePaths.remove(i);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -483,8 +499,8 @@ public class Item implements Comparable<Item>, Serializable,
                 ret.put(dbDescription, item.getDescription());
                 ret.put(dbSerial, item.getSerialNumber());
                 ret.put(dbValue, item.getValue());
+                ret.put(dbImages, item.getImagePaths());
                 ret.put(dbTags, item.getTagNames());
-                ret.put("IMAGE", item.getPhotoPath());                
                 Log.e("TAG NAMES", item.getTagNames().stream()
                         .reduce("", (acc, ele) -> acc + ele));
                 return ret;
@@ -507,7 +523,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbModel),
                     q.getString(dbSerial),
                     q.getDouble(dbValue),
-                    q.getString("IMAGE"),
+                    (List<String>) q.get(dbImages),
                     (List<String>) q.get(dbTags)
             );
         } catch (ParseException e) {
@@ -520,7 +536,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbModel),
                     q.getString(dbSerial),
                     q.getDouble(dbValue),
-                    q.getString("IMAGE"),
+                    (List<String>) q.get(dbImages),
                     (List<String>) q.get(dbTags)
             );
         }

@@ -123,28 +123,19 @@ public class DetailsFragment extends Fragment
         tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
         tagListView.setAdapter(tagListAdapter);
 
-        // ITEM IMAGE
+        //ITEM IMAGE RELATED CHANGES
         // trying to get the path of image, and put it on the add item
-        String tempImagePath = globalContext.getCurrentItem().getPhotoPath();
+        String tempImagePath = globalContext.getCurrentItem().getImagePaths().size() > 0 ? globalContext.getCurrentItem().getImagePaths().get(0) : null;
         // set the image of the item
         // Create a storage reference from our app
         if (tempImagePath != null) {
-            StorageReference storageRef = storage.getReference();
-            StorageReference itemImageRef = storageRef.child(tempImagePath);
-
-            final long ONE_MEGABYTE = 1024 * 1024;
-            itemImageRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            globalContext.getImageDB().loadImage(tempImagePath, new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     // Data for "images/island.jpg" is returns, use this as needed
                     Log.i("ImageDownload", "Image download succeed");
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     itemImage.setImageBitmap(bitmap);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
                 }
             });
         }

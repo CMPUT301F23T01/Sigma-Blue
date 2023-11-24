@@ -160,26 +160,17 @@ public class EditFragment extends Fragment
 
         //ITEM IMAGE RELATED CHANGES
         // trying to get the path of image, and put it on the add item
-        String tempImagePath = globalContext.getCurrentItem().getPhotoPath();
+        String tempImagePath = globalContext.getCurrentItem().getImagePaths().size() > 0 ? globalContext.getCurrentItem().getImagePaths().get(0) : null;
         // set the image of the item
         // Create a storage reference from our app
         if (tempImagePath != null) {
-            StorageReference storageRef = storage.getReference();
-            StorageReference itemImageRef = storageRef.child(tempImagePath);
-
-            final long ONE_MEGABYTE = 1024 * 1024;
-            itemImageRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            globalContext.getImageDB().loadImage(tempImagePath, new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     // Data for "images/island.jpg" is returns, use this as needed
                     Log.i("ImageDownload", "Image download succeed");
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     itemImage.setImageBitmap(bitmap);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
                 }
             });
         }
@@ -263,23 +254,29 @@ public class EditFragment extends Fragment
                     // need a new item as to not overwrite the old one. If the
                     // old one is overwritten then we don't know which item in
                     // the list needs to be deleted if doing an edit.
-                    Item modifiedItem = new Item();
-                    loadUiText(modifiedItem);
+                    Item oldItem = globalContext.getCurrentItem();
+                    Item newItem = new Item();
+                    loadUiText(newItem);
+                    for (Tag t : oldItem.getTags()) {
+                        newItem.addTag(t);
+                    }
+                    for (String i : oldItem.getImagePaths()) {
+                        newItem.addImagePath(i);
+                    }
+
                     // State control for adding items
                     if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
-                        if (globalContext.getItemList().getList().contains(modifiedItem)) {
+                        if (globalContext.getItemList().getList().contains(newItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
                             errorSnackbar.show();
                         } else {
-                            globalContext.getItemList().add(modifiedItem);
-                            globalContext.setCurrentItem(modifiedItem);
+                            globalContext.getItemList().add(newItem);
                             globalContext.newState("view_list_activity");
                             activity.returnAndClose();
                         }
                     } else if (Objects.equals(globalContext.getCurrentState(),
                             "edit_item_fragment")) {    // Edit state
-                        globalContext.getItemList().updateEntity(modifiedItem, globalContext.getCurrentItem());
-                        globalContext.setCurrentItem(modifiedItem);
+                        globalContext.getItemList().updateEntity(newItem, oldItem);
                         globalContext.newState("details_fragment");
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
@@ -373,8 +370,6 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
-        //Photo Added, should have better way
-        item.setPhotoPath(globalContext.getCurrentItem().getPhotoPath());
     }
 
     /**
@@ -388,7 +383,6 @@ public class EditFragment extends Fragment
         Log.i("DEBUG", item.getName() + "Short Press");
         Intent intent = new Intent(this.getContext(), PhotoTakingActivity.class);
         // TODO ISSUE: not going to change the state at this time, seems messed up existing logic between activities/frags
-        //globalContext.newState("add_photo");
         startActivity(intent);
     }
 }

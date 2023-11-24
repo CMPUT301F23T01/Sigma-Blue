@@ -52,6 +52,7 @@ public class AddEditActivity extends BaseActivity
 
         } else {
             Log.e("DEBUG", "Bad AddEditMode");
+            return;
         }
         navController.setGraph(graph);
     }
