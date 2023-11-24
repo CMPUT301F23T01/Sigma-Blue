@@ -1,15 +1,10 @@
 package com.example.sigma_blue.entity.image;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.example.sigma_blue.activities.BaseActivity;
-import com.example.sigma_blue.activities.PhotoTakingActivity;
 import com.example.sigma_blue.entity.account.Account;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +23,7 @@ public class ImageDB {
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public String addImage(Bitmap imageBitmap, Account account, OnCompleteListener<UploadTask.TaskSnapshot> listener) {
+        //return "";
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         byte[] data = outputStream.toByteArray();
@@ -36,12 +32,12 @@ public class ImageDB {
         StorageReference firebaseStorageRef = storage.getReference(path);
 
         //now upload the data(image), expected to take some time
-        UploadTask uploadTask = firebaseStorageRef.putBytes (data);
+        UploadTask uploadTask = firebaseStorageRef.putBytes(data);
         uploadTask.addOnCompleteListener(listener);
         return path;
     }
 
-    public void loadImage(String path, OnSuccessListener<byte[]> listener) {
+    public void getImage(String path, OnSuccessListener<byte[]> listener) {
         StorageReference storageRef = storage.getReference();
         StorageReference itemImageRef = storageRef.child(path);
 

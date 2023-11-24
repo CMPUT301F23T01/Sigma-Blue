@@ -86,11 +86,11 @@ public class GlobalContext {
         Log.d("STATE_CHANGE", state.toString());
         stateHistory.add(state);
     }
-    public String getCurrentState() {
+    public ApplicationState getCurrentState() {
         if (stateHistory.size() >= 1) {
             return stateHistory.get(stateHistory.size() - 1);
         } else {
-            return "none";
+            return ApplicationState.NONE;
         }
     }
     public ApplicationState getLastState() {

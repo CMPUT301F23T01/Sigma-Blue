@@ -22,8 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.activities.PhotoTakingActivity;
-import com.example.sigma_blue.activities.ViewListActivity;
+import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
@@ -31,19 +30,14 @@ import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -74,8 +68,6 @@ public class EditFragment extends Fragment
     //private Item savedItemChanges;
     private int mDay, mMonth, mYear;
     private GlobalContext globalContext;
-
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * Required empty public constructor
@@ -118,6 +110,7 @@ public class EditFragment extends Fragment
         tagListView = binding.getRoot().findViewById((R.id.list_tag));
         itemImage = binding.getRoot().findViewById(R.id.item_image);
 
+        // TODO add buttons here
         return binding.getRoot();
     }
 
@@ -157,12 +150,7 @@ public class EditFragment extends Fragment
 
             globalContext.setCurrentItem(currentItem);
         }
-        final ApplicationState mode = globalContext.getCurrentState();
 
-        // set item details
-        if (mode == ApplicationState.EDIT_ITEM_FRAGMENT) {
-            editItemUIBindings(currentItem);
-        }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
 
@@ -172,7 +160,7 @@ public class EditFragment extends Fragment
         // set the image of the item
         // Create a storage reference from our app
         if (tempImagePath != null) {
-            globalContext.getImageDB().loadImage(tempImagePath, new OnSuccessListener<byte[]>() {
+            globalContext.getImageDB().getImage(tempImagePath, new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     // Data for "images/island.jpg" is returns, use this as needed
@@ -214,7 +202,7 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (mode == ApplicationState.ADD_ITEM_FRAGMENT) {
+                if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
@@ -250,11 +238,7 @@ public class EditFragment extends Fragment
         view.findViewById(R.id.item_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleFigureClick(globalContext.getCurrentItem());
-
-                //PHOTO TAKING ACTIVITY
-                // for back to main logic, can be improved in the future
-                activity.finish();
+                handleImageClick();
             }
         });
 
@@ -279,9 +263,8 @@ public class EditFragment extends Fragment
                     }
 
                     // State control for adding items
-                    if (globalContext.getCurrentState() == ApplicationState
-                            .ADD_ITEM_FRAGMENT) {
-                        if (globalContext.getItemList().getList().contains(modifiedItem)) {
+                    if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
+                        if (globalContext.getItemList().getList().contains(newItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
                             errorSnackbar.show();
                         } else {
@@ -292,10 +275,9 @@ public class EditFragment extends Fragment
                                     .VIEW_LIST_ACTIVITY.toString());
                             activity.returnAndClose();
                         }
-                    } else if (globalContext.getCurrentState() ==
-                            ApplicationState.EDIT_ITEM_FRAGMENT) {
+                    } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
                         globalContext.getItemList().updateEntity(newItem, oldItem);
-                        globalContext.setCurrentItem(modifiedItem);
+                        globalContext.setCurrentItem(newItem);
                         globalContext.newState(ApplicationState
                                 .DETAILS_FRAGMENT);
                         Log.i("NEW STATE", ApplicationState
@@ -316,35 +298,21 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                IntentIntegrator integrator = IntentIntegrator.forSupportFragment(EditFragment.this);
-
-                integrator.setOrientationLocked(true);
-                integrator.setPrompt("Scan Barcode");
-                integrator.setBeepEnabled(true);
-
-                integrator.initiateScan();
+                globalContext.newState(ApplicationState.BARCODE_ADD_ACTIVITY);
+                Intent intent = new Intent(v.getContext(), ImageTakingActivity.class);
+                startActivity(intent);
             }
         });
     }
 
-    /**
-     * Method for retrieving results from barcode scanning activity
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result.getContents() != null) {
-            textSerial.setText(result.getContents());
+    public void onResume() {
+        super.onResume();
+        if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
+            editItemUIBindings(globalContext.getCurrentItem());
         }
     }
-    
+
     /**
      * Method for destroying fragment
      */
@@ -394,17 +362,10 @@ public class EditFragment extends Fragment
         item.setComment(textComment.getText().toString());
     }
 
-    /**
-     * listener used to deal with the user clicking on a thing in the list. This method is passed to
-     * the ItemList constructor as a callback function, but not called directly from anywhere.
-     * see <a href="https://stackoverflow.com/questions/24471109/recyclerview-onclick">...</a>,
-     * answer from Marurban
-     * @param item Clicked on item
-     */
-    private void handleFigureClick(Item item) {
-        Log.i("DEBUG", item.getName() + "Short Press");
-        Intent intent = new Intent(this.getContext(), PhotoTakingActivity.class);
-        // TODO ISSUE: not going to change the state at this time, seems messed up existing logic between activities/frags
+    private void handleImageClick() {
+        Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
+        loadUiText(globalContext.getCurrentItem());
+        globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
         startActivity(intent);
     }
 }

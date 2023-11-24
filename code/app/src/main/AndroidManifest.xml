@@ -38,7 +38,7 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.sigma_blue.activities.PhotoTakingActivity"
+        <activity android:name="com.example.sigma_blue.activities.ImageTakingActivity"
             android:exported="true"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

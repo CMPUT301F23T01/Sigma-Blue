@@ -130,7 +130,7 @@ public class DetailsFragment extends Fragment
         // set the image of the item
         // Create a storage reference from our app
         if (tempImagePath != null) {
-            globalContext.getImageDB().loadImage(tempImagePath, new OnSuccessListener<byte[]>() {
+            globalContext.getImageDB().getImage(tempImagePath, new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     // Data for "images/island.jpg" is returns, use this as needed
