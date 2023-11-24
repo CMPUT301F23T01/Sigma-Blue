@@ -9,10 +9,21 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Custom app colors -->
-    <color name="add_edit_btn_bgr_test">#1454c4</color>
+    <color name="add_edit_btn_bgr_test">#1F5673</color>
     <color name="add_edit_btn_text_test">#FFFFFF</color>
-    <color name="add_edit_layout_bgr_test">#99ceff</color>
-    <color name="add_edit_layout_contrast_test">#CAF9FF</color>
+    <color name="add_edit_layout_bgr_test">#759FBC</color>
+    <color name="add_edit_layout_contrast_test">#99ceff</color>
+
+    <color name="blue_prime">#1454c4</color>
+    <color name="blue_light">#92BAFF</color>
+    <color name="blue_dark">#0A2D6A</color>
+    <color name="blue_darker">#18253C</color>
+
+    <color name="yellow_prime">#F3D43E</color>
+    <color name="yellow_light">#FBE681</color>
+    <color name="yellow_dark">#AF9309</color>
+
+
     <color name ="ic_launcher_background">#404375</color>
 
 </resources>
