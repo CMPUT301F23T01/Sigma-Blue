@@ -62,6 +62,7 @@ public class QueryFragment extends DialogFragment implements
             bindViews(entireView);
             setAdapters();
             resetQuery();
+            regenerateSelection();
         }
 
         /**
@@ -127,10 +128,14 @@ public class QueryFragment extends DialogFragment implements
          * the global state.
          */
         private void resetQuery() {
-            globalContext.getItemList().startListening();
             sortCriteriaSpinner.setSelection(0);
             tagFilterSpinner.setSelection(0);
             flipAscendBox(true);
+        }
+
+        public void regenerateSelection() {
+            sortCriteriaSpinner.setSelection(adapter.getPosition(globalContext
+                    .getQueryState().getCurrentSort()));
         }
 
         /**

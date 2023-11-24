@@ -31,6 +31,10 @@ public class QueryMode {
         clearQuery();
     }
 
+    public SortField getCurrentSort() {
+        return this.currentSort;
+    }
+
     /**
      * Reset the query mode back to default
      */
