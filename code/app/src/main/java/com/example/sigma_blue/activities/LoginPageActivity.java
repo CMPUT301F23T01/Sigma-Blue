@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
@@ -47,12 +48,13 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
 
         createAccBtn.setOnClickListener((v) -> {
             createAccFragment = new CreateAccFragment();
-            globalContext.newState("create_account_fragment");
-            fragmentLauncher.startFragmentTransaction(createAccFragment, "CREATE_ACCOUNT");
+            globalContext.newState(ApplicationState.CREATE_ACCOUNT_FRAGMENT);
+            fragmentLauncher.startFragmentTransaction(createAccFragment,
+                    "CREATE_ACCOUNT");
         });
 
         loginBtn.setOnClickListener((v) -> {
-            globalContext.newState("login_fragment");
+            globalContext.newState(ApplicationState.LOGIN_FRAGMENT);
             loginFragment = new LoginFragment().newInstance(globalContext.getAccountList());
             fragmentLauncher.startFragmentTransaction(loginFragment, "LOGIN");
         });
@@ -82,7 +84,7 @@ public class LoginPageActivity extends BaseActivity implements CreateAccFragment
     public void onLoginPressed(boolean matches){
         if (matches) {
             Intent intent = new Intent(LoginPageActivity.this, ViewListActivity.class);
-            globalContext.newState("list_view_activity");
+            globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
             startActivity(intent);
         }
         else {

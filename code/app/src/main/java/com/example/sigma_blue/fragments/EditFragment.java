@@ -24,6 +24,7 @@ import android.widget.ListView;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.activities.PhotoTakingActivity;
 import com.example.sigma_blue.activities.ViewListActivity;
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
@@ -121,6 +122,22 @@ public class EditFragment extends Fragment
     }
 
     /**
+     * Binding the current item to the ui.
+     * @param currentItem is the item that is being edited.
+     */
+    private void editItemUIBindings(final Item currentItem) {
+        textName.setText(currentItem.getName());
+        textValue.setText(String.valueOf(currentItem.getValue()));
+        textMake.setText(currentItem.getMake());
+        textModel.setText(currentItem.getModel());
+        textSerial.setText(currentItem.getSerialNumber());
+        textDescription.setText(currentItem.getDescription());
+        textComment.setText(currentItem.getComment());
+        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
+        tagListView.setAdapter(tagListAdapter);
+    }
+
+    /**
      * Method to set details of item in fragment and handle button interactions
      * @param view is the View of the fragment
      * @param savedInstanceState is a Bundle passed that holds data of activity
@@ -140,20 +157,11 @@ public class EditFragment extends Fragment
 
             globalContext.setCurrentItem(currentItem);
         }
-        final String mode = globalContext.getCurrentState();
+        final ApplicationState mode = globalContext.getCurrentState();
 
         // set item details
-        if (Objects.equals(mode, "edit_item_fragment"))
-        {
-            textName.setText(currentItem.getName());
-            textValue.setText(String.valueOf(currentItem.getValue()));
-            textMake.setText(currentItem.getMake());
-            textModel.setText(currentItem.getModel());
-            textSerial.setText(currentItem.getSerialNumber());
-            textDescription.setText(currentItem.getDescription());
-            textComment.setText(currentItem.getComment());
-            tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
-            tagListView.setAdapter(tagListAdapter);
+        if (mode == ApplicationState.EDIT_ITEM_FRAGMENT) {
+            editItemUIBindings(currentItem);
         }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(currentItem.getDate()));
@@ -206,15 +214,19 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (Objects.equals(mode, "add_item_fragment")) {
+                if (mode == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
-                    globalContext.newState("view_list_activity");
+                    globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
+                            .toString());
                     activity.returnAndClose();
 
                 } else {
                     // Navigate to Item Details
-                    NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                    NavHostFragment.findNavController(EditFragment.this)
+                            .navigate(R.id
+                                    .action_editFragment_to_detailsFragment);
                 }
             }
         });
@@ -228,7 +240,9 @@ public class EditFragment extends Fragment
                 // Save current ui state
                 loadUiText(globalContext.getCurrentItem());
                 // Open TagManager
-                globalContext.newState("tag_manager_fragment");
+                globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
+                Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
+                        .toString());
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
@@ -265,19 +279,27 @@ public class EditFragment extends Fragment
                     }
 
                     // State control for adding items
-                    if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
-                        if (globalContext.getItemList().getList().contains(newItem)) {
+                    if (globalContext.getCurrentState() == ApplicationState
+                            .ADD_ITEM_FRAGMENT) {
+                        if (globalContext.getItemList().getList().contains(modifiedItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
                             errorSnackbar.show();
                         } else {
                             globalContext.getItemList().add(newItem);
-                            globalContext.newState("view_list_activity");
+                            globalContext.newState(ApplicationState
+                                    .VIEW_LIST_ACTIVITY);
+                            Log.i("NEW STATE", ApplicationState
+                                    .VIEW_LIST_ACTIVITY.toString());
                             activity.returnAndClose();
                         }
-                    } else if (Objects.equals(globalContext.getCurrentState(),
-                            "edit_item_fragment")) {    // Edit state
+                    } else if (globalContext.getCurrentState() ==
+                            ApplicationState.EDIT_ITEM_FRAGMENT) {
                         globalContext.getItemList().updateEntity(newItem, oldItem);
-                        globalContext.newState("details_fragment");
+                        globalContext.setCurrentItem(modifiedItem);
+                        globalContext.newState(ApplicationState
+                                .DETAILS_FRAGMENT);
+                        Log.i("NEW STATE", ApplicationState
+                                .DETAILS_FRAGMENT.toString());
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
                         Log.e("BAD STATE",

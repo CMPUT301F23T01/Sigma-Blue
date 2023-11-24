@@ -9,6 +9,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.item.Item;
@@ -37,11 +38,13 @@ public class AddEditActivity extends BaseActivity
         NavGraph graph = navController.getNavInflater().inflate(R.navigation.nav_graph);
 
         //depending on the requested state go the the correct fragment
-        if (Objects.equals(globalContext.getCurrentState(), "add_item_fragment")) {
+        if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
             graph.setStartDestination(R.id.editFragment);
-        } else if (Objects.equals(globalContext.getCurrentState(), "multi_select_tag_manager_fragment")) {
+        } else if (globalContext.getCurrentState() == ApplicationState
+                .MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
             graph.setStartDestination(R.id.tagManagerFragment);
-        } else if (Objects.equals(globalContext.getCurrentState(), "details_fragment")) {
+        } else if (globalContext.getCurrentState() == ApplicationState
+                .DETAILS_FRAGMENT) {
             graph.setStartDestination(R.id.detailsFragment);
 
             //PHOTO TAKING ACTIVITY
@@ -63,7 +66,7 @@ public class AddEditActivity extends BaseActivity
     public void returnAndClose() {
         Intent i = new Intent(this, ViewListActivity.class);
 
-        globalContext.newState("view_list_activity");
+        globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
         setResult(Activity.RESULT_OK, i);
         finish();
     }

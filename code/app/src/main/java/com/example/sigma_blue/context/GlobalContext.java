@@ -38,7 +38,7 @@ public class GlobalContext {
     private QueryMode queryState;
     private ImageDB imageDB; // probably bad
 
-    private ArrayList<String> stateHistory; // store a history for debugging
+    private ArrayList<ApplicationState> stateHistory; // store a history for debugging
 
     /**
      * The intended way to use this class. Singleton design pattern.
@@ -78,12 +78,12 @@ public class GlobalContext {
      * valid
      * @param state state to switch to
      */
-    public void newState(String state) {
+    public void newState(ApplicationState state) {
         if (stateHistory.size() == 256) { // keep the last 256 states for debugging
             stateHistory.remove(0);
         }
         // TODO make this an enum
-        Log.d("STATE_CHANGE", state);
+        Log.d("STATE_CHANGE", state.toString());
         stateHistory.add(state);
     }
     public String getCurrentState() {
@@ -93,12 +93,13 @@ public class GlobalContext {
             return "none";
         }
     }
-    public String getLastState() {
+    public ApplicationState getLastState() {
         return stateHistory.get(stateHistory.size() - 2);
     }
     public AccountList getAccountList() {
         return accountList;
     }
+
     public ItemList getItemList() {
         return itemList;
     }

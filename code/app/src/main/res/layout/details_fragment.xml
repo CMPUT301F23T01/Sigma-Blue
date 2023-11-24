@@ -9,7 +9,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/add_edit_layout_contrast_test"
+        android:background="?colorPrimaryVariant"
         app:layout_constraintBottom_toTopOf="@+id/BottomBarLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,62 +21,72 @@
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Details_1"
+                android:id="@+id/Edit_Details_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="?colorPrimarySurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/text_name_disp"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="64dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/add_edit_empty"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/text_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_edit_text_name"
-                    android:textColor="@android:color/black"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/text_name_disp"
-                    app:layout_constraintStart_toStartOf="@+id/text_name_disp" />
+                    <TextView
+                        android:id="@+id/text_name_disp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/add_edit_empty"
+                        android:textColor="?colorOnBackground"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_edit_text_name"
+                        android:textColor="?colorOnBackground"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/text_name_disp"
+                        app:layout_constraintStart_toStartOf="@+id/text_name_disp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/Details_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/white"
+                android:layout_marginTop="8dp"
+                android:background="?colorPrimarySurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Details_1">
+                app:layout_constraintTop_toBottomOf="@+id/Edit_Details_1">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/SecondaryDetails"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="48dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ImageLayout"
-                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -84,10 +94,9 @@
                         android:id="@+id/text_value_disp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -100,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -112,7 +121,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_text_serial"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/text_serial_disp"
@@ -124,7 +133,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -137,7 +146,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -150,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -162,7 +171,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_text_model"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/text_model_disp"
@@ -173,7 +182,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_text_value"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/text_value_disp"
@@ -184,7 +193,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_text_date"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/text_date_disp"
@@ -195,7 +204,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_text_make"
-                        android:textColor="@android:color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/text_make_disp"
@@ -203,87 +212,28 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/ImageLayout"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@color/add_edit_layout_bgr_test"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginEnd="32dp"
-                        android:layout_weight="1"
-                        android:text="ImageView goes here"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Details_3"
+                android:id="@+id/Edit_Details_3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/white"
+                android:layout_marginTop="8dp"
+                android:background="?colorPrimarySurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Details_2">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/TagListLayout"
-                    android:layout_width="180dp"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_edit_text_tag"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ListView
-                        android:id="@+id/list_tag"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="@color/add_edit_layout_bgr_test"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/SecondaryDetails2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/TagListLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -294,7 +244,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -305,9 +255,8 @@
                         android:id="@+id/text_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:text="@string/add_edit_text_description"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -318,7 +267,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/add_edit_empty"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -331,7 +280,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="@string/add_edit_text_comment"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnBackground"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/text_description"
@@ -350,6 +299,97 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/DetialsLongLayout"
                 app:srcCompat="@android:drawable/ic_menu_gallery" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/Details_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="?colorPrimarySurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Edit_Details_3">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/TagListLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/text_tags"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_edit_text_tag"
+                        android:textColor="?colorOnBackground"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ListView
+                        android:id="@+id/list_tag"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="?colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_tags" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/Edit_Details_5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:background="?colorPrimarySurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/Details_4">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/text_pictures"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_edit_text_picture"
+                        android:textColor="?colorOnBackground"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ListView
+                        android:id="@+id/list_pictures"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="?colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_pictures" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -358,7 +398,7 @@
         android:id="@+id/TopBarLayout"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/add_edit_layout_bgr_test"
+        android:background="?colorPrimaryVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -370,9 +410,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/add_edit_btn_bgr_test"
+            android:backgroundTint="?colorPrimary"
             android:text="@string/add_edit_btn_back"
-            android:textColor="@color/add_edit_btn_text_test"
+            android:textColor="?colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -382,7 +422,7 @@
         android:id="@+id/BottomBarLayout"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/add_edit_layout_bgr_test"
+        android:background="?colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -394,9 +434,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/add_edit_btn_bgr_test"
+            android:backgroundTint="?colorPrimary"
             android:text="@string/add_edit_btn_edit"
-            android:textColor="@color/add_edit_btn_text_test"
+            android:textColor="?colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -406,9 +446,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/add_edit_btn_bgr_test"
+            android:backgroundTint="?colorPrimary"
             android:text="@string/add_edit_btn_delete"
-            android:textColor="@color/add_edit_btn_text_test"
+            android:textColor="?colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/button_edit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/button_edit" />
