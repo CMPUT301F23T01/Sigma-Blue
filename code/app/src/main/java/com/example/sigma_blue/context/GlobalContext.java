@@ -2,6 +2,8 @@ package com.example.sigma_blue.context;
 
 import android.util.Log;
 
+import com.example.sigma_blue.database.ADatabaseHandler;
+import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.entity.image.ImageDB;
@@ -14,6 +16,7 @@ import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.QueryMode;
+import com.example.sigma_blue.utility.Pair;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -110,12 +113,22 @@ public class GlobalContext {
      * state.
      */
     public QueryMode getQueryState() {
-        if (queryState == null) queryState = new QueryMode();   // lazy cons
+        if (queryState == null) queryState = new QueryMode(itemList
+                .getCollectionReference());   // lazy cons
        return this.queryState;
     }
 
     public TagList getTagList() {
         return tagList;
+    }
+
+    /**
+     * Returns a pair to reduce how verbose the methods are getting.
+     * @return a pair of the database list and the database handler. Used for
+     * querying.
+     */
+    public Pair<ADatabaseHandler<Item>, IDatabaseList<Item>> getQueryPair() {
+        return new Pair<>(itemList.getDbHandler(), itemList);
     }
 
     /**

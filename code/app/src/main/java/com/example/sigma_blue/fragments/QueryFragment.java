@@ -1,9 +1,12 @@
 package com.example.sigma_blue.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -14,10 +17,17 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.query.SortField;
+import com.google.firebase.firestore.Query;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
  * communicate with the backend.
+ * TODO: Filter has not been implemented yet.
  */
 public class QueryFragment extends DialogFragment {
     private GlobalContext globalContext;    // Used for transferring data
@@ -31,16 +41,20 @@ public class QueryFragment extends DialogFragment {
         Spinner sortCriteriaSpinner, tagFilterSpinner;
         CheckBox ascendingBox, descendingBox;
         DatePicker startDatePicker, endDatePicker;
+        ArrayAdapter<SortField> adapter;
 
 
         /**
          * Needs the parent view to be inflated before this class can be
          * constructed
+         *
          * @param entireView is the parent view (dialog box fragment)
          */
         public ViewHolder(View entireView) {
             bindViews(entireView);
+            setAdapters();
             resetQuery();
+            regenerateSelection();
         }
 
         /**
@@ -62,6 +76,41 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
+         * Sets the adapter for the selectable ui elements
+         */
+        private void setAdapters() {
+            createSortAdapter();
+            sortCriteriaSpinner.setAdapter(this.adapter);
+        }
+
+        /**
+         * Creates the menu items. Storing it in a list before placing it into
+         * the adapter
+         * @return the list of the possible options in the form of an enum.
+         */
+        private List<SortField> createMenuItems() {
+            List<SortField> menuItems = new ArrayList<>();
+
+            menuItems.add(SortField.NO_SELECTION);
+            menuItems.add(SortField.NAME);
+            menuItems.add(SortField.DATE);
+            menuItems.add(SortField.MAKE);
+            menuItems.add(SortField.VALUE);
+            menuItems.add(SortField.DESCRIPTION);
+
+            return menuItems;
+        }
+
+        /**
+         * Creates the
+         */
+        private void createSortAdapter() {
+            adapter = new ArrayAdapter<>(getContext(), android.R.layout
+                    .simple_spinner_dropdown_item);
+            adapter.addAll(createMenuItems());
+        }
+
+        /**
          * Flips between the check checkboxes
          * @param p when true will make checkbox ascending, with descending off.
          *          When false, the descending checkbox is selected and the
@@ -77,10 +126,28 @@ public class QueryFragment extends DialogFragment {
          * the global state.
          */
         private void resetQuery() {
-            globalContext.getItemList().startListening();
             sortCriteriaSpinner.setSelection(0);
             tagFilterSpinner.setSelection(0);
             flipAscendBox(true);
+        }
+
+        /**
+         * Restores the selection that has been saved to the global context.
+         */
+        public void regenerateSelection() {
+            sortCriteriaSpinner.setSelection(adapter.getPosition(globalContext
+                    .getQueryState().getCurrentSort()));
+            setSortCheckbox(globalContext.getQueryState().getDirection());
+
+        }
+
+        /**
+         * Match the UI with the direction that has been cached
+         * @param direction is the query direction that the ui is being flipped
+         *                  to.
+         */
+        private void setSortCheckbox(Query.Direction direction) {
+            flipAscendBox(direction == Query.Direction.ASCENDING);
         }
 
         /**
@@ -98,11 +165,47 @@ public class QueryFragment extends DialogFragment {
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
                 globalContext.getQueryState().setAscend();
+                globalContext.getQueryState().sendQuery(globalContext
+                        .getQueryPair());
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
                 globalContext.getQueryState().setDescend();
+                globalContext.getQueryState().sendQuery(globalContext
+                        .getQueryPair());
+            });
+
+            // TODO: The performance seems bad. Feels slow to load. Might have
+            // to factor some methods and components out to reuse some objects
+            sortCriteriaSpinner.setOnItemSelectedListener(new AdapterView
+                    .OnItemSelectedListener() {
+                // There are two methods, therefore need to make anonymous class
+                // instead of lambda
+
+                /**
+                 * This method controls the state when an item is selected by
+                 * the user on the sort choice spinner.
+                 * @param parent The AdapterView where the selection happened
+                 * @param view The view within the AdapterView that was clicked
+                 * @param position The position of the view in the adapter
+                 * @param id The row id of the item that is selected
+                 */
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    globalContext.getQueryState().receiveSortQuery(adapter
+                            .getItem(position));    // Update for return
+
+                    /* Sending the query to the database */
+                    globalContext.getQueryState().sendQuery(globalContext
+                            .getQueryPair());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Does not need to do anything yet
+                }
             });
         }
     }
@@ -137,6 +240,7 @@ public class QueryFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstance) {
+
         View fragmentView = inflater.inflate(R.layout.sort_filter_fragment,
                 container, false);
 

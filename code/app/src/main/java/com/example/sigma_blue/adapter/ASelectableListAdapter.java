@@ -54,7 +54,6 @@ public abstract class ASelectableListAdapter<T> extends ArrayAdapter<T> {
         this.entityData = entityData;
     }
 
-
     /**
      * Method that will turn on the highlight of the view if it is selected,
      * otherwise, reset it to the default background color.
