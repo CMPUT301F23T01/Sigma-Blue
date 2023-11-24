@@ -88,14 +88,14 @@ public class ViewListActivity extends BaseActivity {
         this.viewHolder = this.new ViewHolder();
 
         /* ItemList encapsulates both the database and the adapter */
-        globalContext.setUpItemList();
-        globalContext.getItemList().setListAdapter(
-                new ItemListAdapter(this, viewHolder.summaryView),
-                globalContext.getSelectedItems());
+        globalContext.getItemList().setAdapter(
+                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView));
+        globalContext.getItemList().startListening();
+
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
 
         /* Linking the adapter to the UI */
-        itemListView.setAdapter(globalContext.getItemList().getListAdapter());
+        itemListView.setAdapter(globalContext.getItemList().getAdapter());
 
         // set up thing for selected items
         this.viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class ViewListActivity extends BaseActivity {
         Log.i("DEBUG", item.getName() + "Short Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         globalContext.setCurrentItem(item);
-        globalContext.newState("details_fragment");
+        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
         startActivity(intent);
     }
 
@@ -125,7 +125,11 @@ public class ViewListActivity extends BaseActivity {
      * TODO: If have time, add a confirm button
      */
     private void deleteSelectedItems() {
-        globalContext.deleteSelectedItems();
+        for (Item i : globalContext.getSelectedItems().getSelected()) {
+            globalContext.getItemList().remove(i);
+        }
+        globalContext.getSelectedItems().resetSelected();
+        globalContext.getItemList().getAdapter().notifyDataSetChanged();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -135,7 +139,7 @@ public class ViewListActivity extends BaseActivity {
      */
     private void displayQueryFragment() {
         QueryFragment queryFragment = new QueryFragment();
-        globalContext.newState(ApplicationState.SORT_MENU.toString());
+        globalContext.newState(ApplicationState.SORT_MENU);
         startFragmentTransaction(queryFragment, ApplicationState.SORT_MENU
                 .toString());
     }
@@ -158,7 +162,7 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.addEntryButton.setOnClickListener(v -> {
             Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
             globalContext.setCurrentItem(null);
-            globalContext.newState("add_item_fragment");
+            globalContext.newState(ApplicationState.ADD_ITEM_FRAGMENT);
             startActivity(intent);
         });  // Launch add activity.
 
@@ -174,7 +178,10 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
             globalContext.setCurrentItem(null);
-            globalContext.newState("multi_select_tag_manager_fragment");
+            globalContext.newState(ApplicationState
+                    .MULTI_SELECT_TAG_MANAGER_FRAGMENT);
+            Log.i("NEW STATE", ApplicationState
+                    .MULTI_SELECT_TAG_MANAGER_FRAGMENT.toString());
             Intent intent = new Intent(ViewListActivity.this,
                     AddEditActivity.class);
             startActivity(intent);
@@ -183,17 +190,17 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.listListView // This is for short clicks on a row
                 .setOnItemClickListener((parent, view, position, id) -> {
                     this.handleClick(globalContext.getItemList()
-                            .getItem(position));
+                            .getList().get(position));
         });
 
         /* The long click listener */
         viewHolder.listListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> {
                     final Item itemCache = globalContext.getItemList()
-                            .getItem(position);
+                            .getList().get(position);
                     this.handleLongClick(itemCache);
 
-                    globalContext.getItemList().getListAdapter()
+                    globalContext.getItemList().getAdapter()
                             .notifyDataSetChanged();    // Update highlight
 
                     /*Returns true if the list consumes the click. Always true
@@ -208,9 +215,9 @@ public class ViewListActivity extends BaseActivity {
      */
     private void handleLongClick(Item item) {
 //        Log.i("DEBUG", item.getName() + " Long Press");
-        globalContext.toggleInsertSelectedItem(item);
+        globalContext.getSelectedItems().toggleHighlight(item);
 
-        if (globalContext.getSelectedItems().size() > 0) {
+        if (!globalContext.getSelectedItems().empty()) {
             viewHolder.selectedItemsMenu.setVisibility(View.VISIBLE);
         } else {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);

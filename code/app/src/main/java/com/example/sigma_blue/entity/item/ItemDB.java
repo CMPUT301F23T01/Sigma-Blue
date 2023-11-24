@@ -20,9 +20,7 @@ import java.util.List;
 public class ItemDB extends ADatabaseHandler<Item> {
 
     private FirebaseFirestore firestoreInjection;
-    private CollectionReference itemsRef;
     private Account account;
-    private List<Item> items;
 
     /**
      * newInstance method for hiding construction.
@@ -65,14 +63,14 @@ public class ItemDB extends ADatabaseHandler<Item> {
     private void setAccount(Account a) {
         /* Allows for legacy usage */
         if (this.firestoreInjection == null) {
-            this.itemsRef = FirebaseFirestore.getInstance()
+            this.ref = FirebaseFirestore.getInstance()
                     .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                     .document(a.getUsername())
                     .collection(DatabaseNames.ITEMS_COLLECTION.getName());
             firestoreInjection = FirebaseFirestore.getInstance();
         }
         /* Injection already exists */
-        else this.itemsRef = firestoreInjection
+        else this.ref = firestoreInjection
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
                 .document(a.getUsername())
                 .collection(DatabaseNames.ITEMS_COLLECTION.getName());
@@ -89,7 +87,7 @@ public class ItemDB extends ADatabaseHandler<Item> {
      */
     public void add(final Item item) {
         item.cleanTags();
-        addDocument(itemsRef, item, Item.hashMapOfItem, item.getDocID());
+        addDocument(ref, item, Item.hashMapOfItem, item.getDocID());
         Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
     }
 
@@ -98,7 +96,7 @@ public class ItemDB extends ADatabaseHandler<Item> {
      * @param item is an item object that is being removed from the database.
      */
     public void remove(final Item item) {
-        removeDocument(itemsRef, item);
+        removeDocument(ref, item);
     }
 
     public Account getAccount() {
@@ -106,6 +104,6 @@ public class ItemDB extends ADatabaseHandler<Item> {
     }
 
     public CollectionReference getCollectionReference() {
-        return this.itemsRef;
+        return this.ref;
     }
 }

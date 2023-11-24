@@ -12,5 +12,7 @@
     <color name="add_edit_btn_bgr_test">#1454c4</color>
     <color name="add_edit_btn_text_test">#FFFFFF</color>
     <color name="add_edit_layout_bgr_test">#99ceff</color>
+    <color name="add_edit_layout_contrast_test">#CAF9FF</color>
+    <color name ="ic_launcher_background">#404375</color>
 
 </resources>

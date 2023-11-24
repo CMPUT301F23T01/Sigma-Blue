@@ -28,7 +28,7 @@ public class TagDB extends ADatabaseHandler<Tag> {
      * @param a is the Account object that this the current tag database will be
      *          holding account for.
      */
-    private TagDB(Account a) {
+    public TagDB(Account a) {
         account = a;
         ref = FirebaseFirestore.getInstance()
                 .collection(DatabaseNames.PRIMARY_COLLECTION.getName())
