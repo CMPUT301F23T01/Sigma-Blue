@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
@@ -92,7 +94,9 @@ public class LoginFragment extends DialogFragment {
                         if (matches) {
                             globalContext.login(enteredAccount);
                         }
-                        globalContext.newState("login_activity");
+                        globalContext.newState(ApplicationState.LOGIN_ACTIVITY);
+                        Log.i("NEW STATE", ApplicationState.LOGIN_ACTIVITY
+                                .toString());
                         listener.onLoginPressed(matches);
                     }
                 }).create();
