@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.R;
@@ -79,12 +80,14 @@ public class CreateAccFragment extends DialogFragment {
 
                         // creates new account for user
                         Account newAccount = new Account(username, password);
-                        if (globalContext.getAccountList().contains(newAccount)) {
-                            globalContext.newState("login_activity");
+                        if (globalContext.getAccountList().getEntityList().contains(newAccount)) {
+                            globalContext.newState(ApplicationState
+                                    .LOGIN_ACTIVITY);
                             listener.onConfirmPressed(false);
                         } else {
                             globalContext.getAccountList().add(new Account(username, password));
-                            globalContext.newState("login_activity");
+                            globalContext.newState(ApplicationState
+                                    .LOGIN_ACTIVITY);
                             listener.onConfirmPressed(true);
                         }
                     }

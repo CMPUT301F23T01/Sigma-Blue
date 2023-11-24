@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
@@ -119,7 +120,7 @@ public class DetailsFragment extends Fragment
             public void onClick(View view)
             {
                 // Navigate to EditFragment
-                globalContext.newState("edit_item_fragment");
+                globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
                 NavHostFragment.findNavController(DetailsFragment.this).navigate(R.id.action_detailsFragment_to_editFragment);
             }
         });
@@ -131,7 +132,9 @@ public class DetailsFragment extends Fragment
                 // Return to ViewListActivity; notify object needs to be deleted
                 globalContext.getItemList().remove(currentItem);
                 globalContext.setCurrentItem(null);
-                globalContext.newState("list_view_activity");
+                globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
+                        .toString());
                 activity.returnAndClose();
             }
         });
@@ -142,7 +145,9 @@ public class DetailsFragment extends Fragment
             public void onClick(View v)
             {
                 // Return to ViewListActivity
-                globalContext.newState("list_view_activity");
+                globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
+                        .toString());
                 activity.returnAndClose();
             }
         });

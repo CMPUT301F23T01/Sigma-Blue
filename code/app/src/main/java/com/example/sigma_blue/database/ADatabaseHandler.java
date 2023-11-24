@@ -110,7 +110,7 @@ public abstract class ADatabaseHandler<T> {
         registration = query.addSnapshotListener(
                 (qs, excp) -> {
                     if (qs != null) {
-                        lst.setList(lst.loadArray(qs));
+                        lst.setList((ArrayList<T>) lst.loadArray(qs));
                         lst.updateUI();
                     }
                 }

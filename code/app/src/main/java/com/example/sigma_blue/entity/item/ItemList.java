@@ -3,27 +3,25 @@ package com.example.sigma_blue.entity.item;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.sigma_blue.adapter.ASelectableListAdapter;
+import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.database.ADatabaseHandler;
+import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
-import com.example.sigma_blue.adapter.IAdaptable;
 import com.example.sigma_blue.database.IDatabaseList;
-import com.example.sigma_blue.query.QueryGenerator;
-import com.example.sigma_blue.query.SortField;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
+public class ItemList extends AEntityList<Item> {
     /* Attributes */
-    private List<Item> items;
-    private ItemDB dbHandler;
-
-    private ItemListAdapter listAdapter;
     private ViewListModes displayMode;
 
 
@@ -36,60 +34,33 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
 
     /* Factory construction */
 
-    public static ItemList newInstance(Account a, ItemDB dbH,
-                                       ItemListAdapter adapt,
-                                       List<? extends Item> selectedList) {
-        ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setDatabaseHandler(dbH);
-        ret.setListAdapter(adapt, selectedList);
+    public static ItemList newInstance(ItemDB dbH,
+                                       ItemListAdapter adapt) {
+        ItemList ret = new ItemList();
+        ret.setDbHandler(dbH);
+        ret.setAdapter(adapt);
+
         return ret;
     }
 
-    public static ItemList newInstance(Account a, ItemDB dbH) {
-        ItemList ret = new ItemList(new ArrayList<>(), a);
-        ret.setDatabaseHandler(dbH);
+    public static ItemList newInstance(ItemDB dbH) {
+        ItemList ret = new ItemList();
+        ret.setDbHandler(dbH);
         return ret;
+    }
+
+    public static ItemList newInstance() {
+        return new ItemList();
     }
 
     /**
-     * Class constructor. Designed to take in the ArrayList of items for better testing.
-     * @param items is an ArrayList of Item objects that the ItemList will hold.
+     * Class constructor.
      */
-    public ItemList(ArrayList<Item> items, Account account) {
-        this.items = items;
+    private ItemList() {
+        this.entityList = new ArrayList<Item>();
         this.displayMode = ViewListModes.NONE;
-    }
-
-    /* Adapter interface methods */
-
-    @Override
-    public int getCount() {
-        return items.size();
-    }
-
-    /**
-     * The getItem method returns the Item object (casted to Object) that is stored in the array
-     * list at the position.
-     * @param position is the index that the item is being retrieved from.
-     * @return the Item stored at the index as an Object object.
-     */
-    @Override
-    public Item getItem(int position) {
-        return items.get(position);
-    }
-
-    @Override
-    public int getItemId(int position) {
-        return position;
-    }
-
-    /**
-     * Returns the amount of elements held in the items ArrayList.
-     * @return an integer primitive representing the number of element held in
-     * the items ArrayList.
-     */
-    public int size() {
-        return items.size();
+        this.globalContext = GlobalContext.getInstance();
+        this.dbHandler = ItemDB.newInstance(globalContext.getAccount());
     }
 
     /**
@@ -106,64 +77,24 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
                     .reduce(0d, Double::sum));
         };
 
-    /* Setters and Getters */
-
-    /**
-     * TODO: Handle addition of the exact same object (unique)
-     * @param o is the new item being added. If o is null, then it will not be added to the itemList
-     */
-    public void add(Item o) {
-        if (o != null) {
-            this.items.add(o);
-            this.dbHandler.add(o);
-        }
-        updateUI();
-    }
-
-    /**
-     * @param position is the index which is being removed from the list.
-     */
-    public void remove(final int position) {
-        if (position > -1 && position < size()) {
-            this.dbHandler.remove(items.get(position));
-            this.items.remove(position);
-        } else {
-            Log.e("Remove Item",
-                    "Invalid remove action: negative index or index out of range");
-        }
-        updateUI();
-        Log.v("Removed Item", "Removed an item from item list");
-    }
-
-    /**
-     * Delete the item from the Database
-     * @param deletedItem the item to be deleted
-     */
-    public void remove(Item deletedItem) {
-        for (int i = 0; i < this.items.size(); i++) {
-            if (Objects.equals(this.items.get(i).getDocID(), deletedItem.getDocID())) {
-                this.remove(i);
-            }
-        }
-        updateUI();
-    }
 
     /**
      * This method removes all the items owned by the user. Made for testing.
      */
     public void removeAll() {
-        this.items.stream()
+        this.entityList.stream()
                 .forEach(item -> dbHandler.remove(item));
-        this.items.clear();
+        this.entityList.clear();
     }
 
     /**
      * Updates the UI to match the current data in the ItemList.
      */
+    @Override
     public void updateUI() {
-        if (listAdapter != null) {
-            listAdapter.notifyDataSetChanged();
-            listAdapter.notifySumView(sumValues.apply(this.items));
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.entityList));
         };
     }
 
@@ -177,18 +108,6 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         return ItemDB.loadArray(q, Item.itemOfQueryDocument);
     }
 
-    public void setDatabaseHandler(final ItemDB dbH) {
-        this.dbHandler = dbH;
-    }
-
-    /**
-     * The default startListening. Will simply start to listen to the
-     */
-    public void startListening() {
-        dbHandler.startListening(this.dbHandler.getCollectionReference(),
-                this);
-    }
-
     /**
      * Needed when making new queries
      * @return the collection reference of the user
@@ -197,74 +116,18 @@ public class ItemList implements IAdaptable<Item>, IDatabaseList<Item> {
         return dbHandler.getCollectionReference();
     }
 
-    /**
-     * Overload of the startListening method. This method will take a query
-     * object which contains the query that is being made to the database
-     * @param query is a Firestore Query object that is being used to make the
-     *              query.
-     * @see com.example.sigma_blue.query.QueryGenerator
-     */
-    public void startListening(Query query) {
-        dbHandler.startListening(query, this);
-    }
-
-    /**
-     * Sets the list adapter and does a refresh.
-     * @param listAdapter
-     */
-    public void setListAdapter(final ItemListAdapter listAdapter,
-                               final List<? extends Item> selectedList) {
-        this.listAdapter = listAdapter;
-        this.listAdapter.setSelectedItemList(selectedList);
-        if (this.items != null) {
-            this.listAdapter.setItemList(this.items);
-            this.listAdapter.notifyDataSetChanged();
-        }
-        this.startListening();
-    }
-
-    public ItemListAdapter getListAdapter() {
-        return this.listAdapter;
-
-    }
-
-    /* Database method */
-
-    /**
-     * Both updates the list held in this class and the adapter element.
-     * @param list is the list that is replacing the current list.
-     */
-    public void setList(final List<Item> list) {
-        this.items = list;
-        this.listAdapter.setItemList(list);
-    }
-
-    public List<Item> getList() {
-        return this.items;
-    }
-
     public void setSummaryView(TextView summaryView) {
-        this.listAdapter.setSummaryView(summaryView);
-        this.listAdapter.notifySumView(sumValues.apply(this.items));
-    }
-
-    /**
-     * Swaps out an item for a new one.
-     * @param updatedItem New Item to put in the list
-     * @param oldItem Search for an item with this DocID to replace
-     */
-    public void updateItem(Item updatedItem, Item oldItem) {
-        this.items.remove(oldItem);
-        this.items.add(updatedItem);
-        updateUI();
+        ((ItemListAdapter) this.adapter).setSummaryView(summaryView);
+        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.entityList));
     }
 
     /**
      * Clean all the tags in all stored items
      */
     public void cleanAllItemTags() {
-        for (Item i : this.items) {
+        for (Item i : this.entityList) {
             i.cleanTags();
+            syncEntity(i);
         }
     }
 }

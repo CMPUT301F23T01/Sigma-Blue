@@ -1,5 +1,7 @@
 package com.example.sigma_blue.entity.tag;
 
+import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -13,11 +15,7 @@ import java.util.ArrayList;
 /**
  * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
  */
-public class TagList implements IDatabaseList<Tag>, Serializable {
-    private ArrayList<Tag> tags;
-    final private TagDB tagDB;
-    private TagListAdapter adapter;
-
+public class TagList extends AEntityList<Tag> {
     /**
      * Factory creation method that binds the given Account to
      * the TagList itself.
@@ -29,6 +27,15 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         TagDB db = TagDB.newInstance(a);
         TagList ret = new TagList(db);
         return ret;
+    }
+
+    /**
+     * Factory creation method. Uses the current account in global context
+     * @return an instance of the TagList object containing a connection
+     * to the database that stores all of the Tags that the user has defined.
+     */
+    public static TagList newInstance() {
+        return new TagList();
     }
 
     /**
@@ -44,50 +51,15 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
         return ret;
     }
 
-    public TagList(TagDB tagDB) {
-        this.tagDB = tagDB;
-        this.tags = new ArrayList<>();
+    private TagList(TagDB tagDB) {
+        this.dbHandler = tagDB;
+        this.entityList = new ArrayList<>();
     }
 
-    public void addTag(Tag tag) {
-        if (!tags.contains(tag)) {
-            tags.add(tag);
-            tagDB.add(tag);
-        }
-    }
-
-    public void removeTag(Tag tag) {
-        if (tags.contains(tag)) {
-            tagDB.remove(tag);
-            tags.remove(tag);
-        }
-    }
-
-    public void removeTag(int position) {
-        tags.remove(position);
-    }
-
-    public boolean containsTag(Tag tag) {
-        return tags.contains(tag);
-    }
-
-    public List<Tag> getTags() {
-        return this.tags;
-    }
-
-    public int getCount() { return tags.size(); }
-
-    public Tag getItem(int position) {
-        return tags.get(position);
-    }
-
-    /**
-     * Sets a new list.
-     * @param lst is an list object that is replacing it.
-     */
-    @Override
-    public void setList(List<Tag> lst) {
-        this.tags = (ArrayList<Tag>) lst; // Duck tape fix. If this is implemented in main I'll kms
+    private TagList() {
+        this.globalContext = GlobalContext.getInstance();
+        this.dbHandler = TagDB.newInstance(globalContext.getAccount());
+        this.entityList = new ArrayList<>();
     }
 
     /**
@@ -95,7 +67,7 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
      */
     @Override
     public void updateUI() {
-        adapter.setList(this.tags);
+        adapter.setList(this.entityList);
         adapter.notifyDataSetChanged();
     }
 
@@ -118,32 +90,4 @@ public class TagList implements IDatabaseList<Tag>, Serializable {
             return new Tag(q.getString("LABEL"),q.getString("COLOR"));
         else return null;
     };
-
-    /**
-     * Sets up a listening thread for changes to the database collection. This
-     * method will update the state of the tag list.
-     */
-    @Override
-    public void startListening() {
-        tagDB.startListening(this.tagDB.getCollectionReference(), this);
-    }
-
-    public void setAdapter(final TagListAdapter tagListAdapter,
-                           final List<? extends Tag> selectedList) {
-        this.adapter = tagListAdapter;
-        this.adapter.setSelectedTags(selectedList);
-    }
-
-    public TagListAdapter getAdapter() {
-        return adapter;
-    }
-    /**
-     * Replace the old tag with a new one
-     * @param updatedTag replacement tag
-     * @param oldTag tag to replace
-     */
-    public void updateTag(Tag updatedTag, Tag oldTag) {
-        this.tags.remove(oldTag);
-        this.tags.add(updatedTag);
-    }
 }
