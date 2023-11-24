@@ -31,12 +31,20 @@ public class QueryMode {
         clearQuery();
     }
 
+    /**
+     * Returns the direction that is saved into query mode
+     * @return the Direction enum for the current query
+     */
+    public Query.Direction getDirection() {
+        return this.direction;
+    }
+
     public SortField getCurrentSort() {
         return this.currentSort;
     }
 
     /**
-     * Reset the query mode back to default
+     * Reset the query mode back to default. It removes all the user settings.
      */
     public void clearQuery() {
         currentSort = SortField.NO_SELECTION;
@@ -44,6 +52,14 @@ public class QueryMode {
         direction = Query.Direction.ASCENDING;  // Default sort direction
         sort = false;
         filter = false;
+        currentQuery = originalQuery;
+    }
+
+    /**
+     * Simply resets just the query object to the base. Does not reset the user
+     * setting
+     */
+    public void resetQueryObject() {
         currentQuery = originalQuery;
     }
 
@@ -57,6 +73,7 @@ public class QueryMode {
     }
 
     public void queryUpdateSort() {
+        resetQueryObject();   // Need to reset before running
         if (currentSort != SortField.NO_SELECTION) {
             currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
                     direction);
@@ -90,6 +107,7 @@ public class QueryMode {
      */
     public void setAscend() {
         direction = Query.Direction.ASCENDING;
+        queryUpdateSort();
     }
 
     /**
@@ -97,5 +115,6 @@ public class QueryMode {
      */
     public void setDescend() {
         direction = Query.Direction.DESCENDING;
+        queryUpdateSort();
     }
 }

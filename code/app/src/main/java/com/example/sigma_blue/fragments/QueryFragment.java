@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.query.SortField;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +27,11 @@ import java.util.Objects;
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
  * communicate with the backend.
+ * TODO: Filter has not been implemented yet.
  */
-public class QueryFragment extends DialogFragment implements
-        AdapterView.OnItemSelectedListener {
+public class QueryFragment extends DialogFragment {
     private GlobalContext globalContext;    // Used for transferring data
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position,
-                               long id) {
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
@@ -56,6 +48,7 @@ public class QueryFragment extends DialogFragment implements
         /**
          * Needs the parent view to be inflated before this class can be
          * constructed
+         *
          * @param entireView is the parent view (dialog box fragment)
          */
         public ViewHolder(View entireView) {
@@ -91,10 +84,16 @@ public class QueryFragment extends DialogFragment implements
             sortCriteriaSpinner.setAdapter(this.adapter);
         }
 
+        /**
+         * Creates the menu items. Storing it in a list before placing it into
+         * the adapter
+         * @return the list of the possible options in the form of an enum.
+         */
         private List<SortField> createMenuItems() {
             List<SortField> menuItems = new ArrayList<>();
 
             menuItems.add(SortField.NO_SELECTION);
+            menuItems.add(SortField.NAME);
             menuItems.add(SortField.DATE);
             menuItems.add(SortField.MAKE);
             menuItems.add(SortField.VALUE);
@@ -104,7 +103,7 @@ public class QueryFragment extends DialogFragment implements
         }
 
         /**
-         * This
+         * Creates the
          */
         private void createSortAdapter() {
             adapter = new ArrayAdapter<>(getContext(), android.R.layout
@@ -133,9 +132,23 @@ public class QueryFragment extends DialogFragment implements
             flipAscendBox(true);
         }
 
+        /**
+         * Restores the selection that has been saved to the global context.
+         */
         public void regenerateSelection() {
             sortCriteriaSpinner.setSelection(adapter.getPosition(globalContext
                     .getQueryState().getCurrentSort()));
+            setSortCheckbox(globalContext.getQueryState().getDirection());
+
+        }
+
+        /**
+         * Match the UI with the direction that has been cached
+         * @param direction is the query direction that the ui is being flipped
+         *                  to.
+         */
+        private void setSortCheckbox(Query.Direction direction) {
+            flipAscendBox(direction == Query.Direction.ASCENDING);
         }
 
         /**
@@ -153,11 +166,15 @@ public class QueryFragment extends DialogFragment implements
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
                 globalContext.getQueryState().setAscend();
+                globalContext.getQueryState().sendQuery(globalContext
+                        .getQueryPair());
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
                 globalContext.getQueryState().setDescend();
+                globalContext.getQueryState().sendQuery(globalContext
+                        .getQueryPair());
             });
 
             // TODO: The performance seems bad. Feels slow to load. Might have
