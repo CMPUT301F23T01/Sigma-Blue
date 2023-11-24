@@ -1,9 +1,12 @@
 package com.example.sigma_blue.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -14,13 +17,29 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.query.SortField;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
  * communicate with the backend.
  */
-public class QueryFragment extends DialogFragment {
+public class QueryFragment extends DialogFragment implements
+        AdapterView.OnItemSelectedListener {
     private GlobalContext globalContext;    // Used for transferring data
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
@@ -31,6 +50,7 @@ public class QueryFragment extends DialogFragment {
         Spinner sortCriteriaSpinner, tagFilterSpinner;
         CheckBox ascendingBox, descendingBox;
         DatePicker startDatePicker, endDatePicker;
+        ArrayAdapter<SortField> adapter;
 
 
         /**
@@ -40,6 +60,7 @@ public class QueryFragment extends DialogFragment {
          */
         public ViewHolder(View entireView) {
             bindViews(entireView);
+            setAdapters();
             resetQuery();
         }
 
@@ -59,6 +80,35 @@ public class QueryFragment extends DialogFragment {
             descendingBox = entireView.findViewById(R.id.descendCheckbox);
             startDatePicker = entireView.findViewById(R.id.startDatePicker);
             endDatePicker = entireView.findViewById(R.id.endDatePicker);
+        }
+
+        /**
+         * Sets the adapter for the selectable ui elements
+         */
+        private void setAdapters() {
+            createSortAdapter();
+            sortCriteriaSpinner.setAdapter(this.adapter);
+        }
+
+        private List<SortField> createMenuItems() {
+            List<SortField> menuItems = new ArrayList<>();
+
+            menuItems.add(SortField.NO_SELECTION);
+            menuItems.add(SortField.DATE);
+            menuItems.add(SortField.MAKE);
+            menuItems.add(SortField.VALUE);
+            menuItems.add(SortField.DESCRIPTION);
+
+            return menuItems;
+        }
+
+        /**
+         * This
+         */
+        private void createSortAdapter() {
+            adapter = new ArrayAdapter<>(getContext(), android.R.layout
+                    .simple_spinner_dropdown_item);
+            adapter.addAll(createMenuItems());
         }
 
         /**
@@ -104,6 +154,38 @@ public class QueryFragment extends DialogFragment {
                 flipAscendBox(false);   // Turns ascend off
                 globalContext.getQueryState().setDescend();
             });
+
+            // TODO: The performance seems bad. Feels slow to load. Might have
+            // to factor some methods and components out to reuse some objects
+            sortCriteriaSpinner.setOnItemSelectedListener(new AdapterView
+                    .OnItemSelectedListener() {
+                // There are two methods, therefore need to make anonymous class
+                // instead of lambda
+
+                /**
+                 * This method controls the state when an item is selected by
+                 * the user on the sort choice spinner.
+                 * @param parent The AdapterView where the selection happened
+                 * @param view The view within the AdapterView that was clicked
+                 * @param position The position of the view in the adapter
+                 * @param id The row id of the item that is selected
+                 */
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    globalContext.getQueryState().receiveSortQuery(adapter
+                            .getItem(position));    // Update for return
+
+                    /* Sending the query to the database */
+                    globalContext.getQueryState().sendQuery(globalContext
+                            .getQueryPair());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Does not need to do anything yet
+                }
+            });
         }
     }
 
@@ -137,6 +219,7 @@ public class QueryFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstance) {
+
         View fragmentView = inflater.inflate(R.layout.sort_filter_fragment,
                 container, false);
 

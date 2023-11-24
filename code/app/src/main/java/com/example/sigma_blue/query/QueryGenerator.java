@@ -51,9 +51,9 @@ public class QueryGenerator {
      * @param sortBy the field that is being used for sorting
      * @param direction either ASCENDING or DESCENDING
      */
-    public void sortQuery(SortField sortBy,
+    public static Query sortQuery(Query query, SortField sortBy,
                                   Query.Direction direction) {
-        setQuery(query.orderBy(sortBy.getDbField(), direction));
+        return query.orderBy(sortBy.getDbField(), direction);
     }
 
     /**

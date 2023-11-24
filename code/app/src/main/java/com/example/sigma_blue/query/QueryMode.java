@@ -1,5 +1,11 @@
 package com.example.sigma_blue.query;
 
+import com.example.sigma_blue.database.ADatabaseHandler;
+import com.example.sigma_blue.database.IDatabaseItem;
+import com.example.sigma_blue.database.IDatabaseList;
+import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.utility.Pair;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
 /**
@@ -13,10 +19,13 @@ public class QueryMode {
     Query.Direction direction;      // Defaults to ASCENDING
     final FilterState filterState;  // Keeping track of the applied filters
     private QueryGenerator queryFactory;    // Generation of new queries
+    private Query currentQuery;
+    private CollectionReference originalQuery;
 
-    public QueryMode() {
+    public QueryMode(CollectionReference originalQuery) {
         // Initialization
         filterState = new FilterState();
+        this.originalQuery = originalQuery; // Base reference for query
 
         // Set basic state
         clearQuery();
@@ -26,20 +35,39 @@ public class QueryMode {
      * Reset the query mode back to default
      */
     public void clearQuery() {
-        currentSort = SortField.NAME;
+        currentSort = SortField.NO_SELECTION;
         filterState.resetState();
         direction = Query.Direction.ASCENDING;  // Default sort direction
         sort = false;
         filter = false;
+        currentQuery = originalQuery;
     }
 
-    public void sortOn() {
-        sort = true;
+    /**
+     * Receives the sort mode and then store the appropriate query
+     * @param sortMode
+     */
+    public void receiveSortQuery(SortField sortMode) {
+        if (sortMode != null) currentSort = sortMode;
+        queryUpdateSort();
     }
 
-    public void sortOff() {
-        sort = false;
+    public void queryUpdateSort() {
+        if (currentSort != SortField.NO_SELECTION) {
+            currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
+                    direction);
+        }
     }
+
+    /**
+     * This method sends the query to the database for display. Use after every
+     * query update.
+     */
+    public void sendQuery(Pair<ADatabaseHandler<Item>, IDatabaseList<Item>>
+                                  dbPair) {
+        dbPair.getFirst().startListening(currentQuery, dbPair.getSecond());
+    }
+
 
     public void filterOn(FilterState filterState) {
         filter = true;
