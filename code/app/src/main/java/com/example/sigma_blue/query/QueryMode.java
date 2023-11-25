@@ -111,9 +111,9 @@ public class QueryMode {
      */
     private void updateMakeFilter() {
         if (makeFilter.getSecond() != null) compoundQuery(q ->
-                QueryGenerator.filterEqualsQuery(q, makeFilter.getFirst()
-                        .getDbField(), makeFilter.getSecond()));
-
+                QueryGenerator.filterRangeQuery(q, makeFilter.getFirst()
+                        .getDbField(), makeFilter.getSecond(),
+                        makeFilter.getSecond() + "~"));
     }
 
     /**
