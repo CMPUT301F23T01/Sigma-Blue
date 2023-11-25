@@ -159,17 +159,17 @@ public class EditFragment extends Fragment
         String tempImagePath = globalContext.getCurrentItem().getImagePaths().size() > 0 ? globalContext.getCurrentItem().getImagePaths().get(0) : null;
         // set the image of the item
         // Create a storage reference from our app
-        if (tempImagePath != null) {
-            globalContext.getImageDB().getImage(tempImagePath, new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    // Data for "images/island.jpg" is returns, use this as needed
-                    Log.i("ImageDownload", "Image download succeed");
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    itemImage.setImageBitmap(bitmap);
-                }
-            });
-        }
+//        if (tempImagePath != null) {
+//            globalContext.getImageDB().getImage(tempImagePath, new OnSuccessListener<byte[]>() {
+//                @Override
+//                public void onSuccess(byte[] bytes) {
+//                    // Data for "images/island.jpg" is returns, use this as needed
+//                    Log.i("ImageDownload", "Image download succeed");
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                    itemImage.setImageBitmap(bitmap);
+//                }
+//            });
+//        }
 
 
         Context context = this.getContext();
