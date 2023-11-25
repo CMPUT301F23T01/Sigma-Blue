@@ -45,7 +45,6 @@ public class QueryFragment extends DialogFragment {
         DatePicker startDatePicker, endDatePicker;
         ArrayAdapter<SortField> adapter;
 
-
         /**
          * Needs the parent view to be inflated before this class can be
          * constructed
@@ -138,7 +137,7 @@ public class QueryFragment extends DialogFragment {
          * default value.
          */
         private void resetQuery() {
-            globalContext.getQueryState().clearQuery();
+            queryState.clearQuery();
             regenerateSelection();
         }
 
@@ -152,15 +151,34 @@ public class QueryFragment extends DialogFragment {
 
             // Filter text regeneration
             regenerateMakeTextBox();
+            regenerateDescriptionTextBox();
         }
 
         /**
          * This method returns the make edit textbox back to its initial state
          */
         private void regenerateMakeTextBox() {
-            Pair<FilterField, String> cache = queryState.getMakeFilter();
-            if (cache.getSecond() != null)
-                makeFilterET.setText(cache.getSecond());
+            regenerateTextBox(makeFilterET, queryState
+                    .getMakeFilter().getSecond());
+        }
+
+        /**
+         * Regenerates the edit text for the description filter using the
+         * previously stored state.
+         */
+        private void regenerateDescriptionTextBox() {
+            regenerateTextBox(descriptionFilterET, queryState
+                    .getDescriptionFilter().getSecond());
+        }
+
+        /**
+         * Factored out method that contains the text setting logic
+         * @param et the edit text box that is being changed
+         * @param text the string input (from the control instance)
+         */
+        private void regenerateTextBox(EditText et, String text) {
+            if (text != null) et.setText(text);
+            else et.setText("");    // For real time feedback
         }
 
         /**
@@ -246,6 +264,24 @@ public class QueryFragment extends DialogFragment {
                     queryState.sendQuery(globalContext.getQueryPair());
                 }
             });
+
+            descriptionFilterET.addTextChangedListener(
+                    new SigmaBlueTextWatcher<EditText>(descriptionFilterET) {
+                        @Override
+                        public void onTextChanged(EditText target, Editable s) {
+                            String userInput = s.toString().trim();
+                            // Cover -> empty input, regular input
+                            Pair<FilterField, String> nextAddition;
+                            if (userInput.isEmpty())
+                                nextAddition = new Pair<>(FilterField
+                                        .DESCRIPTION, null);
+                            else
+                                nextAddition = new Pair<>(FilterField
+                                        .DESCRIPTION, userInput);
+                            queryState.receiveEqualsQuery(nextAddition);
+                            queryState.sendQuery(globalContext.getQueryPair());
+                        }
+                    });
         }
     }
 

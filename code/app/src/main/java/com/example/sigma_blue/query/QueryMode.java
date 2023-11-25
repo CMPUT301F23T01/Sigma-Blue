@@ -23,6 +23,7 @@ public class QueryMode {
     private Query currentQuery;
     private CollectionReference originalQuery;
     private Pair<FilterField, String> makeFilter;
+    private Pair<FilterField, String> descriptionFilter;
 
     public QueryMode(CollectionReference originalQuery) {
         // Initialization
@@ -51,7 +52,15 @@ public class QueryMode {
         currentSort = SortField.NO_SELECTION;
         direction = Query.Direction.ASCENDING;  // Default sort direction
         currentQuery = originalQuery;
+        clearFilterObjects();
+    }
+
+    /**
+     * Method factored out to clear the filter
+     */
+    private void clearFilterObjects() {
         makeFilter = new Pair<>(FilterField.MAKE, null);
+        descriptionFilter = new Pair<>(FilterField.DESCRIPTION, null);
     }
 
     /**
@@ -82,7 +91,8 @@ public class QueryMode {
                 makeFilter = input;
                 break;
             case DESCRIPTION:
-                break;  // TODO: Implement filter by description
+                descriptionFilter = input;
+                break;
             default:
                 throw new IllegalArgumentException(
                         "Filter communications receiving wrong format");
@@ -98,6 +108,7 @@ public class QueryMode {
         resetQueryObject();   // Need to reset before running
 
         updateMakeFilter();
+        updateDescriptionFilter();
 
         if (currentSort != SortField.NO_SELECTION) {
             currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
@@ -110,10 +121,22 @@ public class QueryMode {
      * reading the internal state as well.
      */
     private void updateMakeFilter() {
-        if (makeFilter.getSecond() != null) compoundQuery(q ->
-                QueryGenerator.filterRangeQuery(q, makeFilter.getFirst()
-                        .getDbField(), makeFilter.getSecond(),
-                        makeFilter.getSecond() + "~"));
+        updateRangedFilter(makeFilter);
+    }
+
+    /**
+     * This method updates the internal state of the make filter query. Done by
+     * reading the internal state as well.
+     */
+    private void updateDescriptionFilter() {
+        updateRangedFilter(descriptionFilter);
+    }
+
+    private void updateRangedFilter(final Pair<FilterField, String> toUpdate) {
+        if (toUpdate.getSecond() != null) compoundQuery(q ->
+                QueryGenerator.filterRangeQuery(q, toUpdate.getFirst()
+                                .getDbField(), toUpdate.getSecond(),
+                        toUpdate.getSecond() + "~"));
     }
 
     /**
@@ -133,8 +156,16 @@ public class QueryMode {
         currentQuery = composer.apply(currentQuery);
     }
 
+    /**
+     * Method used for restoring the make filter edit text
+     * @return the Pair that was sent to the controller class from the UI class
+     */
     public Pair<FilterField, String> getMakeFilter() {
         return this.makeFilter;
+    }
+
+    public Pair<FilterField, String> getDescriptionFilter() {
+        return this.descriptionFilter;
     }
 
     /**
