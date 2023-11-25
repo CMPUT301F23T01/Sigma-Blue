@@ -73,7 +73,7 @@ public class QueryMode {
 
     /**
      * Receives the sort mode and then store the appropriate query
-     * @param sortMode
+     * @param sortMode is the sorting mode that the user has selected.
      */
     public void receiveSortQuery(SortField sortMode) {
         if (sortMode != null) currentSort = sortMode;
