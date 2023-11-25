@@ -94,20 +94,4 @@ public class ImageListAdapter extends ArrayAdapter<Bitmap> {
 
         return convertView;
     }
-
-    /**
-     * Method for binding the item at the specified location to the given view
-     * @param view is the view being bound
-     * @param position is the position that is being checked
-     */
-    private void bindPosition(View view, int position) {
-        Bitmap rowImage;
-        if (position > entityData.size()) {
-            throw new IllegalArgumentException();
-        }
-        else {
-            rowImage = entityData.get(position);
-            ((ImageView) view.findViewById(R.id.image_list_image)).setImageBitmap(rowImage);
-        }
-    }
 }

@@ -19,11 +19,13 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 
 public class ImageList {
-    protected ArrayList<String> entityList;
+    private ArrayList<String> pathList;
+    private ArrayList<Bitmap> entityList;
     protected ImageDB dbHandler;
     protected ImageListAdapter adapter;
 
     public ImageList() {
+        this.pathList = new ArrayList<>();
         this.entityList = new ArrayList<>();
         this.dbHandler = new ImageDB();
     }
@@ -34,6 +36,7 @@ public class ImageList {
      * @return the DB path to the new image
      */
     public String add(Account account, Bitmap bitmap) {
+        this.entityList.add(bitmap);
         return dbHandler.addImage(bitmap, account, task -> onImageUpload());
     }
 
@@ -42,9 +45,9 @@ public class ImageList {
     }
 
     public void setList(final ArrayList<String> list) {
-        this.entityList = list;
+        this.pathList = list;
         this.adapter.setList(new ArrayList<>());
-        for (String s : entityList) {
+        for (String s : pathList) {
             dbHandler.getImage(s, this::onImageDownload);
         }
     }
@@ -61,7 +64,8 @@ public class ImageList {
     private void onImageDownload(byte[] bytes) {
         Log.i("ImageDownload", "Image download succeed");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        adapter.add(bitmap);
+        this.entityList.add(bitmap);
+        adapter.setList(this.entityList);
         adapter.notifyDataSetChanged();
     }
     private void onImageUpload() {
