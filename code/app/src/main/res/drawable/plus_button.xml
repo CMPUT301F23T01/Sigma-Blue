@@ -8,8 +8,7 @@
     <path
         android:fillColor="?colorPrimarySurface"
         android:pathData="M60,60m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"
-        android:strokeColor="?colorPrimary"
-        android:strokeWidth="5"/>
+        />
     <path
         android:fillColor="?colorOnBackground"
         android:pathData="M60,30L60,90"
