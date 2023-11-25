@@ -335,7 +335,6 @@
                         android:id="@+id/list_tag"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="?colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -383,7 +382,6 @@
                         android:id="@+id/list_pictures"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="?colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -398,7 +396,7 @@
         android:id="@+id/TopBarLayout"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="?colorPrimaryDark"
+        android:background="@drawable/top_bar_gradiant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -422,7 +420,7 @@
         android:id="@+id/BottomBarLayout"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="?colorPrimaryDark"
+        android:background="@drawable/bottom_bar_gradiant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
