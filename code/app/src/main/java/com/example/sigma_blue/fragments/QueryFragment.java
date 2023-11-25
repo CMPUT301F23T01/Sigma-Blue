@@ -34,7 +34,6 @@ import java.util.List;
  */
 public class QueryFragment extends DialogFragment {
 
-
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
      */
