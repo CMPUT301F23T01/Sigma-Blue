@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/blue_dark</item>
         <item name="colorPrimaryDark">@color/blue_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimarySurface">@color/blue_darker</item>
+        <item name="colorPrimarySurface">@color/cardview_dark_background</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/yellow_prime</item>
         <item name="colorSecondaryVariant">@color/yellow_light</item>

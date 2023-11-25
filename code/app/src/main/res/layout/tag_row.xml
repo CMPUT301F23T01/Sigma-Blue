@@ -8,26 +8,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:background="?colorPrimarySurface"
         android:clickable="false"
         android:focusable="false"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tagName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="serif-monospace"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:focusable="false"
+            android:fontFamily="serif"
             android:paddingStart="16dp"
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
-            android:layout_weight="1"
             android:text="@string/placeholder_tag_1"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:clickable="false"
-            android:focusable="false" />
+            android:textColor="?colorOnBackground"
+            android:textSize="24sp" />
 
         <View
             android:id="@+id/tagColor"
@@ -41,4 +42,5 @@
 
 
     </LinearLayout>
+
 </RelativeLayout>

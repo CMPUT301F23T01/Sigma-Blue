@@ -378,7 +378,7 @@
                 android:background="?colorPrimarySurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Buttons_Tags">
+                app:layout_constraintTop_toBottomOf="@id/Edit_Details_4">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/Content_5"
