@@ -1,7 +1,7 @@
 package com.example.sigma_blue.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +17,15 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.query.FilterField;
+import com.example.sigma_blue.query.QueryMode;
 import com.example.sigma_blue.query.SortField;
+import com.example.sigma_blue.utility.Pair;
+import com.example.sigma_blue.utility.SigmaBlueTextWatcher;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
@@ -30,14 +33,13 @@ import java.util.Objects;
  * TODO: Filter has not been implemented yet.
  */
 public class QueryFragment extends DialogFragment {
-    private GlobalContext globalContext;    // Used for transferring data
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
      */
     private class ViewHolder {
         Button backButton, resetButton;
-        EditText descriptionFilterET;
+        EditText descriptionFilterET, makeFilterET;
         Spinner sortCriteriaSpinner, tagFilterSpinner;
         CheckBox ascendingBox, descendingBox;
         DatePicker startDatePicker, endDatePicker;
@@ -53,7 +55,7 @@ public class QueryFragment extends DialogFragment {
         public ViewHolder(View entireView) {
             bindViews(entireView);
             setAdapters();
-            resetQuery();
+            resetQueryUI();
             regenerateSelection();
         }
 
@@ -66,6 +68,7 @@ public class QueryFragment extends DialogFragment {
             resetButton = entireView.findViewById(R.id.sortingResetButton);
             descriptionFilterET = entireView.findViewById(R.id
                     .descFilterEditText);
+            makeFilterET = entireView.findViewById(R.id.makeFilterEditText);
             sortCriteriaSpinner = entireView.findViewById(R.id
                     .sortCriteriaSpinner);
             tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
@@ -102,7 +105,7 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Creates the
+         * Creates the sorting choice adapter.
          */
         private void createSortAdapter() {
             adapter = new ArrayAdapter<>(getContext(), android.R.layout
@@ -122,23 +125,42 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Resets the query. Everything is returned to default value, along with
-         * the global state.
+         * Resets the query UI. This just puts the UI at a known default state
          */
-        private void resetQuery() {
+        private void resetQueryUI() {
             sortCriteriaSpinner.setSelection(0);
             tagFilterSpinner.setSelection(0);
             flipAscendBox(true);
         }
 
         /**
+         * Actually clear the database query, and then resets the UI to be the
+         * default value.
+         */
+        private void resetQuery() {
+            globalContext.getQueryState().clearQuery();
+            regenerateSelection();
+        }
+
+        /**
          * Restores the selection that has been saved to the global context.
          */
         public void regenerateSelection() {
-            sortCriteriaSpinner.setSelection(adapter.getPosition(globalContext
-                    .getQueryState().getCurrentSort()));
+            sortCriteriaSpinner.setSelection(adapter.getPosition(queryState
+                    .getCurrentSort()));
             setSortCheckbox(globalContext.getQueryState().getDirection());
 
+            // Filter text regeneration
+            regenerateMakeTextBox();
+        }
+
+        /**
+         * This method returns the make edit textbox back to its initial state
+         */
+        private void regenerateMakeTextBox() {
+            Pair<FilterField, String> cache = queryState.getMakeFilter();
+            if (cache.getSecond() != null)
+                makeFilterET.setText(cache.getSecond());
         }
 
         /**
@@ -155,12 +177,12 @@ public class QueryFragment extends DialogFragment {
          */
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
-            backButton.setOnClickListener(view -> dismiss());   // Go back
+            backButton.setOnClickListener(view -> {
+                dismiss();
+            });   // Go back
 
             /* Resets the query. Uses the database default */
-            resetButton.setOnClickListener(view -> {
-                resetQuery();
-            });
+            resetButton.setOnClickListener(view -> resetQuery());
 
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
@@ -207,10 +229,29 @@ public class QueryFragment extends DialogFragment {
                     // Does not need to do anything yet
                 }
             });
+
+            makeFilterET.addTextChangedListener(
+                    new SigmaBlueTextWatcher<EditText>(makeFilterET) {
+
+                @Override
+                public void onTextChanged(EditText target, Editable s) {
+                    String userInput = s.toString().trim();
+                    // Cover -> empty input, regular input
+                    Pair<FilterField, String> nextAddition;
+                    if (userInput.isEmpty())
+                        nextAddition = new Pair<>(FilterField.MAKE, null);
+                    else
+                        nextAddition = new Pair<>(FilterField.MAKE, userInput);
+                    queryState.receiveEqualsQuery(nextAddition);
+                    queryState.sendQuery(globalContext.getQueryPair());
+                }
+            });
         }
     }
 
+    private GlobalContext globalContext;    // Used for transferring data
     private ViewHolder viewHolder;          // The view holder
+    private QueryMode queryState;           // The query controller.
 
     /**
      * Empty public constructor
@@ -222,6 +263,7 @@ public class QueryFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         globalContext = GlobalContext.getInstance();
+        queryState = globalContext.getQueryState();
     }
 
     /**
@@ -235,7 +277,7 @@ public class QueryFragment extends DialogFragment {
      * @param savedInstance If non-null, this fragment is being re-constructed
      * from a previous saved state as given here.
      *
-     * @return
+     * @return the generated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

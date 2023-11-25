@@ -1,12 +1,16 @@
 package com.example.sigma_blue.query;
 
 import com.example.sigma_blue.database.ADatabaseHandler;
-import com.example.sigma_blue.database.IDatabaseItem;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.utility.Pair;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * This class will store the current query mode that the list view is in.
@@ -14,17 +18,14 @@ import com.google.firebase.firestore.Query;
  * TODO: Put in the global context
  */
 public class QueryMode {
-    Boolean sort, filter;           // Should be able to be in four diff states
-    SortField currentSort;          // What is currently being sorted.
-    Query.Direction direction;      // Defaults to ASCENDING
-    final FilterState filterState;  // Keeping track of the applied filters
-    private QueryGenerator queryFactory;    // Generation of new queries
+    private SortField currentSort;          // What is currently being sorted.
+    private Query.Direction direction;      // Defaults to ASCENDING
     private Query currentQuery;
     private CollectionReference originalQuery;
+    private Pair<FilterField, String> makeFilter;
 
     public QueryMode(CollectionReference originalQuery) {
         // Initialization
-        filterState = new FilterState();
         this.originalQuery = originalQuery; // Base reference for query
 
         // Set basic state
@@ -48,11 +49,9 @@ public class QueryMode {
      */
     public void clearQuery() {
         currentSort = SortField.NO_SELECTION;
-        filterState.resetState();
         direction = Query.Direction.ASCENDING;  // Default sort direction
-        sort = false;
-        filter = false;
         currentQuery = originalQuery;
+        makeFilter = new Pair<>(FilterField.MAKE, null);
     }
 
     /**
@@ -69,15 +68,52 @@ public class QueryMode {
      */
     public void receiveSortQuery(SortField sortMode) {
         if (sortMode != null) currentSort = sortMode;
-        queryUpdateSort();
+        queryUpdate();
     }
 
-    public void queryUpdateSort() {
+    /**
+     * This method receives the user input data for an equals type query, and
+     * then change the internal state of the instance to match.
+     * @param input is the pair value that is being used to control flow.
+     */
+    public void receiveEqualsQuery(Pair<FilterField, String> input) {
+        switch(input.getFirst()) {
+            case MAKE:
+                makeFilter = input;
+                break;
+            case DESCRIPTION:
+                break;  // TODO: Implement filter by description
+            default:
+                throw new IllegalArgumentException(
+                        "Filter communications receiving wrong format");
+        }
+        queryUpdate();
+    }
+
+    /**
+     * This method updates the internally stored Query object to match with the
+     * currently toggle front end.
+     */
+    public void queryUpdate() {
         resetQueryObject();   // Need to reset before running
+
+        updateMakeFilter();
+
         if (currentSort != SortField.NO_SELECTION) {
             currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
                     direction);
         }
+    }
+
+    /**
+     * This method updates the internal state of the make filter query. Done by
+     * reading the internal state as well.
+     */
+    private void updateMakeFilter() {
+        if (makeFilter.getSecond() != null) compoundQuery(q ->
+                QueryGenerator.filterRangeQuery(q, makeFilter.getFirst()
+                        .getDbField(), makeFilter.getSecond(),
+                        makeFilter.getSecond() + "~"));
     }
 
     /**
@@ -89,17 +125,16 @@ public class QueryMode {
         dbPair.getFirst().startListening(currentQuery, dbPair.getSecond());
     }
 
-
-    public void filterOn(FilterState filterState) {
-        filter = true;
+    /**
+     * State mutator that takes a lambda as an input
+     * @param composer is the function that will generate the next query state.
+     */
+    private void compoundQuery(Function<Query, Query> composer) {
+        currentQuery = composer.apply(currentQuery);
     }
 
-    /**
-     * Get rid of all filter options
-     */
-    public void filterOff() {
-        filter = false;
-        filterState.resetState();
+    public Pair<FilterField, String> getMakeFilter() {
+        return this.makeFilter;
     }
 
     /**
@@ -107,7 +142,7 @@ public class QueryMode {
      */
     public void setAscend() {
         direction = Query.Direction.ASCENDING;
-        queryUpdateSort();
+        queryUpdate();
     }
 
     /**
@@ -115,6 +150,6 @@ public class QueryMode {
      */
     public void setDescend() {
         direction = Query.Direction.DESCENDING;
-        queryUpdateSort();
+        queryUpdate();
     }
 }

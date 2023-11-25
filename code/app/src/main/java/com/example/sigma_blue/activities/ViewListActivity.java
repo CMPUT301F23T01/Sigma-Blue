@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -39,7 +40,7 @@ public class ViewListActivity extends BaseActivity {
         public Button optionsButton;
         public Button deleteSelectedButton;
         public Button addTagsSelectedButton;
-        public LinearLayout selectedItemsMenu;
+        public ConstraintLayout selectedItemsMenu;
         public FloatingActionButton addEntryButton;
         public TextView summaryView;
         public ListView listListView;
