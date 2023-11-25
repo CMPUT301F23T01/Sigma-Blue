@@ -14,32 +14,12 @@ public enum FilterField {
             .dbDescription), MAKE(Item.dbMake);
 
     private String dbField;
-    private String filterString;
 
     FilterField(String dbField) {
         this.dbField = dbField;
     }
 
     FilterField() {
-    }
-
-    /**
-     * Returns the filter string wrapped in a nullable for proper handling.
-     * @return the optional wrapped filter string. if it is not there, then
-     * the enum is being used wrong.
-     */
-    public Optional<String> getFilterString() {
-        return Optional.ofNullable(filterString);
-    }
-
-    /**
-     * This method is used to set the filter string that is being used for
-     * certain queries. Restrictions are weak currently
-     * @param filterString is the string that is being packaged for testing.
-     */
-    public void setFilterString(String filterString) {
-        if (this == MAKE || this == DESCRIPTION)
-            this.filterString = filterString;
     }
 
     /**

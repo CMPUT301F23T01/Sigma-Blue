@@ -1,6 +1,7 @@
 package com.example.sigma_blue.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,11 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.query.FilterField;
+import com.example.sigma_blue.query.QueryMode;
 import com.example.sigma_blue.query.SortField;
+import com.example.sigma_blue.utility.Pair;
+import com.example.sigma_blue.utility.SigmaBlueTextWatcher;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -28,7 +33,6 @@ import java.util.List;
  * TODO: Filter has not been implemented yet.
  */
 public class QueryFragment extends DialogFragment {
-    private GlobalContext globalContext;    // Used for transferring data
 
 
     /**
@@ -143,10 +147,21 @@ public class QueryFragment extends DialogFragment {
          * Restores the selection that has been saved to the global context.
          */
         public void regenerateSelection() {
-            sortCriteriaSpinner.setSelection(adapter.getPosition(globalContext
-                    .getQueryState().getCurrentSort()));
+            sortCriteriaSpinner.setSelection(adapter.getPosition(queryState
+                    .getCurrentSort()));
             setSortCheckbox(globalContext.getQueryState().getDirection());
 
+            // Filter text regeneration
+            regenerateMakeTextBox();
+        }
+
+        /**
+         * This method returns the make edit textbox back to its initial state
+         */
+        private void regenerateMakeTextBox() {
+            Pair<FilterField, String> cache = queryState.getMakeFilter();
+            if (cache.getSecond() != null)
+                makeFilterET.setText(cache.getSecond());
         }
 
         /**
@@ -163,7 +178,9 @@ public class QueryFragment extends DialogFragment {
          */
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
-            backButton.setOnClickListener(view -> dismiss());   // Go back
+            backButton.setOnClickListener(view -> {
+                dismiss();
+            });   // Go back
 
             /* Resets the query. Uses the database default */
             resetButton.setOnClickListener(view -> resetQuery());
@@ -213,10 +230,29 @@ public class QueryFragment extends DialogFragment {
                     // Does not need to do anything yet
                 }
             });
+
+            makeFilterET.addTextChangedListener(
+                    new SigmaBlueTextWatcher<EditText>(makeFilterET) {
+
+                @Override
+                public void onTextChanged(EditText target, Editable s) {
+                    String userInput = s.toString().trim();
+                    // Cover -> empty input, regular input
+                    Pair<FilterField, String> nextAddition;
+                    if (userInput.isEmpty())
+                        nextAddition = new Pair<>(FilterField.MAKE, null);
+                    else
+                        nextAddition = new Pair<>(FilterField.MAKE, userInput);
+                    queryState.receiveEqualsQuery(nextAddition);
+                    queryState.sendQuery(globalContext.getQueryPair());
+                }
+            });
         }
     }
 
+    private GlobalContext globalContext;    // Used for transferring data
     private ViewHolder viewHolder;          // The view holder
+    private QueryMode queryState;           // The query controller.
 
     /**
      * Empty public constructor
@@ -228,6 +264,7 @@ public class QueryFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         globalContext = GlobalContext.getInstance();
+        queryState = globalContext.getQueryState();
     }
 
     /**
