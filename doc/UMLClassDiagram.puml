@@ -58,6 +58,11 @@ class sigma_blue.database.DatabaseInitializer {
 + void generateFileStructure(Account)
 + HashMap<String,String> documentOfAccount(Account)
 }
+
+note left of sigma_blue.database.DatabaseInitializer
+    Only used for testing,
+    unused for now.
+end note
 class sigma_blue.activities.ActivityLauncher {
 - ActivityResultLauncher<Input> launcher
 - OnActivityResult<Result> onActivityResult
@@ -418,6 +423,12 @@ class sigma_blue.context.GlobalContext {
 + Item getModifiedItem()
 + void setModifiedItem(Item)
 }
+
+note left of sigma_blue.context.GlobalContext
+    Used in all activities
+    and fragments.
+end note
+
 class sigma_blue.fragments.FragmentLauncher {
 - FragmentManager hostFragmentManager
 + {static} FragmentLauncher newInstance(FragmentActivity)
@@ -500,6 +511,12 @@ interface sigma_blue.database.IDatabaseItem {
 + Function<IDatabaseItem<T>,HashMap<String,Object>> getHashMapOfEntity()
 + T getInstance()
 }
+
+note left of sigma_blue.database.IDatabaseItem
+    Item, Tag, and Account
+    implement IDatabaseItem.
+end note
+
 class sigma_blue.context.SelectedEntities {
 ~ ArrayList<T> selected
 + void toggleHighlight(T)
@@ -579,31 +596,39 @@ interface sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener {
 ~ void onConfirmPressed(boolean)
 }
 
-
 sigma_blue.entity.tag.Comparable <|.. sigma_blue.entity.tag.Tag
+sigma_blue.entity.tag.TagList "  1" *-- sigma_blue.entity.tag.TagDB
+sigma_blue.entity.tag.TagList "  1" o-- sigma_blue.entity.tag.TagListAdapter
 sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.tag.Tag
 java.io.Serializable <|.. sigma_blue.entity.tag.Tag
 sigma_blue.activities.OnFragmentInteractionListener <|.. sigma_blue.activities.LoginPageActivity
-sigma_blue.activities.OnFragmentInteractionListener <|.. sigma_blue.activities.LoginPageActivity
 sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.LoginPageActivity
-sigma_blue.activities.ActivityLauncher +.. sigma_blue.activities.ActivityLauncher$OnActivityResult
+sigma_blue.activities.ActivityLauncher "  1" *-- sigma_blue.activities.ActivityLauncher$OnActivityResult
 android.widget.ArrayAdapter <|-- sigma_blue.adapter.ASelectableListAdapter
 sigma_blue.adapter.ASelectableListAdapter <|-- sigma_blue.entity.item.ItemListAdapter
 androidx.appcompat.app.AppCompatActivity <|-- sigma_blue.activities.BaseActivity
 androidx.fragment.app.Fragment <|-- sigma_blue.fragments.TagAddFragment
 sigma_blue.database.ADatabaseHandler <|-- sigma_blue.entity.account.AccountDB
 sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.ViewListActivity
-sigma_blue.activities.ViewListActivity +.. sigma_blue.activities.ViewListActivity$ViewHolder
+sigma_blue.activities.ViewListActivity "  1" *-- sigma_blue.activities.ViewListActivity$ViewHolder
+sigma_blue.activities.LoginPageActivity "  1" *-- sigma_blue.fragments.FragmentLauncher
 java.io.Serializable <|.. sigma_blue.entity.AEntityList
 sigma_blue.database.IDatabaseList <|.. sigma_blue.entity.AEntityList
 sigma_blue.entity.AEntityList <|-- sigma_blue.entity.account.AccountList
+sigma_blue.entity.account.AccountList "0..*" *-- sigma_blue.entity.account.Account
+sigma_blue.entity.account.AccountList "1" *-- sigma_blue.entity.account.AccountDB
 sigma_blue.entity.item.Comparable <|.. sigma_blue.entity.item.Item
+sigma_blue.entity.item.Item "0..*" o-- sigma_blue.entity.tag.Tag
+sigma_blue.entity.item.ItemList "0..*" o-- sigma_blue.entity.item.Item
+sigma_blue.entity.item.ItemList "1" *-- sigma_blue.entity.item.ItemDB
+sigma_blue.entity.item.ItemListAdapter "  1" o-- sigma_blue.activities.ViewListActivity
+sigma_blue.entity.item.ItemFactory "creates" -- sigma_blue.entity.item.Item
 java.io.Serializable <|.. sigma_blue.entity.item.Item
 sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.item.Item
 sigma_blue.database.ADatabaseHandler <|-- sigma_blue.entity.tag.TagDB
 androidx.recyclerview.widget.LinearLayoutManager <|-- sigma_blue.adapter.ItemLinearLayoutManager
 androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.QueryFragment
-sigma_blue.fragments.QueryFragment +.. sigma_blue.fragments.QueryFragment$ViewHolder
+sigma_blue.fragments.QueryFragment "  1" *-- sigma_blue.fragments.QueryFragment$ViewHolder
 androidx.fragment.app.Fragment <|-- sigma_blue.fragments.EditFragment
 sigma_blue.entity.AEntityList <|-- sigma_blue.entity.tag.TagList
 sigma_blue.database.ADatabaseHandler <|-- sigma_blue.entity.item.ItemDB
@@ -612,11 +637,14 @@ sigma_blue.adapter.ASelectableListAdapter <|-- sigma_blue.entity.tag.TagListAdap
 androidx.fragment.app.Fragment <|-- sigma_blue.fragments.DetailsFragment
 androidx.fragment.app.Fragment <|-- sigma_blue.fragments.TagManagerFragment
 androidx.fragment.app.Fragment <|-- sigma_blue.fragments.TagEditFragment
+sigma_blue.fragments.TagManagerFragment "  1" o-- sigma_blue.entity.tag.TagListAdapter
+sigma_blue.fragments.DetailsFragment "  1" o-- sigma_blue.entity.tag.TagListAdapter
+sigma_blue.fragments.EditFragment "  1" o-- sigma_blue.entity.tag.TagListAdapter
 sigma_blue.entity.AEntityList <|-- sigma_blue.entity.item.ItemList
 androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.LoginFragment
 java.io.Serializable <|.. sigma_blue.entity.account.Account
 sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.account.Account
 sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.ImageTakingActivity
 androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.CreateAccFragment
-sigma_blue.fragments.CreateAccFragment +.. sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener
+sigma_blue.fragments.CreateAccFragment "  1" *-- sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener
 @enduml
