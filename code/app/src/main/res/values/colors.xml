@@ -19,10 +19,13 @@
     <color name="blue_dark">#0A2D6A</color>
     <color name="blue_darker">#18253C</color>
 
+    <color name="turquoise_prime">#759FBC</color>
+    <color name="turquoise_light">#5C9FCD</color>
+    <color name="turquoise_dark">#157E72</color>
+
     <color name="yellow_prime">#F3D43E</color>
     <color name="yellow_light">#FBE681</color>
     <color name="yellow_dark">#AF9309</color>
-
 
     <color name ="ic_launcher_background">#404375</color>
 

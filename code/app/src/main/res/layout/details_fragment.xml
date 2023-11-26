@@ -50,7 +50,7 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/add_edit_empty"
                         android:textColor="?colorOnBackground"
-                        android:textSize="18sp"
+                        android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
