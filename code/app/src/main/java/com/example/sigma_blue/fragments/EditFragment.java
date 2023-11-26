@@ -129,15 +129,6 @@ public class EditFragment extends Fragment
         textSerial.setText(currentItem.getSerialNumber());
         textDescription.setText(currentItem.getDescription());
         textComment.setText(currentItem.getComment());
-
-        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
-        tagListView.setAdapter(tagListAdapter);
-
-        imageListAdapter = new ImageListAdapter(getContext());
-        itemImageList.setAdapter(imageListAdapter);
-
-        globalContext.getImageList().setAdapter(imageListAdapter);
-        globalContext.getImageList().setList(globalContext.getModifiedItem().getImagePaths());
     }
 
     /**
@@ -158,10 +149,10 @@ public class EditFragment extends Fragment
         tagListAdapter = TagListAdapter.newInstance(globalContext.getModifiedItem().getTags(), getContext());
         tagListView.setAdapter(tagListAdapter);
 
-        imageListAdapter = new ImageListAdapter(globalContext.getModifiedItem().getImages(), getContext());
+        imageListAdapter = new ImageListAdapter(getContext());
         itemImageList.setAdapter(imageListAdapter);
 
-        globalContext.getImageList().setAdapter(imageListAdapter);
+        globalContext.getImageManager().setAdapter(imageListAdapter);
 
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(modifiedItem.getDate()));
@@ -220,7 +211,7 @@ public class EditFragment extends Fragment
             public void onClick(View v)
             {
                 // Save current ui state
-                loadUiText(globalContext.getCurrentItem());
+                loadUiText(globalContext.getModifiedItem());
                 // Open TagManager
                 globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
                 Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
@@ -293,7 +284,7 @@ public class EditFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        globalContext.getImageList().setList(globalContext.getModifiedItem().getImagePaths());
+        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
         if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
             editItemUIBindings(globalContext.getModifiedItem());
         }

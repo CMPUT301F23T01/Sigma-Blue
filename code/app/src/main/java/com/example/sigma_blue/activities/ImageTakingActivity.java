@@ -93,9 +93,9 @@ public class ImageTakingActivity extends BaseActivity{
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            String path = globalContext.getImageList().add(globalContext.getAccount(), imageBitmap);
-            globalContext.getCurrentItem().addImagePath(path);
-            globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
+            String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
+            globalContext.getModifiedItem().addImagePath(path);
+            globalContext.newState(globalContext.getLastState());
             finish();
 
         } else if (requestCode == REQUEST_BARCODE_SCAN && resultCode == RESULT_OK) {

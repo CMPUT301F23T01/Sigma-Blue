@@ -6,19 +6,15 @@ import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
-import com.example.sigma_blue.entity.image.ImageDB;
-import com.example.sigma_blue.entity.image.ImageList;
+import com.example.sigma_blue.entity.image.ImageManager;
 import com.example.sigma_blue.entity.item.Item;
 
-import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
-import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.QueryMode;
 import com.example.sigma_blue.utility.Pair;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
@@ -37,7 +33,7 @@ public class GlobalContext {
     private SelectedEntities<Item> selectedItems;
     private TagList tagList;
     private SelectedEntities<Tag> selectedTags;
-    private ImageList imageList;
+    private ImageManager imageManager;
     private Item currentItem;
     private Item modifiedItem;
     private Tag currentTag;
@@ -74,7 +70,7 @@ public class GlobalContext {
         this.selectedTags = new SelectedEntities<Tag>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
-        this.imageList = new ImageList();
+        this.imageManager = new ImageManager();
     }
 
     /**
@@ -108,7 +104,7 @@ public class GlobalContext {
     public ItemList getItemList() {
         return itemList;
     }
-    public ImageList getImageList() {return imageList;}
+    public ImageManager getImageManager() {return imageManager;}
     /**
      * Setter for the query mode.
      * @return the query mode object, which keeps track of the current query

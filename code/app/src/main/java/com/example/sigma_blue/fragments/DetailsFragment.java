@@ -127,8 +127,8 @@ public class DetailsFragment extends Fragment
         imageListAdapter = new ImageListAdapter(getContext());
         itemImageList.setAdapter(imageListAdapter);
 
-        globalContext.getImageList().setAdapter(imageListAdapter);
-        globalContext.getImageList().setList(currentItem.getImagePaths());
+        globalContext.getImageManager().setAdapter(imageListAdapter);
+        globalContext.getImageManager().updateFromItem(currentItem);
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {
