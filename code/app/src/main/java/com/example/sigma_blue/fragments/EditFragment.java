@@ -25,6 +25,7 @@ import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.Tag;
@@ -63,6 +64,8 @@ public class EditFragment extends Fragment
     private EditText textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private ListView itemImageList;
+    private ImageListAdapter imageListAdapter;
     private ImageView itemImage;
     private ArrayList<EditText> editTextList;
     //private Item savedItemChanges;
@@ -108,7 +111,7 @@ public class EditFragment extends Fragment
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
         tagListView = binding.getRoot().findViewById((R.id.list_tag));
-        itemImage = binding.getRoot().findViewById(R.id.item_image);
+        itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
 
         // TODO add buttons here
         return binding.getRoot();
@@ -126,8 +129,15 @@ public class EditFragment extends Fragment
         textSerial.setText(currentItem.getSerialNumber());
         textDescription.setText(currentItem.getDescription());
         textComment.setText(currentItem.getComment());
+
         tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
         tagListView.setAdapter(tagListAdapter);
+
+        imageListAdapter = new ImageListAdapter(getContext());
+        itemImageList.setAdapter(imageListAdapter);
+
+        globalContext.getImageList().setAdapter(imageListAdapter);
+        globalContext.getImageList().setList(globalContext.getModifiedItem().getImagePaths());
     }
 
     /**
@@ -153,24 +163,6 @@ public class EditFragment extends Fragment
 
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(modifiedItem.getDate()));
-
-        //ITEM IMAGE RELATED CHANGES
-        // trying to get the path of image, and put it on the add item
-        String tempImagePath = globalContext.getCurrentItem().getImagePaths().size() > 0 ? globalContext.getCurrentItem().getImagePaths().get(0) : null;
-        // set the image of the item
-        // Create a storage reference from our app
-//        if (tempImagePath != null) {
-//            globalContext.getImageDB().getImage(tempImagePath, new OnSuccessListener<byte[]>() {
-//                @Override
-//                public void onSuccess(byte[] bytes) {
-//                    // Data for "images/island.jpg" is returns, use this as needed
-//                    Log.i("ImageDownload", "Image download succeed");
-//                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                    itemImage.setImageBitmap(bitmap);
-//                }
-//            });
-//        }
-
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
@@ -235,7 +227,7 @@ public class EditFragment extends Fragment
             }
         });
 
-        view.findViewById(R.id.item_image).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.add_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleImageClick();
