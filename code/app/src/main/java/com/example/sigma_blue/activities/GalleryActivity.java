@@ -12,6 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 public class GalleryActivity extends BaseActivity {
 
 
+    /*  Photo Picker trial:
+        working on android 11, ugly UI uses android default file explorer
+        not working on android 8
+        discarded for now
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,8 @@ public class GalleryActivity extends BaseActivity {
 
 
     }
+
+     */
 
 }
 

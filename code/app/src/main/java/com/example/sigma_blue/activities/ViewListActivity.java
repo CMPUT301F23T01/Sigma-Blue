@@ -161,7 +161,7 @@ public class ViewListActivity extends BaseActivity {
      */
     private void setUIOnClickListeners() {
         viewHolder.addEntryButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
+            Intent intent = new Intent(ViewListActivity.this, GalleryActivity.class);
             globalContext.setCurrentItem(null);
             globalContext.newState(ApplicationState.ADD_ITEM_FRAGMENT);
             startActivity(intent);
