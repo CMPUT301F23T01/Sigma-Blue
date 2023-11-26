@@ -154,12 +154,14 @@ public class EditFragment extends Fragment
         globalContext = GlobalContext.getInstance();
         // Load Item and mode
         Item modifiedItem = globalContext.getModifiedItem();
-        // If the user is creating a new item.
-        if (modifiedItem == null) {
-            modifiedItem = new Item();
 
-            globalContext.setModifiedItem(modifiedItem);
-        }
+        tagListAdapter = TagListAdapter.newInstance(globalContext.getModifiedItem().getTags(), getContext());
+        tagListView.setAdapter(tagListAdapter);
+
+        imageListAdapter = new ImageListAdapter(globalContext.getModifiedItem().getImages(), getContext());
+        itemImageList.setAdapter(imageListAdapter);
+
+        globalContext.getImageList().setAdapter(imageListAdapter);
 
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         textDate.setText(sdf.format(modifiedItem.getDate()));
@@ -291,6 +293,7 @@ public class EditFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        globalContext.getImageList().setList(globalContext.getModifiedItem().getImagePaths());
         if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
             editItemUIBindings(globalContext.getModifiedItem());
         }
@@ -330,7 +333,11 @@ public class EditFragment extends Fragment
     private void loadUiText(@NonNull Item item)
     {
         item.setName(textName.getText().toString());
-        item.setValue(Double.parseDouble(textValue.getText().toString()));
+        try {
+            item.setValue(Double.parseDouble(textValue.getText().toString()));
+        } catch (java.lang.NumberFormatException e) {
+            // no number entered
+        }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         try
         {
@@ -347,11 +354,9 @@ public class EditFragment extends Fragment
 
     //TODO. make it so that you don't need to have a valid item before adding a picture
     private void handleImageClick() {
-        if (verifyText()) {
-            Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
-            loadUiText(globalContext.getCurrentItem());
-            globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
+        loadUiText(globalContext.getModifiedItem());
+        globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
+        startActivity(intent);
     }
 }
