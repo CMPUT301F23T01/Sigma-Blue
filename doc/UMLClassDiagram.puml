@@ -425,9 +425,13 @@ class sigma_blue.context.GlobalContext {
 }
 
 note left of sigma_blue.context.GlobalContext
-    Used in all activities
-    and fragments.
+    Singleton class. Used in
+    all activities and fragments.
+
+    Also keeps track of a history
+    of application states.
 end note
+
 
 class sigma_blue.fragments.FragmentLauncher {
 - FragmentManager hostFragmentManager
@@ -525,6 +529,11 @@ class sigma_blue.context.SelectedEntities {
 + boolean empty()
 + int size()
 }
+
+note left of sigma_blue.context.SelectedEntities
+    Either Tags or Items are selected here.
+end note
+
 enum sigma_blue.query.FilterField {
 +  NONE
 +  DATE_RANGE
@@ -596,7 +605,7 @@ interface sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener {
 ~ void onConfirmPressed(boolean)
 }
 
-sigma_blue.entity.tag.Comparable <|.. sigma_blue.entity.tag.Tag
+java.lang.Comparable <|.. sigma_blue.entity.tag.Tag
 sigma_blue.entity.tag.TagList "  1" *-- sigma_blue.entity.tag.TagDB
 sigma_blue.entity.tag.TagList "  1" o-- sigma_blue.entity.tag.TagListAdapter
 sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.tag.Tag
@@ -617,7 +626,7 @@ sigma_blue.database.IDatabaseList <|.. sigma_blue.entity.AEntityList
 sigma_blue.entity.AEntityList <|-- sigma_blue.entity.account.AccountList
 sigma_blue.entity.account.AccountList "0..*" *-- sigma_blue.entity.account.Account
 sigma_blue.entity.account.AccountList "1" *-- sigma_blue.entity.account.AccountDB
-sigma_blue.entity.item.Comparable <|.. sigma_blue.entity.item.Item
+java.lang.Comparable <|.. sigma_blue.entity.item.Item
 sigma_blue.entity.item.Item "0..*" o-- sigma_blue.entity.tag.Tag
 sigma_blue.entity.item.ItemList "0..*" o-- sigma_blue.entity.item.Item
 sigma_blue.entity.item.ItemList "1" *-- sigma_blue.entity.item.ItemDB
@@ -647,4 +656,6 @@ sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.account.Account
 sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.ImageTakingActivity
 androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.CreateAccFragment
 sigma_blue.fragments.CreateAccFragment "  1" *-- sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener
+sigma_blue.context.GlobalContext "  2" *-- sigma_blue.context.SelectedEntities
+sigma_blue.context.GlobalContext "0..*" *-- sigma_blue.context.ApplicationState
 @enduml
