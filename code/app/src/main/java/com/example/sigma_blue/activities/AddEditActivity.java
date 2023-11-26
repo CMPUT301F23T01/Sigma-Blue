@@ -22,6 +22,8 @@ import java.util.Objects;
 public class AddEditActivity extends BaseActivity
 {
     private GlobalContext globalContext;
+    private NavGraph graph;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -34,10 +36,15 @@ public class AddEditActivity extends BaseActivity
         globalContext = GlobalContext.getInstance();
 
         // Setup nav controller
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);
-        NavGraph graph = navController.getNavInflater().inflate(R.navigation.nav_graph);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_add_edit_activity);
+        graph = navController.getNavInflater().inflate(R.navigation.nav_graph);
 
         //depending on the requested state go the the correct fragment
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
             graph.setStartDestination(R.id.editFragment);
         } else if (globalContext.getCurrentState() == ApplicationState
@@ -46,8 +53,11 @@ public class AddEditActivity extends BaseActivity
         } else if (globalContext.getCurrentState() == ApplicationState
                 .DETAILS_FRAGMENT) {
             graph.setStartDestination(R.id.detailsFragment);
+        } else if (Objects.equals(globalContext.getCurrentState(), ApplicationState.EDIT_ITEM_FRAGMENT)) {
+            graph.setStartDestination(R.id.editFragment);
         } else {
-            throw new RuntimeException("Wrong add/edit activity state");
+            Log.e("DEBUG", "Bad AddEditMode");
+            return;
         }
         navController.setGraph(graph);
     }

@@ -9,6 +9,7 @@ import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -124,9 +125,9 @@ public class ItemList extends AEntityList<Item> {
     /**
      * Clean all the tags in all stored items
      */
-    public void cleanAllItemTags() {
+    public void cleanAllItemTags(ArrayList<Tag> validTags) {
         for (Item i : this.entityList) {
-            i.cleanTags();
+            i.cleanTags(validTags);
             syncEntity(i);
         }
     }

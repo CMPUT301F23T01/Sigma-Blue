@@ -13,7 +13,10 @@ public enum ApplicationState {
     MULTI_SELECT_TAG_MANAGER_FRAGMENT("multi select tag manager"),
     TAG_MANAGER_FRAGMENT("tag manager fragment"),
     TAG_ADD_FRAGMENT("tag add fragment"),
-    TAG_EDIT_FRAGMENT("tag edit fragment");
+    TAG_EDIT_FRAGMENT("tag edit fragment"),
+    IMAGE_ADD_ACTIVITY("image add activity"),
+    BARCODE_ADD_ACTIVITY("barcode add activity"),
+    NONE("none");
 
     private String key;
 

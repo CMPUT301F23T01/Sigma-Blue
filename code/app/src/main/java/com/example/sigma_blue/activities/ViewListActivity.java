@@ -115,7 +115,9 @@ public class ViewListActivity extends BaseActivity {
     private void handleClick(Item item) {
         Log.i("DEBUG", item.getName() + "Short Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
-        globalContext.setCurrentItem(item);
+        Item currentItem = new Item(item);
+        globalContext.setCurrentItem(currentItem);
+        globalContext.setModifiedItem(item);
         globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
         startActivity(intent);
     }
@@ -163,6 +165,7 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.addEntryButton.setOnClickListener(v -> {
             Intent intent = new Intent(ViewListActivity.this, GalleryActivity.class);
             globalContext.setCurrentItem(null);
+            globalContext.setModifiedItem(null);
             globalContext.newState(ApplicationState.ADD_ITEM_FRAGMENT);
             startActivity(intent);
         });  // Launch add activity.
