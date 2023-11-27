@@ -4,12 +4,10 @@ import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.utility.Pair;
+import com.example.sigma_blue.utility.Quadruple;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -24,6 +22,7 @@ public class QueryMode {
     private CollectionReference originalQuery;
     private Pair<FilterField, String> makeFilter;
     private Pair<FilterField, String> descriptionFilter;
+    private Quadruple<FilterField, Boolean, String, String> dateFilter;
 
     public QueryMode(CollectionReference originalQuery) {
         // Initialization
@@ -61,6 +60,8 @@ public class QueryMode {
     private void clearFilterObjects() {
         makeFilter = new Pair<>(FilterField.MAKE, null);
         descriptionFilter = new Pair<>(FilterField.DESCRIPTION, null);
+        dateFilter = new Quadruple<> (FilterField.DATE_RANGE, false,
+                null, null);
     }
 
     /**
@@ -107,8 +108,10 @@ public class QueryMode {
     public void queryUpdate() {
         resetQueryObject();   // Need to reset before running
 
-        updateMakeFilter();
-        updateDescriptionFilter();
+        // Updating the filters
+        updateRangedFilter(makeFilter);
+        updateRangedFilter(descriptionFilter);
+        updateRangedFilter(dateFilter);
 
         if (currentSort != SortField.NO_SELECTION) {
             currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
@@ -116,27 +119,19 @@ public class QueryMode {
         }
     }
 
-    /**
-     * This method updates the internal state of the make filter query. Done by
-     * reading the internal state as well.
-     */
-    private void updateMakeFilter() {
-        updateRangedFilter(makeFilter);
-    }
-
-    /**
-     * This method updates the internal state of the make filter query. Done by
-     * reading the internal state as well.
-     */
-    private void updateDescriptionFilter() {
-        updateRangedFilter(descriptionFilter);
-    }
-
     private void updateRangedFilter(final Pair<FilterField, String> toUpdate) {
         if (toUpdate.getSecond() != null) compoundQuery(q ->
                 QueryGenerator.filterRangeQuery(q, toUpdate.getFirst()
                                 .getDbField(), toUpdate.getSecond(),
                         toUpdate.getSecond() + "~"));
+    }
+
+    private void updateRangedFilter(final Quadruple<FilterField, Boolean,
+            String, String> toUpdate) {
+        if (toUpdate.getSecond()) compoundQuery(q ->
+                QueryGenerator.filterRangeQuery(q, toUpdate.getFirst()
+                                .getDbField(), toUpdate.getThird(), toUpdate
+                        .getFourth()));
     }
 
     /**
