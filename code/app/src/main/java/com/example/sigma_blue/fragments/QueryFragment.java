@@ -146,6 +146,7 @@ public class QueryFragment extends DialogFragment {
          * Creates the sorting choice adapter.
          */
         private void createSortAdapter() {
+            // TODO: There is reuse of this function, therefore, it can be refac
             sortAdapter = new ArrayAdapter<>(getContext(), android.R.layout
                     .simple_spinner_dropdown_item);
             sortAdapter.addAll(createMenuItems());
@@ -238,6 +239,7 @@ public class QueryFragment extends DialogFragment {
             DateRepresentation start;
             DateRepresentation end;
             if (dateFilterState.getSecond()) {
+                // TODO: Refactor this section of code
                 start = dateFilterState.getThird();
                 end = dateFilterState.getFourth();
                 startDatePicker.updateDate(start.getYear(), start.getMonth(),
@@ -448,6 +450,7 @@ public class QueryFragment extends DialogFragment {
 
                 @Override
                 public void onTextChanged(EditText target, Editable s) {
+                    // TODO: Refactor opportunity
                     String userInput = s.toString().trim();
                     // Cover -> empty input, regular input
                     Pair<FilterField, String> nextAddition;
@@ -515,7 +518,6 @@ public class QueryFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-
         // Adjusting the size of the dialog fragment
         ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
         if (params != null) {
