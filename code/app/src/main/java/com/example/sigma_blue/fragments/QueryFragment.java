@@ -5,6 +5,7 @@ import static com.example.sigma_blue.query.ModeField.SORT;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.query.DateRepresentation;
 import com.example.sigma_blue.query.FilterField;
 import com.example.sigma_blue.query.ModeField;
 import com.example.sigma_blue.query.QueryMode;
@@ -74,7 +76,7 @@ public class QueryFragment extends DialogFragment {
          * @param entireView the view of the fragment
          */
         private void bindViews(View entireView) {
-            backButton = entireView.findViewById(R.id.query_cancel_button);
+            backButton = entireView.findViewById(R.id.query_confirm_button);
             resetButton = entireView.findViewById(R.id.sortingResetButton);
             descriptionFilterET = entireView.findViewById(R.id
                     .descFilterEditText);
@@ -184,6 +186,7 @@ public class QueryFragment extends DialogFragment {
          */
         private void resetQuery() {
             queryState.clearQuery();
+            queryState.sendQuery(globalContext.getQueryPair());
             regenerateSelection();
         }
 
@@ -197,8 +200,8 @@ public class QueryFragment extends DialogFragment {
 
             // Filter text regeneration
             regenerateMakeTextBox();
-            regenerateDescriptionTextBox();
-            regenerateDateCheckBox(queryState);
+            regenerateDescriptionTextBox(queryState);
+            regenerateDateUI(queryState);
 
             dateCheckBoxController(this.dateFilterBox);
         }
@@ -215,14 +218,38 @@ public class QueryFragment extends DialogFragment {
          * Regenerates the edit text for the description filter using the
          * previously stored state.
          */
-        private void regenerateDescriptionTextBox() {
+        private void regenerateDescriptionTextBox(QueryMode queryState) {
             regenerateTextBox(descriptionFilterET, queryState
                     .getDescriptionFilter().getSecond());
         }
 
-        private void regenerateDateCheckBox(QueryMode queryState) {
-            Quadruple<FilterField, Boolean, String, String> cache = queryState
-                    .getDateFilter();
+        /**
+         * Method that syncs the fragment ui with what is stored in the global
+         * context.
+         * @param queryMode is the controller class for the queries
+         */
+        private void regenerateDateUI(QueryMode queryMode) {
+            regenerateDateCheckBox(queryMode);
+            regenerateDatePickers(queryMode.getDateFilter());
+        }
+
+        private void regenerateDatePickers(Quadruple<FilterField, Boolean,
+                DateRepresentation, DateRepresentation> dateFilterState) {
+            DateRepresentation start;
+            DateRepresentation end;
+            if (dateFilterState.getSecond()) {
+                start = dateFilterState.getThird();
+                end = dateFilterState.getFourth();
+                startDatePicker.updateDate(start.getYear(), start.getMonth(),
+                        start.getDay());
+                endDatePicker.updateDate(end.getYear(), end.getMonth(),
+                        end.getDay());
+            }
+        }
+
+        private void regenerateDateCheckBox(QueryMode queryMode) {
+            Quadruple<FilterField, Boolean, DateRepresentation,
+                    DateRepresentation> cache = queryMode.getDateFilter();
             dateFilterBox.setChecked(cache.getSecond());
         }
 
@@ -268,6 +295,12 @@ public class QueryFragment extends DialogFragment {
             else setDatePickerVisibility(View.GONE);
         }
 
+        private DateRepresentation dateRepresentationOfPicker(
+                DatePicker picker) {
+            return new DateRepresentation(picker.getYear(), picker.getMonth(),
+                    picker.getDayOfMonth());
+        }
+
         /**
          * Creating reactions to checkbox interactions
          */
@@ -275,13 +308,11 @@ public class QueryFragment extends DialogFragment {
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
                 queryState.setAscend();
-                queryState.sendQuery(globalContext.getQueryPair());
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
                 queryState.setDescend();
-                queryState.sendQuery(globalContext.getQueryPair());
             });
 
             dateFilterBox.setOnClickListener(view -> {
@@ -292,15 +323,58 @@ public class QueryFragment extends DialogFragment {
                 // Need to send the filter
                 dateFilter = datebox.isChecked();
                 if (dateFilter) {
-                    Quadruple<FilterField, Boolean, String, String> parcel;
+                    Quadruple<FilterField, Boolean, DateRepresentation,
+                            DateRepresentation> parcel;
                     // TODO: Factor this out into a method
-                    String startDate = startDatePicker.getYear() + "-" + startDatePicker.getMonth() + "-" + startDatePicker.getDayOfMonth();
-                    String endDate = endDatePicker.getYear() + "-" + startDatePicker.getMonth() + "-" + startDatePicker.getDayOfMonth();
+                    DateRepresentation startDate = dateRepresentationOfPicker(
+                            startDatePicker);
+                    DateRepresentation endDate = dateRepresentationOfPicker(
+                            endDatePicker);
                     parcel = new Quadruple<>(FilterField.DATE_RANGE, dateFilter, startDate, endDate);
                     queryState.receiveQuery(parcel);
                 }
             });
+        }
 
+        private void setDatePickerListeners() {
+            startDatePicker.setOnDateChangedListener((view, year, month, day) ->
+            {
+                Quadruple<FilterField, Boolean, DateRepresentation,
+                        DateRepresentation> parcel;
+                DateRepresentation startDate = new DateRepresentation(year,
+                        month, day);
+                DateRepresentation endDate = dateRepresentationOfPicker(
+                        endDatePicker);
+
+                if (dateFilterBox.isChecked()) {
+                    parcel = new Quadruple<>(FilterField.DATE_RANGE, true, startDate, endDate);
+                    queryState.receiveQuery(parcel);
+                    Log.d("DATE REP", startDate.toString());
+                } else {
+                    throw new IllegalStateException(
+                            "Impossible start date picker state");
+                }
+            });
+
+            endDatePicker.setOnDateChangedListener((view, year, month, day) ->
+            {
+                Quadruple<FilterField, Boolean, DateRepresentation,
+                        DateRepresentation> parcel;
+                DateRepresentation startDate = dateRepresentationOfPicker(
+                        startDatePicker);
+                DateRepresentation endDate = new DateRepresentation(year, month,
+                        day);
+
+                // TODO: this next few lines can be factored out into a method
+                if (dateFilterBox.isChecked()) {
+                    parcel = new Quadruple<>(FilterField.DATE_RANGE, true, startDate, endDate);
+                    queryState.receiveQuery(parcel);
+                    Log.d("DATE REP", startDate.toString());
+                } else {
+                    throw new IllegalStateException(
+                            "Impossible start date picker state");
+                }
+            });
         }
 
         /**
@@ -309,6 +383,7 @@ public class QueryFragment extends DialogFragment {
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
             backButton.setOnClickListener(view -> {
+                queryState.sendQuery(globalContext.getQueryPair());
                 dismiss();
             });   // Go back
 
@@ -316,6 +391,7 @@ public class QueryFragment extends DialogFragment {
             resetButton.setOnClickListener(view -> resetQuery());
 
             setBoxListeners();  // Checkbox UI listeners
+            setDatePickerListeners();
 
             sortCriteriaSpinner.setOnItemSelectedListener(new AdapterView
                     .OnItemSelectedListener() {
@@ -334,9 +410,6 @@ public class QueryFragment extends DialogFragment {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
                     queryState.receiveQuery(sortAdapter.getItem(position));
-
-                    /* Sending the query to the database */
-                    queryState.sendQuery(globalContext.getQueryPair());
                 }
 
                 @Override
@@ -383,7 +456,6 @@ public class QueryFragment extends DialogFragment {
                     else
                         nextAddition = new Pair<>(FilterField.MAKE, userInput);
                     queryState.receiveQuery(nextAddition);
-                    queryState.sendQuery(globalContext.getQueryPair());
                 }
             });
 
@@ -401,10 +473,10 @@ public class QueryFragment extends DialogFragment {
                                 nextAddition = new Pair<>(FilterField
                                         .DESCRIPTION, userInput);
                             queryState.receiveQuery(nextAddition);
-                            queryState.sendQuery(globalContext.getQueryPair());
                         }
                     });
         }
+
 
         private void chooseModeView(ModeField choice) {
             switch(choice) {

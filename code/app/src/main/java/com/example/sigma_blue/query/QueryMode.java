@@ -22,7 +22,8 @@ public class QueryMode {
     private final CollectionReference originalQuery;
     private Pair<FilterField, String> makeFilter;
     private Pair<FilterField, String> descriptionFilter;
-    private Quadruple<FilterField, Boolean, String, String> dateFilter;
+    private Quadruple<FilterField, Boolean, DateRepresentation,
+            DateRepresentation> dateFilter;
 
     public QueryMode(final CollectionReference originalQuery) {
         // Initialization
@@ -106,8 +107,8 @@ public class QueryMode {
      * parameters to be handled.
      * @param input is a Quadruple object that is being queried.
      */
-    public void receiveQuery(final Quadruple<FilterField, Boolean, String,
-            String> input) {
+    public void receiveQuery(final Quadruple<FilterField, Boolean,
+            DateRepresentation, DateRepresentation> input) {
         switch(input.getFirst()) {
             case NONE:          // Insane way to merge switch cases.
             case DESCRIPTION:
@@ -123,6 +124,7 @@ public class QueryMode {
                 throw new IllegalArgumentException(
                         "Filter quadruple incorrect");
         }
+        queryUpdate();
     }
 
     /**
@@ -156,11 +158,11 @@ public class QueryMode {
     }
 
     private void updateRangedFilter(final Quadruple<FilterField, Boolean,
-            String, String> toUpdate) {
+            DateRepresentation, DateRepresentation> toUpdate) {
         if (toUpdate.getSecond()) compoundQuery(q ->
                 QueryGenerator.filterRangeQuery(q, toUpdate.getFirst()
-                                .getDbField(), toUpdate.getThird(), toUpdate
-                        .getFourth()));
+                                .getDbField(), toUpdate.getThird().toString(),
+                        toUpdate.getFourth().toString()));
     }
 
     /**
@@ -192,7 +194,8 @@ public class QueryMode {
         return this.descriptionFilter;
     }
 
-    public Quadruple<FilterField, Boolean, String, String> getDateFilter() {
+    public Quadruple<FilterField, Boolean, DateRepresentation,
+            DateRepresentation> getDateFilter() {
         return this.dateFilter;
     }
 
