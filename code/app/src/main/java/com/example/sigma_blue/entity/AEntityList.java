@@ -99,6 +99,14 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     }
 
     /**
+     * Same as above, but with a query.
+     * @param currentQuery query to use for filtering
+     */
+    public void startListening(Query currentQuery) {
+        this.dbHandler.startListening(currentQuery, (IDatabaseList<T>) this);
+    }
+
+    /**
      * Replace the old entity with a new one
      * @param newE replacement entity
      * @param oldE entity to replace
