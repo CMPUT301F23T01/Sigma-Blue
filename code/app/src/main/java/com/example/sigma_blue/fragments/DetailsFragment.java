@@ -1,5 +1,7 @@
 package com.example.sigma_blue.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,16 +12,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.entity.item.Item;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 
@@ -42,6 +50,8 @@ public class DetailsFragment extends Fragment
     private TextView textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private ListView itemImageList;
+    private ImageListAdapter imageListAdapter;
     private GlobalContext globalContext;
 
     /**
@@ -83,6 +93,7 @@ public class DetailsFragment extends Fragment
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
         tagListView = binding.getRoot().findViewById(R.id.list_tag);
+        itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
 
         return binding.getRoot();
     }
@@ -113,6 +124,11 @@ public class DetailsFragment extends Fragment
         textComment.setText(currentItem.getComment());
         tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
         tagListView.setAdapter(tagListAdapter);
+        imageListAdapter = new ImageListAdapter(getContext());
+        itemImageList.setAdapter(imageListAdapter);
+
+        globalContext.getImageManager().setAdapter(imageListAdapter);
+        globalContext.getImageManager().updateFromItem(currentItem);
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {

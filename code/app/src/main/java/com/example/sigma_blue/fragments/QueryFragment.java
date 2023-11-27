@@ -1,10 +1,16 @@
 package com.example.sigma_blue.fragments;
 
+import static com.example.sigma_blue.query.ModeField.FILTER;
+import static com.example.sigma_blue.query.ModeField.SORT;
+
+import android.app.ActionBar;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,17 +18,23 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.query.FilterField;
+import com.example.sigma_blue.query.ModeField;
+import com.example.sigma_blue.query.QueryMode;
 import com.example.sigma_blue.query.SortField;
+import com.example.sigma_blue.utility.Pair;
+import com.example.sigma_blue.utility.SigmaBlueTextWatcher;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
@@ -30,19 +42,20 @@ import java.util.Objects;
  * TODO: Filter has not been implemented yet.
  */
 public class QueryFragment extends DialogFragment {
-    private GlobalContext globalContext;    // Used for transferring data
 
     /**
      * ViewHolder design pattern for better encapsulation of the UI elements
      */
     private class ViewHolder {
         Button backButton, resetButton;
-        EditText descriptionFilterET;
-        Spinner sortCriteriaSpinner, tagFilterSpinner;
-        CheckBox ascendingBox, descendingBox;
+        TextView startDateTV, endDateTV;
+        EditText descriptionFilterET, makeFilterET;
+        Spinner sortCriteriaSpinner, tagFilterSpinner, modeChoiceSpinner;
+        CheckBox ascendingBox, descendingBox, dateFilterBox;
         DatePicker startDatePicker, endDatePicker;
-        ArrayAdapter<SortField> adapter;
-
+        ArrayAdapter<SortField> sortAdapter;
+        ArrayAdapter<ModeField> modeAdapter;
+        ViewSwitcher modeSwitcher;
 
         /**
          * Needs the parent view to be inflated before this class can be
@@ -53,7 +66,7 @@ public class QueryFragment extends DialogFragment {
         public ViewHolder(View entireView) {
             bindViews(entireView);
             setAdapters();
-            resetQuery();
+            resetQueryUI();
             regenerateSelection();
         }
 
@@ -66,13 +79,21 @@ public class QueryFragment extends DialogFragment {
             resetButton = entireView.findViewById(R.id.sortingResetButton);
             descriptionFilterET = entireView.findViewById(R.id
                     .descFilterEditText);
+            makeFilterET = entireView.findViewById(R.id.makeFilterEditText);
             sortCriteriaSpinner = entireView.findViewById(R.id
                     .sortCriteriaSpinner);
             tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
+            modeChoiceSpinner = entireView.findViewById(R.id
+                    .mode_choice_spinner);
             ascendingBox = entireView.findViewById(R.id.ascendCheckbox);
             descendingBox = entireView.findViewById(R.id.descendCheckbox);
+            dateFilterBox = entireView.findViewById(R.id.dateFilterCheckbox);
             startDatePicker = entireView.findViewById(R.id.startDatePicker);
             endDatePicker = entireView.findViewById(R.id.endDatePicker);
+            modeSwitcher = entireView.findViewById(R.id.query_view_switcher);
+
+            startDateTV = entireView.findViewById(R.id.startDateTitle);
+            endDateTV = entireView.findViewById(R.id.endDateTitle);
         }
 
         /**
@@ -80,7 +101,11 @@ public class QueryFragment extends DialogFragment {
          */
         private void setAdapters() {
             createSortAdapter();
-            sortCriteriaSpinner.setAdapter(this.adapter);
+            createModeAdapter();
+
+            /* Binding the adapters */
+            sortCriteriaSpinner.setAdapter(this.sortAdapter);
+            modeChoiceSpinner.setAdapter(this.modeAdapter);
         }
 
         /**
@@ -102,12 +127,34 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Creates the
+         * Generates the content of the mode menu items
+         * @return a list of menu items
+         */
+        private List<ModeField> createModeChoices() {
+            List<ModeField> ret = new ArrayList<>();
+
+            ret.add(SORT);
+            ret.add(FILTER);
+
+            return ret;
+        }
+
+        /**
+         * Creates the sorting choice adapter.
          */
         private void createSortAdapter() {
-            adapter = new ArrayAdapter<>(getContext(), android.R.layout
+            sortAdapter = new ArrayAdapter<>(getContext(), android.R.layout
                     .simple_spinner_dropdown_item);
-            adapter.addAll(createMenuItems());
+            sortAdapter.addAll(createMenuItems());
+        }
+
+        /**
+         * Populating the adapter mode menu items.
+         */
+        private void createModeAdapter() {
+            modeAdapter = new ArrayAdapter<>(getContext(), android.R.layout
+                    .simple_spinner_dropdown_item);
+            modeAdapter.addAll(createModeChoices());
         }
 
         /**
@@ -122,23 +169,63 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Resets the query. Everything is returned to default value, along with
-         * the global state.
+         * Resets the query UI. This just puts the UI at a known default state
          */
-        private void resetQuery() {
+        private void resetQueryUI() {
             sortCriteriaSpinner.setSelection(0);
             tagFilterSpinner.setSelection(0);
             flipAscendBox(true);
         }
 
         /**
+         * Actually clear the database query, and then resets the UI to be the
+         * default value.
+         */
+        private void resetQuery() {
+            queryState.clearQuery();
+            regenerateSelection();
+        }
+
+        /**
          * Restores the selection that has been saved to the global context.
          */
         public void regenerateSelection() {
-            sortCriteriaSpinner.setSelection(adapter.getPosition(globalContext
-                    .getQueryState().getCurrentSort()));
+            sortCriteriaSpinner.setSelection(sortAdapter.getPosition(queryState
+                    .getCurrentSort()));
             setSortCheckbox(globalContext.getQueryState().getDirection());
 
+            // Filter text regeneration
+            regenerateMakeTextBox();
+            regenerateDescriptionTextBox();
+
+            dateCheckBoxController(this.dateFilterBox);
+        }
+
+        /**
+         * This method returns the make edit textbox back to its initial state
+         */
+        private void regenerateMakeTextBox() {
+            regenerateTextBox(makeFilterET, queryState
+                    .getMakeFilter().getSecond());
+        }
+
+        /**
+         * Regenerates the edit text for the description filter using the
+         * previously stored state.
+         */
+        private void regenerateDescriptionTextBox() {
+            regenerateTextBox(descriptionFilterET, queryState
+                    .getDescriptionFilter().getSecond());
+        }
+
+        /**
+         * Factored out method that contains the text setting logic
+         * @param et the edit text box that is being changed
+         * @param text the string input (from the control instance)
+         */
+        private void regenerateTextBox(EditText et, String text) {
+            if (text != null) et.setText(text);
+            else et.setText("");    // For real time feedback
         }
 
         /**
@@ -151,33 +238,65 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
-         * Method sets up the UI interactions.
+         * Sets the visibility of the date pickers programmically.
+         * @param mode if true, then the date picker elements will be visible,
+         *             else it will be gone.
          */
-        public void setUIListeners() {
-            /* Closes the dialog fragment and return to the previous page */
-            backButton.setOnClickListener(view -> dismiss());   // Go back
+        private void setDatePickerVisibility(int mode) {
+            startDateTV.setVisibility(mode);
+            startDatePicker.setVisibility(mode);
 
-            /* Resets the query. Uses the database default */
-            resetButton.setOnClickListener(view -> {
-                resetQuery();
-            });
+            endDateTV.setVisibility(mode);
+            endDatePicker.setVisibility(mode);
+        }
 
+        /**
+         * Checks if the input CheckBox is checked or not. If checked, then
+         * the date picker elements are visible, else invisible
+         * @param dateBox is the checkbox being used for control
+         */
+        private void dateCheckBoxController(CheckBox dateBox) {
+            if (dateBox.isChecked()) setDatePickerVisibility(View.VISIBLE);
+            else setDatePickerVisibility(View.GONE);
+        }
+
+        /**
+         * Creating reactions to checkbox interactions
+         */
+        private void setBoxListeners() {
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
-                globalContext.getQueryState().setAscend();
-                globalContext.getQueryState().sendQuery(globalContext
-                        .getQueryPair());
+                queryState.setAscend();
+                queryState.sendQuery(globalContext.getQueryPair());
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
-                globalContext.getQueryState().setDescend();
-                globalContext.getQueryState().sendQuery(globalContext
-                        .getQueryPair());
+                queryState.setDescend();
+                queryState.sendQuery(globalContext.getQueryPair());
             });
 
-            // TODO: The performance seems bad. Feels slow to load. Might have
-            // to factor some methods and components out to reuse some objects
+            dateFilterBox.setOnClickListener(view -> {
+                CheckBox datebox = (CheckBox) view;
+                dateCheckBoxController(datebox);
+            });
+
+        }
+
+        /**
+         * Method sets up the UI interactions.
+         */
+        public void setUIListeners() {
+            /* Closes the dialog fragment and return to the previous page */
+            backButton.setOnClickListener(view -> {
+                dismiss();
+            });   // Go back
+
+            /* Resets the query. Uses the database default */
+            resetButton.setOnClickListener(view -> resetQuery());
+
+            setBoxListeners();  // Checkbox UI listeners
+
             sortCriteriaSpinner.setOnItemSelectedListener(new AdapterView
                     .OnItemSelectedListener() {
                 // There are two methods, therefore need to make anonymous class
@@ -194,12 +313,10 @@ public class QueryFragment extends DialogFragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
-                    globalContext.getQueryState().receiveSortQuery(adapter
-                            .getItem(position));    // Update for return
+                    queryState.receiveSortQuery(sortAdapter.getItem(position));
 
                     /* Sending the query to the database */
-                    globalContext.getQueryState().sendQuery(globalContext
-                            .getQueryPair());
+                    queryState.sendQuery(globalContext.getQueryPair());
                 }
 
                 @Override
@@ -207,10 +324,94 @@ public class QueryFragment extends DialogFragment {
                     // Does not need to do anything yet
                 }
             });
+
+            modeChoiceSpinner.setOnItemSelectedListener(new AdapterView
+                    .OnItemSelectedListener() {
+                // There are two methods, therefore need to make anonymous class
+                // instead of lambda
+
+                /**
+                 * This method controls the state when an item is selected by
+                 * the user on the sort choice spinner.
+                 * @param parent The AdapterView where the selection happened
+                 * @param view The view within the AdapterView that was clicked
+                 * @param position The position of the view in the adapter
+                 * @param id The row id of the item that is selected
+                 */
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    chooseModeView(modeAdapter.getItem(position));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Does not need to do anything yet
+                }
+            });
+
+            makeFilterET.addTextChangedListener(
+                    new SigmaBlueTextWatcher<EditText>(makeFilterET) {
+
+                @Override
+                public void onTextChanged(EditText target, Editable s) {
+                    String userInput = s.toString().trim();
+                    // Cover -> empty input, regular input
+                    Pair<FilterField, String> nextAddition;
+                    if (userInput.isEmpty())
+                        nextAddition = new Pair<>(FilterField.MAKE, null);
+                    else
+                        nextAddition = new Pair<>(FilterField.MAKE, userInput);
+                    queryState.receiveEqualsQuery(nextAddition);
+                    queryState.sendQuery(globalContext.getQueryPair());
+                }
+            });
+
+            descriptionFilterET.addTextChangedListener(
+                    new SigmaBlueTextWatcher<EditText>(descriptionFilterET) {
+                        @Override
+                        public void onTextChanged(EditText target, Editable s) {
+                            String userInput = s.toString().trim();
+                            // Cover -> empty input, regular input
+                            Pair<FilterField, String> nextAddition;
+                            if (userInput.isEmpty())
+                                nextAddition = new Pair<>(FilterField
+                                        .DESCRIPTION, null);
+                            else
+                                nextAddition = new Pair<>(FilterField
+                                        .DESCRIPTION, userInput);
+                            queryState.receiveEqualsQuery(nextAddition);
+                            queryState.sendQuery(globalContext.getQueryPair());
+                        }
+                    });
+        }
+
+        private void chooseModeView(ModeField choice) {
+            switch(choice) {
+                case SORT:
+                    swapMode(SORT);
+                    break;
+                case FILTER:
+                    swapMode(FILTER);
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "Query Mode Menu Illegal state");
+            }
+        }
+
+        private void swapMode(ModeField mode) {
+            if (currentView != mode) {
+                modeSwitcher.showNext();
+                currentView = mode;
+            }
         }
     }
 
+    private GlobalContext globalContext;    // Used for transferring data
     private ViewHolder viewHolder;          // The view holder
+    private QueryMode queryState;           // The query controller.
+    private ModeField currentView;          // For state matching
 
     /**
      * Empty public constructor
@@ -219,9 +420,25 @@ public class QueryFragment extends DialogFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        // Adjusting the size of the dialog fragment
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        if (params != null) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            getDialog().getWindow().setAttributes(
+                    (WindowManager.LayoutParams) params);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         globalContext = GlobalContext.getInstance();
+        queryState = globalContext.getQueryState();
+        currentView = SORT;
     }
 
     /**
@@ -235,7 +452,7 @@ public class QueryFragment extends DialogFragment {
      * @param savedInstance If non-null, this fragment is being re-constructed
      * from a previous saved state as given here.
      *
-     * @return
+     * @return the generated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

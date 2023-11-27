@@ -110,7 +110,7 @@ public class TagManagerFragment extends Fragment {
                 .TAG_MANAGER_FRAGMENT)) {
             // User is opening the tag manager fragment on an existing fragment.
             // Check tags already applied onto the item.
-            for (Tag t: globalContext.getCurrentItem().getTags()) {
+            for (Tag t: globalContext.getModifiedItem().getTags()) {
                 globalContext.getSelectedTags().toggleHighlight(t);
             }
             globalContext.getTagList().getAdapter().notifyDataSetChanged();
@@ -217,7 +217,8 @@ public class TagManagerFragment extends Fragment {
             public void onClick(View v) {
                 for (Tag t : globalContext.getSelectedTags().getSelected()) {
                     globalContext.getTagList().remove(t);
-                    globalContext.getItemList().cleanAllItemTags(); // remove dead tag from items
+                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
+                    // remove dead tag from items
                 }
             }
         });
@@ -254,8 +255,7 @@ public class TagManagerFragment extends Fragment {
             }
         }
         else {
-            globalContext.getCurrentItem().setTags(globalContext.getSelectedTags().getSelected());
-            globalContext.getItemList().syncEntity(globalContext.getCurrentItem());
+            globalContext.getModifiedItem().setTags(globalContext.getSelectedTags().getSelected());
         }
     }
 
