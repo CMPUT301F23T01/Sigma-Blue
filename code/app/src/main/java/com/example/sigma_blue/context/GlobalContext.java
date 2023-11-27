@@ -14,7 +14,6 @@ import com.example.sigma_blue.entity.item.ItemList;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.query.QueryMode;
-import com.example.sigma_blue.utility.Pair;
 
 import java.util.ArrayList;
 
@@ -118,15 +117,6 @@ public class GlobalContext {
 
     public TagList getTagList() {
         return tagList;
-    }
-
-    /**
-     * Returns a pair to reduce how verbose the methods are getting.
-     * @return a pair of the database list and the database handler. Used for
-     * querying.
-     */
-    public Pair<ADatabaseHandler<Item>, IDatabaseList<Item>> getQueryPair() {
-        return new Pair<>(itemList.getDbHandler(), itemList);
     }
 
     /**
