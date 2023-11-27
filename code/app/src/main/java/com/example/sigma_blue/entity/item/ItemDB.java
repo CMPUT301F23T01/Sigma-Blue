@@ -86,7 +86,6 @@ public class ItemDB extends ADatabaseHandler<Item> {
      * @param item is an Item object being added to the database.
      */
     public void add(final Item item) {
-        item.cleanTags();
         addDocument(ref, item, Item.hashMapOfItem, item.getDocID());
         Log.v("Database Interaction", "Saved Item: "+ item.getDocID());
     }

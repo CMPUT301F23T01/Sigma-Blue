@@ -3,6 +3,8 @@ package com.example.sigma_blue.fragments;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,17 +18,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.activities.ViewListActivity;
+import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
@@ -34,8 +39,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -61,6 +64,9 @@ public class EditFragment extends Fragment
     private EditText textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
+    private ListView itemImageList;
+    private ImageListAdapter imageListAdapter;
+    private ImageView itemImage;
     private ArrayList<EditText> editTextList;
     //private Item savedItemChanges;
     private int mDay, mMonth, mYear;
@@ -105,7 +111,9 @@ public class EditFragment extends Fragment
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
         tagListView = binding.getRoot().findViewById((R.id.list_tag));
+        itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
 
+        // TODO add buttons here
         return binding.getRoot();
     }
 
@@ -121,8 +129,6 @@ public class EditFragment extends Fragment
         textSerial.setText(currentItem.getSerialNumber());
         textDescription.setText(currentItem.getDescription());
         textComment.setText(currentItem.getComment());
-        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
-        tagListView.setAdapter(tagListAdapter);
     }
 
     /**
@@ -138,21 +144,18 @@ public class EditFragment extends Fragment
 
         globalContext = GlobalContext.getInstance();
         // Load Item and mode
-        Item currentItem = globalContext.getCurrentItem();
-        // If the user is creating a new item.
-        if (currentItem == null) {
-            currentItem = new Item();
+        Item modifiedItem = globalContext.getModifiedItem();
 
-            globalContext.setCurrentItem(currentItem);
-        }
-        final ApplicationState mode = globalContext.getCurrentState();
+        tagListAdapter = TagListAdapter.newInstance(globalContext.getModifiedItem().getTags(), getContext());
+        tagListView.setAdapter(tagListAdapter);
 
-        // set item details
-        if (mode == ApplicationState.EDIT_ITEM_FRAGMENT) {
-            editItemUIBindings(currentItem);
-        }
+        imageListAdapter = new ImageListAdapter(getContext());
+        itemImageList.setAdapter(imageListAdapter);
+
+        globalContext.getImageManager().setAdapter(imageListAdapter);
+
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        textDate.setText(sdf.format(currentItem.getDate()));
+        textDate.setText(sdf.format(modifiedItem.getDate()));
 
         Context context = this.getContext();
         textDate.setOnClickListener(new View.OnClickListener()
@@ -184,7 +187,7 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if (mode == ApplicationState.ADD_ITEM_FRAGMENT) {
+                if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
@@ -208,12 +211,19 @@ public class EditFragment extends Fragment
             public void onClick(View v)
             {
                 // Save current ui state
-                loadUiText(globalContext.getCurrentItem());
+                loadUiText(globalContext.getModifiedItem());
                 // Open TagManager
                 globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
                 Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
                         .toString());
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
+            }
+        });
+
+        view.findViewById(R.id.add_image_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleImageClick();
             }
         });
 
@@ -227,31 +237,27 @@ public class EditFragment extends Fragment
                     // need a new item as to not overwrite the old one. If the
                     // old one is overwritten then we don't know which item in
                     // the list needs to be deleted if doing an edit.
-                    Item modifiedItem = new Item();
-                    loadUiText(modifiedItem);
+                    Item oldItem = globalContext.getCurrentItem();
+                    Item newItem = globalContext.getModifiedItem();
+                    loadUiText(newItem);
+
                     // State control for adding items
-                    if (globalContext.getCurrentState() == ApplicationState
-                            .ADD_ITEM_FRAGMENT) {
-                        if (globalContext.getItemList().getList().contains(modifiedItem)) {
+                    if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
+                        if (globalContext.getItemList().getList().contains(newItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
                             errorSnackbar.show();
                         } else {
-                            globalContext.getItemList().add(modifiedItem);
-                            globalContext.setCurrentItem(modifiedItem);
+                            globalContext.getItemList().add(newItem);
                             globalContext.newState(ApplicationState
                                     .VIEW_LIST_ACTIVITY);
                             Log.i("NEW STATE", ApplicationState
                                     .VIEW_LIST_ACTIVITY.toString());
                             activity.returnAndClose();
                         }
-                    } else if (globalContext.getCurrentState() ==
-                            ApplicationState.EDIT_ITEM_FRAGMENT) {
-                        globalContext.getItemList().updateEntity(modifiedItem, globalContext.getCurrentItem());
-                        globalContext.setCurrentItem(modifiedItem);
-                        globalContext.newState(ApplicationState
-                                .DETAILS_FRAGMENT);
-                        Log.i("NEW STATE", ApplicationState
-                                .DETAILS_FRAGMENT.toString());
+                    } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
+                        globalContext.getItemList().updateEntity(newItem, oldItem);
+                        globalContext.setCurrentItem(newItem);
+                        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
                         Log.e("BAD STATE",
@@ -268,35 +274,22 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                IntentIntegrator integrator = IntentIntegrator.forSupportFragment(EditFragment.this);
-
-                integrator.setOrientationLocked(true);
-                integrator.setPrompt("Scan Barcode");
-                integrator.setBeepEnabled(true);
-
-                integrator.initiateScan();
+                globalContext.newState(ApplicationState.BARCODE_ADD_ACTIVITY);
+                Intent intent = new Intent(v.getContext(), ImageTakingActivity.class);
+                startActivity(intent);
             }
         });
     }
 
-    /**
-     * Method for retrieving results from barcode scanning activity
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result.getContents() != null) {
-            textSerial.setText(result.getContents());
+    public void onResume() {
+        super.onResume();
+        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
+        if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
+            editItemUIBindings(globalContext.getModifiedItem());
         }
     }
-    
+
     /**
      * Method for destroying fragment
      */
@@ -331,7 +324,11 @@ public class EditFragment extends Fragment
     private void loadUiText(@NonNull Item item)
     {
         item.setName(textName.getText().toString());
-        item.setValue(Double.parseDouble(textValue.getText().toString()));
+        try {
+            item.setValue(Double.parseDouble(textValue.getText().toString()));
+        } catch (java.lang.NumberFormatException e) {
+            // no number entered
+        }
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
         try
         {
@@ -344,5 +341,13 @@ public class EditFragment extends Fragment
         item.setSerialNumber(textSerial.getText().toString());
         item.setDescription(textDescription.getText().toString());
         item.setComment(textComment.getText().toString());
+    }
+
+    //TODO. make it so that you don't need to have a valid item before adding a picture
+    private void handleImageClick() {
+        Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
+        loadUiText(globalContext.getModifiedItem());
+        globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
+        startActivity(intent);
     }
 }
