@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
@@ -49,9 +50,9 @@ public class DetailsFragment extends Fragment
     private TextView textComment;
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
-    private ImageView itemImage;
+    private ListView itemImageList;
+    private ImageListAdapter imageListAdapter;
     private GlobalContext globalContext;
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     /**
      * Required empty public constructor
@@ -92,7 +93,7 @@ public class DetailsFragment extends Fragment
         textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
         textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
         tagListView = binding.getRoot().findViewById(R.id.list_tag);
-        itemImage = binding.getRoot().findViewById(R.id.item_ImageDetail);
+        itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
 
         return binding.getRoot();
     }
@@ -123,23 +124,11 @@ public class DetailsFragment extends Fragment
         textComment.setText(currentItem.getComment());
         tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
         tagListView.setAdapter(tagListAdapter);
+        imageListAdapter = new ImageListAdapter(getContext());
+        itemImageList.setAdapter(imageListAdapter);
 
-        //ITEM IMAGE RELATED CHANGES
-        // trying to get the path of image, and put it on the add item
-        String tempImagePath = globalContext.getCurrentItem().getImagePaths().size() > 0 ? globalContext.getCurrentItem().getImagePaths().get(0) : null;
-        // set the image of the item
-        // Create a storage reference from our app
-        if (tempImagePath != null) {
-            globalContext.getImageDB().getImage(tempImagePath, new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    // Data for "images/island.jpg" is returns, use this as needed
-                    Log.i("ImageDownload", "Image download succeed");
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    itemImage.setImageBitmap(bitmap);
-                }
-            });
-        }
+        globalContext.getImageManager().setAdapter(imageListAdapter);
+        globalContext.getImageManager().updateFromItem(currentItem);
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {

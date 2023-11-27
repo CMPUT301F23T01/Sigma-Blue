@@ -92,7 +92,7 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
 
     /**
      * Sets up a listening thread for changes to the database collection. This
-     * method will update the state of the tag list.
+     * method will update the state of the list.
      */
     public void startListening() {
         dbHandler.startListening(this.dbHandler.getCollectionReference(), (IDatabaseList<T>) this);

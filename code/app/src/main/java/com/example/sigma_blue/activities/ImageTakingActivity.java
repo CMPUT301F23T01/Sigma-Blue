@@ -93,17 +93,9 @@ public class ImageTakingActivity extends BaseActivity{
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            String path = globalContext.getImageDB().addImage(imageBitmap, globalContext.getAccount(), new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    // After the upload success, go back to the previous state activity
-                    Log.i("DEBUG", "Upload Task Complete!");
-                    //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
-
-                }
-            });
-            globalContext.getCurrentItem().addImagePath(path);
-            globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
+            String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
+            globalContext.getModifiedItem().addImagePath(path);
+            globalContext.newState(globalContext.getLastState());
             finish();
 
         } else if (requestCode == REQUEST_BARCODE_SCAN && resultCode == RESULT_OK) {
