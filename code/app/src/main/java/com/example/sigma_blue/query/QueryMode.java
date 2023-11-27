@@ -19,12 +19,12 @@ public class QueryMode {
     private SortField currentSort;          // What is currently being sorted.
     private Query.Direction direction;      // Defaults to ASCENDING
     private Query currentQuery;
-    private CollectionReference originalQuery;
+    private final CollectionReference originalQuery;
     private Pair<FilterField, String> makeFilter;
     private Pair<FilterField, String> descriptionFilter;
     private Quadruple<FilterField, Boolean, String, String> dateFilter;
 
-    public QueryMode(CollectionReference originalQuery) {
+    public QueryMode(final CollectionReference originalQuery) {
         // Initialization
         this.originalQuery = originalQuery; // Base reference for query
 
@@ -76,7 +76,7 @@ public class QueryMode {
      * Receives the sort mode and then store the appropriate query
      * @param sortMode is the sorting mode that the user has selected.
      */
-    public void receiveSortQuery(SortField sortMode) {
+    public void receiveQuery(SortField sortMode) {
         if (sortMode != null) currentSort = sortMode;
         queryUpdate();
     }
@@ -86,7 +86,7 @@ public class QueryMode {
      * then change the internal state of the instance to match.
      * @param input is the pair value that is being used to control flow.
      */
-    public void receiveEqualsQuery(Pair<FilterField, String> input) {
+    public void receiveQuery(final Pair<FilterField, String> input) {
         switch(input.getFirst()) {
             case MAKE:
                 makeFilter = input;
@@ -99,6 +99,30 @@ public class QueryMode {
                         "Filter communications receiving wrong format");
         }
         queryUpdate();
+    }
+
+    /**
+     * Overload of the receiveQuery to allow for queries with more than two
+     * parameters to be handled.
+     * @param input is a Quadruple object that is being queried.
+     */
+    public void receiveQuery(final Quadruple<FilterField, Boolean, String,
+            String> input) {
+        switch(input.getFirst()) {
+            case NONE:          // Insane way to merge switch cases.
+            case DESCRIPTION:
+            case MAKE:
+                throw new IllegalArgumentException("Unsupported Filter Field:"
+                        + input.getFirst());
+            case DATE_RANGE:
+                this.dateFilter = input;
+                break;
+            case TAG:
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Filter quadruple incorrect");
+        }
     }
 
     /**
@@ -119,6 +143,11 @@ public class QueryMode {
         }
     }
 
+    /**
+     * Method that will parse the filter that is inputted, and update the
+     * internal query object with the new filter.
+     * @param toUpdate is the new filter.
+     */
     private void updateRangedFilter(final Pair<FilterField, String> toUpdate) {
         if (toUpdate.getSecond() != null) compoundQuery(q ->
                 QueryGenerator.filterRangeQuery(q, toUpdate.getFirst()
@@ -161,6 +190,10 @@ public class QueryMode {
 
     public Pair<FilterField, String> getDescriptionFilter() {
         return this.descriptionFilter;
+    }
+
+    public Quadruple<FilterField, Boolean, String, String> getDateFilter() {
+        return this.dateFilter;
     }
 
     /**
