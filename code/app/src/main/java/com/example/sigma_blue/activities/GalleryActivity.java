@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.image.ImageDB;
 
 public class GalleryActivity extends BaseActivity {
 
@@ -123,7 +124,7 @@ public class GalleryActivity extends BaseActivity {
         }
     }
 
-    //
+    // check and upload the image after user selection
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -142,7 +143,7 @@ public class GalleryActivity extends BaseActivity {
                     String picturePath = cursor.getString(columnIndex);
 
                     //decode and compress the image to target for uploading and displaying
-                    Bitmap imageBitmap = compressBitmap(picturePath, 1000, 1000);
+                    Bitmap imageBitmap = globalContext.getImageManager().compressBitmap(picturePath, 1000, 1000);
                     cursor.close();
 
                     String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
@@ -154,65 +155,6 @@ public class GalleryActivity extends BaseActivity {
 
 
         }
-    }
-
-    // bitmap compressing method
-    public Bitmap compressBitmap(String path, int reqWidth, int reqHeight) {
-        // get width and height of bitmap
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
-        int width = options.outWidth;
-        int height = options.outHeight;
-        // calculate compressing ratio
-        // android suggest to compress image with ratio of 2^n
-        int inSampleSize = 1;
-        if (width > reqWidth || height > reqHeight) {
-            final int halfWidth = width / 2;
-            final int halfHeight = height / 2;
-            while ((halfWidth / inSampleSize) >= reqWidth
-                    && (halfHeight / inSampleSize) >= reqHeight) {
-                inSampleSize *= 2;
-            }
-        }
-        // decode the image and compress it
-        BitmapFactory.Options compressedOptions = new BitmapFactory.Options();
-        compressedOptions.inSampleSize = inSampleSize;
-        compressedOptions.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(path, compressedOptions);
-    }
-
-
-    // function to let's the user to choose image from camera or gallery
-    // TODO: SHOULD NOT BE HERE, (for testing purpose), should be refactored to somewhere else
-    // may put in add/edit fragment
-
-    // PENDING DELETION
-    private void chooseImageSource(Context context){
-        final CharSequence[] optionsMenu = {"Take Photo", "Choose from Gallery", "Exit" }; // create a menuOption Array
-        // create a dialog for showing the optionsMenu
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(optionsMenu[i].equals("Take Photo")){
-                    // Open the camera and get the photo
-                    // * change this content to open ImageTakingActivity
-                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
-                }
-                else if(optionsMenu[i].equals("Choose from Gallery")){
-                    // choose from  external storage
-                    // * change this content to open GalleryActivity
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
-                }
-                else if (optionsMenu[i].equals("Exit")) {
-                    dialogInterface.dismiss();
-                }
-            }
-        });
-        builder.show();
     }
 
 }
