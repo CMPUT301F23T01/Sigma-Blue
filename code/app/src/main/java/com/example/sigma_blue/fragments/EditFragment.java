@@ -349,10 +349,12 @@ public class EditFragment extends Fragment
     //TODO. make it so that you don't need to have a valid item before adding a picture
     private void handleImageClick() {
         /*
+
         Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
         loadUiText(globalContext.getModifiedItem());
         globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
         startActivity(intent);
+
         */
 
         chooseImageSource(this.getContext());
