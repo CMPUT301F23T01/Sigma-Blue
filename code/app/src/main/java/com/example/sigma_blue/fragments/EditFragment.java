@@ -1,7 +1,9 @@
 package com.example.sigma_blue.fragments;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
+import com.example.sigma_blue.activities.GalleryActivity;
 import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
@@ -345,9 +348,49 @@ public class EditFragment extends Fragment
 
     //TODO. make it so that you don't need to have a valid item before adding a picture
     private void handleImageClick() {
+        /*
+
         Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
         loadUiText(globalContext.getModifiedItem());
         globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
         startActivity(intent);
+
+        */
+
+        chooseImageSource(this.getContext());
+    }
+
+
+    // function to let's the user to choose image from camera or gallery
+    // TODO: Beautify
+    private void chooseImageSource(Context context){
+        final CharSequence[] optionsMenu = {"Take Photo", "Choose from Gallery", "Exit" }; // create a menuOption Array
+        // create a dialog for showing the optionsMenu
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(optionsMenu[i].equals("Take Photo")){
+                    // Open the camera and get the photo
+                    // * change this content to open ImageTakingActivity
+                    Intent intent = new Intent(context, ImageTakingActivity.class);
+                    loadUiText(globalContext.getModifiedItem());
+                    globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
+                    startActivity(intent);
+                }
+                else if(optionsMenu[i].equals("Choose from Gallery")){
+                    // choose from  external storage
+                    // * change this content to open GalleryActivity
+                    Intent intent = new Intent(context, GalleryActivity.class);
+                    loadUiText(globalContext.getModifiedItem());
+                    globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
+                    startActivity(intent);
+                }
+                else if (optionsMenu[i].equals("Exit")) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 }
