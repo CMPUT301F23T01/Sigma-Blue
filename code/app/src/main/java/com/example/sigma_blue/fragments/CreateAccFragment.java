@@ -18,6 +18,7 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.account.AccountList;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.checkerframework.checker.units.qual.A;
 
@@ -78,6 +79,10 @@ public class CreateAccFragment extends DialogFragment {
                         String username = usernameInput.getText().toString();
                         String password = passwordInput.getText().toString();
 
+                        if (username.isEmpty() || password.isEmpty()) {
+                            listener.onConfirmPressed(false);
+                            return;
+                        }
                         // creates new account for user
                         Account newAccount = new Account(username, password);
                         if (globalContext.getAccountList().getEntityList().contains(newAccount)) {
