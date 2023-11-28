@@ -1,5 +1,8 @@
 package com.example.sigma_blue.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -171,13 +174,12 @@ public class ViewListActivity extends BaseActivity {
             startActivity(intent);
         });  // Launch add activity.
 
-        viewHolder.searchButton.setOnClickListener(v ->
-                this.logoutUser());    // Launch search fragment
+        viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v ->
                 this.displayQueryFragment());
 
         viewHolder.optionsButton.setOnClickListener(v ->
-                this.handleDeleteAccount());
+                this.handleOptionsClick());
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
                 this.deleteSelectedItems());
@@ -231,6 +233,31 @@ public class ViewListActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Open the options menu.
+     */
+    private void handleOptionsClick() {
+        // same pattern as add edit fragment add picture button. Do we want to move this to a fragment?
+        final CharSequence[] optionsMenu = {"Logout", "Delete Account", "Exit" };
+        // create a dialog for showing the optionsMenu
+        Context context = this.getBaseContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(optionsMenu[i].equals("Logout")){
+                    logoutUser();
+                }
+                else if(optionsMenu[i].equals("Delete Account")){
+                    handleDeleteAccount();
+                }
+                else if (optionsMenu[i].equals("Exit")) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
     /**
      * Delete the currently logged in account
      */
