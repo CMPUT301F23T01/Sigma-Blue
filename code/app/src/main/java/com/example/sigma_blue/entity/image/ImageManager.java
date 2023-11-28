@@ -90,4 +90,30 @@ public class ImageManager {
         }
         // in case this upload was blocking a download
     }
+
+    // bitmap compressing method
+    public Bitmap compressBitmap(String path, int reqWidth, int reqHeight) {
+        // get width and height of bitmap
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        int width = options.outWidth;
+        int height = options.outHeight;
+        // calculate compressing ratio
+        // android suggest to compress image with ratio of 2^n
+        int inSampleSize = 1;
+        if (width > reqWidth || height > reqHeight) {
+            final int halfWidth = width / 2;
+            final int halfHeight = height / 2;
+            while ((halfWidth / inSampleSize) >= reqWidth
+                    && (halfHeight / inSampleSize) >= reqHeight) {
+                inSampleSize *= 2;
+            }
+        }
+        // decode the image and compress it
+        BitmapFactory.Options compressedOptions = new BitmapFactory.Options();
+        compressedOptions.inSampleSize = inSampleSize;
+        compressedOptions.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(path, compressedOptions);
+    }
 }
