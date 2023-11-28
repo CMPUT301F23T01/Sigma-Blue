@@ -7,6 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * used code from https://www.baeldung.com/sha-256-hashing-java
  * Utility class for getting the SHA-256 hash of a string. Used for passwords.
  */
 public class StringHasher {
