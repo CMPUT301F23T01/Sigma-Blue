@@ -1,13 +1,10 @@
 package com.example.sigma_blue.query;
 
-import com.example.sigma_blue.database.ADatabaseHandler;
-import com.example.sigma_blue.database.IDatabaseList;
-import com.example.sigma_blue.entity.item.Item;
-import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
+import java.time.LocalDate;
 import java.util.function.Function;
 
 /**
@@ -19,9 +16,10 @@ public class QueryMode {
     private SortField currentSort;          // What is currently being sorted.
     private Query.Direction direction;      // Defaults to ASCENDING
     private Query currentQuery;
-    private CollectionReference originalQuery;
+    private final CollectionReference originalQuery;
     private FilterField makeFilter;
     private FilterField descriptionFilter;
+    private DateFilterField dateFilterField;
 
     public QueryMode(CollectionReference originalQuery) {
         // Initialization
@@ -59,6 +57,7 @@ public class QueryMode {
     private void clearFilterObjects() {
         makeFilter = new FilterField(null, FilterFieldName.MAKE);
         descriptionFilter = new FilterField(null, FilterFieldName.DESCRIPTION);
+        dateFilterField = new DateFilterField(LocalDate.now(), LocalDate.now(), false, FilterFieldName.DATE_RANGE);
     }
 
     /**
@@ -73,8 +72,10 @@ public class QueryMode {
      * Receives the sort mode and then store the appropriate query
      * @param sortMode is the sorting mode that the user has selected.
      */
-    public void receiveSortQuery(SortField sortMode) {
-        if (sortMode != null) currentSort = sortMode;
+    public void receiveQuery(SortField sortMode) {
+        if (sortMode != null) {
+            currentSort = sortMode;
+        }
         queryUpdate();
     }
 
@@ -83,7 +84,7 @@ public class QueryMode {
      * then change the internal state of the instance to match.
      * @param input is the value that is being used to control flow.
      */
-    public void receiveEqualsQuery(FilterField input) {
+    public void receiveQuery(FilterField input) {
         switch(input.getType()) {
             case MAKE:
                 makeFilter = input;
@@ -91,6 +92,11 @@ public class QueryMode {
             case DESCRIPTION:
                 descriptionFilter = input;
                 break;
+            case DATE_RANGE:
+                dateFilterField = (DateFilterField) input;
+                break;
+            case TAG:
+                break;// tag filtering
             default:
                 throw new IllegalArgumentException(
                         "Filter communications receiving wrong format");
@@ -105,8 +111,9 @@ public class QueryMode {
     public void queryUpdate() {
         resetQueryObject();   // Need to reset before running
 
-        updateMakeFilter();
-        updateDescriptionFilter();
+        updateFilter(makeFilter);
+        updateFilter(makeFilter);
+        updateDateFilter(dateFilterField);
 
         if (currentSort != SortField.NO_SELECTION) {
             currentQuery = QueryGenerator.sortQuery(currentQuery, currentSort,
@@ -114,27 +121,28 @@ public class QueryMode {
         }
     }
 
-    /**
-     * This method updates the internal state of the make filter query. Done by
-     * reading the internal state as well.
-     */
-    private void updateMakeFilter() {
-        updateRangedFilter(makeFilter);
+    private void updateFilter(final FilterField toUpdate) {
+        if (toUpdate.getFilterText() != null) {
+            compoundQuery(q ->
+                    QueryGenerator.filterRangeQuery(
+                            q,
+                            toUpdate.getType().getDbField(),
+                            toUpdate.getFilterText(),
+                            toUpdate.getFilterText() + "~"
+                    ));
+        }
     }
 
-    /**
-     * This method updates the internal state of the make filter query. Done by
-     * reading the internal state as well.
-     */
-    private void updateDescriptionFilter() {
-        updateRangedFilter(descriptionFilter);
-    }
-
-    private void updateRangedFilter(final FilterField toUpdate) {
-        if (toUpdate.getName() != null) compoundQuery(q ->
-                QueryGenerator.filterRangeQuery(q, toUpdate.getType()
-                                .getDbField(), toUpdate.getName(),
-                        toUpdate.getName() + "~"));
+    private void updateDateFilter(final DateFilterField dateFilterField) {
+        if (dateFilterField.isEnabled()) {
+            compoundQuery(q ->
+                    QueryGenerator.filterRangeQuery(
+                            q,
+                            dateFilterField.getType().toString(),
+                            dateFilterField.getStartDate(),
+                            dateFilterField.getEndDate()
+                    ));
+        }
     }
 
     /**
@@ -165,6 +173,9 @@ public class QueryMode {
         return this.descriptionFilter;
     }
 
+    public DateFilterField getDateFilterField() {
+        return this.dateFilterField;
+    }
     /**
      * Flips the switch to make the sorting be ascending
      */

@@ -1,8 +1,13 @@
 package com.example.sigma_blue.query;
 
+import com.example.sigma_blue.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
 /**
@@ -67,8 +72,7 @@ public class QueryGenerator {
     }
 
     /**
-     * Updates the query to return the dates between two range. Likely for
-     * dates.
+     * Updates the query to return the values between two range.
      * @param field is the field being compared with
      * @param lowerRange is the lower bound that will be included
      * @param upperRange is the upper bound that will be included
@@ -79,6 +83,20 @@ public class QueryGenerator {
                 .whereGreaterThanOrEqualTo(field, lowerRange);
     }
 
+    /**
+     * Updates the query to return the dates between two range.
+     * @param field is the field being compared with
+     * @param startDate is the lower bound that will be included
+     * @param endDate is the upper bound that will be included
+     */
+    public static Query filterRangeQuery(Query query, String field, LocalDate startDate, LocalDate endDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        // pattern is in the strings file, but using android methods here makes testing harder
+        String lowerRange = startDate.format(formatter);
+        String upperRange = endDate.format(formatter);
+
+        return filterRangeQuery(query, field, lowerRange, upperRange);
+    }
     /**
      * This filters the item retrieved by only including documents where the
      * field is one of the included items in the input list.
