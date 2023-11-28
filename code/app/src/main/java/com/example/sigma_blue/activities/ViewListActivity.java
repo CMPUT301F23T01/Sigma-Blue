@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 
@@ -170,14 +171,16 @@ public class ViewListActivity extends BaseActivity {
             startActivity(intent);
         });  // Launch add activity.
 
-        viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
+        viewHolder.searchButton.setOnClickListener(v ->
+                this.logoutUser());    // Launch search fragment
         viewHolder.sortFilterButton.setOnClickListener(v ->
                 this.displayQueryFragment());
 
-        viewHolder.optionsButton.setOnClickListener(v -> {});
+        viewHolder.optionsButton.setOnClickListener(v ->
+                this.handleDeleteAccount());
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
-            this.deleteSelectedItems());
+                this.deleteSelectedItems());
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -228,4 +231,23 @@ public class ViewListActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Delete the currently logged in account
+     */
+    private void handleDeleteAccount() {
+        // delete account
+        globalContext.getAccountList().remove(globalContext.getAccount());
+
+        // go back to login page
+        this.logoutUser();
+    }
+
+    /**
+     * go back to the login page and log the user out.
+     */
+    private void logoutUser() {
+        globalContext.setAccount(null);
+        Intent intent = new Intent(ViewListActivity.this, LoginPageActivity.class);
+        startActivity(intent);
+    }
 }
