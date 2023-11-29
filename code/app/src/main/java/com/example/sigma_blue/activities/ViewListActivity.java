@@ -1,5 +1,7 @@
 package com.example.sigma_blue.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -176,8 +178,27 @@ public class ViewListActivity extends BaseActivity {
 
         viewHolder.optionsButton.setOnClickListener(v -> {});
 
-        viewHolder.deleteSelectedButton.setOnClickListener(v ->
-            this.deleteSelectedItems());
+        viewHolder.deleteSelectedButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(true);
+                builder.setMessage("Please confirm the deletion of the selected item(s).");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteSelectedItems();
+                            }
+                });
+                builder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+        });
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
