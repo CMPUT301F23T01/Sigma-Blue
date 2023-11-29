@@ -87,9 +87,16 @@ public class ImageTakingActivity extends BaseActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
-        Bundle extras = data.getExtras();
+
+        Bundle extras = null;
+        try {
+            extras = data.getExtras();
+        } catch (NullPointerException e) {
+            Log.e("DEBUG", "Null bundle in image activity");
+            globalContext.newState(globalContext.getLastState());
+            finish();
+        }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bitmap imageBitmap = (Bitmap) extras.get("data");

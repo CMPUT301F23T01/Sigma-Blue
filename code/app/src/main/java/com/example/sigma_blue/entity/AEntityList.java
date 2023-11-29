@@ -99,6 +99,14 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     }
 
     /**
+     * Same as above, but with a query.
+     * @param currentQuery query to use for filtering
+     */
+    public void startListening(Query currentQuery) {
+        this.dbHandler.startListening(currentQuery, (IDatabaseList<T>) this);
+    }
+
+    /**
      * Replace the old entity with a new one
      * @param newE replacement entity
      * @param oldE entity to replace
@@ -133,4 +141,13 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
      * This method should also set up the db handler and adapter.
      */
     //public abstract AEntityList<T> newInstance();
+
+
+    /**
+     * This method removes all the items owned by the user. Made for testing.
+     */
+    public void removeAll() {
+        this.entityList.stream().forEach(item -> dbHandler.remove((IDatabaseItem<T>) item));
+        this.entityList.clear();
+    }
 }

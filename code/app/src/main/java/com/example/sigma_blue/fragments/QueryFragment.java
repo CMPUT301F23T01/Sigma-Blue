@@ -5,7 +5,6 @@ import static com.example.sigma_blue.query.ModeField.SORT;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +25,10 @@ import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.query.DateRepresentation;
 import com.example.sigma_blue.query.FilterField;
+import com.example.sigma_blue.query.FilterFieldName;
 import com.example.sigma_blue.query.ModeField;
 import com.example.sigma_blue.query.QueryMode;
 import com.example.sigma_blue.query.SortField;
-import com.example.sigma_blue.utility.Pair;
-import com.example.sigma_blue.utility.Quadruple;
 import com.example.sigma_blue.utility.SigmaBlueTextWatcher;
 import com.google.firebase.firestore.Query;
 
@@ -211,17 +209,15 @@ public class QueryFragment extends DialogFragment {
          * This method returns the make edit textbox back to its initial state
          */
         private void regenerateMakeTextBox() {
-            regenerateTextBox(makeFilterET, queryState
-                    .getMakeFilter().getSecond());
+            regenerateTextBox(makeFilterET, queryState.getMakeFilter().getName());
         }
 
         /**
          * Regenerates the edit text for the description filter using the
          * previously stored state.
          */
-        private void regenerateDescriptionTextBox(QueryMode queryState) {
-            regenerateTextBox(descriptionFilterET, queryState
-                    .getDescriptionFilter().getSecond());
+        private void regenerateDescriptionTextBox() {
+            regenerateTextBox(descriptionFilterET, queryState.getDescriptionFilter().getName());
         }
 
         /**
@@ -310,11 +306,13 @@ public class QueryFragment extends DialogFragment {
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
                 queryState.setAscend();
+                queryState.sendQuery(globalContext.getItemList());
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
                 queryState.setDescend();
+                queryState.sendQuery(globalContext.getItemList());
             });
 
             dateFilterBox.setOnClickListener(view -> {
@@ -411,7 +409,10 @@ public class QueryFragment extends DialogFragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
-                    queryState.receiveQuery(sortAdapter.getItem(position));
+                    queryState.receiveSortQuery(sortAdapter.getItem(position));
+
+                    /* Sending the query to the database */
+                    queryState.sendQuery(globalContext.getItemList());
                 }
 
                 @Override
@@ -453,12 +454,14 @@ public class QueryFragment extends DialogFragment {
                     // TODO: Refactor opportunity
                     String userInput = s.toString().trim();
                     // Cover -> empty input, regular input
-                    Pair<FilterField, String> nextAddition;
-                    if (userInput.isEmpty())
-                        nextAddition = new Pair<>(FilterField.MAKE, null);
-                    else
-                        nextAddition = new Pair<>(FilterField.MAKE, userInput);
-                    queryState.receiveQuery(nextAddition);
+                    FilterField nextAddition;
+                    if (userInput.isEmpty()) {
+                        nextAddition = new FilterField(null, FilterFieldName.MAKE);
+                    } else {
+                        nextAddition = new FilterField(userInput, FilterFieldName.MAKE);
+                    }
+                    queryState.receiveEqualsQuery(nextAddition);
+                    queryState.sendQuery(globalContext.getItemList());
                 }
             });
 
@@ -468,14 +471,16 @@ public class QueryFragment extends DialogFragment {
                         public void onTextChanged(EditText target, Editable s) {
                             String userInput = s.toString().trim();
                             // Cover -> empty input, regular input
-                            Pair<FilterField, String> nextAddition;
-                            if (userInput.isEmpty())
-                                nextAddition = new Pair<>(FilterField
-                                        .DESCRIPTION, null);
-                            else
-                                nextAddition = new Pair<>(FilterField
-                                        .DESCRIPTION, userInput);
-                            queryState.receiveQuery(nextAddition);
+                            FilterField nextAddition;
+                            if (userInput.isEmpty()) {
+                                nextAddition = new FilterField(null, FilterFieldName.DESCRIPTION);
+
+                            } else {
+                                nextAddition = new FilterField(null, FilterFieldName.DESCRIPTION);
+
+                            }
+                            queryState.receiveEqualsQuery(nextAddition);
+                            queryState.sendQuery(globalContext.getItemList());
                         }
                     });
         }

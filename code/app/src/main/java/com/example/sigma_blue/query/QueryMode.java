@@ -3,8 +3,8 @@ package com.example.sigma_blue.query;
 import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.item.Item;
-import com.example.sigma_blue.utility.Pair;
-import com.example.sigma_blue.utility.Quadruple;
+import com.example.sigma_blue.entity.item.ItemDB;
+import com.example.sigma_blue.entity.item.ItemList;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
@@ -19,11 +19,9 @@ public class QueryMode {
     private SortField currentSort;          // What is currently being sorted.
     private Query.Direction direction;      // Defaults to ASCENDING
     private Query currentQuery;
-    private final CollectionReference originalQuery;
-    private Pair<FilterField, String> makeFilter;
-    private Pair<FilterField, String> descriptionFilter;
-    private Quadruple<FilterField, Boolean, DateRepresentation,
-            DateRepresentation> dateFilter;
+    private CollectionReference originalQuery;
+    private FilterField makeFilter;
+    private FilterField descriptionFilter;
 
     public QueryMode(final CollectionReference originalQuery) {
         // Initialization
@@ -59,10 +57,8 @@ public class QueryMode {
      * Method factored out to clear the filter
      */
     private void clearFilterObjects() {
-        makeFilter = new Pair<>(FilterField.MAKE, null);
-        descriptionFilter = new Pair<>(FilterField.DESCRIPTION, null);
-        dateFilter = new Quadruple<> (FilterField.DATE_RANGE, false,
-                null, null);
+        makeFilter = new FilterField(null, FilterFieldName.MAKE);
+        descriptionFilter = new FilterField(null, FilterFieldName.DESCRIPTION);
     }
 
     /**
@@ -85,10 +81,10 @@ public class QueryMode {
     /**
      * This method receives the user input data for an equals type query, and
      * then change the internal state of the instance to match.
-     * @param input is the pair value that is being used to control flow.
+     * @param input is the value that is being used to control flow.
      */
-    public void receiveQuery(final Pair<FilterField, String> input) {
-        switch(input.getFirst()) {
+    public void receiveEqualsQuery(FilterField input) {
+        switch(input.getType()) {
             case MAKE:
                 makeFilter = input;
                 break;
@@ -150,11 +146,23 @@ public class QueryMode {
      * internal query object with the new filter.
      * @param toUpdate is the new filter.
      */
-    private void updateRangedFilter(final Pair<FilterField, String> toUpdate) {
-        if (toUpdate.getSecond() != null) compoundQuery(q ->
-                QueryGenerator.filterRangeQuery(q, toUpdate.getFirst()
-                                .getDbField(), toUpdate.getSecond(),
-                        toUpdate.getSecond() + "~"));
+    private void updateMakeFilter() {
+        updateRangedFilter(makeFilter);
+    }
+
+    /**
+     * This method updates the internal state of the make filter query. Done by
+     * reading the internal state as well.
+     */
+    private void updateDescriptionFilter() {
+        updateRangedFilter(descriptionFilter);
+    }
+
+    private void updateRangedFilter(final FilterField toUpdate) {
+        if (toUpdate.getName() != null) compoundQuery(q ->
+                QueryGenerator.filterRangeQuery(q, toUpdate.getType()
+                                .getDbField(), toUpdate.getName(),
+                        toUpdate.getName() + "~"));
     }
 
     private void updateRangedFilter(final Quadruple<FilterField, Boolean,
@@ -169,9 +177,8 @@ public class QueryMode {
      * This method sends the query to the database for display. Use after every
      * query update.
      */
-    public void sendQuery(Pair<ADatabaseHandler<Item>, IDatabaseList<Item>>
-                                  dbPair) {
-        dbPair.getFirst().startListening(currentQuery, dbPair.getSecond());
+    public void sendQuery(ItemList itemList) {
+        itemList.startListening(currentQuery);
     }
 
     /**
@@ -186,11 +193,11 @@ public class QueryMode {
      * Method used for restoring the make filter edit text
      * @return the Pair that was sent to the controller class from the UI class
      */
-    public Pair<FilterField, String> getMakeFilter() {
+    public FilterField getMakeFilter() {
         return this.makeFilter;
     }
 
-    public Pair<FilterField, String> getDescriptionFilter() {
+    public FilterField getDescriptionFilter() {
         return this.descriptionFilter;
     }
 

@@ -6,6 +6,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     
     <application
         android:allowBackup="true"
@@ -31,8 +32,11 @@
         </activity>
         <activity android:name="com.example.sigma_blue.placeholder.DebuggingActivity"
             android:exported="true"/>
+        <activity android:name="com.example.sigma_blue.activities.GalleryActivity"
+            android:exported="true"/>
         <activity android:name="com.example.sigma_blue.activities.LoginPageActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
