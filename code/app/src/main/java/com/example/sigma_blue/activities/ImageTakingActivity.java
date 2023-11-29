@@ -70,9 +70,7 @@ public class ImageTakingActivity extends BaseActivity{
                 } else {
                     globalContext.getModifiedItem().setSerialNumber((String) result.getContents());
                 }
-                //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
-                globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
-                //startActivity(intent);
+                globalContext.newState(globalContext.getLastState());
                 finish();
             });
 
