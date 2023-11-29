@@ -1,5 +1,7 @@
 package com.example.sigma_blue.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -145,13 +147,31 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                // Return to ViewListActivity; notify object needs to be deleted
-                globalContext.getItemList().remove(currentItem);
-                globalContext.setCurrentItem(null);
-                globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                        .toString());
-                activity.returnAndClose();
+               AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setCancelable(true);
+                builder.setMessage("Please confirm the deletion of this item.");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Return to ViewListActivity; notify object needs to be deleted
+                                globalContext.getItemList().remove(currentItem);
+                                globalContext.setCurrentItem(null);
+                                globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                                Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
+                                        .toString());
+                                activity.returnAndClose();
+                            }
+                        });
+                builder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
