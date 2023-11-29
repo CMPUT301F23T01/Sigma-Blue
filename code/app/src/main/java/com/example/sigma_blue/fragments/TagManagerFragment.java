@@ -192,9 +192,7 @@ public class TagManagerFragment extends Fragment {
             }
         });
 
-        // edit button broken (?)
-        // using the delete button instead. This onlickhandler should be for the edit button
-        tagDeleteButton.setOnClickListener(new View.OnClickListener() {
+        tagEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {if (globalContext.getSelectedTags().size() == 1) {
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_tagEditFragment);
@@ -205,17 +203,17 @@ public class TagManagerFragment extends Fragment {
             }
         });
 
-//        tagDeleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                for (Tag t : globalContext.getSelectedTags().getSelected()) {
-//                    globalContext.getTagList().remove(t);
-//                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
-//                    globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
-//                    // remove dead tag from items
-//                }
-//            }
-//        });
+        tagDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Tag t : globalContext.getSelectedTags().getSelected()) {
+                    globalContext.getTagList().remove(t);
+                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
+                    globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
+                    // remove dead tag from items
+                }
+            }
+        });
 
     }
 
@@ -224,12 +222,14 @@ public class TagManagerFragment extends Fragment {
      */
     private boolean updateTagListView() {
         globalContext.getTagList().getAdapter().notifyDataSetChanged();
-        int checkedTags = globalContext.getSelectedItems().size();
-        if (checkedTags >= 1) {
+        int checkedTags = globalContext.getSelectedTags().size();
+        if (checkedTags == 1) {
             tagEditButton.setEnabled(true);
+            tagEditButton.setBackgroundColor(androidx.appcompat.R.attr.colorPrimary);
             return true;
         } else {
             tagEditButton.setEnabled(false);
+            tagEditButton.setBackgroundColor(getResources().getColor(androidx.cardview.R.color.cardview_dark_background));
             return false;
         }
     }
