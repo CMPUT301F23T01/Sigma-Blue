@@ -251,14 +251,14 @@ public class QueryFragment extends DialogFragment {
                 start = queryState.getDateFilterField().getStartDate();
                 end = queryState.getDateFilterField().getEndDate();
             } else {
-                // just stick in the current date by default
-                start = LocalDate.now();
+                // from the last week by default
+                start = LocalDate.now().minusWeeks(1);
                 end = LocalDate.now();
             }
 
             startDatePicker.updateDate(
                     start.getYear(),
-                    start.getMonthValue() - 1,
+                    start.getMonthValue() - 1, //DatePicker indexes months from 0 for some reason
                     start.getDayOfMonth()
             );
 
