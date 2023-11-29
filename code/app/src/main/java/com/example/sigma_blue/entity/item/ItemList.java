@@ -113,11 +113,21 @@ public class ItemList extends AEntityList<Item> {
     }
 
     /**
-     * Clean all the tags in all stored items
+     * Remove all tags in all stored items that aren't in the global tag list
      */
     public void cleanAllItemTags(ArrayList<Tag> validTags) {
         for (Item i : this.entityList) {
             i.cleanTags(validTags);
+            syncEntity(i);
+        }
+    }
+
+    /**
+     * Modify every copy of a tag object
+     */
+    public void updateTags(Tag newTag, Tag oldTag) {
+        for (Item i : this.entityList) {
+            i.updateTag(newTag, oldTag);
             syncEntity(i);
         }
     }

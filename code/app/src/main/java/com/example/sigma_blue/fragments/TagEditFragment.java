@@ -52,7 +52,8 @@ public class TagEditFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             String tagName = inputField.getText().toString();
             modifiedTag.setTagText(tagName);
-            globalContext.getTagList().updateEntity(modifiedTag, oldTag);
+            globalContext.updateTag(modifiedTag, oldTag);
+            globalContext.getSelectedTags().resetSelected();
             getActivity().onBackPressed();
         });
 

@@ -576,4 +576,14 @@ public class Item implements Comparable<Item>, Serializable,
         }
         this.tags = newTags;
     }
+
+    /**
+     * When a tag is modified old versions of the tag should be replaced with the new version
+     */
+    public void updateTag(Tag newTag, Tag oldTag) {
+        if (this.hasTag(oldTag)) {
+            this.tags.remove(oldTag);
+            this.tags.add(newTag);
+        }
+    }
 }

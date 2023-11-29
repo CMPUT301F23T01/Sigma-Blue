@@ -182,6 +182,7 @@ public class TagManagerFragment extends Fragment {
                 }
                 else {
                     globalContext.newState(globalContext.getLastState());
+                    globalContext.getTagList().getAdapter().notifyDataSetChanged();
                     globalContext.getSelectedTags().resetSelected();
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
@@ -236,8 +237,6 @@ public class TagManagerFragment extends Fragment {
      * Updates item(s) with the selected tags.
      */
     private void updateItemsWithTags() {
-        // check each of the tags and check if they are checked
-
         if (globalContext.getCurrentState() == ApplicationState
                 .MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
             for (Item i : globalContext.getSelectedItems().getSelected()) {
