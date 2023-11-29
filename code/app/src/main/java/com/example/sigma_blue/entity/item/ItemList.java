@@ -78,16 +78,6 @@ public class ItemList extends AEntityList<Item> {
                     .reduce(0d, Double::sum));
         };
 
-
-    /**
-     * This method removes all the items owned by the user. Made for testing.
-     */
-    public void removeAll() {
-        this.entityList.stream()
-                .forEach(item -> dbHandler.remove(item));
-        this.entityList.clear();
-    }
-
     /**
      * Updates the UI to match the current data in the ItemList.
      */
@@ -123,11 +113,21 @@ public class ItemList extends AEntityList<Item> {
     }
 
     /**
-     * Clean all the tags in all stored items
+     * Remove all tags in all stored items that aren't in the global tag list
      */
     public void cleanAllItemTags(ArrayList<Tag> validTags) {
         for (Item i : this.entityList) {
             i.cleanTags(validTags);
+            syncEntity(i);
+        }
+    }
+
+    /**
+     * Modify every copy of a tag object
+     */
+    public void updateTags(Tag newTag, Tag oldTag) {
+        for (Item i : this.entityList) {
+            i.updateTag(newTag, oldTag);
             syncEntity(i);
         }
     }

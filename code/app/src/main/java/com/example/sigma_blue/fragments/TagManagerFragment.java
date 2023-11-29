@@ -11,6 +11,7 @@ import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.entity.item.Item;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
 import android.app.AlertDialog;
@@ -144,9 +145,6 @@ public class TagManagerFragment extends Fragment {
         tagCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                globalContext.newState(ApplicationState.TAG_ADD_FRAGMENT);
-                Log.i("NEW STATE", ApplicationState.TAG_ADD_FRAGMENT
-                        .toString());
                 NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_tagAddFragment);
             }
         });
@@ -158,16 +156,12 @@ public class TagManagerFragment extends Fragment {
                 if (globalContext.getCurrentState() == ApplicationState
                         .MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                            .toString());
                     // Reset the selected items.
                     globalContext.getSelectedItems().resetSelected();
                     globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 } else {
-                    globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
-                    Log.i("NEW STATE", ApplicationState.EDIT_ITEM_FRAGMENT
-                            .toString());
+                    globalContext.newState(globalContext.getLastState());
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_editFragment);
                 }
             }
@@ -189,7 +183,8 @@ public class TagManagerFragment extends Fragment {
                     activity.returnAndClose();
                 }
                 else {
-                    globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
+                    globalContext.newState(globalContext.getLastState());
+                    globalContext.getTagList().getAdapter().notifyDataSetChanged();
                     globalContext.getSelectedTags().resetSelected();
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
@@ -201,15 +196,11 @@ public class TagManagerFragment extends Fragment {
 
         tagEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (globalContext.getSelectedTags().size() == 1) {
-                    globalContext.newState(ApplicationState.TAG_EDIT_FRAGMENT);
-                    Log.i("NEW STATE", ApplicationState.TAG_EDIT_FRAGMENT
-                            .toString());
+            public void onClick(View v) {if (globalContext.getSelectedTags().size() == 1) {
                     NavHostFragment.findNavController(TagManagerFragment.this).navigate(R.id.action_tagManagerFragment_to_tagEditFragment);
                 } else {
-                    //TODO show a useful error
-                    throw new ArrayIndexOutOfBoundsException("Tag edit button");
+                    Snackbar incorrectMessage = Snackbar.make(v, "Select one tag to edit", Snackbar.LENGTH_LONG);
+                    incorrectMessage.show();
                 }
             }
         });
@@ -226,7 +217,9 @@ public class TagManagerFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 for (Tag t : globalContext.getSelectedTags().getSelected()) {
                                     globalContext.getTagList().remove(t);
+                                    globalContext.getSelectedTags().toggleHighlight(t);
                                     globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
+                                    globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
                                     // remove dead tag from items
                                 }
                             }
@@ -250,12 +243,14 @@ public class TagManagerFragment extends Fragment {
      */
     private boolean updateTagListView() {
         globalContext.getTagList().getAdapter().notifyDataSetChanged();
-        int checkedTags = globalContext.getSelectedItems().size();
-        if (checkedTags >= 1) {
+        int checkedTags = globalContext.getSelectedTags().size();
+        if (checkedTags == 1) {
             tagEditButton.setEnabled(true);
+            tagEditButton.setBackgroundColor(androidx.appcompat.R.attr.colorPrimary);
             return true;
         } else {
             tagEditButton.setEnabled(false);
+            tagEditButton.setBackgroundColor(getResources().getColor(androidx.cardview.R.color.cardview_dark_background));
             return false;
         }
     }
@@ -263,8 +258,6 @@ public class TagManagerFragment extends Fragment {
      * Updates item(s) with the selected tags.
      */
     private void updateItemsWithTags() {
-        // check each of the tags and check if they are checked
-
         if (globalContext.getCurrentState() == ApplicationState
                 .MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
             for (Item i : globalContext.getSelectedItems().getSelected()) {

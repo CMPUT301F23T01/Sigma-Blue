@@ -82,6 +82,16 @@ public class EditFragment extends Fragment
     }
 
     /**
+     * Refresh the UI when coming back from one of the activities/fragments
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
+        editItemUIBindings(globalContext.getModifiedItem());
+    }
+
+    /**
      * Method to create the activity
      * @param savedInstanceState is a Bundle passed that holds data of activity
      */
@@ -194,8 +204,6 @@ public class EditFragment extends Fragment
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                            .toString());
                     activity.returnAndClose();
 
                 } else {
@@ -217,8 +225,6 @@ public class EditFragment extends Fragment
                 loadUiText(globalContext.getModifiedItem());
                 // Open TagManager
                 globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
-                Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
-                        .toString());
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
@@ -251,10 +257,8 @@ public class EditFragment extends Fragment
                             errorSnackbar.show();
                         } else {
                             globalContext.getItemList().add(newItem);
-                            globalContext.newState(ApplicationState
-                                    .VIEW_LIST_ACTIVITY);
-                            Log.i("NEW STATE", ApplicationState
-                                    .VIEW_LIST_ACTIVITY.toString());
+                            globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+
                             activity.returnAndClose();
                         }
                     } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
@@ -278,19 +282,11 @@ public class EditFragment extends Fragment
             public void onClick(View v)
             {
                 globalContext.newState(ApplicationState.BARCODE_ADD_ACTIVITY);
+                loadUiText(globalContext.getModifiedItem());
                 Intent intent = new Intent(v.getContext(), ImageTakingActivity.class);
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
-        if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
-            editItemUIBindings(globalContext.getModifiedItem());
-        }
     }
 
     /**
@@ -348,21 +344,12 @@ public class EditFragment extends Fragment
 
     //TODO. make it so that you don't need to have a valid item before adding a picture
     private void handleImageClick() {
-        /*
-
-        Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
         loadUiText(globalContext.getModifiedItem());
-        globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
-        startActivity(intent);
-
-        */
-
         chooseImageSource(this.getContext());
     }
 
 
     // function to let's the user to choose image from camera or gallery
-    // TODO: Beautify
     private void chooseImageSource(Context context){
         final CharSequence[] optionsMenu = {"Take Photo", "Choose from Gallery", "Exit" }; // create a menuOption Array
         // create a dialog for showing the optionsMenu
@@ -374,7 +361,6 @@ public class EditFragment extends Fragment
                     // Open the camera and get the photo
                     // * change this content to open ImageTakingActivity
                     Intent intent = new Intent(context, ImageTakingActivity.class);
-                    loadUiText(globalContext.getModifiedItem());
                     globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
                     startActivity(intent);
                 }
@@ -382,7 +368,6 @@ public class EditFragment extends Fragment
                     // choose from  external storage
                     // * change this content to open GalleryActivity
                     Intent intent = new Intent(context, GalleryActivity.class);
-                    loadUiText(globalContext.getModifiedItem());
                     globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
                     startActivity(intent);
                 }
