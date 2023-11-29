@@ -32,7 +32,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
 
     public Tag(String tagText, String colour) {
         this.tagText = tagText;
-        this.colour = Color.valueOf(Color.RED); //TODO, parse the string
+        this.colour = Color.valueOf(Color.parseColor("#" + colour));
     }
 
     public String getTagText() {
@@ -92,8 +92,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
             return false;
         }
         Tag otherTag = (Tag) obj;
-        return (this.tagText.equals(otherTag.getTagText())
-                && (colour.equals(otherTag.getColour())));
+        return (this.tagText.equals(otherTag.getTagText()));
     }
 
     /**

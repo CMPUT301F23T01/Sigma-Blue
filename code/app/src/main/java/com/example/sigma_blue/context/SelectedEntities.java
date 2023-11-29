@@ -28,4 +28,8 @@ public class SelectedEntities<T> {
     public int size() {
         return selected.size();
     }
+    public void updateEntity(T newE, T oldE) {
+        selected.remove(oldE);
+        selected.add(newE);
+    }
 }

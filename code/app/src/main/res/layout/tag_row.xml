@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:background="?colorPrimarySurface"
         android:clickable="false"
+        android:layout_marginTop="10dp"
         android:focusable="false"
         android:gravity="center_vertical"
         android:orientation="horizontal">
