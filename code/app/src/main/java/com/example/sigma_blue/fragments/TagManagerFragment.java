@@ -13,6 +13,8 @@ import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.entity.item.Item;
 import com.google.common.base.VerifyException;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -215,11 +217,29 @@ public class TagManagerFragment extends Fragment {
         tagDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (Tag t : globalContext.getSelectedTags().getSelected()) {
-                    globalContext.getTagList().remove(t);
-                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
-                    // remove dead tag from items
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setCancelable(true);
+                builder.setMessage("Please confirm the deletion of the selected tag(s).");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (Tag t : globalContext.getSelectedTags().getSelected()) {
+                                    globalContext.getTagList().remove(t);
+                                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
+                                    // remove dead tag from items
+                                }
+                            }
+                        });
+                builder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
