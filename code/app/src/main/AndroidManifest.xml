@@ -35,7 +35,8 @@
         <activity android:name="com.example.sigma_blue.activities.GalleryActivity"
             android:exported="true"/>
         <activity android:name="com.example.sigma_blue.activities.LoginPageActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
