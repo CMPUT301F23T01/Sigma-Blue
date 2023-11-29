@@ -150,4 +150,10 @@ public class GlobalContext {
     public void setModifiedItem(Item modifiedItem) {
         this.modifiedItem = modifiedItem;
     }
+
+    public void updateTag(Tag newTag, Tag oldTag) {
+        this.tagList.updateEntity(newTag, oldTag);
+        this.selectedTags.updateEntity(newTag, oldTag);
+        this.itemList.updateTags(newTag, oldTag);
+    }
 }

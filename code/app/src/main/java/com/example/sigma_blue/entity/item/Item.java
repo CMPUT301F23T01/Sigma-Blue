@@ -357,7 +357,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param tags List containing tags.
      */
     public void setTags(List<Tag> tags) {
-        this.tags = tags;
+        this.tags.clear();
+        this.tags.addAll(tags);
     }
 
     /**
@@ -574,5 +575,15 @@ public class Item implements Comparable<Item>, Serializable,
             }
         }
         this.tags = newTags;
+    }
+
+    /**
+     * When a tag is modified old versions of the tag should be replaced with the new version
+     */
+    public void updateTag(Tag newTag, Tag oldTag) {
+        if (this.hasTag(oldTag)) {
+            this.tags.remove(oldTag);
+            this.tags.add(newTag);
+        }
     }
 }
