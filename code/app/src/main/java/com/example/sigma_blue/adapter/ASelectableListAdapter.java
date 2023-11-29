@@ -64,12 +64,9 @@ public abstract class ASelectableListAdapter<T> extends ArrayAdapter<T> {
      * @param selected
      */
     protected void highlightControl(View view, boolean selected) {
-        @ColorInt int rowColor;
-        if (selected) {
-            rowColor = ContextCompat.getColor(getContext(), R.color.add_edit_layout_bgr_test);
-        } else {
-            rowColor = ContextCompat.getColor(getContext(), R.color.white);
-        }
-        view.setBackgroundColor(rowColor);
+        Drawable row;
+        if (selected) row = ContextCompat.getDrawable(getContext(), R.drawable.curved_box_shape_3);
+        else row = ContextCompat.getDrawable(getContext(), R.drawable.curved_box_shape);
+        view.setBackground(row);
     }
 }
