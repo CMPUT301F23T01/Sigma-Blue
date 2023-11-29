@@ -258,13 +258,13 @@ public class QueryFragment extends DialogFragment {
 
             startDatePicker.updateDate(
                     start.getYear(),
-                    start.getMonthValue(),
+                    start.getMonthValue() - 1,
                     start.getDayOfMonth()
             );
 
             endDatePicker.updateDate(
                     end.getYear(),
-                    end.getMonthValue(),
+                    end.getMonthValue() - 1,
                     end.getDayOfMonth()
             );
         }
@@ -305,7 +305,7 @@ public class QueryFragment extends DialogFragment {
         }
 
         private LocalDate dateRepresentationOfPicker(DatePicker picker) {
-            return LocalDate.of(picker.getYear(), picker.getMonth(), picker.getDayOfMonth());
+            return LocalDate.of(picker.getYear(), picker.getMonth() + 1, picker.getDayOfMonth());
         }
         /**
          * Creating reactions to checkbox interactions
@@ -327,15 +327,12 @@ public class QueryFragment extends DialogFragment {
                 dateCheckBoxController(datebox);
 
                 // Need to send the filter
-                if (datebox.isChecked()) {
-                    LocalDate startDate = dateRepresentationOfPicker(
-                            startDatePicker);
-                    LocalDate endDate = dateRepresentationOfPicker(
-                            endDatePicker);
+                LocalDate startDate = dateRepresentationOfPicker(startDatePicker);
+                LocalDate endDate = dateRepresentationOfPicker(endDatePicker);
 
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true, FilterFieldName.DATE_RANGE);
-                    queryState.receiveQuery(dateFilterField);
-                }
+                DateFilterField dateFilterField = new DateFilterField(startDate, endDate, datebox.isChecked(), FilterFieldName.DATE_RANGE);
+                queryState.receiveQuery(dateFilterField);
+
             });
         }
 
@@ -382,7 +379,10 @@ public class QueryFragment extends DialogFragment {
             });   // Go back
 
             /* Resets the query. Uses the database default */
-            resetButton.setOnClickListener(view -> resetQuery());
+            resetButton.setOnClickListener(view -> {
+                resetQuery();
+                dismiss();
+            });
 
             setBoxListeners();  // Checkbox UI listeners
             setDatePickerListeners(); // date picker listeners

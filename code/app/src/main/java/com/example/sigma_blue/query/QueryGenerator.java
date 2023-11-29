@@ -90,7 +90,7 @@ public class QueryGenerator {
      * @param endDate is the upper bound that will be included
      */
     public static Query filterRangeQuery(Query query, String field, LocalDate startDate, LocalDate endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // pattern is in the strings file, but using android methods here makes testing harder
         String lowerRange = startDate.format(formatter);
         String upperRange = endDate.format(formatter);

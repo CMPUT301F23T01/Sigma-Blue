@@ -138,7 +138,7 @@ public class QueryMode {
             compoundQuery(q ->
                     QueryGenerator.filterRangeQuery(
                             q,
-                            dateFilterField.getType().toString(),
+                            "DATE",
                             dateFilterField.getStartDate(),
                             dateFilterField.getEndDate()
                     ));
