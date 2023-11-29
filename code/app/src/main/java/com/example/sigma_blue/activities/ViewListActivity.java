@@ -238,10 +238,9 @@ public class ViewListActivity extends BaseActivity {
      */
     private void handleOptionsClick() {
         // same pattern as add edit fragment add picture button. Do we want to move this to a fragment?
-        final CharSequence[] optionsMenu = {"Logout", "Delete Account", "Exit" };
+        final CharSequence[] optionsMenu = {"Logout", "Delete Account", "Cancel" };
         // create a dialog for showing the optionsMenu
-        Context context = this.getBaseContext();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewListActivity.this);
         builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -251,7 +250,7 @@ public class ViewListActivity extends BaseActivity {
                 else if(optionsMenu[i].equals("Delete Account")){
                     handleDeleteAccount();
                 }
-                else if (optionsMenu[i].equals("Exit")) {
+                else if (optionsMenu[i].equals("Cancel")) {
                     dialogInterface.dismiss();
                 }
             }
@@ -263,6 +262,8 @@ public class ViewListActivity extends BaseActivity {
      */
     private void handleDeleteAccount() {
         // delete account
+        globalContext.getItemList().removeAll();
+        globalContext.getTagList().removeAll();
         globalContext.getAccountList().remove(globalContext.getAccount());
 
         // go back to login page
