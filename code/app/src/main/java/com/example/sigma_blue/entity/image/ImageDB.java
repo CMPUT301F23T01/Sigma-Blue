@@ -1,6 +1,7 @@
 package com.example.sigma_blue.entity.image;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -56,4 +57,6 @@ public class ImageDB {
             }
         });
     }
+
+
 }
