@@ -3,7 +3,9 @@ package com.example.sigma_blue.context;
 import androidx.annotation.NonNull;
 
 public enum ApplicationState {
-    SORT_MENU("sort_menu"), LOGIN_ACTIVITY("login_activity"),
+    SORT_MENU("sort_menu"),
+    FILTER_MENU("filter_menu"),
+    LOGIN_ACTIVITY("login_activity"),
     VIEW_LIST_ACTIVITY("view list activity"),
     CREATE_ACCOUNT_FRAGMENT("create account fragment"),
     LOGIN_FRAGMENT("login fragment"),

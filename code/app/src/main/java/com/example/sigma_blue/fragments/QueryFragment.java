@@ -22,6 +22,7 @@ import android.widget.ViewSwitcher;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.query.FilterField;
 import com.example.sigma_blue.query.FilterFieldName;
@@ -37,7 +38,6 @@ import java.util.List;
 /**
  * Fragment class for the dialog fragment. Controls the UI element and
  * communicate with the backend.
- * TODO: Filter has not been implemented yet.
  */
 public class QueryFragment extends DialogFragment {
 
@@ -285,6 +285,7 @@ public class QueryFragment extends DialogFragment {
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
             backButton.setOnClickListener(view -> {
+                globalContext.newState(globalContext.getLastState());
                 dismiss();
             });   // Go back
 
@@ -462,6 +463,12 @@ public class QueryFragment extends DialogFragment {
         viewHolder = new ViewHolder(fragmentView);
 
         viewHolder.setUIListeners();
+
+        if (globalContext.getCurrentState() == ApplicationState.SORT_MENU) {
+            viewHolder.chooseModeView(SORT);
+        } else if (globalContext.getCurrentState() == ApplicationState.FILTER_MENU) {
+            viewHolder.chooseModeView(FILTER);
+        }
 
         return fragmentView;
     }

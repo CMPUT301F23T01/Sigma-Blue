@@ -144,11 +144,10 @@ public class ViewListActivity extends BaseActivity {
      * This method shows the query fragment for the user to choose either a sort
      * or a filter, or maybe both.
      */
-    private void displayQueryFragment() {
+    private void displayQueryFragment(ApplicationState state) {
         QueryFragment queryFragment = new QueryFragment();
-        globalContext.newState(ApplicationState.SORT_MENU);
-        startFragmentTransaction(queryFragment, ApplicationState.SORT_MENU
-                .toString());
+        globalContext.newState(state);
+        startFragmentTransaction(queryFragment, state.toString());
     }
 
     /**
@@ -157,8 +156,9 @@ public class ViewListActivity extends BaseActivity {
      * @param tag the tag of the fragment
      */
     private void startFragmentTransaction(DialogFragment fragment, String tag) {
-        if (fragmentManager == null)
+        if (fragmentManager == null) {
             fragmentManager = getSupportFragmentManager();
+        }
         fragment.show(fragmentManager, tag);
     }
 
@@ -174,9 +174,11 @@ public class ViewListActivity extends BaseActivity {
             startActivity(intent);
         });  // Launch add activity.
 
-        viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
+        viewHolder.searchButton.setOnClickListener(v ->
+                this.displayQueryFragment(ApplicationState.FILTER_MENU));
+
         viewHolder.sortFilterButton.setOnClickListener(v ->
-                this.displayQueryFragment());
+                this.displayQueryFragment(ApplicationState.SORT_MENU));
 
         viewHolder.optionsButton.setOnClickListener(v ->
                 this.handleOptionsClick());
