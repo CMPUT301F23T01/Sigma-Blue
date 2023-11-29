@@ -357,7 +357,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param tags List containing tags.
      */
     public void setTags(List<Tag> tags) {
-        this.tags = tags;
+        this.tags.clear();
+        this.tags.addAll(tags);
     }
 
     /**
