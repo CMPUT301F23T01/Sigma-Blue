@@ -141,4 +141,13 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
      * This method should also set up the db handler and adapter.
      */
     //public abstract AEntityList<T> newInstance();
+
+
+    /**
+     * This method removes all the items owned by the user. Made for testing.
+     */
+    public void removeAll() {
+        this.entityList.stream().forEach(item -> dbHandler.remove((IDatabaseItem<T>) item));
+        this.entityList.clear();
+    }
 }

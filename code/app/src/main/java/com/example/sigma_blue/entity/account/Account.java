@@ -1,6 +1,7 @@
 package com.example.sigma_blue.entity.account;
 
 import com.example.sigma_blue.database.IDatabaseItem;
+import com.example.sigma_blue.utility.StringHasher;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
@@ -12,8 +13,8 @@ import java.util.function.Function;
  * Stores information about a user account.
  */
 public class Account implements Serializable, IDatabaseItem<Account> {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 
     /* Document keys */
     public static final String USERNAME = "USERNAME", PASSWORD = "PASSWORD";
@@ -27,23 +28,16 @@ public class Account implements Serializable, IDatabaseItem<Account> {
      */
     public Account(String aUsername, String aPassword) {
         this.username = aUsername;
-        this.password = aPassword;
+        //this.password = aPassword;
+        this.password = StringHasher.getHash(aPassword);
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     /**
@@ -67,7 +61,7 @@ public class Account implements Serializable, IDatabaseItem<Account> {
      * True if they are the same, false if they are not
      */
     public boolean checkPassword(String aPassword) {
-        return Objects.equals(this.password, aPassword);
+        return Objects.equals(this.password, StringHasher.getHash(aPassword));
     }
 
     /**

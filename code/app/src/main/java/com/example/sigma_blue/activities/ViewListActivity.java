@@ -1,5 +1,8 @@
 package com.example.sigma_blue.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +21,7 @@ import androidx.navigation.Navigation;
 
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
+import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 
@@ -174,10 +178,11 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.sortFilterButton.setOnClickListener(v ->
                 this.displayQueryFragment());
 
-        viewHolder.optionsButton.setOnClickListener(v -> {});
+        viewHolder.optionsButton.setOnClickListener(v ->
+                this.handleOptionsClick());
 
         viewHolder.deleteSelectedButton.setOnClickListener(v ->
-            this.deleteSelectedItems());
+                this.deleteSelectedItems());
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -228,4 +233,49 @@ public class ViewListActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Open the options menu.
+     */
+    private void handleOptionsClick() {
+        // same pattern as add edit fragment add picture button. Do we want to move this to a fragment?
+        final CharSequence[] optionsMenu = {"Logout", "Delete Account", "Cancel" };
+        // create a dialog for showing the optionsMenu
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewListActivity.this);
+        builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(optionsMenu[i].equals("Logout")){
+                    logoutUser();
+                }
+                else if(optionsMenu[i].equals("Delete Account")){
+                    handleDeleteAccount();
+                }
+                else if (optionsMenu[i].equals("Cancel")) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+    /**
+     * Delete the currently logged in account
+     */
+    private void handleDeleteAccount() {
+        // delete account
+        globalContext.getItemList().removeAll();
+        globalContext.getTagList().removeAll();
+        globalContext.getAccountList().remove(globalContext.getAccount());
+
+        // go back to login page
+        this.logoutUser();
+    }
+
+    /**
+     * go back to the login page and log the user out.
+     */
+    private void logoutUser() {
+        globalContext.setAccount(null);
+        Intent intent = new Intent(ViewListActivity.this, LoginPageActivity.class);
+        startActivity(intent);
+    }
 }
