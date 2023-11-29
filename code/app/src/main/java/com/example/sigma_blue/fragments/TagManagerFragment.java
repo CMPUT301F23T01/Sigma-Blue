@@ -208,6 +208,7 @@ public class TagManagerFragment extends Fragment {
             public void onClick(View v) {
                 for (Tag t : globalContext.getSelectedTags().getSelected()) {
                     globalContext.getTagList().remove(t);
+                    globalContext.getSelectedTags().toggleHighlight(t);
                     globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
                     globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
                     // remove dead tag from items
