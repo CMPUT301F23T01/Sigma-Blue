@@ -5,58 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/sortingResetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/reset_button_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/query_confirm_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/confirm_button_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Spinner
         android:id="@+id/mode_choice_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/sortingResetButton"
-        app:layout_constraintStart_toEndOf="@+id/query_confirm_button"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ViewSwitcher
         android:id="@+id/query_view_switcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sortingResetButton">
+        app:layout_constraintTop_toBottomOf="@id/mode_choice_spinner">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/sortTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/sort_by_title_text"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
                 android:id="@+id/sortCriteriaSpinner"
@@ -68,7 +37,7 @@
                 android:autofillHints="Select sorting criteria"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sortTitle" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <CheckBox
                 android:id="@+id/ascendCheckbox"
@@ -98,18 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/filterTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/filter_by_title_text"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <CheckBox
                 android:id="@+id/dateFilterCheckbox"
                 android:layout_width="wrap_content"
@@ -119,7 +76,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/filterTitle" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/descFilterTitle"
@@ -140,10 +97,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/dateFilterCheckbox"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                >
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dateFilterCheckbox">
 
                 <TextView
                     android:id="@+id/startDateTitle"
@@ -153,10 +109,9 @@
                     android:text="@string/start_date_title_text"
                     android:textColor="#000000"
                     android:textSize="24sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/startDatePicker"
                     app:layout_constraintBottom_toBottomOf="@id/startDatePicker"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/startDatePicker" />
 
                 <TextView
                     android:id="@+id/endDateTitle"
@@ -166,10 +121,9 @@
                     android:text="@string/end_date_title_text"
                     android:textColor="#000000"
                     android:textSize="24sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/endDatePicker"
                     app:layout_constraintBottom_toBottomOf="@id/endDatePicker"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/endDatePicker" />
 
                 <DatePicker
                     android:id="@+id/startDatePicker"
@@ -177,9 +131,8 @@
                     android:layout_height="84dp"
                     android:calendarViewShown="false"
                     android:datePickerMode="spinner"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <DatePicker
                     android:id="@+id/endDatePicker"
@@ -187,9 +140,8 @@
                     android:layout_height="89dp"
                     android:calendarViewShown="false"
                     android:datePickerMode="spinner"
-                    app:layout_constraintTop_toBottomOf="@id/startDatePicker"
                     app:layout_constraintEnd_toEndOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/startDatePicker" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -225,13 +177,12 @@
                 android:layout_marginTop="12dp"
                 android:autofillHints="@string/filter_make_hint_text"
                 android:hint="@string/filter_make_hint_text"
-                android:textSize="20sp"
                 android:inputType="text"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/descFilterEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
-                app:layout_constraintTop_toBottomOf="@id/tagFilterSpinner"
-                app:layout_constraintBottom_toTopOf="@id/descFilterEditText"
-                />
+                app:layout_constraintTop_toBottomOf="@id/tagFilterSpinner" />
 
             <EditText
                 android:id="@+id/descFilterEditText"
@@ -242,24 +193,41 @@
                 android:hint="@string/filter_keywords_hint_text"
                 android:inputType="text"
                 android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox" />
 
             <Spinner
                 android:id="@+id/tagFilterSpinner"
                 android:layout_width="0dp"
                 android:layout_height="48sp"
                 android:layout_marginTop="12dp"
+                app:layout_constraintBottom_toTopOf="@id/makeFilterEditText"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_filter_constraint"
                 app:layout_constraintStart_toStartOf="@id/makeFilterEditText"
-                app:layout_constraintBottom_toTopOf="@id/makeFilterEditText" />
+                app:layout_constraintTop_toBottomOf="@id/date_filter_constraint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </ViewSwitcher>
 
+    <Button
+        android:id="@+id/sortingResetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/reset_button_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/query_view_switcher" />
 
+
+    <Button
+        android:id="@+id/query_confirm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/confirm_button_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/query_view_switcher" />
 </androidx.constraintlayout.widget.ConstraintLayout>

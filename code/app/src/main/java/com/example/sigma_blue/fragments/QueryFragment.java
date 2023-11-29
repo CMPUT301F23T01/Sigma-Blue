@@ -375,12 +375,14 @@ public class QueryFragment extends DialogFragment {
             /* Closes the dialog fragment and return to the previous page */
             confirmButton.setOnClickListener(view -> {
                 queryState.sendQuery(globalContext.getItemList());
+                globalContext.newState(globalContext.getLastState());
                 dismiss();
             });   // Go back
 
             /* Resets the query. Uses the database default */
             resetButton.setOnClickListener(view -> {
                 resetQuery();
+                globalContext.newState(globalContext.getLastState());
                 dismiss();
             });
 
@@ -553,9 +555,9 @@ public class QueryFragment extends DialogFragment {
         viewHolder.setUIListeners();
 
         if (globalContext.getCurrentState() == ApplicationState.SORT_MENU) {
-            viewHolder.chooseModeView(SORT);
+            viewHolder.modeChoiceSpinner.setSelection(0);
         } else if (globalContext.getCurrentState() == ApplicationState.FILTER_MENU) {
-            viewHolder.chooseModeView(FILTER);
+            viewHolder.modeChoiceSpinner.setSelection(1);
         }
 
         return fragmentView;

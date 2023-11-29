@@ -47,7 +47,7 @@ public class QueryMode {
     public void clearQuery() {
         currentSort = SortField.NO_SELECTION;
         direction = Query.Direction.ASCENDING;  // Default sort direction
-        currentQuery = originalQuery;
+        currentQuery = QueryGenerator.sortQuery(originalQuery, direction);
         clearFilterObjects();
     }
 
