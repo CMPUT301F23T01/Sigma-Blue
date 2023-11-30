@@ -1,6 +1,6 @@
 package com.example.sigma_blue.fragments;
 
-import static com.example.sigma_blue.utility.ModeField.FILTER;
+import static com.example.sigma_blue.utility.ModeField.SEARCH;
 import static com.example.sigma_blue.utility.ModeField.SORT;
 
 import android.os.Bundle;
@@ -128,7 +128,7 @@ public class QueryFragment extends DialogFragment {
             List<ModeField> ret = new ArrayList<>();
 
             ret.add(SORT);
-            ret.add(FILTER);
+            ret.add(SEARCH);
 
             return ret;
         }
@@ -451,8 +451,8 @@ public class QueryFragment extends DialogFragment {
                 case SORT:
                     swapMode(SORT);
                     break;
-                case FILTER:
-                    swapMode(FILTER);
+                case SEARCH:
+                    swapMode(SEARCH);
                     break;
                 default:
                     throw new IllegalStateException(

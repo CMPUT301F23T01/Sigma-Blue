@@ -3,7 +3,7 @@ package com.example.sigma_blue.utility;
 import androidx.annotation.NonNull;
 
 public enum ModeField {
-    SORT("Sort"), FILTER("Filter");
+    SORT("Sort"), SEARCH("Search");
 
     final private String stringRepresentation;
 
