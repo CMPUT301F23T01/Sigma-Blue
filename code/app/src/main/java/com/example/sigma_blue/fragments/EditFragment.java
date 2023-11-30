@@ -204,8 +204,6 @@ public class EditFragment extends Fragment
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                            .toString());
                     activity.returnAndClose();
 
                 } else {
@@ -227,8 +225,6 @@ public class EditFragment extends Fragment
                 loadUiText(globalContext.getModifiedItem());
                 // Open TagManager
                 globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
-                Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
-                        .toString());
                 NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
             }
         });
