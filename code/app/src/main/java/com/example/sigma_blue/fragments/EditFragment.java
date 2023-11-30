@@ -130,14 +130,13 @@ public class EditFragment extends Fragment
                 if (tabSelected == TabSelected.Details) {
                     if (viewPagerAdapter.verifyDetailsText()) {
                         tabSelected = TabSelected.of(position);
-                        viewPagerAdapter.saveToContext(position);
+                        viewPagerAdapter.saveTextToContext();
                         viewPager.setCurrentItem(position);
                     }
                     else { tabLayout.getTabAt(tabSelected.position()).select(); }
                 }
                 else {
                     tabSelected = TabSelected.of(position);
-                    viewPagerAdapter.saveToContext(position);
                     viewPager.setCurrentItem(position);
                 }
             }
@@ -196,7 +195,9 @@ public class EditFragment extends Fragment
                     // old one is overwritten then we don't know which item in
                     // the list needs to be deleted if doing an edit.
                     Item oldItem = globalContext.getCurrentItem();
-                    viewPagerAdapter.saveToContext(tabSelected.position());
+                    if (tabSelected == TabSelected.Details) {
+                        viewPagerAdapter.saveTextToContext();
+                    }
                     Item newItem = globalContext.getModifiedItem();
                     loadTextName(newItem);
 

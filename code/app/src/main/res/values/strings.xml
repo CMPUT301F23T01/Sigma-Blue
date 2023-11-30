@@ -57,8 +57,8 @@
     <string name="add_edit_btn_cancel">Cancel</string>
     <string name="add_edit_btn_edit">Edit</string>
     <string name="add_edit_btn_delete">Delete</string>
-    <string name="add_edit_btn_scan_serial">Scan Serial</string>
-    <string name="add_edit_btn_scan_barcode">Scan Barcode</string>
+    <string name="add_edit_btn_scan_serial">Scan Barcode</string>
+    <string name="add_edit_btn_scan_autofill">Autofill from\nBarcode</string>
     <string name="add_edit_btn_tag">Add Tag</string>
     <string name="add_edit_btn_picture">Add Picture</string>
     <string name="add_edit_text_details">Details</string>

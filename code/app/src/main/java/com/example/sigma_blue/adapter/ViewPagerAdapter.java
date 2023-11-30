@@ -58,23 +58,9 @@ public class ViewPagerAdapter extends FragmentStateAdapter
         return itemDetailsFragment.verifyText();
     }
 
-    public void saveToContext(int position)
+    public void saveTextToContext()
     {
-        switch (position) {
-            case 0: {
-                itemDetailsFragment.saveText();
-                break;
-            }
-            case 1: {
-                break;
-            }
-            case 2: {
-                break;
-            }
-            default: {
-                throw new RuntimeException(ERROR_MESSAGE);
-            }
-        }
+        itemDetailsFragment.saveText();
     }
 
     public void updateFromContext(int position)
