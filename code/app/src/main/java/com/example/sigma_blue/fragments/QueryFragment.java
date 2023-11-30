@@ -390,7 +390,7 @@ public class QueryFragment extends DialogFragment {
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
             confirmButton.setOnClickListener(view -> {
-                visibleItemList.refreshVisibleItems();
+                globalContext.getItemList().updateUI();
                 globalContext.newState(globalContext.getLastState());
                 dismiss();
             });   // Go back
