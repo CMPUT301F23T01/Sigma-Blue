@@ -1,5 +1,6 @@
 package com.example.sigma_blue;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -24,6 +25,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.example.sigma_blue.activities.LoginPageActivity;
 import com.example.sigma_blue.activities.ViewListActivity;
 import com.example.sigma_blue.entity.item.ItemList;
 
@@ -38,9 +40,9 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ViewListActivityUITest extends UITestTools {
-//    @Rule
-//    public ActivityScenarioRule<ViewListActivity> scenario = new
-//            ActivityScenarioRule<ViewListActivity>(ViewListActivity.class);
+    @Rule
+    public ActivityScenarioRule<LoginPageActivity> scenario = new
+            ActivityScenarioRule<LoginPageActivity>(LoginPageActivity.class);
 //
 //
 //    private RecyclerView.Adapter adapter;
@@ -119,58 +121,71 @@ public class ViewListActivityUITest extends UITestTools {
 ////        onView(withId(R.id.listView))
 ////                .perform(RecyclerViewActions)
 ////    }
-//
-//    /**
-//     * As an owner, I want to add an item to my items, with a date of purchase or acquisition, brief
-//     * description, make, model, serial number (if applicable), estimated value, and comment.
-//     */
-//    @Test
-//    public void add_item_US_01_01_01() {
-//        // get to edit page
-//        onView(withId(R.id.addButton)).perform(click());
-//        //onView(withId(R.id.button_edit)).perform(click());
-//        // enter item info
-//        onView(withId(R.id.text_name_disp)).perform(ViewActions.typeText("iName"));
-//        closeKeyboard();
-//        onView(withId(R.id.text_value_disp)).perform(ViewActions.typeText("100"));
-//        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
-//        onView(withId(R.id.text_make_disp)).perform(ViewActions.typeText("Banana"));
-//        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
-//        onView(withId(R.id.text_model_disp)).perform(ViewActions.typeText("name"));
-//        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
-//        onView(withId(R.id.text_serial_disp)).perform(ViewActions.typeText("9001"));
-//        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
-//        onView(withId(R.id.text_comment_disp)).perform(ViewActions.typeText("comment about thing"));
-//        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
-//        onView(withId(R.id.text_description_disp)).perform(ViewActions.typeText("description of thing"));
-//        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
-//        // back to list
-//        onView(withId(R.id.button_save)).perform(click());
-//        onView(withId(R.id.button_back)).perform(click());
-//        // check if the item is displayed properly
+
+    /**
+     * Login first for setting up the following user test
+     * the first step of the all ViewList tests
+     */
+    public void testUser_Login() {
+        UITestTools.login("Temp_User1", "password");
+    }
+    /**
+     * As an owner, I want to add an item to my items, with a date of purchase or acquisition, brief
+     * description, make, model, serial number (if applicable), estimated value, and comment.
+     */
+    @Test
+    public void add_item_US_01_01_01() {
+        // get the user login
+        testUser_Login();
+        // get to edit page
+        onView(withId(R.id.addButton)).perform(click());
+        //onView(withId(R.id.button_edit)).perform(click());
+        // enter item info
+        onView(withId(R.id.text_name_disp)).perform(ViewActions.typeText("iName3"));
+        closeKeyboard();
+        onView(withId(R.id.text_value_disp)).perform(ViewActions.typeText("100"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_make_disp)).perform(ViewActions.typeText("Banana"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_model_disp)).perform(ViewActions.typeText("name"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_serial_disp)).perform(ViewActions.typeText("9001"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_comment_disp)).perform(ViewActions.typeText("comment about thing"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_description_disp)).perform(ViewActions.typeText("description of thing"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        // back to list
+        //onView(withId(R.id.button_save)).perform(click());
+        onView(withId(R.id.button_cancel)).perform(click());
+        // check if the item is displayed properly
 //        onView(withId(R.id.listView))
 //                .check(matches(atPosition(0, hasDescendant(withText("iName")))));
-//    }
+    }
+
+    /**
+     * As an owner, I want to view an item and its details.
+     */
+    @Test
+    public void view_item_US_01_02_01() {
+        // get the test user login
+        testUser_Login();
+        //go to view page (items will persist between tests since everything is done on via the database
+//        onData(withItemContent("iName")).perform(click());
 //
-//    /**
-//     * As an owner, I want to view an item and its details.
-//     */
-//    @Test
-//    public void view_item_US_01_02_01() {
-//        // go to view page (items will persist between tests since everything is done on via the database
-////        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-//        insertAddItem("iName", "100.00", "Banana", "name"
-//                ,"9001", "comment about thing",
-//                "description of thing");
-//        saveAndCloseAddEdit();
-//        onView(withText("iName")).check(matches(isDisplayed()));
-//        onView(withText("100.00")).check(matches(isDisplayed()));
-//        onView(withText("Banana")).check(matches(isDisplayed()));
-//        onView(withText("name")).check(matches(isDisplayed()));
-//        onView(withText("9001")).check(matches(isDisplayed()));
-//        onView(withText("comment about thing")).check(matches(isDisplayed()));
-//        onView(withText("description of thing")).check(matches(isDisplayed()));
-//    }
+//        onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50"))))
+//                .perform(click());
+
+        onView(withText("iName")).perform(click());
+
+        onView(withText("iName")).check(matches(isDisplayed()));
+        onView(withText("100.0")).check(matches(isDisplayed()));
+        onView(withText("Banana")).check(matches(isDisplayed()));
+        onView(withText("name")).check(matches(isDisplayed()));
+        onView(withText("9001")).check(matches(isDisplayed()));
+        onView(withText("comment about thing")).check(matches(isDisplayed()));
+        onView(withText("description of thing")).check(matches(isDisplayed()));
+    }
 //
 //    /**
 //     * As an owner, I want to edit the details of an item.
