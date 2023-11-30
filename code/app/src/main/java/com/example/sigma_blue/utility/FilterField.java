@@ -1,12 +1,18 @@
 package com.example.sigma_blue.utility;
 
 public abstract class FilterField<T> {
-    private String filterText;
+    protected String filterText;
     protected boolean enabled;
+    protected boolean exact;
 
-    public FilterField(String filterText) {
-        this.filterText = filterText;
-        this.enabled = true;
+    public FilterField(String filterText, boolean enabled, boolean exact) {
+        if (filterText == null) {
+            this.filterText = "";
+        } else {
+            this.filterText = filterText.toLowerCase();
+        }
+        this.enabled = enabled;
+        this.exact = exact;
     }
 
     /**
@@ -19,14 +25,7 @@ public abstract class FilterField<T> {
     public String getFilterText() {
         return filterText;
     }
-    public void enable() {
-        enabled = true;
-    }
-    public void disable() {
-        enabled = false;
-    }
     public boolean isEnabled() {
         return enabled;
     }
-
 }

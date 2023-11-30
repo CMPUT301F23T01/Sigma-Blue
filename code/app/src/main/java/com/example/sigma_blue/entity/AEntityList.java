@@ -18,17 +18,22 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
-    protected ArrayList<T> entityList;
+    protected final ArrayList<T> entityList;
     protected ADatabaseHandler<T> dbHandler;
     protected ASelectableListAdapter<T> adapter;
     protected GlobalContext globalContext;
+
+    protected AEntityList() {
+        entityList = new ArrayList<>();
+    }
+
     /**
      * Both updates the list held in this class and the adapter element.
      * @param list is the list that is replacing the current list.
      */
     public void setList(final ArrayList<T> list) {
-        this.entityList = list;
-        this.adapter.setList(list);
+        this.entityList.clear();
+        entityList.addAll(list);
     }
 
     public ArrayList<T> getList() {

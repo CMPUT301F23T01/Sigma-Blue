@@ -33,8 +33,6 @@ public class GlobalContext {
     private Item currentItem;
     private Item modifiedItem;
     private Tag currentTag;
-    private QueryMode queryState;
-
     private ArrayList<ApplicationState> stateHistory; // store a history for debugging
 
     /**
@@ -101,16 +99,6 @@ public class GlobalContext {
         return itemList;
     }
     public ImageManager getImageManager() {return imageManager;}
-    /**
-     * Setter for the query mode.
-     * @return the query mode object, which keeps track of the current query
-     * state.
-     */
-    public QueryMode getQueryState() {
-        if (queryState == null) queryState = new QueryMode(itemList
-                .getCollectionReference());   // lazy cons
-       return this.queryState;
-    }
 
     public TagList getTagList() {
         return tagList;

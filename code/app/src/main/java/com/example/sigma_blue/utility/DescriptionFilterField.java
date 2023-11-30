@@ -5,14 +5,17 @@ import com.example.sigma_blue.entity.item.Item;
 import java.util.Objects;
 
 public class DescriptionFilterField extends FilterField<Item>{
-    public DescriptionFilterField(String filterText) {
-        super(filterText);
+    public DescriptionFilterField(String filterText, boolean enabled, boolean exact) {
+        super(filterText, enabled, exact);
     }
 
     @Override
     public boolean match(Item entity) {
         if (enabled) {
-            return Objects.equals(entity.getDescription(), this.getFilterText());
+            return exact ?
+                    entity.getDescription().toLowerCase().equals(filterText)
+                    :
+                    entity.getDescription().toLowerCase().contains(filterText);
         } else {
             return true;
         }

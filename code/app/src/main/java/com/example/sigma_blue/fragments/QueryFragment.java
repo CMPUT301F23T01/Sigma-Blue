@@ -188,7 +188,7 @@ public class QueryFragment extends DialogFragment {
          */
         private void resetQuery() {
             visibleItemList.resetVisibleItems();
-
+            globalContext.getItemList().updateUI();
             regenerateSelection();
         }
 
@@ -220,7 +220,7 @@ public class QueryFragment extends DialogFragment {
          * previously stored state.
          */
         private void regenerateDescriptionTextBox() {
-            regenerateTextBox(descriptionFilterET, visibleItemList.getDateFilterField().getFilterText());
+            regenerateTextBox(descriptionFilterET, visibleItemList.getDescriptionFilterField().getFilterText());
         }
 
         /**
@@ -230,7 +230,6 @@ public class QueryFragment extends DialogFragment {
         private void regenerateNameTextBox() {
             regenerateTextBox(nameFilterET, visibleItemList.getNameFilterField().getFilterText());
         }
-
         /**
          * Factored out method that contains the text setting logic
          * @param et the edit text box that is being changed
@@ -345,7 +344,7 @@ public class QueryFragment extends DialogFragment {
                 Date startDate = dateRepresentationOfPicker(startDatePicker);
                 Date endDate = dateRepresentationOfPicker(endDatePicker);
 
-                DateFilterField newDateFilter = new DateFilterField(startDate, endDate);
+                DateFilterField newDateFilter = new DateFilterField(startDate, endDate, true);
                 visibleItemList.setDateFilterField(newDateFilter);
             });
         }
@@ -359,7 +358,7 @@ public class QueryFragment extends DialogFragment {
                 Date endDate = dateRepresentationOfPicker(endDatePicker);
 
                 if (dateFilterBox.isChecked()) {
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate);
+                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true);
                     visibleItemList.setDateFilterField(dateFilterField);
                     //Log.d("DATE REP", startDate.toString());
                 } else {
@@ -375,7 +374,7 @@ public class QueryFragment extends DialogFragment {
                 Date endDate = cal.getTime();
 
                 if (dateFilterBox.isChecked()) {
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate);
+                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true);
                     visibleItemList.setDateFilterField(dateFilterField);
                     //Log.d("DATE REP", startDate.toString());
                 } else {
@@ -391,6 +390,7 @@ public class QueryFragment extends DialogFragment {
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
             confirmButton.setOnClickListener(view -> {
+                visibleItemList.refreshVisibleItems();
                 globalContext.newState(globalContext.getLastState());
                 dismiss();
             });   // Go back
@@ -462,10 +462,9 @@ public class QueryFragment extends DialogFragment {
                     // Cover -> empty input, regular input
                     MakeFilterField nextAddition;
                     if (userInput.isEmpty()) {
-                        nextAddition = new MakeFilterField(null);
-                        nextAddition.disable();
+                        nextAddition = new MakeFilterField(null, false, false);
                     } else {
-                        nextAddition = new MakeFilterField(userInput);
+                        nextAddition = new MakeFilterField(userInput, true, false);
                     }
                     visibleItemList.setMakeFilterField(nextAddition);
                 }
@@ -479,10 +478,9 @@ public class QueryFragment extends DialogFragment {
                             // Cover -> empty input, regular input
                             DescriptionFilterField nextAddition;
                             if (userInput.isEmpty()) {
-                                nextAddition = new DescriptionFilterField(null);
-                                nextAddition.disable();
+                                nextAddition = new DescriptionFilterField(null, false, false);
                             } else {
-                                nextAddition = new DescriptionFilterField(userInput);
+                                nextAddition = new DescriptionFilterField(userInput, true, false);
                             }
                             visibleItemList.setDescriptionFilterField(nextAddition);
                         }
@@ -495,10 +493,9 @@ public class QueryFragment extends DialogFragment {
                             // Cover -> empty input, regular input
                             NameFilterField nextAddition;
                             if (userInput.isEmpty()) {
-                                nextAddition = new NameFilterField(null);
-                                nextAddition.disable();
+                                nextAddition = new NameFilterField(null, false, false);
                             } else {
-                                nextAddition = new NameFilterField(userInput);
+                                nextAddition = new NameFilterField(userInput, true, false);
                             }
                             visibleItemList.setNameFilterField(nextAddition);
                         }

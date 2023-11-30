@@ -18,20 +18,17 @@ public class VisibleItemList {
     private FilterField<Item> descriptionFilterField;
     private FilterField<Item> dateFilterField;
     private ItemSortComparator itemSortComparator;
-    private ArrayList<Item> visibleItems;
-    private ArrayList<Item> allItems;
+    private final ArrayList<Item> visibleItems;
+    private final ArrayList<Item> allItems;
     public VisibleItemList(ArrayList<Item> allItems, ArrayList<Item> visibleItems) {
         this.allItems = allItems;
         this.visibleItems = visibleItems;
-        this.makeFilterField = new MakeFilterField(null);
-        this.nameFilterField = new NameFilterField(null);
-        this.descriptionFilterField = new DescriptionFilterField(null);
-        this.dateFilterField = new DateFilterField(null, null);
-        this.resetVisibleItems();
+        resetVisibleItems();
     }
 
     public void refreshVisibleItems() {
-        for (Item i : visibleItems) {
+        visibleItems.clear();
+        for (Item i : allItems) {
             if (makeFilterField.match(i) &&
                 nameFilterField.match(i) &&
                 descriptionFilterField.match(i) &&
@@ -43,11 +40,11 @@ public class VisibleItemList {
         this.visibleItems.sort(itemSortComparator.getComparator());
     }
     public void resetVisibleItems() {
-        visibleItems.clear();
-        makeFilterField.disable();
-        nameFilterField.disable();
-        descriptionFilterField.disable();
-        dateFilterField.disable();
+        makeFilterField         = new MakeFilterField(null, false, false);
+        nameFilterField         = new NameFilterField(null, false, false);
+        descriptionFilterField  = new DescriptionFilterField(null, false, false);
+        dateFilterField         = new DateFilterField(null, null, false);
+        itemSortComparator      = new ItemSortComparator();
         refreshVisibleItems();
     }
     public void setMakeFilterField(FilterField<Item> makeFilterField) {

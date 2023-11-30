@@ -23,16 +23,9 @@ import java.util.function.Function;
 
 public class ItemList extends AEntityList<Item> {
     /* Attributes */
-    private ViewListModes displayMode;
     private VisibleItemList visibleItemList;
     private ArrayList<Item> visibleItemArrayList;
 
-    public enum ViewListModes {
-        NONE, SORT, FILTER;
-
-        private ViewListModes() {
-        }
-    }
 
     /* Factory construction */
 
@@ -59,8 +52,8 @@ public class ItemList extends AEntityList<Item> {
      * Class constructor.
      */
     private ItemList() {
-        this.entityList = new ArrayList<Item>();
-        this.displayMode = ViewListModes.NONE;
+        super();
+        this.visibleItemArrayList = new ArrayList<Item>();
         this.globalContext = GlobalContext.getInstance();
         this.dbHandler = ItemDB.newInstance(globalContext.getAccount());
         this.visibleItemList = new VisibleItemList(this.entityList, this.visibleItemArrayList);
@@ -89,7 +82,7 @@ public class ItemList extends AEntityList<Item> {
         if (adapter != null) {
             visibleItemList.refreshVisibleItems();
             adapter.notifyDataSetChanged();
-            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.entityList));
+            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.visibleItemArrayList));
         };
     }
 
@@ -108,13 +101,6 @@ public class ItemList extends AEntityList<Item> {
         this.adapter = adapter;
         this.adapter.setList(this.visibleItemArrayList);
         this.adapter.notifyDataSetChanged();
-    }
-    /**
-     * Needed when making new queries
-     * @return the collection reference of the user
-     */
-    public CollectionReference getCollectionReference() {
-        return dbHandler.getCollectionReference();
     }
 
     public void setSummaryView(TextView summaryView) {

@@ -10,8 +10,8 @@ public class DateFilterField extends FilterField<Item> {
     Date startDate;
     Date endDate;
 
-    public DateFilterField(Date startDate, Date endDate) {
-        super(null);
+    public DateFilterField(Date startDate, Date endDate, boolean enabled) {
+        super(null, enabled, false);
         this.startDate = startDate;
         this.endDate = endDate;
     }

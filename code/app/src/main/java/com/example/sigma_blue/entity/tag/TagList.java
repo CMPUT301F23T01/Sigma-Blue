@@ -52,14 +52,14 @@ public class TagList extends AEntityList<Tag> {
     }
 
     private TagList(TagDB tagDB) {
+        super();
         this.dbHandler = tagDB;
-        this.entityList = new ArrayList<>();
     }
 
     private TagList() {
+        super();
         this.globalContext = GlobalContext.getInstance();
         this.dbHandler = TagDB.newInstance(globalContext.getAccount());
-        this.entityList = new ArrayList<>();
     }
 
     /**
