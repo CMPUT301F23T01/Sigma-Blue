@@ -86,7 +86,7 @@ public class ViewListActivity extends BaseActivity {
 
         /* ItemList encapsulates both the database and the adapter */
         globalContext.getItemList().setAdapter(
-                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView));
+                new ItemListAdapter(globalContext.getItemList().getVisibleList(), this, viewHolder.summaryView));
         globalContext.getItemList().startListening();
 
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
@@ -128,7 +128,7 @@ public class ViewListActivity extends BaseActivity {
             globalContext.getItemList().remove(i);
         }
         globalContext.getSelectedItems().resetSelected();
-        globalContext.getItemList().getAdapter().notifyDataSetChanged();
+        globalContext.getItemList().updateUI();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -193,18 +193,17 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.listListView // This is for short clicks on a row
                 .setOnItemClickListener((parent, view, position, id) -> {
                     this.handleClick(globalContext.getItemList()
-                            .getList().get(position));
+                            .getVisibleList().get(position));
         });
 
         /* The long click listener */
         viewHolder.listListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> {
                     final Item itemCache = globalContext.getItemList()
-                            .getList().get(position);
+                            .getVisibleList().get(position);
                     this.handleLongClick(itemCache);
 
-                    globalContext.getItemList().getAdapter()
-                            .notifyDataSetChanged();    // Update highlight
+                    globalContext.getItemList().updateUI();    // Update highlight
 
                     /*Returns true if the list consumes the click. Always true
                     * in our app*/

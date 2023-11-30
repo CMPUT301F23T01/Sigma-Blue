@@ -29,6 +29,7 @@ import com.example.sigma_blue.entity.item.VisibleItemList;
 import com.example.sigma_blue.utility.DateFilterField;
 import com.example.sigma_blue.utility.DescriptionFilterField;
 import com.example.sigma_blue.utility.FilterField;
+import com.example.sigma_blue.utility.ItemSortComparator;
 import com.example.sigma_blue.utility.MakeFilterField;
 import com.example.sigma_blue.utility.ModeField;
 import com.example.sigma_blue.utility.NameFilterField;
@@ -186,6 +187,7 @@ public class QueryFragment extends DialogFragment {
          * default value.
          */
         private void resetQuery() {
+            visibleItemList.resetVisibleItems();
             globalContext.getItemList().updateUI();
             regenerateSelection();
         }
@@ -483,9 +485,23 @@ public class QueryFragment extends DialogFragment {
         }
 
         private void handleSortUpdate(int position) {
+            int d = visibleItemList.getItemSortComparator().getDirection();
             switch (position){
                 case 0:
-
+                    visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.NAME, d));
+                    break;
+                case 1:
+                    visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.DATE, d));
+                    break;
+                case 2:
+                    visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.MAKE, d));
+                    break;
+                case 3:
+                    visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.VALUE, d));
+                    break;
+                case 4:
+                    visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.DESCRIPTION, d));
+                    break;
             }
         }
     }

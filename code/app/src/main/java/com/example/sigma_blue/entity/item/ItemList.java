@@ -105,7 +105,7 @@ public class ItemList extends AEntityList<Item> {
 
     public void setSummaryView(TextView summaryView) {
         ((ItemListAdapter) this.adapter).setSummaryView(summaryView);
-        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.entityList));
+        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.visibleItemArrayList));
     }
 
     /**
@@ -130,5 +130,9 @@ public class ItemList extends AEntityList<Item> {
 
     public VisibleItemList getVisibleItemList() {
         return visibleItemList;
+    }
+
+    public ArrayList<Item> getVisibleList() {
+        return visibleItemArrayList;
     }
 }

@@ -15,8 +15,12 @@ public class ItemSortComparator {
     private final Comparator<Item> valueComparator        = (o1, o2) -> direction * o1.getValue().compareTo(o2.getValue());
     private final Comparator<Item> descriptionComparator  = (o1, o2) -> direction * o1.getDescription().compareTo(o2.getDescription());
 
-    public ItemSortComparator(){
-        sortBy = SortField.NO_SELECTION; // default sort
+    public ItemSortComparator(SortField sortBy, int direction){
+        this.sortBy = sortBy;
+        this.direction  = direction;
+    }
+    public ItemSortComparator( ){
+        this.sortBy = SortField.NO_SELECTION;
         direction  = 1;
     }
     public SortField getSortBy() {
