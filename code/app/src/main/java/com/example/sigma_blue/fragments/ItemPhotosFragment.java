@@ -69,12 +69,14 @@ public class ItemPhotosFragment extends Fragment
         itemImageList.setAdapter(imageListAdapter);
         globalContext.getImageManager().setAdapter(imageListAdapter);
 
-        addPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleImageClick();
-            }
-        });
+        if (mode == TabMode.Edit) {
+            addPicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleImageClick();
+                }
+            });
+        }
     }
 
     @Override

@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toTopOf="@+id/BottomBarLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,21 +102,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Edit_Details_1"
-            app:tabIndicatorColor="?colorPrimary">
+            app:tabIndicatorColor="?colorPrimary"
+            app:tabSelectedTextColor="?colorPrimary"
+            app:tabTextColor="?colorOnSurface">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?colorPrimarySurface"
                 android:text="@string/add_edit_text_details" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?colorPrimarySurface"
                 android:text="@string/add_edit_text_tag" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?colorPrimarySurface"
                 android:text="@string/add_edit_text_picture" />
         </com.google.android.material.tabs.TabLayout>
 
