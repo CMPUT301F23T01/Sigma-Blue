@@ -18,6 +18,7 @@ public class QueryMode {
     private Query currentQuery;
     private final CollectionReference originalQuery;
     private FilterField makeFilter;
+    private FilterField nameFilter;
     private FilterField descriptionFilter;
     private DateFilterField dateFilterField;
 
@@ -47,7 +48,7 @@ public class QueryMode {
     public void clearQuery() {
         currentSort = SortField.NO_SELECTION;
         direction = Query.Direction.ASCENDING;  // Default sort direction
-        currentQuery = QueryGenerator.sortQuery(originalQuery, direction);
+        currentQuery = originalQuery;
         clearFilterObjects();
     }
 
@@ -55,6 +56,7 @@ public class QueryMode {
      * Method factored out to clear the filter
      */
     private void clearFilterObjects() {
+        nameFilter = new FilterField(null, FilterFieldName.NAME);
         makeFilter = new FilterField(null, FilterFieldName.MAKE);
         descriptionFilter = new FilterField(null, FilterFieldName.DESCRIPTION);
         dateFilterField = new DateFilterField(LocalDate.now(), LocalDate.now(), false, FilterFieldName.DATE_RANGE);
@@ -86,20 +88,29 @@ public class QueryMode {
      */
     public void receiveQuery(FilterField input) {
         switch(input.getType()) {
-            case MAKE:
+            case MAKE: {
                 makeFilter = input;
                 break;
-            case DESCRIPTION:
+            }
+            case DESCRIPTION: {
                 descriptionFilter = input;
                 break;
-            case DATE_RANGE:
+            }
+            case DATE_RANGE:{
                 dateFilterField = (DateFilterField) input;
                 break;
-            case TAG:
+            }
+            case TAG: {
                 break;// tag filtering
-            default:
+            }
+            case NAME: {
+                nameFilter = input;
+                break;
+            }
+            default: {
                 throw new IllegalArgumentException(
                         "Filter communications receiving wrong format");
+            }
         }
         queryUpdate();
     }
@@ -112,7 +123,8 @@ public class QueryMode {
         resetQueryObject();   // Need to reset before running
 
         updateFilter(makeFilter);
-        updateFilter(makeFilter);
+        updateFilter(descriptionFilter);
+        updateFilter(nameFilter);
         updateDateFilter(dateFilterField);
 
         if (currentSort != SortField.NO_SELECTION) {
@@ -168,9 +180,11 @@ public class QueryMode {
     public FilterField getMakeFilter() {
         return this.makeFilter;
     }
-
     public FilterField getDescriptionFilter() {
         return this.descriptionFilter;
+    }
+    public FilterField getNameFilter() {
+        return this.nameFilter;
     }
 
     public DateFilterField getDateFilterField() {

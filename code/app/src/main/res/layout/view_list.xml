@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorPrimary"
-                android:text="Sort/Filter"
+                android:text="Sort"
                 android:textColor="?colorOnPrimary"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"

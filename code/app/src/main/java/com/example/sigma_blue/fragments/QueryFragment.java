@@ -30,7 +30,7 @@ import com.example.sigma_blue.query.FilterFieldName;
 import com.example.sigma_blue.query.ModeField;
 import com.example.sigma_blue.query.QueryMode;
 import com.example.sigma_blue.query.SortField;
-import com.example.sigma_blue.utility.SigmaBlueTextWatcher;
+import com.example.sigma_blue.utility.SearchTextBoxWatcher;
 import com.google.firebase.firestore.Query;
 
 import java.time.LocalDate;
@@ -49,7 +49,7 @@ public class QueryFragment extends DialogFragment {
     private class ViewHolder {
         Button confirmButton, resetButton;
         TextView startDateTV, endDateTV;
-        EditText descriptionFilterET, makeFilterET;
+        EditText descriptionFilterET, makeFilterET, nameFilterET;
         Spinner sortCriteriaSpinner, tagFilterSpinner, modeChoiceSpinner;
         CheckBox ascendingBox, descendingBox, dateFilterBox;
         DatePicker startDatePicker, endDatePicker;
@@ -77,14 +77,12 @@ public class QueryFragment extends DialogFragment {
         private void bindViews(View entireView) {
             confirmButton = entireView.findViewById(R.id.query_confirm_button);
             resetButton = entireView.findViewById(R.id.sortingResetButton);
-            descriptionFilterET = entireView.findViewById(R.id
-                    .descFilterEditText);
+            nameFilterET = entireView.findViewById(R.id.nameFilterEditText);
+            descriptionFilterET = entireView.findViewById(R.id.descFilterEditText);
             makeFilterET = entireView.findViewById(R.id.makeFilterEditText);
-            sortCriteriaSpinner = entireView.findViewById(R.id
-                    .sortCriteriaSpinner);
+            sortCriteriaSpinner = entireView.findViewById(R.id.sortCriteriaSpinner);
             tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
-            modeChoiceSpinner = entireView.findViewById(R.id
-                    .mode_choice_spinner);
+            modeChoiceSpinner = entireView.findViewById(R.id.mode_choice_spinner);
             ascendingBox = entireView.findViewById(R.id.ascendCheckbox);
             descendingBox = entireView.findViewById(R.id.descendCheckbox);
             dateFilterBox = entireView.findViewById(R.id.dateFilterCheckbox);
@@ -185,6 +183,7 @@ public class QueryFragment extends DialogFragment {
          */
         private void resetQuery() {
             queryState.clearQuery();
+
             regenerateSelection();
         }
 
@@ -199,6 +198,7 @@ public class QueryFragment extends DialogFragment {
             // Filter text regeneration
             regenerateMakeTextBox();
             regenerateDescriptionTextBox();
+            regenerateNameTextBox();
             regenerateDateUI();
 
             dateCheckBoxController(this.dateFilterBox);
@@ -217,6 +217,14 @@ public class QueryFragment extends DialogFragment {
          */
         private void regenerateDescriptionTextBox() {
             regenerateTextBox(descriptionFilterET, queryState.getDescriptionFilter().getFilterText());
+        }
+
+        /**
+         * Regenerates the edit text for the name filter using the
+         * previously stored state.
+         */
+        private void regenerateNameTextBox() {
+            regenerateTextBox(nameFilterET, queryState.getNameFilter().getFilterText());
         }
 
         /**
@@ -382,6 +390,7 @@ public class QueryFragment extends DialogFragment {
             /* Resets the query. Uses the database default */
             resetButton.setOnClickListener(view -> {
                 resetQuery();
+                queryState.sendQuery(globalContext.getItemList());
                 globalContext.newState(globalContext.getLastState());
                 dismiss();
             });
@@ -440,7 +449,7 @@ public class QueryFragment extends DialogFragment {
             });
 
             makeFilterET.addTextChangedListener(
-                    new SigmaBlueTextWatcher<EditText>(makeFilterET) {
+                    new SearchTextBoxWatcher<EditText>(makeFilterET) {
 
                 @Override
                 public void onTextChanged(EditText target, Editable s) {
@@ -457,7 +466,7 @@ public class QueryFragment extends DialogFragment {
             });
 
             descriptionFilterET.addTextChangedListener(
-                    new SigmaBlueTextWatcher<EditText>(descriptionFilterET) {
+                    new SearchTextBoxWatcher<EditText>(descriptionFilterET) {
                         @Override
                         public void onTextChanged(EditText target, Editable s) {
                             String userInput = s.toString().trim();
@@ -465,10 +474,24 @@ public class QueryFragment extends DialogFragment {
                             FilterField nextAddition;
                             if (userInput.isEmpty()) {
                                 nextAddition = new FilterField(null, FilterFieldName.DESCRIPTION);
-
                             } else {
-                                nextAddition = new FilterField(null, FilterFieldName.DESCRIPTION);
+                                nextAddition = new FilterField(userInput, FilterFieldName.DESCRIPTION);
 
+                            }
+                            queryState.receiveQuery(nextAddition);
+                        }
+                    });
+            nameFilterET.addTextChangedListener(
+                    new SearchTextBoxWatcher<EditText>(nameFilterET) {
+                        @Override
+                        public void onTextChanged(EditText target, Editable s) {
+                            String userInput = s.toString().trim();
+                            // Cover -> empty input, regular input
+                            FilterField nextAddition;
+                            if (userInput.isEmpty()) {
+                                nextAddition = new FilterField(null, FilterFieldName.NAME);
+                            } else {
+                                nextAddition = new FilterField(userInput, FilterFieldName.NAME);
                             }
                             queryState.receiveQuery(nextAddition);
                         }

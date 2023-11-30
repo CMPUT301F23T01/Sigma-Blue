@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-public abstract class SigmaBlueTextWatcher<T extends TextView> implements TextWatcher {
+public abstract class SearchTextBoxWatcher<T extends TextView> implements TextWatcher {
     T target;   // The edit text that is being changed.
 
     /**
@@ -12,7 +12,7 @@ public abstract class SigmaBlueTextWatcher<T extends TextView> implements TextWa
      * @param target is the editable text view that will have an action after
      *               being edited
      */
-    public SigmaBlueTextWatcher(T target) {
+    public SearchTextBoxWatcher(T target) {
         this.target = target;
     }
 

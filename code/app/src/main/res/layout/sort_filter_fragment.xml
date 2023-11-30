@@ -62,7 +62,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/sortCriteriaSpinner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -145,6 +144,19 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
+                android:id="@+id/nameFilterTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Name"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/nameFilterEditText"
+                app:layout_constraintEnd_toStartOf="@+id/nameFilterEditText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/nameFilterEditText" />
+
+            <TextView
                 android:id="@+id/makeFilterTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -171,6 +183,20 @@
                 app:layout_constraintTop_toTopOf="@+id/tagFilterSpinner" />
 
             <EditText
+                android:id="@+id/nameFilterEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:autofillHints="Enter Name"
+                android:hint="Enter Name"
+                android:inputType="text"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/descFilterEditText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
+                app:layout_constraintTop_toBottomOf="@id/makeFilterEditText" />
+
+            <EditText
                 android:id="@+id/makeFilterEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -179,7 +205,7 @@
                 android:hint="@string/filter_make_hint_text"
                 android:inputType="text"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@id/descFilterEditText"
+                app:layout_constraintBottom_toTopOf="@id/nameFilterEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
                 app:layout_constraintTop_toBottomOf="@id/tagFilterSpinner" />
@@ -188,28 +214,26 @@
                 android:id="@+id/descFilterEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:autofillHints="@string/filter_keywords_hint_text"
                 android:hint="@string/filter_keywords_hint_text"
                 android:inputType="text"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox" />
+                app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
+                app:layout_constraintTop_toBottomOf="@id/nameFilterEditText"
+                tools:layout_editor_absoluteY="446dp" />
 
             <Spinner
                 android:id="@+id/tagFilterSpinner"
                 android:layout_width="0dp"
                 android:layout_height="48sp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintBottom_toTopOf="@id/makeFilterEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/makeFilterEditText"
                 app:layout_constraintTop_toBottomOf="@id/date_filter_constraint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </ViewSwitcher>
 
     <Button

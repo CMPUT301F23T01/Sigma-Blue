@@ -8,8 +8,12 @@ import com.example.sigma_blue.entity.item.Item;
  */
 public enum FilterFieldName {
     // The list of filter types that will be supported
-    NONE, DATE_RANGE(Item.dbDate), TAG(Item.dbTags), DESCRIPTION(Item
-            .dbDescription), MAKE(Item.dbMake);
+    NONE,
+    DATE_RANGE(Item.dbDate),
+    TAG(Item.dbTags),
+    DESCRIPTION(Item.dbDescription),
+    MAKE(Item.dbMake),
+    NAME(Item.dbName);
 
     private String dbField;
 
