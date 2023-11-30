@@ -66,21 +66,11 @@ public class QueryFragment extends DialogFragment {
         /**
          * Needs the parent view to be inflated before this class can be
          * constructed
+         * Binds views and up adapters for spinners
          *
          * @param view is the parent view (dialog box fragment)
          */
         public ViewHolder(View view) {
-            bindViews(view);
-            setAdapters();
-            resetQueryUI();
-            regenerateSelection();
-        }
-
-        /**
-         * Method binds all the encapsulated views with the inflated layout.
-         * @param view the view of the fragment
-         */
-        private void bindViews(View view) {
             confirmButton = view.findViewById(R.id.query_confirm_button);
             resetButton = view.findViewById(R.id.sortingResetButton);
             nameFilterET = view.findViewById(R.id.nameFilterEditText);
@@ -100,18 +90,17 @@ public class QueryFragment extends DialogFragment {
 
             startDateTV = view.findViewById(R.id.startDateTitle);
             endDateTV = view.findViewById(R.id.endDateTitle);
-        }
 
-        /**
-         * Sets the adapter for the selectable ui elements
-         */
-        private void setAdapters() {
+            // setup adapters for sort and mode spinners
             createSortAdapter();
             createModeAdapter();
 
             /* Binding the adapters */
             sortCriteriaSpinner.setAdapter(this.sortAdapter);
             modeChoiceSpinner.setAdapter(this.modeAdapter);
+
+            // update UI state to match the current query.
+            regenerateSelection();
         }
 
         /**
@@ -177,9 +166,7 @@ public class QueryFragment extends DialogFragment {
          * Resets the query UI. This just puts the UI at a known default state
          */
         private void resetQueryUI() {
-            sortCriteriaSpinner.setSelection(0);
-            tagFilterSpinner.setSelection(0);
-            flipAscendBox(true);
+
         }
 
         /**
@@ -203,27 +190,11 @@ public class QueryFragment extends DialogFragment {
             regenerateTextBox(makeFilterET, visibleItemList.getMakeFilterField().getFilterText());
             regenerateTextBox(descriptionFilterET, visibleItemList.getDescriptionFilterField().getFilterText());
             regenerateTextBox(nameFilterET, visibleItemList.getNameFilterField().getFilterText());
-            regenerateDateCheckBox();
-            regenerateDatePickers();
 
-            dateCheckBoxController(this.dateFilterBox);
-        }
+            // regenerate date filter selected box
+            dateFilterBox.setChecked(visibleItemList.getDateFilterField().isEnabled());
 
-        /**
-         * Factored out method that contains the text setting logic
-         * @param et the edit text box that is being changed
-         * @param text the string input (from the control instance)
-         */
-        private void regenerateTextBox(EditText et, String text) {
-            if (text != null) {
-                et.setText(text);
-            }
-            else {
-                et.setText("");    // For real time feedback
-            }
-        }
-
-        private void regenerateDatePickers() {
+            // regenerate date spinners
             Calendar start = Calendar.getInstance();
             Calendar end = Calendar.getInstance();
 
@@ -248,10 +219,22 @@ public class QueryFragment extends DialogFragment {
                     end.get(Calendar.MONTH) - 1,
                     end.get(Calendar.DAY_OF_MONTH)
             );
+
+            dateCheckBoxController(this.dateFilterBox);
         }
 
-        private void regenerateDateCheckBox() {
-            dateFilterBox.setChecked(visibleItemList.getDateFilterField().isEnabled());
+        /**
+         * Factored out method that contains the text setting logic
+         * @param et the edit text box that is being changed
+         * @param text the string input (from the control instance)
+         */
+        private void regenerateTextBox(EditText et, String text) {
+            if (text != null) {
+                et.setText(text);
+            }
+            else {
+                et.setText("");    // For real time feedback
+            }
         }
 
         /**

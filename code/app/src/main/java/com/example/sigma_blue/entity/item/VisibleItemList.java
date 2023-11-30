@@ -12,20 +12,23 @@ import org.checkerframework.checker.units.qual.A;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * manages the visible items, i.e. items that meet filter criteria
+ */
 public class VisibleItemList {
-    private FilterField<Item> makeFilterField;
-    private FilterField<Item> nameFilterField;
-    private FilterField<Item> descriptionFilterField;
-    private FilterField<Item> dateFilterField;
+    private FilterField<Item> makeFilterField, nameFilterField, descriptionFilterField, dateFilterField;
     private ItemSortComparator itemSortComparator;
-    private final ArrayList<Item> visibleItems;
-    private final ArrayList<Item> allItems;
+    private final ArrayList<Item> visibleItems, allItems;
     public VisibleItemList(ArrayList<Item> allItems, ArrayList<Item> visibleItems) {
         this.allItems = allItems;
         this.visibleItems = visibleItems;
         resetVisibleItems();
     }
 
+    /**
+     * Refresh the visibleItems list to only contain items that meet the filter criteria
+     * Also sorts the list
+     */
     public void refreshVisibleItems() {
         visibleItems.clear();
         for (Item i : allItems) {
@@ -39,6 +42,10 @@ public class VisibleItemList {
         }
         this.visibleItems.sort(itemSortComparator.getComparator());
     }
+
+    /**
+     * Reset the sorting/filtering and update the visible items list
+     */
     public void resetVisibleItems() {
         makeFilterField         = new MakeFilterField(null, false, false);
         nameFilterField         = new NameFilterField(null, false, false);
@@ -50,38 +57,30 @@ public class VisibleItemList {
     public void setMakeFilterField(FilterField<Item> makeFilterField) {
         this.makeFilterField = makeFilterField;
     }
-
     public void setNameFilterField(FilterField<Item> nameFilterField) {
         this.nameFilterField = nameFilterField;
     }
-
     public void setDescriptionFilterField(FilterField<Item> descriptionFilterField) {
         this.descriptionFilterField = descriptionFilterField;
     }
-
     public void setDateFilterField(FilterField<Item> dateFilterField) {
         this.dateFilterField = dateFilterField;
     }
     public void setItemSortComparator(ItemSortComparator itemSortComparator) {
         this.itemSortComparator = itemSortComparator;
     }
-
     public FilterField<Item> getMakeFilterField() {
         return makeFilterField;
     }
-
     public FilterField<Item> getNameFilterField() {
         return nameFilterField;
     }
-
     public FilterField<Item> getDescriptionFilterField() {
         return descriptionFilterField;
     }
-
     public FilterField<Item> getDateFilterField() {
         return dateFilterField;
     }
-
     public ItemSortComparator getItemSortComparator() {
         return itemSortComparator;
     }

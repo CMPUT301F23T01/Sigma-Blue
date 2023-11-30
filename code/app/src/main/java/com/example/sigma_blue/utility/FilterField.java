@@ -1,5 +1,9 @@
 package com.example.sigma_blue.utility;
 
+/**
+ * Abstract parent of all the *FilterField classes.
+ * @param <T> type of object being filtered
+ */
 public abstract class FilterField<T> {
     protected String filterText;
     protected boolean enabled;

@@ -5,6 +5,9 @@ import com.google.firebase.firestore.Query;
 
 import java.util.Comparator;
 
+/**
+ * Store all the comparators used for sorting
+ */
 public class ItemSortComparator {
     private SortField sortBy;
     private int direction;
@@ -23,10 +26,19 @@ public class ItemSortComparator {
         this.sortBy = SortField.NO_SELECTION;
         direction  = 1;
     }
+
+    /**
+     * Get the type of sorting being done currently
+     * @return
+     */
     public SortField getSortBy() {
         return sortBy;
     }
 
+    /**
+     * Returns the comparator for the current sorting mode
+     * @return
+     */
     public Comparator<Item> getComparator() {
         switch (sortBy) {
             case NAME:
@@ -43,9 +55,19 @@ public class ItemSortComparator {
                 return defaultComparator;
         }
     }
+
+    /**
+     * returns an int representing the current sorting direction. 1 for ascending, -1 for descending
+     * @return
+     */
     public int getDirection() {
         return direction;
     }
+
+    /**
+     * Set the direction of sorting. 1 for ascending, -1 for descending
+     * @param direction
+     */
     public void setDirection(int direction) {
         this.direction = direction;
     }
