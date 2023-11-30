@@ -2,8 +2,6 @@ package com.example.sigma_blue.context;
 
 import android.util.Log;
 
-import com.example.sigma_blue.database.ADatabaseHandler;
-import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.entity.image.ImageManager;
@@ -13,7 +11,6 @@ import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
-import com.example.sigma_blue.query.QueryMode;
 
 import java.util.ArrayList;
 

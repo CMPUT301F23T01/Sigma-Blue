@@ -1,10 +1,11 @@
 package com.example.sigma_blue.fragments;
 
-import static com.example.sigma_blue.query.ModeField.FILTER;
-import static com.example.sigma_blue.query.ModeField.SORT;
+import static com.example.sigma_blue.utility.ModeField.FILTER;
+import static com.example.sigma_blue.utility.ModeField.SORT;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +25,21 @@ import androidx.fragment.app.DialogFragment;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
-import com.example.sigma_blue.query.DateFilterField;
-import com.example.sigma_blue.query.FilterField;
-import com.example.sigma_blue.query.FilterFieldName;
-import com.example.sigma_blue.query.ModeField;
-import com.example.sigma_blue.query.QueryMode;
-import com.example.sigma_blue.query.SortField;
+import com.example.sigma_blue.entity.item.VisibleItemList;
+import com.example.sigma_blue.utility.DateFilterField;
+import com.example.sigma_blue.utility.DescriptionFilterField;
+import com.example.sigma_blue.utility.FilterField;
+import com.example.sigma_blue.utility.MakeFilterField;
+import com.example.sigma_blue.utility.ModeField;
+import com.example.sigma_blue.utility.NameFilterField;
 import com.example.sigma_blue.utility.SearchTextBoxWatcher;
+import com.example.sigma_blue.utility.SortField;
 import com.google.firebase.firestore.Query;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,10 +66,10 @@ public class QueryFragment extends DialogFragment {
          * Needs the parent view to be inflated before this class can be
          * constructed
          *
-         * @param entireView is the parent view (dialog box fragment)
+         * @param view is the parent view (dialog box fragment)
          */
-        public ViewHolder(View entireView) {
-            bindViews(entireView);
+        public ViewHolder(View view) {
+            bindViews(view);
             setAdapters();
             resetQueryUI();
             regenerateSelection();
@@ -72,28 +77,28 @@ public class QueryFragment extends DialogFragment {
 
         /**
          * Method binds all the encapsulated views with the inflated layout.
-         * @param entireView the view of the fragment
+         * @param view the view of the fragment
          */
-        private void bindViews(View entireView) {
-            confirmButton = entireView.findViewById(R.id.query_confirm_button);
-            resetButton = entireView.findViewById(R.id.sortingResetButton);
-            nameFilterET = entireView.findViewById(R.id.nameFilterEditText);
-            descriptionFilterET = entireView.findViewById(R.id.descFilterEditText);
-            makeFilterET = entireView.findViewById(R.id.makeFilterEditText);
-            sortCriteriaSpinner = entireView.findViewById(R.id.sortCriteriaSpinner);
-            tagFilterSpinner = entireView.findViewById(R.id.tagFilterSpinner);
-            modeChoiceSpinner = entireView.findViewById(R.id.mode_choice_spinner);
-            ascendingBox = entireView.findViewById(R.id.ascendCheckbox);
-            descendingBox = entireView.findViewById(R.id.descendCheckbox);
-            dateFilterBox = entireView.findViewById(R.id.dateFilterCheckbox);
+        private void bindViews(View view) {
+            confirmButton = view.findViewById(R.id.query_confirm_button);
+            resetButton = view.findViewById(R.id.sortingResetButton);
+            nameFilterET = view.findViewById(R.id.nameFilterEditText);
+            descriptionFilterET = view.findViewById(R.id.descFilterEditText);
+            makeFilterET = view.findViewById(R.id.makeFilterEditText);
+            sortCriteriaSpinner = view.findViewById(R.id.sortCriteriaSpinner);
+            tagFilterSpinner = view.findViewById(R.id.tagFilterSpinner);
+            modeChoiceSpinner = view.findViewById(R.id.mode_choice_spinner);
+            ascendingBox = view.findViewById(R.id.ascendCheckbox);
+            descendingBox = view.findViewById(R.id.descendCheckbox);
+            dateFilterBox = view.findViewById(R.id.dateFilterCheckbox);
 
-            startDatePicker = entireView.findViewById(R.id.startDatePicker);
-            endDatePicker = entireView.findViewById(R.id.endDatePicker);
+            startDatePicker = view.findViewById(R.id.startDatePicker);
+            endDatePicker = view.findViewById(R.id.endDatePicker);
 
-            modeSwitcher = entireView.findViewById(R.id.query_view_switcher);
+            modeSwitcher = view.findViewById(R.id.query_view_switcher);
 
-            startDateTV = entireView.findViewById(R.id.startDateTitle);
-            endDateTV = entireView.findViewById(R.id.endDateTitle);
+            startDateTV = view.findViewById(R.id.startDateTitle);
+            endDateTV = view.findViewById(R.id.endDateTitle);
         }
 
         /**
@@ -182,7 +187,7 @@ public class QueryFragment extends DialogFragment {
          * default value.
          */
         private void resetQuery() {
-            queryState.clearQuery();
+            visibleItemList.resetVisibleItems();
 
             regenerateSelection();
         }
@@ -191,9 +196,8 @@ public class QueryFragment extends DialogFragment {
          * Restores the selection that has been saved to the global context.
          */
         public void regenerateSelection() {
-            sortCriteriaSpinner.setSelection(sortAdapter.getPosition(queryState
-                    .getCurrentSort()));
-            setSortCheckbox(globalContext.getQueryState().getDirection());
+            sortCriteriaSpinner.setSelection(sortAdapter.getPosition(visibleItemList.getItemSortComparator().getSortBy()));
+            setSortCheckbox(visibleItemList.getItemSortComparator().getDirection());
 
             // Filter text regeneration
             regenerateMakeTextBox();
@@ -208,7 +212,7 @@ public class QueryFragment extends DialogFragment {
          * This method returns the make edit textbox back to its initial state
          */
         private void regenerateMakeTextBox() {
-            regenerateTextBox(makeFilterET, queryState.getMakeFilter().getFilterText());
+            regenerateTextBox(makeFilterET, visibleItemList.getMakeFilterField().getFilterText());
         }
 
         /**
@@ -216,7 +220,7 @@ public class QueryFragment extends DialogFragment {
          * previously stored state.
          */
         private void regenerateDescriptionTextBox() {
-            regenerateTextBox(descriptionFilterET, queryState.getDescriptionFilter().getFilterText());
+            regenerateTextBox(descriptionFilterET, visibleItemList.getDateFilterField().getFilterText());
         }
 
         /**
@@ -224,7 +228,7 @@ public class QueryFragment extends DialogFragment {
          * previously stored state.
          */
         private void regenerateNameTextBox() {
-            regenerateTextBox(nameFilterET, queryState.getNameFilter().getFilterText());
+            regenerateTextBox(nameFilterET, visibleItemList.getNameFilterField().getFilterText());
         }
 
         /**
@@ -252,33 +256,34 @@ public class QueryFragment extends DialogFragment {
         }
 
         private void regenerateDatePickers() {
-            LocalDate start;
-            LocalDate end;
+            Calendar start = Calendar.getInstance();
+            Calendar end = Calendar.getInstance();
 
-            if (queryState.getDateFilterField().isEnabled()) {
-                start = queryState.getDateFilterField().getStartDate();
-                end = queryState.getDateFilterField().getEndDate();
+            if (visibleItemList.getDateFilterField().isEnabled()) {
+                Date startDate = ((DateFilterField) visibleItemList.getDateFilterField()).getStartDate();
+                Date endDate = ((DateFilterField) visibleItemList.getDateFilterField()).getEndDate();
+                start.setTime(startDate);
+                end.setTime(endDate);
             } else {
                 // from the last week by default
-                start = LocalDate.now().minusWeeks(1);
-                end = LocalDate.now();
+                start.add(Calendar.DATE, -5);
             }
 
             startDatePicker.updateDate(
-                    start.getYear(),
-                    start.getMonthValue() - 1, //DatePicker indexes months from 0 for some reason
-                    start.getDayOfMonth()
+                    start.get(Calendar.YEAR),
+                    start.get(Calendar.MONTH) - 1,
+                    start.get(Calendar.DAY_OF_MONTH)
             );
 
             endDatePicker.updateDate(
-                    end.getYear(),
-                    end.getMonthValue() - 1,
-                    end.getDayOfMonth()
+                    end.get(Calendar.YEAR),
+                    end.get(Calendar.MONTH) - 1,
+                    end.get(Calendar.DAY_OF_MONTH)
             );
         }
 
         private void regenerateDateCheckBox() {
-            dateFilterBox.setChecked(queryState.getDateFilterField().isEnabled());
+            dateFilterBox.setChecked(visibleItemList.getDateFilterField().isEnabled());
         }
         /**
          * Match the UI with the direction that has been cached
@@ -312,8 +317,10 @@ public class QueryFragment extends DialogFragment {
             else setDatePickerVisibility(View.GONE);
         }
 
-        private LocalDate dateRepresentationOfPicker(DatePicker picker) {
-            return LocalDate.of(picker.getYear(), picker.getMonth() + 1, picker.getDayOfMonth());
+        private Date dateRepresentationOfPicker(DatePicker picker) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(picker.getYear(), picker.getMonth() + 1, picker.getDayOfMonth());
+            return cal.getTime();
         }
         /**
          * Creating reactions to checkbox interactions
@@ -321,12 +328,12 @@ public class QueryFragment extends DialogFragment {
         private void setBoxListeners() {
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
-                queryState.setAscend();
+                visibleItemList.getItemSortComparator().setDirection(Query.Direction.ASCENDING);
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
-                queryState.setDescend();
+                visibleItemList.getItemSortComparator().setDirection(Query.Direction.DESCENDING);
             });
 
             dateFilterBox.setOnClickListener(view -> {
@@ -335,24 +342,25 @@ public class QueryFragment extends DialogFragment {
                 dateCheckBoxController(datebox);
 
                 // Need to send the filter
-                LocalDate startDate = dateRepresentationOfPicker(startDatePicker);
-                LocalDate endDate = dateRepresentationOfPicker(endDatePicker);
+                Date startDate = dateRepresentationOfPicker(startDatePicker);
+                Date endDate = dateRepresentationOfPicker(endDatePicker);
 
-                DateFilterField dateFilterField = new DateFilterField(startDate, endDate, datebox.isChecked(), FilterFieldName.DATE_RANGE);
-                queryState.receiveQuery(dateFilterField);
-
+                DateFilterField newDateFilter = new DateFilterField(startDate, endDate);
+                visibleItemList.setDateFilterField(newDateFilter);
             });
         }
 
         private void setDatePickerListeners() {
             startDatePicker.setOnDateChangedListener((view, year, month, day) ->
             {
-                LocalDate startDate = LocalDate.of(year, month + 1, day);
-                LocalDate endDate = dateRepresentationOfPicker(endDatePicker);
+                Calendar cal = Calendar.getInstance();
+                cal.set(year, month + 1, day);
+                Date startDate = cal.getTime();
+                Date endDate = dateRepresentationOfPicker(endDatePicker);
 
                 if (dateFilterBox.isChecked()) {
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true, FilterFieldName.DATE_RANGE);
-                    queryState.receiveQuery(dateFilterField);
+                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate);
+                    visibleItemList.setDateFilterField(dateFilterField);
                     //Log.d("DATE REP", startDate.toString());
                 } else {
                     throw new IllegalStateException(
@@ -361,13 +369,14 @@ public class QueryFragment extends DialogFragment {
             });
             endDatePicker.setOnDateChangedListener((view, year, month, day) ->
             {
-                LocalDate startDate = dateRepresentationOfPicker(
-                        startDatePicker);
-                LocalDate endDate = LocalDate.of(year, month + 1, day);
+                Calendar cal = Calendar.getInstance();
+                cal.set(year, month + 1, day);
+                Date startDate = dateRepresentationOfPicker(startDatePicker);
+                Date endDate = cal.getTime();
 
                 if (dateFilterBox.isChecked()) {
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true, FilterFieldName.DATE_RANGE);
-                    queryState.receiveQuery(dateFilterField);
+                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate);
+                    visibleItemList.setDateFilterField(dateFilterField);
                     //Log.d("DATE REP", startDate.toString());
                 } else {
                     throw new IllegalStateException(
@@ -382,7 +391,6 @@ public class QueryFragment extends DialogFragment {
         public void setUIListeners() {
             /* Closes the dialog fragment and return to the previous page */
             confirmButton.setOnClickListener(view -> {
-                queryState.sendQuery(globalContext.getItemList());
                 globalContext.newState(globalContext.getLastState());
                 dismiss();
             });   // Go back
@@ -390,7 +398,6 @@ public class QueryFragment extends DialogFragment {
             /* Resets the query. Uses the database default */
             resetButton.setOnClickListener(view -> {
                 resetQuery();
-                queryState.sendQuery(globalContext.getItemList());
                 globalContext.newState(globalContext.getLastState());
                 dismiss();
             });
@@ -400,8 +407,6 @@ public class QueryFragment extends DialogFragment {
 
             sortCriteriaSpinner.setOnItemSelectedListener(new AdapterView
                     .OnItemSelectedListener() {
-                // There are two methods, therefore need to make anonymous class
-                // instead of lambda
 
                 /**
                  * This method controls the state when an item is selected by
@@ -414,7 +419,7 @@ public class QueryFragment extends DialogFragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
-                    queryState.receiveQuery(sortAdapter.getItem(position));
+                    handleSortUpdate(position);
                 }
 
                 @Override
@@ -455,13 +460,14 @@ public class QueryFragment extends DialogFragment {
                 public void onTextChanged(EditText target, Editable s) {
                     String userInput = s.toString().trim();
                     // Cover -> empty input, regular input
-                    FilterField nextAddition;
+                    MakeFilterField nextAddition;
                     if (userInput.isEmpty()) {
-                        nextAddition = new FilterField(null, FilterFieldName.MAKE);
+                        nextAddition = new MakeFilterField(null);
+                        nextAddition.disable();
                     } else {
-                        nextAddition = new FilterField(userInput, FilterFieldName.MAKE);
+                        nextAddition = new MakeFilterField(userInput);
                     }
-                    queryState.receiveQuery(nextAddition);
+                    visibleItemList.setMakeFilterField(nextAddition);
                 }
             });
 
@@ -471,14 +477,14 @@ public class QueryFragment extends DialogFragment {
                         public void onTextChanged(EditText target, Editable s) {
                             String userInput = s.toString().trim();
                             // Cover -> empty input, regular input
-                            FilterField nextAddition;
+                            DescriptionFilterField nextAddition;
                             if (userInput.isEmpty()) {
-                                nextAddition = new FilterField(null, FilterFieldName.DESCRIPTION);
+                                nextAddition = new DescriptionFilterField(null);
+                                nextAddition.disable();
                             } else {
-                                nextAddition = new FilterField(userInput, FilterFieldName.DESCRIPTION);
-
+                                nextAddition = new DescriptionFilterField(userInput);
                             }
-                            queryState.receiveQuery(nextAddition);
+                            visibleItemList.setDescriptionFilterField(nextAddition);
                         }
                     });
             nameFilterET.addTextChangedListener(
@@ -487,13 +493,14 @@ public class QueryFragment extends DialogFragment {
                         public void onTextChanged(EditText target, Editable s) {
                             String userInput = s.toString().trim();
                             // Cover -> empty input, regular input
-                            FilterField nextAddition;
+                            NameFilterField nextAddition;
                             if (userInput.isEmpty()) {
-                                nextAddition = new FilterField(null, FilterFieldName.NAME);
+                                nextAddition = new NameFilterField(null);
+                                nextAddition.disable();
                             } else {
-                                nextAddition = new FilterField(userInput, FilterFieldName.NAME);
+                                nextAddition = new NameFilterField(userInput);
                             }
-                            queryState.receiveQuery(nextAddition);
+                            visibleItemList.setNameFilterField(nextAddition);
                         }
                     });
         }
@@ -518,12 +525,16 @@ public class QueryFragment extends DialogFragment {
                 currentView = mode;
             }
         }
+
+        private void handleSortUpdate(int position) {
+            Log.w("DEBUG", "not implemented");
+        }
     }
 
     private GlobalContext globalContext;    // Used for transferring data
     private ViewHolder viewHolder;          // The view holder
-    private QueryMode queryState;           // The query controller.
     private ModeField currentView;          // For state matching
+    private VisibleItemList visibleItemList;
 
     /**
      * Empty public constructor
@@ -549,7 +560,7 @@ public class QueryFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         globalContext = GlobalContext.getInstance();
-        queryState = globalContext.getQueryState();
+        visibleItemList = globalContext.getItemList().getVisibleItemList();
         currentView = SORT;
     }
 

@@ -1,4 +1,4 @@
-package com.example.sigma_blue.query;
+package com.example.sigma_blue.utility;
 
 import androidx.annotation.NonNull;
 

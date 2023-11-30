@@ -1,37 +1,29 @@
 package com.example.sigma_blue.activities;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.Navigation;
 
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
-import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
 import com.example.sigma_blue.fragments.QueryFragment;
-import com.example.sigma_blue.query.QueryGenerator;
-import com.example.sigma_blue.query.SortField;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.Query;
 
 
 public class ViewListActivity extends BaseActivity {

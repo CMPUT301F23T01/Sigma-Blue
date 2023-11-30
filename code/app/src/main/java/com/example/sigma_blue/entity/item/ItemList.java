@@ -24,7 +24,8 @@ import java.util.function.Function;
 public class ItemList extends AEntityList<Item> {
     /* Attributes */
     private ViewListModes displayMode;
-
+    private VisibleItemList visibleItemList;
+    private ArrayList<Item> visibleItemArrayList;
 
     public enum ViewListModes {
         NONE, SORT, FILTER;
@@ -62,6 +63,8 @@ public class ItemList extends AEntityList<Item> {
         this.displayMode = ViewListModes.NONE;
         this.globalContext = GlobalContext.getInstance();
         this.dbHandler = ItemDB.newInstance(globalContext.getAccount());
+        this.visibleItemList = new VisibleItemList(this.entityList, this.visibleItemArrayList);
+        // use the same array reference
     }
 
     /**
@@ -84,6 +87,7 @@ public class ItemList extends AEntityList<Item> {
     @Override
     public void updateUI() {
         if (adapter != null) {
+            visibleItemList.refreshVisibleItems();
             adapter.notifyDataSetChanged();
             ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.entityList));
         };
@@ -99,6 +103,12 @@ public class ItemList extends AEntityList<Item> {
         return ItemDB.loadArray(q, Item.itemOfQueryDocument);
     }
 
+    @Override
+    public void setAdapter(ASelectableListAdapter<Item> adapter) {
+        this.adapter = adapter;
+        this.adapter.setList(this.visibleItemArrayList);
+        this.adapter.notifyDataSetChanged();
+    }
     /**
      * Needed when making new queries
      * @return the collection reference of the user
@@ -130,5 +140,9 @@ public class ItemList extends AEntityList<Item> {
             i.updateTag(newTag, oldTag);
             syncEntity(i);
         }
+    }
+
+    public VisibleItemList getVisibleItemList() {
+        return visibleItemList;
     }
 }
