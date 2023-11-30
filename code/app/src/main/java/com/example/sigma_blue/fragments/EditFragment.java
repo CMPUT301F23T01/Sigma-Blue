@@ -173,8 +173,6 @@ public class EditFragment extends Fragment
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                            .toString());
                     activity.returnAndClose();
 
                 } else {

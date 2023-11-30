@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sigma-Blue</string>
+    <string name="app_name">Data Vault</string>
     <string name="name_label">Name:</string>
     <string name="enter_text_hint">Enter Text</string>
     <string name="estimated_value_label">Estimated Value:</string>
