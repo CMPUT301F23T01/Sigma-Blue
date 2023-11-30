@@ -121,7 +121,6 @@ public class QueryFragment extends DialogFragment {
         private List<SortField> createMenuItems() {
             List<SortField> menuItems = new ArrayList<>();
 
-            menuItems.add(SortField.NO_SELECTION);
             menuItems.add(SortField.NAME);
             menuItems.add(SortField.DATE);
             menuItems.add(SortField.MAKE);
@@ -187,7 +186,6 @@ public class QueryFragment extends DialogFragment {
          * default value.
          */
         private void resetQuery() {
-            visibleItemList.resetVisibleItems();
             globalContext.getItemList().updateUI();
             regenerateSelection();
         }
@@ -197,39 +195,18 @@ public class QueryFragment extends DialogFragment {
          */
         public void regenerateSelection() {
             sortCriteriaSpinner.setSelection(sortAdapter.getPosition(visibleItemList.getItemSortComparator().getSortBy()));
-            setSortCheckbox(visibleItemList.getItemSortComparator().getDirection());
+            flipAscendBox((visibleItemList.getItemSortComparator().getDirection()) == 1);
 
             // Filter text regeneration
-            regenerateMakeTextBox();
-            regenerateDescriptionTextBox();
-            regenerateNameTextBox();
-            regenerateDateUI();
+            regenerateTextBox(makeFilterET, visibleItemList.getMakeFilterField().getFilterText());
+            regenerateTextBox(descriptionFilterET, visibleItemList.getDescriptionFilterField().getFilterText());
+            regenerateTextBox(nameFilterET, visibleItemList.getNameFilterField().getFilterText());
+            regenerateDateCheckBox();
+            regenerateDatePickers();
 
             dateCheckBoxController(this.dateFilterBox);
         }
 
-        /**
-         * This method returns the make edit textbox back to its initial state
-         */
-        private void regenerateMakeTextBox() {
-            regenerateTextBox(makeFilterET, visibleItemList.getMakeFilterField().getFilterText());
-        }
-
-        /**
-         * Regenerates the edit text for the description filter using the
-         * previously stored state.
-         */
-        private void regenerateDescriptionTextBox() {
-            regenerateTextBox(descriptionFilterET, visibleItemList.getDescriptionFilterField().getFilterText());
-        }
-
-        /**
-         * Regenerates the edit text for the name filter using the
-         * previously stored state.
-         */
-        private void regenerateNameTextBox() {
-            regenerateTextBox(nameFilterET, visibleItemList.getNameFilterField().getFilterText());
-        }
         /**
          * Factored out method that contains the text setting logic
          * @param et the edit text box that is being changed
@@ -242,16 +219,6 @@ public class QueryFragment extends DialogFragment {
             else {
                 et.setText("");    // For real time feedback
             }
-        }
-
-
-        /**
-         * Method that syncs the fragment ui with what is stored in the global
-         * context.
-         */
-        private void regenerateDateUI() {
-            regenerateDateCheckBox();
-            regenerateDatePickers();
         }
 
         private void regenerateDatePickers() {
@@ -283,14 +250,6 @@ public class QueryFragment extends DialogFragment {
 
         private void regenerateDateCheckBox() {
             dateFilterBox.setChecked(visibleItemList.getDateFilterField().isEnabled());
-        }
-        /**
-         * Match the UI with the direction that has been cached
-         * @param direction is the query direction that the ui is being flipped
-         *                  to.
-         */
-        private void setSortCheckbox(Query.Direction direction) {
-            flipAscendBox(direction == Query.Direction.ASCENDING);
         }
 
         /**
@@ -327,12 +286,12 @@ public class QueryFragment extends DialogFragment {
         private void setBoxListeners() {
             ascendingBox.setOnClickListener(view -> {
                 flipAscendBox(true);    // Turns descend off
-                visibleItemList.getItemSortComparator().setDirection(Query.Direction.ASCENDING);
+                visibleItemList.getItemSortComparator().setDirection(1);
             });
 
             descendingBox.setOnClickListener(view -> {
                 flipAscendBox(false);   // Turns ascend off
-                visibleItemList.getItemSortComparator().setDirection(Query.Direction.DESCENDING);
+                visibleItemList.getItemSortComparator().setDirection(-1);
             });
 
             dateFilterBox.setOnClickListener(view -> {
@@ -524,7 +483,10 @@ public class QueryFragment extends DialogFragment {
         }
 
         private void handleSortUpdate(int position) {
-            Log.w("DEBUG", "not implemented");
+            switch (position){
+                case 0:
+
+            }
         }
     }
 
