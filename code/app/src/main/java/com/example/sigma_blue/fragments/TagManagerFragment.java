@@ -208,6 +208,7 @@ public class TagManagerFragment extends Fragment {
         tagDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setCancelable(true);
                 builder.setMessage("Please confirm the deletion of the selected tag(s).");
