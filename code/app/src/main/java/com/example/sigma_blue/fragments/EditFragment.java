@@ -62,9 +62,6 @@ public class EditFragment extends Fragment
 
     // Fragment ui components
     private EditText textName;
-
-//    private ListView itemImageList;
-//    private ImageListAdapter imageListAdapter;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private ViewPagerAdapter viewPagerAdapter;
