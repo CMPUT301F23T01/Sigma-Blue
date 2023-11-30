@@ -25,6 +25,7 @@ import com.example.sigma_blue.databinding.DetailsFragItemPhotosBinding;
 import com.example.sigma_blue.databinding.EditFragItemPhotosBinding;
 import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.item.Item;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ItemPhotosFragment extends Fragment
 {
@@ -33,7 +34,7 @@ public class ItemPhotosFragment extends Fragment
     private ViewBinding binding;
 
     private ListView itemImageList;
-    private Button addPicture;
+    private FloatingActionButton addPicture;
 
     public ItemPhotosFragment(TabMode mode) {
         this.mode = mode;

@@ -22,6 +22,7 @@ import com.example.sigma_blue.databinding.DetailsFragItemTagsBinding;
 import com.example.sigma_blue.databinding.EditFragItemTagsBinding;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class ItemTagsFragment extends Fragment
 
     private ListView tagListView;
     private TagListAdapter tagListAdapter;
-    private Button addTag;
+    private FloatingActionButton addTag;
 
     public ItemTagsFragment(TabMode mode) {
         this.mode = mode;
@@ -78,8 +79,6 @@ public class ItemTagsFragment extends Fragment
                 public void onClick(View v)
                 {
                     globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
-                    Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
-                            .toString());
                     NavHostFragment.findNavController(ItemTagsFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
                 }
             });
