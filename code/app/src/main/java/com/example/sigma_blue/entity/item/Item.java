@@ -173,7 +173,7 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     /**
-     * Copy constructer
+     * Copy constructor
      * @param other item to copy from
      */
     public Item(Item other) {
@@ -414,7 +414,7 @@ public class Item implements Comparable<Item>, Serializable,
      * @return this.tags.contains(( Object)tag) is a boolean that has value true if the Item contains the tag, false if not
      */
     public boolean hasTag(Tag tag) {
-        return this.tags.contains((Object) tag);
+        return this.tags.contains(tag);
     }
 
     /**
@@ -441,7 +441,8 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     @Override
-    public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
+    public Function<IDatabaseItem<Item>,
+            HashMap<String, Object>> getHashMapOfEntity() {
         return dbItem -> {
             Item item = dbItem.getInstance();
             HashMap<String, Object> ret = new HashMap<>();

@@ -3,6 +3,7 @@ package com.example.sigma_blue;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 
 import android.graphics.Color;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItemTest {
@@ -105,8 +105,53 @@ public class ItemTest {
 
         testItem.setTags(arrayOfTags);  // Setting tags
 
+        assertTrue(testItem.hasTag(arrayOfTags.get(0)));
+
         testItem.getTags().forEach(ele ->
                 assertTrue(arrayOfTags.contains(ele)));
+
+    }
+
+    @Test
+    public void testDescription() {
+        String sampleDescription = "Sample Description";
+
+        cUT.setDescription(null);
+
+        assertNull(cUT.getDescription());
+
+        cUT.setDescription(sampleDescription);
+        assertEquals(sampleDescription, cUT.getDescription());
+    }
+
+    @Test
+    public void testDate() {
+        Date testingDate = new Date();
+
+        cUT.setDate(testingDate);
+        assertEquals(testingDate, cUT.getDate());
+    }
+
+    @Test
+    public void testSerialNumber() {
+        String testSerial = "dlsakjdslajk";
+
+        cUT.setSerialNumber(null);
+        assertNull(cUT.getSerialNumber());
+
+        cUT.setSerialNumber(testSerial);
+        assertEquals(testSerial, cUT.getSerialNumber());
+    }
+
+    @Test
+    public void testComment() {
+        String testComment = "comment";
+
+        cUT.setComment(null);
+        assertNull(cUT.getComment());
+
+        cUT.setComment(testComment);
+        assertEquals(testComment, cUT.getComment());
     }
 
     @Test
@@ -114,6 +159,27 @@ public class ItemTest {
         Item copy = new Item(cUT);
 
         assertEquals(copy, cUT);
+    }
+
+    @Test
+    public void testImagePath() {
+        String path1 = "path1";
+        String path2 = "path2";
+        String path3 = "path3";
+
+        assertEquals(cUT.getImagePaths().size(), 0);
+        cUT.addImagePath(path1);
+        assertTrue(cUT.getImagePaths().contains(path1));
+        cUT.addImagePath(path2);
+        cUT.addImagePath(path3);
+
+        assertEquals(3, cUT.getImagePaths().size());
+
+        assertTrue(cUT.removeImagePath(path1));
+        assertFalse(cUT.removeImagePath(path1));
+
+        assertFalse(cUT.getImagePaths().contains(path1));
+        assertEquals(2, cUT.getImagePaths().size());
     }
 
     @Test
