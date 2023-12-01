@@ -262,7 +262,7 @@ public class QueryFragment extends DialogFragment {
 
         private Date dateRepresentationOfPicker(DatePicker picker) {
             Calendar cal = Calendar.getInstance();
-            cal.set(picker.getYear(), picker.getMonth() + 1, picker.getDayOfMonth());
+            cal.set(picker.getYear(), picker.getMonth(), picker.getDayOfMonth());
             return cal.getTime();
         }
         /**
@@ -297,7 +297,7 @@ public class QueryFragment extends DialogFragment {
             startDatePicker.setOnDateChangedListener((view, year, month, day) ->
             {
                 Calendar cal = Calendar.getInstance();
-                cal.set(year, month + 1, day);
+                cal.set(year, month, day);
                 Date startDate = cal.getTime();
                 Date endDate = dateRepresentationOfPicker(endDatePicker);
 
@@ -313,7 +313,7 @@ public class QueryFragment extends DialogFragment {
             endDatePicker.setOnDateChangedListener((view, year, month, day) ->
             {
                 Calendar cal = Calendar.getInstance();
-                cal.set(year, month + 1, day);
+                cal.set(year, month, day);
                 Date startDate = dateRepresentationOfPicker(startDatePicker);
                 Date endDate = cal.getTime();
 
