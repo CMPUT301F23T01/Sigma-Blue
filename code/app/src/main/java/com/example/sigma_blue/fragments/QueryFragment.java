@@ -210,13 +210,13 @@ public class QueryFragment extends DialogFragment {
 
             startDatePicker.updateDate(
                     start.get(Calendar.YEAR),
-                    start.get(Calendar.MONTH) - 1,
+                    start.get(Calendar.MONTH),
                     start.get(Calendar.DAY_OF_MONTH)
             );
 
             endDatePicker.updateDate(
                     end.get(Calendar.YEAR),
-                    end.get(Calendar.MONTH) - 1,
+                    end.get(Calendar.MONTH),
                     end.get(Calendar.DAY_OF_MONTH)
             );
 
