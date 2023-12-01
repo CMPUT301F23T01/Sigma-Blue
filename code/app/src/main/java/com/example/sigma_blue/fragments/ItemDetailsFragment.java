@@ -157,6 +157,8 @@ public class ItemDetailsFragment extends Fragment
                                 public void onErrorResponse(VolleyError error) {
                                     Snackbar errorSnackbar = Snackbar.make(view, "Failed to find a matching description", Snackbar.LENGTH_LONG);
                                     errorSnackbar.show();
+                                    modifiedItem.setDescription("");
+                                    textDescription.setText("");
                                 }
                             });
                 }

@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class DescriptionManager {
     private HashMap<String, String> descriptionMappings;
@@ -41,7 +42,12 @@ public class DescriptionManager {
      */
     public void updateItemDescription(String serial, Response.Listener<String> successListener, Response.ErrorListener errorListener) {
         if (descriptionMappings.containsKey(serial)) {
-            successListener.onResponse(descriptionMappings.get(serial));
+            String desc = descriptionMappings.get(serial);
+            if (!Objects.equals(desc, "")){
+                successListener.onResponse(descriptionMappings.get(serial));
+            } else {
+                errorListener.onErrorResponse(null);
+            }
         } else if (DBEnabled){
             successListener.onResponse("Loading...");
             descriptionDB.getDescription(
