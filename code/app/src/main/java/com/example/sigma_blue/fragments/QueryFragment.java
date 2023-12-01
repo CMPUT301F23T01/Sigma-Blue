@@ -301,14 +301,8 @@ public class QueryFragment extends DialogFragment {
                 Date startDate = cal.getTime();
                 Date endDate = dateRepresentationOfPicker(endDatePicker);
 
-                if (dateFilterBox.isChecked()) {
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true);
-                    visibleItemList.setDateFilterField(dateFilterField);
-                    //Log.d("DATE REP", startDate.toString());
-                } else {
-                    throw new IllegalStateException(
-                            "Impossible start date picker state");
-                }
+                DateFilterField dateFilterField = new DateFilterField(startDate, endDate, dateFilterBox.isChecked());
+                visibleItemList.setDateFilterField(dateFilterField);
             });
             endDatePicker.setOnDateChangedListener((view, year, month, day) ->
             {
@@ -317,14 +311,8 @@ public class QueryFragment extends DialogFragment {
                 Date startDate = dateRepresentationOfPicker(startDatePicker);
                 Date endDate = cal.getTime();
 
-                if (dateFilterBox.isChecked()) {
-                    DateFilterField dateFilterField = new DateFilterField(startDate, endDate, true);
-                    visibleItemList.setDateFilterField(dateFilterField);
-                    //Log.d("DATE REP", startDate.toString());
-                } else {
-                    throw new IllegalStateException(
-                            "Impossible start date picker state");
-                }
+                DateFilterField dateFilterField = new DateFilterField(startDate, endDate, dateFilterBox.isChecked());
+                visibleItemList.setDateFilterField(dateFilterField);
             });
         }
 
