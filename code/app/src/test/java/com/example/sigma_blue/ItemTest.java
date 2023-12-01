@@ -110,6 +110,13 @@ public class ItemTest {
     }
 
     @Test
+    public void testCopyConstructor() {
+        Item copy = new Item(cUT);
+
+        assertEquals(copy, cUT);
+    }
+
+    @Test
     public void testGetTagDocIDs() {
         ArrayList<String> arrayOfTagDocIDs = new ArrayList<>();
         arrayOfTagDocIDs.add("oneff0000ff");
