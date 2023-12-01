@@ -147,8 +147,8 @@ public class Item implements Comparable<Item>, Serializable,
         this.value = value;
         this.comment = comment;
 
-        this.tags = new ArrayList<Tag>();
-        this.imagePaths = new ArrayList<String>();
+        this.tags = new ArrayList<>();
+        this.imagePaths = new ArrayList<>();
     }
 
     /**
@@ -158,9 +158,7 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name) {
         /* Making just the most vital components */
-        this.name = name;
-        this.tags = new ArrayList<>();
-        this.imagePaths = new ArrayList<>();
+        this(name, null, null, null, null, null, null, null);
     }
 
     /**
@@ -168,7 +166,7 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item() {
         this("", new Date(), "", "", "", "",
-                "", 0d);
+                "", null);
     }
 
     /**
@@ -204,7 +202,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param name This is a name to set
      */
     public void setName(String name) {
-        this.name = name;
+        if (name != null) this.name = name; // Should never be null
+        else throw new IllegalArgumentException("Item name cannot be null");
     }
 
     /**
