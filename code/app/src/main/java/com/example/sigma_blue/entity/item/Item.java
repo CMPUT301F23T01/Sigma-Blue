@@ -342,13 +342,13 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     /**
-     * Returns the list of tag names
+     * Returns the list of document tag ids.
      *
-     * @return
+     * @return a list of the document tag ID
      */
-    public ArrayList<String> getTagNames() {
-        return new ArrayList<>(tags.stream().map(Tag::getDocID).collect(Collectors
-                .toList()));
+    public ArrayList<String> getTagDocIDs() {
+        return tags.stream().map(Tag::getDocID).collect(Collectors
+                .toCollection(ArrayList::new));
     }
 
     /**
@@ -452,8 +452,8 @@ public class Item implements Comparable<Item>, Serializable,
             ret.put(dbSerial, item.getSerialNumber());
             ret.put(dbValue, item.getValue());
             ret.put(dbImages, item.getImagePaths());
-            ret.put(dbTags, item.getTagNames());
-            Log.e("TAG NAMES", item.getTagNames().stream()
+            ret.put(dbTags, item.getTagDocIDs());
+            Log.e("TAG NAMES", item.getTagDocIDs().stream()
                     .reduce("", (acc, ele) -> acc + ele));
             return ret;
         };
