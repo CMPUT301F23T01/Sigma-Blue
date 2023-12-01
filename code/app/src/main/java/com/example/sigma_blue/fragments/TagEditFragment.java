@@ -71,7 +71,11 @@ public class TagEditFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 boolean inputEmpty = inputField.getText().length() == 0;
-                if (inputEmpty) {confirmButton.setEnabled(false);} else {confirmButton.setEnabled(true);}
+                if (inputEmpty) {
+                    confirmButton.setEnabled(false);
+                } else {
+                    confirmButton.setEnabled(true);
+                }
             }
         });
     }

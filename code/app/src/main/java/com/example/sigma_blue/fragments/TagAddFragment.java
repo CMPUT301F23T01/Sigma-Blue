@@ -14,42 +14,50 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 
 /**
- * Fragment for adding new tags.
+ * Fragment for adding new tags. //TODO, merge into tag edit fragment
  */
 public class TagAddFragment extends Fragment {
-    private int tagColor = Color.parseColor("#0437f2"); // Default tag color, can change later
     private GlobalContext globalContext;
-
+    private EditText inputField;
+    private Button backButton;
+    private Button confirmButton;
+    private Button colourButton;
+    private Tag modifiedTag;
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        final EditText inputField = view.findViewById(R.id.input_field);
-        final Button backButton = view.findViewById(R.id.back_button);
-        final Button confirmButton = view.findViewById(R.id.confirm_button);
+        inputField = view.findViewById(R.id.input_field);
+        backButton = view.findViewById(R.id.back_button);
+        confirmButton = view.findViewById(R.id.confirm_button);
+        colourButton = view.findViewById(R.id.color_button);
 
         globalContext = GlobalContext.getInstance();
+        modifiedTag = new Tag("", Color.RED);
+
+        colourButton.setBackgroundColor(modifiedTag.getColour().toArgb());
+
         confirmButton.setEnabled(false); // User cannot outright add an empty tag on startup
 
-        // TODO Maybe put a color picker for the Tag class, maybe.
-        // It might also be nice to have the color picker remember the last pick.
-
         backButton.setOnClickListener(v -> {
-            globalContext.newState(globalContext.getLastState());
             getActivity().onBackPressed();
         });
 
         confirmButton.setOnClickListener(v -> {
             String tagName = inputField.getText().toString();
             // NOTE for now, we will use the default color that is provided in the fragment.
+            modifiedTag.setTagText(tagName);
+            globalContext.getTagList().add(modifiedTag);
+            //NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment);
+            getActivity().onBackPressed();
+        });
 
-            globalContext.getTagList().add(new Tag(tagName, tagColor));
-            globalContext.newState(globalContext.getLastState());
-            NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment);
-
+        colourButton.setOnClickListener(v -> {
+            this.pickColour();
         });
 
         // The user cannot add empty tags
@@ -72,6 +80,28 @@ public class TagAddFragment extends Fragment {
         });
     }
 
+    private void pickColour() {
+        ColorPickerDialog colorPickerDialog;
+        // TODO check the current theme
+
+        if (true) {
+            colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext());
+        } else {
+            colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext(),ColorPickerDialog.DARK_THEME);
+        }
+
+        colorPickerDialog.setInitialColor(modifiedTag.getColour().toArgb());
+        colorPickerDialog.setLastColor(modifiedTag.getColour().toArgb());
+        colorPickerDialog.show();
+        colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+            @Override
+            public void onColorPicked(int color, String hexVal) {
+                Color pickedColor = Color.valueOf(Color.parseColor(hexVal));
+                colourButton.setBackgroundColor(Color.parseColor(hexVal));
+                modifiedTag.setColour(pickedColor);
+            }
+        });
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
