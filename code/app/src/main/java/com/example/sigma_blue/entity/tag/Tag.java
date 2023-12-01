@@ -108,6 +108,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     public String getColourString() {
         return Integer.toHexString(colour.toArgb());
     }
+
     /**
      * return the hashmap function
      * @return
