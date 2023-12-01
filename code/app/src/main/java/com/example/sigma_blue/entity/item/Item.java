@@ -158,11 +158,14 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name) {
         /* Making just the most vital components */
-        this(name, null, null, null, null, null, null, null);
+        this(name, new Date(), null, null, null,
+                null, null, null);
     }
 
     /**
      * Constructor for an empty item
+     * Things that cannot be null:
+     * name
      */
     public Item() {
         this("", new Date(), "", "", "", "",
