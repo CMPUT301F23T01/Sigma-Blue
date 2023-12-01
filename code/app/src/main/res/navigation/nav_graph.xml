@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_editFragment_to_tagManagerFragment"
             app:destination="@id/tagManagerFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_tagAddFragment"
+            app:destination="@id/tagAddFragment" />
     </fragment>
     <fragment
         android:id="@+id/tagEditFragment"
