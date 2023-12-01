@@ -48,17 +48,6 @@ public class DetailsFragment extends Fragment
 
     // Fragment ui components
     private TextView textName;
-//    private TextView textValue;
-//    private TextView textDate;
-//    private TextView textMake;
-//    private TextView textModel;
-//    private TextView textSerial;
-//    private TextView textDescription;
-//    private TextView textComment;
-//    private ListView tagListView;
-//    private TagListAdapter tagListAdapter;
-//    private ListView itemImageList;
-//    private ImageListAdapter imageListAdapter;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private ViewPagerAdapter viewPagerAdapter;
@@ -96,15 +85,6 @@ public class DetailsFragment extends Fragment
 
         // bind ui components
         textName = binding.getRoot().findViewById(R.id.text_name_disp);
-//        textValue = binding.getRoot().findViewById(R.id.text_value_disp);
-//        textDate = binding.getRoot().findViewById(R.id.text_date_disp);
-//        textMake = binding.getRoot().findViewById(R.id.text_make_disp);
-//        textModel = binding.getRoot().findViewById(R.id.text_model_disp);
-//        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
-//        textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
-//        textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
-//        tagListView = binding.getRoot().findViewById(R.id.list_tag);
-//        itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
 
         tabLayout = binding.getRoot().findViewById(R.id.detailsTabLayout);
         viewPager = binding.getRoot().findViewById(R.id.detailsViewPager);
@@ -129,21 +109,6 @@ public class DetailsFragment extends Fragment
 
         // set item details from global context
         textName.setText(currentItem.getName());
-//        textValue.setText(String.valueOf(currentItem.getValue()));
-//        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-//        textDate.setText(sdf.format(currentItem.getDate()));
-//        textMake.setText(currentItem.getMake());
-//        textModel.setText(currentItem.getModel());
-//        textSerial.setText(currentItem.getSerialNumber());
-//        textDescription.setText(currentItem.getDescription());
-//        textComment.setText(currentItem.getComment());
-//        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
-//        tagListView.setAdapter(tagListAdapter);
-//        imageListAdapter = new ImageListAdapter(getContext());
-//        itemImageList.setAdapter(imageListAdapter);
-
-//        globalContext.getImageManager().setAdapter(imageListAdapter);
-//        globalContext.getImageManager().updateFromItem(currentItem);
 
         // Initialize tab layout ui
         viewPager.setAdapter(viewPagerAdapter);

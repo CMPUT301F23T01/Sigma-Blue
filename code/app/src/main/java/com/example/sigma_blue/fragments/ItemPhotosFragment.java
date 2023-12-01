@@ -90,10 +90,17 @@ public class ItemPhotosFragment extends Fragment
         binding = null;
     }
 
+    /**
+     * updates global context with the images in the viewList
+     */
     public void updateImageList() {
         globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
     }
 
+    /**
+     * updates the ui elements to the current binding
+     * @param binding of the current xml reference
+     */
     public void updateBinding(ViewBinding binding)
     {
         itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
