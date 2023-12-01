@@ -54,15 +54,26 @@ public class ViewPagerAdapter extends FragmentStateAdapter
         return 3;
     }
 
+    /**
+     * Verify that any required edit text fields are filled before switching tabs
+     * @return boolean whether the required edit text fields are filled
+     */
     public boolean verifyDetailsText() {
         return itemDetailsFragment.verifyText();
     }
 
+    /**
+     * Save the edit text fields to the global context
+     */
     public void saveTextToContext()
     {
         itemDetailsFragment.saveText();
     }
 
+    /**
+     * Calls view of current selected tab to update list contents to the global context
+     * @param position of tab selected
+     */
     public void updateFromContext(int position)
     {
         if (fragmentsInitialized) {
