@@ -26,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <Spinner
                 android:id="@+id/sortCriteriaSpinner"
                 android:layout_width="0dp"
@@ -66,7 +65,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <CheckBox
+            <TextView
+                android:id="@+id/filterTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/filter_by_title_text"
+                android:textColor="?colorOnBackground"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+          <CheckBox
                 android:id="@+id/dateFilterCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
