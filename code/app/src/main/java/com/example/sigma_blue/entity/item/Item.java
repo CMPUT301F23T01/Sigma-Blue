@@ -440,9 +440,24 @@ public class Item implements Comparable<Item>, Serializable,
 
     @Override
     public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
-        return hashMapOfItem;
+        return dbItem -> {
+            Item item = dbItem.getInstance();
+            HashMap<String, Object> ret = new HashMap<>();
+            ret.put(dbName, item.getName());
+            ret.put(dbDate, simpledf.format(item.getDate()));
+            ret.put(dbMake, item.getMake());
+            ret.put(dbModel, item.getModel());
+            ret.put(dbComment, item.getComment());
+            ret.put(dbDescription, item.getDescription());
+            ret.put(dbSerial, item.getSerialNumber());
+            ret.put(dbValue, item.getValue());
+            ret.put(dbImages, item.getImagePaths());
+            ret.put(dbTags, item.getTagNames());
+            Log.e("TAG NAMES", item.getTagNames().stream()
+                    .reduce("", (acc, ele) -> acc + ele));
+            return ret;
+        };
     }
-
 
     /**
      * This overrides equals method of super class
@@ -499,28 +514,6 @@ public class Item implements Comparable<Item>, Serializable,
     public Item getInstance() {
         return this;
     }
-    /**
-     * Function for converting Item object into HashMap, which is compatible
-     * with Firestore database.
-     */
-    public static final Function<IDatabaseItem<Item>, HashMap<String, Object>> hashMapOfItem =
-            dbItem -> {
-                Item item = dbItem.getInstance();
-                HashMap<String, Object> ret = new HashMap<>();
-                ret.put(dbName, item.getName());
-                ret.put(dbDate, simpledf.format(item.getDate()));
-                ret.put(dbMake, item.getMake());
-                ret.put(dbModel, item.getModel());
-                ret.put(dbComment, item.getComment());
-                ret.put(dbDescription, item.getDescription());
-                ret.put(dbSerial, item.getSerialNumber());
-                ret.put(dbValue, item.getValue());
-                ret.put(dbImages, item.getImagePaths());
-                ret.put(dbTags, item.getTagNames());
-                Log.e("TAG NAMES", item.getTagNames().stream()
-                        .reduce("", (acc, ele) -> acc + ele));
-                return ret;
-            };
 
     /**
      * This function is created for converting QueryDocumentSnapshot from the

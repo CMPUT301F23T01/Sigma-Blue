@@ -28,7 +28,6 @@ public class Account implements Serializable, IDatabaseItem<Account> {
      */
     public Account(String aUsername, String aPassword) {
         this.username = aUsername;
-        //this.password = aPassword;
         this.password = StringHasher.getHash(aPassword);
     }
 
@@ -77,23 +76,10 @@ public class Account implements Serializable, IDatabaseItem<Account> {
      * Converts a document into an Account object.
      */
     public static final Function<QueryDocumentSnapshot, Account>
-            accountOfDocument = q -> {
-        return new  Account(
-                q.getString(USERNAME),
-                q.getString(PASSWORD)
-        );
-    };
-
-    /**
-     * Function that converts Account to HashMap of String and String.
-     */
-    public static final Function<IDatabaseItem<Account>, HashMap<String, Object>>
-            hashMapOfEntity = a -> {
-        HashMap<String, Object> ret = new HashMap<>();
-        ret.put(USERNAME, ((Account) a).getUsername());
-        ret.put(PASSWORD, ((Account) a).getPassword());
-        return ret;
-    };
+            accountOfDocument = q -> new  Account(
+                    q.getString(USERNAME),
+                    q.getString(PASSWORD)
+            );
 
     /**
      * Matching account uniqueness with username.
@@ -107,13 +93,26 @@ public class Account implements Serializable, IDatabaseItem<Account> {
     }
 
     /**
-     * return the hashmap function
-     * @return
+     * return the hashmap conversion function
+     * @return hashmap conversion Function that converts Account objects to
+     * HashMaps that will be inserted into database.
      */
-    public Function<IDatabaseItem<Account>, HashMap<String, Object>> getHashMapOfEntity() {
-        return this.hashMapOfEntity;
+    public Function<IDatabaseItem<Account>, HashMap<String,
+            Object>> getHashMapOfEntity() {
+        return a -> {
+            HashMap<String, Object> ret = new HashMap<>();
+            Account account = a.getInstance();
+            ret.put(USERNAME, account.getUsername());
+            ret.put(PASSWORD, account.getPassword());
+            return ret;
+        };
     }
 
+    /**
+     * Returns the current item as its real type. Used with the IDatabaseItem
+     * interface to allow access to type specific methods
+     * @return the current object as its concrete type.
+     */
     @Override
     public Account getInstance() {
         return this;
