@@ -1,6 +1,8 @@
 package com.example.sigma_blue;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Color;
 
@@ -82,6 +84,30 @@ public class TagTest {
                 .get(1)));
         assertEquals(expected3, cUTs.get(2).getHashMapOfEntity().apply(cUTs
                 .get(2)));
+    }
+
+    @Test
+    public void testEquality() {
+        assertFalse(cUTs.get(0).equals(cUTs.get(1)));
+        assertFalse(cUTs.get(0).equals(cUTs.get(2)));
+        assertFalse(cUTs.get(1).equals(cUTs.get(2)));
+
+        assertEquals(cUTs.get(0), new Tag("testing", mockColor1));
+        assertEquals(cUTs.get(0), new Tag("testing", mockColor2));
+        assertEquals(cUTs.get(0), new Tag("testing", mockColor3));
+    }
+
+    @Test
+    public void testComparable() {
+        assertTrue(0 > cUTs.get(0).compareTo(cUTs.get(1)));
+        assertTrue(0 < cUTs.get(0).compareTo(cUTs.get(2)));
+        assertTrue(0 == cUTs.get(0).compareTo(cUTs.get(0)));
+        assertTrue(0 == cUTs.get(0).compareTo(
+                new Tag("testing", mockColor1)));
+        assertTrue(0 == cUTs.get(0).compareTo(
+                new Tag("testing", mockColor2)));
+        assertTrue(0 == cUTs.get(0).compareTo(
+                new Tag("testing", mockColor3)));
     }
 
 }
