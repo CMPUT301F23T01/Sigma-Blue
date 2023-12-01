@@ -20,14 +20,26 @@ public class DescriptionDB {
     RequestQueue queue;
     public DescriptionDB() {
     }
+
+    /**
+     * I do not like how context is needed here, but this is the best library I could find for this
+     * @param context context of calling activity/fragment
+     */
     public void setContext(Context context) {
         queue = Volley.newRequestQueue(context);
     }
-    public void getDescription(String serial, Response.Listener<String> sucsessListener, Response.ErrorListener errorListener){
+
+    /**
+     * Start fetching a description for an object
+     * @param serial product code to search
+     * @param successListener listener to call on a successful download
+     * @param errorListener listener to call on fail
+     */
+    public void getDescription(String serial, Response.Listener<String> successListener, Response.ErrorListener errorListener){
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url + serial,
-                sucsessListener,
+                successListener,
                 errorListener);
         queue.add(stringRequest);
     }
