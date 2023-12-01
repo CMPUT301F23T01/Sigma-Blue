@@ -38,7 +38,7 @@ dependencies {
     val nav_version = "2.7.5"
 
     implementation("com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar")
-
+    implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")

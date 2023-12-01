@@ -93,9 +93,6 @@ public class EditFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
-        // Load Item and mode
-        Item modifiedItem = globalContext.getModifiedItem();
-
         // Initialize tab layout ui
         viewPager.setAdapter(viewPagerAdapter);
         tabSelected = TabSelected.Details;

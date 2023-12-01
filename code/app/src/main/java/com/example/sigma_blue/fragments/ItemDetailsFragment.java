@@ -19,6 +19,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.adapter.TabMode;
@@ -27,6 +29,7 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.EditFragItemDetailsBinding;
 import com.example.sigma_blue.databinding.DetailsFragItemDetailsBinding;
 import com.example.sigma_blue.entity.item.Item;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,7 +53,7 @@ public class ItemDetailsFragment extends Fragment
 
     // Objects utilized exclusively by EditFragment
     private ArrayList<EditText> editTextList;
-    private Button scanSerial;
+    private Button scanSerial, getDescription;
     private int mDay, mMonth, mYear;
 
     /**
@@ -72,6 +75,7 @@ public class ItemDetailsFragment extends Fragment
             updateBinding(binding);
 
             scanSerial = binding.getRoot().findViewById(R.id.button_barcode);
+            getDescription = binding.getRoot().findViewById(R.id.button_autofill);
 
             editTextList = new ArrayList<>();
             editTextList.add((EditText)textValue);
@@ -94,6 +98,7 @@ public class ItemDetailsFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         // Initialize local variables
         Item modifiedItem = globalContext.getModifiedItem();
+        globalContext.getDescriptionManager().setContext(getContext());
         Context context = this.getContext();
 
         // Setup UI components
@@ -133,6 +138,27 @@ public class ItemDetailsFragment extends Fragment
                     globalContext.newState(ApplicationState.BARCODE_ADD_ACTIVITY);
                     Intent intent = new Intent(v.getContext(), ImageTakingActivity.class);
                     startActivity(intent);
+                }
+            });
+            getDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    globalContext.getDescriptionManager().updateItemDescription(
+                            modifiedItem.getSerialNumber(),
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    modifiedItem.setDescription(response);
+                                    textDescription.setText(response);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Snackbar errorSnackbar = Snackbar.make(view, "Failed to find a matching description", Snackbar.LENGTH_LONG);
+                                    errorSnackbar.show();
+                                }
+                            });
                 }
             });
         }
