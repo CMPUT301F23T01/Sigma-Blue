@@ -65,7 +65,8 @@ public class ItemListTest {
     @Test
     public void sizeTest() {
         itemListUT.add(placeHolderItem1());
-        Assert.assertEquals(1, itemListUT.size());
+        fail("Need to rework");
+        //Assert.assertEquals(1, itemListUT.size());
     }
 
     /**

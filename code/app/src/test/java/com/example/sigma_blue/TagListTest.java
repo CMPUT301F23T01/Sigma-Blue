@@ -1,6 +1,7 @@
 package com.example.sigma_blue;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +51,8 @@ public class TagListTest {
         Tag input = new Tag("Spider", mockColor);
 
 
-        assertEquals(expected, Tag.hashMapOfTag.apply(input));
+        fail("Not implemented properly");
+//        assertEquals(expected, Tag.hashMapOfTag.apply(input));
     }
 
     /**
