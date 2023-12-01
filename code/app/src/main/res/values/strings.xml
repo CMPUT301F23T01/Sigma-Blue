@@ -18,7 +18,7 @@
     <string name="add_tag_title">Add Tag</string>
     <string name="edit_tag_title">Edit Tag</string>
     <string name="add_tag_subtitle">Tag Name</string>
-    <string name="add_tag_hint">Tag name...</string>
+    <string name="add_tag_hint">Tag name…</string>
     <string name="tag_manager_label">Tag Manager</string>
     <string name="tag_manage_back_button_text">Back</string>
     <string name="tag_manage_confirm_button_text">Confirm</string>
@@ -44,6 +44,10 @@
 
     <!-- Strings related to the list view activity -->
     <string name="empty_summary_view">No Items</string>
+    <string name="list_add_tag">Add Tag…</string>
+    <string name="list_sort_filter">Sort/Filter</string>
+    <string name="list_search">Search</string>
+    <string name="list_options">Options</string>
 
     <!-- Strings related to the add/edit/details fragments -->
     <string name="date_format">yyyy-MM-dd</string>
@@ -53,10 +57,11 @@
     <string name="add_edit_btn_cancel">Cancel</string>
     <string name="add_edit_btn_edit">Edit</string>
     <string name="add_edit_btn_delete">Delete</string>
-    <string name="add_edit_btn_scan_serial">Scan Serial</string>
-    <string name="add_edit_btn_scan_barcode">Scan Barcode</string>
+    <string name="add_edit_btn_scan_serial">Scan Barcode</string>
+    <string name="add_edit_btn_scan_autofill">Autofill from\nBarcode</string>
     <string name="add_edit_btn_tag">Add Tag</string>
     <string name="add_edit_btn_picture">Add Picture</string>
+    <string name="add_edit_text_details">Details</string>
     <string name="add_edit_text_tag">Tags</string>
     <string name="add_edit_text_picture">Pictures</string>
     <string name="add_edit_text_name">Name</string>
@@ -101,7 +106,7 @@
         <item>Tags</item>
     </string-array>
     <!-- -end- -->
-    
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sample_serial_num">1234567</string>

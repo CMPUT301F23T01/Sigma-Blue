@@ -30,8 +30,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.sigma_blue.placeholder.DebuggingActivity"
-            android:exported="true"/>
         <activity android:name="com.example.sigma_blue.activities.GalleryActivity"
             android:exported="true"/>
         <activity android:name="com.example.sigma_blue.activities.LoginPageActivity"

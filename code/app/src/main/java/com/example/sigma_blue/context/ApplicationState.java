@@ -18,6 +18,7 @@ public enum ApplicationState {
     TAG_EDIT_FRAGMENT("tag edit fragment"),
     IMAGE_ADD_ACTIVITY("image add activity"),
     BARCODE_ADD_ACTIVITY("barcode add activity"),
+    GALLERY_ADD_ACTIVITY("gallery add activity"),
     NONE("none");
 
     private String key;
