@@ -6,6 +6,7 @@ import com.example.sigma_blue.utility.FilterField;
 import com.example.sigma_blue.utility.ItemSortComparator;
 import com.example.sigma_blue.utility.MakeFilterField;
 import com.example.sigma_blue.utility.NameFilterField;
+import com.example.sigma_blue.utility.TagFilterField;
 
 import org.checkerframework.checker.units.qual.A;
 
@@ -16,7 +17,7 @@ import java.util.Comparator;
  * manages the visible items, i.e. items that meet filter criteria
  */
 public class VisibleItemList {
-    private FilterField<Item> makeFilterField, nameFilterField, descriptionFilterField, dateFilterField;
+    private FilterField<Item> makeFilterField, nameFilterField, descriptionFilterField, dateFilterField, tagFilterField;
     private ItemSortComparator itemSortComparator;
     private final ArrayList<Item> visibleItems, allItems;
     public VisibleItemList(ArrayList<Item> allItems, ArrayList<Item> visibleItems) {
@@ -51,6 +52,7 @@ public class VisibleItemList {
         nameFilterField         = new NameFilterField(null, false, false);
         descriptionFilterField  = new DescriptionFilterField(null, false, false);
         dateFilterField         = new DateFilterField(null, null, false);
+        tagFilterField          = new TagFilterField(null, false, false, new ArrayList<>());
         itemSortComparator      = new ItemSortComparator();
         refreshVisibleItems();
     }
@@ -66,8 +68,14 @@ public class VisibleItemList {
     public void setDateFilterField(FilterField<Item> dateFilterField) {
         this.dateFilterField = dateFilterField;
     }
+    public void setTagFilterField(FilterField<Item> tagFilterField) {
+        this.tagFilterField = tagFilterField;
+    }
     public void setItemSortComparator(ItemSortComparator itemSortComparator) {
         this.itemSortComparator = itemSortComparator;
+    }
+    public FilterField<Item> getTagFilterField() {
+        return tagFilterField;
     }
     public FilterField<Item> getMakeFilterField() {
         return makeFilterField;
