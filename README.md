@@ -1,10 +1,14 @@
 # Data Vault
 
-The personal item inventory manager to keep track of your items, attributes included.
+The personal item inventory manager to keep track of all your items.
 
 ## Table of Contents
 
-- 
+- [Team Members](#team-members)
+- [Compatibility](#compatibility)
+- [Overview](#overview)
+- [Features](#features)
+- [Wiki Page](#wiki-page)
 
 ## Team Members
 
@@ -25,14 +29,15 @@ Our app targets all phones with API greater than API 24 (i.e, *most* phones in t
 
 Our app allows you to easily manage your items, as well as keep track of them in
 a sleek and intuitive user interface. You can record what items that you want to keep track of onto
-the app, and look them up whenever you need them most again. Managing items has 
+the app, and look them up whenever you need them most again. Attributes, images, as well as other
+descriptors can be specified for the item for additional detail, when you need it.
 
 ## Features
 
 - User account sign up, log in, and deletion
 - Adding/editing details of/removing items of a specified make, value, model to the list
   - Adding/updating/removing tags for items
-- Sorting and searching for items in ascending or descending order by:
+- Sorting and searching for items in ascending or descending order by one, or all of the following:
   - Make
   - Name
   - Date
@@ -44,7 +49,7 @@ the app, and look them up whenever you need them most again. Managing items has
 ## Wiki Page
 
 See the documentation here!
-[Javadocs]()
+[Javadocs (to be generated)]()
 [Wiki](https://github.com/CMPUT301F23T01/Sigma-Blue/wiki)
 
 
