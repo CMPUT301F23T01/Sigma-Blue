@@ -29,7 +29,6 @@ public class ItemPhotosFragment extends Fragment
     private final GlobalContext globalContext = GlobalContext.getInstance();
     private final TabMode mode;
     private ViewBinding binding;
-
     private ListView itemImageList;
     private FloatingActionButton addPicture;
 
@@ -92,7 +91,7 @@ public class ItemPhotosFragment extends Fragment
     }
 
     public void updateImageList() {
-
+        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
     }
 
     public void updateBinding(ViewBinding binding)
