@@ -107,5 +107,4 @@ public class TagAddFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(R.layout.add_tag_fragment, container, false);
     }
-
 }
