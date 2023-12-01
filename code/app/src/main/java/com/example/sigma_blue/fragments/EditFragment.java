@@ -1,12 +1,5 @@
 package com.example.sigma_blue.fragments;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,37 +12,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.activities.GalleryActivity;
-import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.adapter.TabMode;
 import com.example.sigma_blue.adapter.TabSelected;
 import com.example.sigma_blue.adapter.ViewPagerAdapter;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
-import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
-import com.example.sigma_blue.entity.tag.Tag;
-import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.common.base.VerifyException;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 /**
  * Class for handling fragment for editing an Item objects values

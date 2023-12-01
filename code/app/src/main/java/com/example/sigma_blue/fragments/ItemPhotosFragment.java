@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewbinding.ViewBinding;
 
 import com.example.sigma_blue.R;
-import com.example.sigma_blue.activities.GalleryActivity;
 import com.example.sigma_blue.activities.ImageTakingActivity;
 import com.example.sigma_blue.adapter.TabMode;
 import com.example.sigma_blue.context.ApplicationState;
@@ -24,7 +22,6 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.DetailsFragItemPhotosBinding;
 import com.example.sigma_blue.databinding.EditFragItemPhotosBinding;
 import com.example.sigma_blue.entity.image.ImageListAdapter;
-import com.example.sigma_blue.entity.item.Item;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ItemPhotosFragment extends Fragment
@@ -94,8 +91,7 @@ public class ItemPhotosFragment extends Fragment
         binding = null;
     }
 
-    public void updateImageList()
-    {
+    public void updateImageList() {
 
     }
 
@@ -108,15 +104,6 @@ public class ItemPhotosFragment extends Fragment
      * Method to handle click on an item in the image list
      */
     private void handleImageClick() {
-        /*
-
-        Intent intent = new Intent(this.getContext(), ImageTakingActivity.class);
-        loadUiText(globalContext.getModifiedItem());
-        globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
-        startActivity(intent);
-
-        */
-
         chooseImageSource(this.getContext());
     }
 
@@ -141,8 +128,8 @@ public class ItemPhotosFragment extends Fragment
                 else if(optionsMenu[i].equals("Choose from Gallery")){
                     // choose from  external storage
                     // * change this content to open GalleryActivity
-                    Intent intent = new Intent(context, GalleryActivity.class);
-                    globalContext.newState(ApplicationState.IMAGE_ADD_ACTIVITY);
+                    Intent intent = new Intent(context, ImageTakingActivity.class);
+                    globalContext.newState(ApplicationState.GALLERY_ADD_ACTIVITY);
                     startActivity(intent);
                 }
                 else if (optionsMenu[i].equals("Exit")) {
