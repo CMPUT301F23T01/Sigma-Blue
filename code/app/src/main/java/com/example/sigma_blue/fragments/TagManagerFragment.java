@@ -154,12 +154,12 @@ public class TagManagerFragment extends Fragment implements ConfirmDelete{
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (globalContext.getCurrentState() == ApplicationState
-                        .MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
+                // Reset the selected tags.
+                globalContext.getSelectedTags().resetSelected();
+                globalContext.getTagList().getAdapter().notifyDataSetChanged();
+
+                if (globalContext.getCurrentState() == ApplicationState.MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    // Reset the selected items.
-                    globalContext.getSelectedItems().resetSelected();
-                    globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 } else {
                     globalContext.newState(globalContext.getLastState());
@@ -174,19 +174,18 @@ public class TagManagerFragment extends Fragment implements ConfirmDelete{
             public void onClick(View v) {
                 updateTagListView();
                 updateItemsWithTags();
+                globalContext.getSelectedTags().resetSelected();
+                globalContext.getTagList().getAdapter().notifyDataSetChanged();
+
                 if (globalContext.getCurrentState() ==
                         ApplicationState.MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    globalContext.getSelectedTags().resetSelected();
                     globalContext.getSelectedItems().resetSelected();
-                    globalContext.getTagList().getAdapter().notifyDataSetChanged();
                     globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 }
                 else {
                     globalContext.newState(globalContext.getLastState());
-                    globalContext.getTagList().getAdapter().notifyDataSetChanged();
-                    globalContext.getSelectedTags().resetSelected();
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
                             .action_tagManagerFragment_to_editFragment);
