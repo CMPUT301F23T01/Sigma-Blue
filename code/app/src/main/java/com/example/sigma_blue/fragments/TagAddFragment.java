@@ -18,6 +18,7 @@ import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Fragment for adding new tags. //TODO, merge into tag edit fragment
@@ -48,12 +49,13 @@ public class TagAddFragment extends Fragment {
         });
 
         confirmButton.setOnClickListener(v -> {
-            String tagName = inputField.getText().toString();
-            // NOTE for now, we will use the default color that is provided in the fragment.
-            modifiedTag.setTagText(tagName);
-            globalContext.getTagList().add(modifiedTag);
-            //NavHostFragment.findNavController(TagAddFragment.this).navigate(R.id.action_tagAddFragment_to_tagManagerFragment);
-            getActivity().onBackPressed();
+            if (globalContext.getTagList().getEntityList().contains(modifiedTag)) {
+                Snackbar incorrectMessage = Snackbar.make(v, "Tag Already Exists", Snackbar.LENGTH_LONG);
+                incorrectMessage.show();
+            } else {
+                globalContext.getTagList().add(modifiedTag);
+                getActivity().onBackPressed();
+            }
         });
 
         colourButton.setOnClickListener(v -> {
@@ -71,6 +73,7 @@ public class TagAddFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 boolean inputEmpty = inputField.getText().length() == 0;
+                modifiedTag.setTagText(inputField.getText().toString());
                 if (inputEmpty) {
                     confirmButton.setEnabled(false);
                 } else {
