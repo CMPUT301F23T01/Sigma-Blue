@@ -37,7 +37,7 @@ dependencies {
     //implementation("androidx.test.espresso:espresso-contrib:3.5.1")
     val nav_version = "2.7.5"
 
-    implementation("com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar")
+    implementation("com.azeesoft.lib.colorpicker:colorpicker:1.0.9")
     implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
@@ -50,7 +50,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.4.1")
-    implementation("androidx.activity:activity:1.7.0")
+    implementation("androidx.activity:activity:1.8.1")
 
     // Add the dependency for the Cloud Storage library
     // When using the BoM, you don't specify versions in Firebase library dependencies
