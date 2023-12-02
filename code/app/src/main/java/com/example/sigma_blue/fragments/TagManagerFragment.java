@@ -11,6 +11,7 @@ import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.placeholder.ConfirmDelete;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
@@ -31,7 +32,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TagManagerFragment extends Fragment {
+public class TagManagerFragment extends Fragment implements ConfirmDelete{
     private GlobalContext globalContext;
 
     // Fragment binding
@@ -209,31 +210,20 @@ public class TagManagerFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setCancelable(true);
-                builder.setMessage("Please confirm the deletion of the selected tag(s).");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                for (Tag t : globalContext.getSelectedTags().getSelected()) {
-                                    globalContext.getTagList().remove(t);
-                                    globalContext.getSelectedTags().toggleHighlight(t);
-                                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
-                                    globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
-                                    // remove dead tag from items
-                                }
-                            }
-                        });
-                builder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                // method for confirm delete menu, creates onClickListener for specific method of deleting
+                confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // code for deleting that is to be run if delete is confirmed by user
+                        for (Tag t : globalContext.getSelectedTags().getSelected()) {
+                            globalContext.getTagList().remove(t);
+                            globalContext.getSelectedTags().toggleHighlight(t);
+                            globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
+                            globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
+                            // remove dead tag from items
+                        }
+                    }
+                });
             }
         });
 
