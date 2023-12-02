@@ -30,6 +30,7 @@ import com.example.sigma_blue.entity.item.ItemListAdapter;
 import com.example.sigma_blue.fragments.QueryFragment;
 import com.example.sigma_blue.query.QueryGenerator;
 import com.example.sigma_blue.query.SortField;
+import com.example.sigma_blue.placeholder.ConfirmDelete;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
 
