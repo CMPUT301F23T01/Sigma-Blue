@@ -78,6 +78,7 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
     }
 
 
+    // get viewholder in
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
