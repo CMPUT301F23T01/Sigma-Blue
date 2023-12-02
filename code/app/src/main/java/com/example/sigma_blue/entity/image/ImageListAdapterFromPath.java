@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.context.GlobalContext;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
 
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
+    private boolean isMenuNeeded = true;
+
     /**
      * Constructor that starts empty
      *
@@ -33,9 +36,10 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
         this.mContext = context;
     }
 
-    public ImageListAdapterFromPath(Context mContext, ArrayList<String> pathData) {
+    public ImageListAdapterFromPath(Context mContext, boolean isMenuNeeded) {
         this.mContext = mContext;
-        this.pathData = pathData;
+        this.pathData = new ArrayList<String>();
+        this.isMenuNeeded = isMenuNeeded;
     }
 
     public ArrayList<String> getPathData() {
@@ -51,6 +55,7 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.image_row, parent, false);
+
         return new ImageViewHolder(v);
     }
 
@@ -86,6 +91,17 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
             itemView.setOnCreateContextMenuListener(this);
         }
 
+        public ImageViewHolder(View itemView, Boolean isMenuNeeded){
+            super(itemView);
+
+            imageView = itemView.findViewById(R.id.image_list_image);
+
+            itemView.setOnClickListener(this);
+            if (isMenuNeeded) {
+                itemView.setOnCreateContextMenuListener(this);
+            }
+        }
+
         @Override
         public void onClick(View v) {
             if (mListener != null) {
@@ -99,7 +115,7 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Do whatever");
+            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Cancel");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
 
             doWhatever.setOnMenuItemClickListener(this);
