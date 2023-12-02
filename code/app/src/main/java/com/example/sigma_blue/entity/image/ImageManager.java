@@ -67,9 +67,6 @@ public class ImageManager {
 
     private void updateFromList() {
         this.entityList.clear();
-//        for (String s : pathList) {
-//            dbHandler.getImage(s, this::onImageDownload);
-//        }
         for (int i = 0; i < pathList.size() ; i ++) {
             dbHandler.getImage(pathList.get(i), this::onImageDownload);
         }
