@@ -97,13 +97,12 @@ public class ItemDetailsFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Initialize local variables
-        Item modifiedItem = globalContext.getModifiedItem();
         globalContext.getDescriptionManager().setContext(getContext());
         Context context = this.getContext();
 
         // Setup UI components
         SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        textDate.setText(sdf.format(modifiedItem.getDate()));
+        textDate.setText(sdf.format(globalContext.getModifiedItem().getDate()));
         textDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -135,6 +134,7 @@ public class ItemDetailsFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
+                    saveText();
                     globalContext.newState(ApplicationState.BARCODE_ADD_ACTIVITY);
                     Intent intent = new Intent(v.getContext(), ImageTakingActivity.class);
                     startActivity(intent);
@@ -143,12 +143,13 @@ public class ItemDetailsFragment extends Fragment
             getDescription.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    saveText();
                     globalContext.getDescriptionManager().updateItemDescription(
-                            modifiedItem.getSerialNumber(),
+                            globalContext.getModifiedItem().getSerialNumber(),
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    modifiedItem.setDescription(response);
+                                    globalContext.getModifiedItem().setDescription(response);
                                     textDescription.setText(response);
                                 }
                             },
@@ -157,7 +158,7 @@ public class ItemDetailsFragment extends Fragment
                                 public void onErrorResponse(VolleyError error) {
                                     Snackbar errorSnackbar = Snackbar.make(view, "Failed to find a matching description", Snackbar.LENGTH_LONG);
                                     errorSnackbar.show();
-                                    modifiedItem.setDescription("");
+                                    globalContext.getModifiedItem().setDescription("");
                                     textDescription.setText("");
                                 }
                             });
