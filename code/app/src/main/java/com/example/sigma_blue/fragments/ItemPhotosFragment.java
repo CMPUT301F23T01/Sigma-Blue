@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,7 +30,7 @@ import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.image.ImageListAdapterFromPath;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ItemPhotosFragment extends Fragment
+public class ItemPhotosFragment extends Fragment implements ImageListAdapterFromPath.OnItemClickListener
 {
     private final GlobalContext globalContext = GlobalContext.getInstance();
     private final TabMode mode;
@@ -68,6 +70,7 @@ public class ItemPhotosFragment extends Fragment
         ImageListAdapterFromPath imageListAdapter = new ImageListAdapterFromPath(getContext());
         itemImageList.setAdapter(imageListAdapter);
         globalContext.getImageManager().setAdapter(imageListAdapter);
+        globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
 
         if (mode == TabMode.Edit) {
             addPicture.setOnClickListener(new View.OnClickListener() {
@@ -77,8 +80,8 @@ public class ItemPhotosFragment extends Fragment
                 }
             });
 
-            // dealing with function of delete an image
 
+            globalContext.getImageManager().getAdapter().setOnItemClickListener(this);
 
         }
     }
@@ -114,6 +117,7 @@ public class ItemPhotosFragment extends Fragment
         itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
         itemImageList.setHasFixedSize(true);
         itemImageList.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
     }
 
     /**
@@ -154,5 +158,23 @@ public class ItemPhotosFragment extends Fragment
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onWhatEverClick(int position) {
+
+    }
+
+    // dealing with functionality of delete an image
+    @Override
+    public void onDeleteClick(int position) {
+        Log.e("check pos", String.valueOf(position));
+        globalContext.getModifiedItem().removeImagePath(globalContext.getImageManager().getPathList().get(position));
+        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
     }
 }

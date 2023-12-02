@@ -61,6 +61,10 @@ public class ImageManager {
         }
     }
 
+    public ImageListAdapterFromPath getAdapter() {
+        return adapter;
+    }
+
     private void updateFromList() {
         this.entityList.clear();
 //        for (String s : pathList) {
@@ -69,6 +73,7 @@ public class ImageManager {
         for (int i = 0; i < pathList.size() ; i ++) {
             dbHandler.getImage(pathList.get(i), this::onImageDownload);
         }
+        this.adapter.setPathData(this.pathList);
         this.adapter.notifyDataSetChanged();
         this.upToDate = true; // technically not up to date until the downloads finish, but this works
     }
