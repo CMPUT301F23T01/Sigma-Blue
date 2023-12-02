@@ -1,5 +1,7 @@
 package com.example.sigma_blue.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.placeholder.ConfirmDelete;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
@@ -39,7 +42,7 @@ import java.text.SimpleDateFormat;
 /**
  * Class for handling activity to view details of an item
  */
-public class DetailsFragment extends Fragment
+public class DetailsFragment extends Fragment implements ConfirmDelete
 {
     private GlobalContext globalContext = GlobalContext.getInstance();
 
@@ -155,11 +158,19 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                // Return to ViewListActivity; notify object needs to be deleted
-                globalContext.getItemList().remove(currentItem);
-                globalContext.setCurrentItem(null);
-                globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                activity.returnAndClose();
+               // method for confirm delete menu, creates onClickListener for specific method of deleting
+                confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // code for deleting that is to be run if delete is confirmed by user
+
+                        // Return to ViewListActivity; notify object needs to be deleted
+                        globalContext.getItemList().remove(currentItem);
+                        globalContext.setCurrentItem(null);
+                        globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                        activity.returnAndClose();
+                    }
+                });
             }
         });
 
