@@ -108,9 +108,9 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Cancel");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
+            //menu.setHeaderTitle("Select Action");
+            MenuItem doWhatever = menu.add(Menu.NONE, 2, 2, "Cancel");
+            MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete");
 
             doWhatever.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
@@ -124,10 +124,10 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
 
                     switch (item.getItemId()) {
                         case 1:
-                            mListener.onWhatEverClick(position);
+                            mListener.onDeleteClick(position);
                             return true;
                         case 2:
-                            mListener.onDeleteClick(position);
+                            mListener.onWhatEverClick(position);
                             return true;
                     }
                 }
