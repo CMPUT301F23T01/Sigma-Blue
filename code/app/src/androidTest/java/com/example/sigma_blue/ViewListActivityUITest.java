@@ -161,6 +161,7 @@ public class ViewListActivityUITest extends UITestTools {
         // check if the item is displayed properly
 //        onView(withId(R.id.listView))
 //                .check(matches(atPosition(0, hasDescendant(withText("iName")))));
+        onView(withText("iName3")).check(matches(isDisplayed()));
     }
 
     /**

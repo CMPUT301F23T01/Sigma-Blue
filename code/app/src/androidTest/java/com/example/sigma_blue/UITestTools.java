@@ -54,12 +54,6 @@ public class UITestTools {
                 .perform(click());
     }
 
-
-    // methods from https://developer.android.com/training/testing/espresso/lists
-
-    public static Matcher<Object> withItemContent(String expectedText) {
-        checkNotNull(expectedText);
-        return withItemContent(equalTo(expectedText));
-    }
+    
 
 }
