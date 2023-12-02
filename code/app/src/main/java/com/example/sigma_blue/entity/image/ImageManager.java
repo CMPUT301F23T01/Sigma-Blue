@@ -62,8 +62,11 @@ public class ImageManager {
 
     private void updateFromList() {
         this.entityList.clear();
-        for (String s : pathList) {
-            dbHandler.getImage(s, this::onImageDownload);
+//        for (String s : pathList) {
+//            dbHandler.getImage(s, this::onImageDownload);
+//        }
+        for (int i = 0; i < pathList.size(); i ++) {
+            dbHandler.getImage(pathList.get(i), this::onImageDownload);
         }
         this.upToDate = true; // technically not up to date until the downloads finish, but this works
     }
