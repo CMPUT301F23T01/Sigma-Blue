@@ -112,6 +112,7 @@ public class ImageTakingActivity extends BaseActivity{
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
             globalContext.getModifiedItem().addImagePath(path);
+            globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
             globalContext.newState(globalContext.getLastState());
             finish();
 
@@ -142,6 +143,7 @@ public class ImageTakingActivity extends BaseActivity{
 
                     String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
                     globalContext.getModifiedItem().addImagePath(path);
+                    globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
                     globalContext.newState(globalContext.getLastState());
                     finish();
                 }

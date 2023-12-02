@@ -13,6 +13,8 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.example.sigma_blue.R;
@@ -23,6 +25,7 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.DetailsFragItemPhotosBinding;
 import com.example.sigma_blue.databinding.EditFragItemPhotosBinding;
 import com.example.sigma_blue.entity.image.ImageListAdapter;
+import com.example.sigma_blue.entity.image.ImageListAdapterFromPath;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ItemPhotosFragment extends Fragment
@@ -30,7 +33,7 @@ public class ItemPhotosFragment extends Fragment
     private final GlobalContext globalContext = GlobalContext.getInstance();
     private final TabMode mode;
     private ViewBinding binding;
-    private ListView itemImageList;
+    private RecyclerView itemImageList;
     private FloatingActionButton addPicture;
 
     public ItemPhotosFragment(TabMode mode) {
@@ -62,7 +65,7 @@ public class ItemPhotosFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageListAdapter imageListAdapter = new ImageListAdapter(getContext());
+        ImageListAdapterFromPath imageListAdapter = new ImageListAdapterFromPath(getContext());
         itemImageList.setAdapter(imageListAdapter);
         globalContext.getImageManager().setAdapter(imageListAdapter);
 
@@ -75,15 +78,7 @@ public class ItemPhotosFragment extends Fragment
             });
 
             // dealing with function of delete an image
-            itemImageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    // position of the item in the pathList
-                    int posPathList = globalContext.getImageManager().getPathList().size() - position - 1;
-                    globalContext.getModifiedItem().removeImagePath(globalContext.getImageManager().getPathList().get(posPathList));
-                    globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
-                }
-            });
+
 
         }
     }
@@ -117,6 +112,8 @@ public class ItemPhotosFragment extends Fragment
     public void updateBinding(ViewBinding binding)
     {
         itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
+        itemImageList.setHasFixedSize(true);
+        itemImageList.setLayoutManager(new LinearLayoutManager(this.getContext()));
     }
 
     /**

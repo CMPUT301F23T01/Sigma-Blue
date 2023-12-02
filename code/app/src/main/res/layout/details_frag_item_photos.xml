@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="?colorPrimaryDark">
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_pictures"
         android:layout_width="0dp"
         android:layout_height="0dp"
