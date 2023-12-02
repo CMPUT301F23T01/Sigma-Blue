@@ -26,6 +26,7 @@ import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.placeholder.ConfirmDelete;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,7 +37,7 @@ import java.text.SimpleDateFormat;
 /**
  * Class for handling activity to view details of an item
  */
-public class DetailsFragment extends Fragment
+public class DetailsFragment extends Fragment implements ConfirmDelete
 {
     // Fragment binding
     private DetailsFragmentBinding binding;
@@ -147,31 +148,21 @@ public class DetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-               AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setCancelable(true);
-                builder.setMessage("Please confirm the deletion of this item.");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Return to ViewListActivity; notify object needs to be deleted
-                                globalContext.getItemList().remove(currentItem);
-                                globalContext.setCurrentItem(null);
-                                globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                                Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                                        .toString());
-                                activity.returnAndClose();
-                            }
-                        });
-                builder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
+               // method for confirm delete menu, creates onClickListener for specific method of deleting
+                confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // code for deleting that is to be run if delete is confirmed by user
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                        // Return to ViewListActivity; notify object needs to be deleted
+                        globalContext.getItemList().remove(currentItem);
+                        globalContext.setCurrentItem(null);
+                        globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                        Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
+                                .toString());
+                        activity.returnAndClose();
+                    }
+                });
             }
         });
 
