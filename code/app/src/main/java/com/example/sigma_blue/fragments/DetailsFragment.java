@@ -1,9 +1,6 @@
 package com.example.sigma_blue.fragments;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,12 +8,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sigma_blue.R;
@@ -25,19 +19,11 @@ import com.example.sigma_blue.adapter.TabSelected;
 import com.example.sigma_blue.adapter.ViewPagerAdapter;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
-import com.example.sigma_blue.entity.image.ImageListAdapter;
-import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.placeholder.ConfirmDelete;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Class for handling activity to view details of an item
