@@ -11,9 +11,12 @@ import com.example.sigma_blue.entity.tag.TagList;
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.entity.item.Item;
+import com.example.sigma_blue.placeholder.ConfirmDelete;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +32,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TagManagerFragment extends Fragment {
+public class TagManagerFragment extends Fragment implements ConfirmDelete{
     private GlobalContext globalContext;
 
     // Fragment binding
@@ -151,12 +154,12 @@ public class TagManagerFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (globalContext.getCurrentState() == ApplicationState
-                        .MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
+                // Reset the selected tags.
+                globalContext.getSelectedTags().resetSelected();
+                globalContext.getTagList().getAdapter().notifyDataSetChanged();
+
+                if (globalContext.getCurrentState() == ApplicationState.MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    // Reset the selected items.
-                    globalContext.getSelectedItems().resetSelected();
-                    globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 } else {
                     globalContext.newState(globalContext.getLastState());
@@ -171,19 +174,18 @@ public class TagManagerFragment extends Fragment {
             public void onClick(View v) {
                 updateTagListView();
                 updateItemsWithTags();
+                globalContext.getSelectedTags().resetSelected();
+                globalContext.getTagList().getAdapter().notifyDataSetChanged();
+
                 if (globalContext.getCurrentState() ==
                         ApplicationState.MULTI_SELECT_TAG_MANAGER_FRAGMENT) {
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    globalContext.getSelectedTags().resetSelected();
                     globalContext.getSelectedItems().resetSelected();
-                    globalContext.getTagList().getAdapter().notifyDataSetChanged();
                     globalContext.getItemList().getAdapter().notifyDataSetChanged();
                     activity.returnAndClose();
                 }
                 else {
                     globalContext.newState(globalContext.getLastState());
-                    globalContext.getTagList().getAdapter().notifyDataSetChanged();
-                    globalContext.getSelectedTags().resetSelected();
                     NavHostFragment.findNavController(
                             TagManagerFragment.this).navigate(R.id
                             .action_tagManagerFragment_to_editFragment);
@@ -206,13 +208,21 @@ public class TagManagerFragment extends Fragment {
         tagDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (Tag t : globalContext.getSelectedTags().getSelected()) {
-                    globalContext.getTagList().remove(t);
-                    globalContext.getSelectedTags().toggleHighlight(t);
-                    globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
-                    globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
-                    // remove dead tag from items
-                }
+
+                // method for confirm delete menu, creates onClickListener for specific method of deleting
+                confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // code for deleting that is to be run if delete is confirmed by user
+                        for (Tag t : globalContext.getSelectedTags().getSelected()) {
+                            globalContext.getTagList().remove(t);
+                            globalContext.getSelectedTags().toggleHighlight(t);
+                            globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
+                            globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
+                            // remove dead tag from items
+                        }
+                    }
+                });
             }
         });
 

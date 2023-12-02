@@ -23,10 +23,15 @@ import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
 import com.example.sigma_blue.fragments.QueryFragment;
+
+import com.example.sigma_blue.query.QueryGenerator;
+import com.example.sigma_blue.query.SortField;
+import com.example.sigma_blue.placeholder.ConfirmDelete;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
-public class ViewListActivity extends BaseActivity {
+public class ViewListActivity extends BaseActivity implements ConfirmDelete {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick
@@ -175,8 +180,16 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.optionsButton.setOnClickListener(v ->
                 this.handleOptionsClick());
 
-        viewHolder.deleteSelectedButton.setOnClickListener(v ->
-                this.deleteSelectedItems());
+        viewHolder.deleteSelectedButton.setOnClickListener(v -> {
+            // method for confirm delete menu, creates onClickListener for specific method of deleting
+            confirmDelete(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // code for deleting that is to be run if delete is confirmed by user
+                    deleteSelectedItems();
+                }
+            });  
+        });
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
