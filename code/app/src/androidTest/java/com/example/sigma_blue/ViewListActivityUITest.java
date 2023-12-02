@@ -158,7 +158,7 @@ public class ViewListActivityUITest extends UITestTools {
         //onView(withId(R.id.button_edit)).perform(click());
         // enter item info
         onView(withId(R.id.text_name_disp)).perform(ViewActions.typeText("iName"));
-        closeKeyboard();
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
         onView(withId(R.id.text_value_disp)).perform(ViewActions.replaceText("100"));
         onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
         onView(withId(R.id.text_make_disp)).perform(ViewActions.typeText("Banana"));
@@ -183,13 +183,40 @@ public class ViewListActivityUITest extends UITestTools {
     }
 
 
+    public void add_item_for_test() {
+
+        // get to edit page
+        onView(withId(R.id.addButton)).perform(click());
+        //onView(withId(R.id.button_edit)).perform(click());
+        // enter item info
+        onView(withId(R.id.text_name_disp)).perform(ViewActions.typeText("iName"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_value_disp)).perform(ViewActions.replaceText("100"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_make_disp)).perform(ViewActions.typeText("Banana"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_model_disp)).perform(ViewActions.typeText("name"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_serial_disp)).perform(ViewActions.typeText("9001"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_comment_disp)).perform(ViewActions.typeText("comment about thing"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.text_description_disp)).perform(ViewActions.typeText("description of thing"));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        // back to list
+        onView(withId(R.id.button_save)).perform(click());
+        //onView(withId(R.id.button_cancel)).perform(click());
+        // check if the item is displayed properly
+        onView(withText("iName")).check(matches(isDisplayed()));
+    }
+
+
 
 
     /**
      * As an owner, I want to view an item and its details.
      */
 
-        /*
     @Test
     public void view_item_US_01_02_01() {
         // get the user signup
@@ -201,7 +228,7 @@ public class ViewListActivityUITest extends UITestTools {
 //
 //        onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50"))))
 //                .perform(click());
-        add_item_US_01_01_01();
+        add_item_for_test();
 
         onView(withText("iName")).perform(click());
 
@@ -213,13 +240,15 @@ public class ViewListActivityUITest extends UITestTools {
         onView(withText("comment about thing")).check(matches(isDisplayed()));
         onView(withText("description of thing")).check(matches(isDisplayed()));
 
+        onView(withId(R.id.button_back)).perform(click());
+
         User_delete();
     }
 
     /**
      * As an owner, I want to edit the details of an item.
      */
-    /*
+
     @Test
     public void edit_item_US_01_03_01() {
         // get the user signup
@@ -229,7 +258,7 @@ public class ViewListActivityUITest extends UITestTools {
         // go to view page (items will persist between tests since everything is done on via the database
 //        onView(withId(R.id.listView)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        add_item_US_01_01_01();
+        add_item_for_test();
 
         // modify name
         onView(withText("iName")).perform(click());
@@ -238,16 +267,18 @@ public class ViewListActivityUITest extends UITestTools {
         onView(withId(R.id.button_save)).perform(click());
 
         onView(withText("iName2")).check(matches(isDisplayed()));
-        onView(withText("100.00")).check(matches(isDisplayed()));
+        onView(withText("100.0")).check(matches(isDisplayed()));
         onView(withText("Banana")).check(matches(isDisplayed()));
         onView(withText("name")).check(matches(isDisplayed()));
         onView(withText("9001")).check(matches(isDisplayed()));
         onView(withText("comment about thing")).check(matches(isDisplayed()));
         onView(withText("description of thing")).check(matches(isDisplayed()));
 
+        onView(withId(R.id.button_back)).perform(click());
+
         User_delete();
     }
-    */
+
 //
 //    /**
 //     * As an owner, I want to delete an item.
