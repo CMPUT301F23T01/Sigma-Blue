@@ -1,31 +1,22 @@
-package com.example.sigma_blue.placeholder;
+package com.example.sigma_blue.utility;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-/**
- * Generalized 'are you sure' popup
- */
-public interface ConfirmDelete {
+public class ConfirmDelete {
 
     // method for generating a confirm delete menu, takes in an OnClickListener so that
     // different implementations of deletion can be used. This is to be defined by classes
     // that us the implementation
-    default void confirmDelete(Context context, DialogInterface.OnClickListener confirmListener) {
+    public static void confirmDelete(Context context, DialogInterface.OnClickListener confirmListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(true);
-        builder.setMessage("Please confirm deletion. Cancel if deletion is not needed/intended");
+        builder.setMessage("Please confirm deletion.");
         builder.setPositiveButton("Confirm", (DialogInterface.OnClickListener) confirmListener);
-        builder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
+        builder.setNegativeButton("Cancel", (dialog, which) -> {});
 
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 }
