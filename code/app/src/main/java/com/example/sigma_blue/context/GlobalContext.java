@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
+import com.example.sigma_blue.entity.description.DescriptionManager;
 import com.example.sigma_blue.entity.image.ImageManager;
 import com.example.sigma_blue.entity.item.Item;
 
@@ -30,6 +31,7 @@ public class GlobalContext {
     private TagList tagList;
     private SelectedEntities<Tag> selectedTags;
     private ImageManager imageManager;
+    private DescriptionManager descriptionManager;
     private Item currentItem;
     private Item modifiedItem;
     private Tag currentTag;
@@ -65,6 +67,7 @@ public class GlobalContext {
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
         this.imageManager = new ImageManager();
+        this.descriptionManager = new DescriptionManager();
     }
 
     /**
@@ -140,5 +143,9 @@ public class GlobalContext {
         this.tagList.updateEntity(newTag, oldTag);
         this.selectedTags.updateEntity(newTag, oldTag);
         this.itemList.updateTags(newTag, oldTag);
+    }
+
+    public DescriptionManager getDescriptionManager() {
+        return descriptionManager;
     }
 }
