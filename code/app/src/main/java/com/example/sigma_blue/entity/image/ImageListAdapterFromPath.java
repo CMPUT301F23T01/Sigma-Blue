@@ -24,7 +24,7 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
 
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    private boolean isMenuNeeded = true;
+    private boolean isMenuNeeded;
 
     /**
      * Constructor that starts empty
@@ -34,12 +34,13 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
     public ImageListAdapterFromPath(Context context) {
         this.pathData = new ArrayList<String>();
         this.mContext = context;
+        this.isMenuNeeded = true;
     }
 
-    public ImageListAdapterFromPath(Context mContext, boolean isMenuNeeded) {
+    public ImageListAdapterFromPath(Context mContext, boolean isMenuNeed) {
         this.mContext = mContext;
         this.pathData = new ArrayList<String>();
-        this.isMenuNeeded = isMenuNeeded;
+        this.isMenuNeeded = isMenuNeed;
     }
 
     public ArrayList<String> getPathData() {
@@ -88,19 +89,11 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
             imageView = itemView.findViewById(R.id.image_list_image);
 
             itemView.setOnClickListener(this);
-            itemView.setOnCreateContextMenuListener(this);
-        }
-
-        public ImageViewHolder(View itemView, Boolean isMenuNeeded){
-            super(itemView);
-
-            imageView = itemView.findViewById(R.id.image_list_image);
-
-            itemView.setOnClickListener(this);
             if (isMenuNeeded) {
                 itemView.setOnCreateContextMenuListener(this);
             }
         }
+
 
         @Override
         public void onClick(View v) {

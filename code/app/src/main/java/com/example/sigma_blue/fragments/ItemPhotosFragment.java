@@ -67,11 +67,17 @@ public class ItemPhotosFragment extends Fragment implements ImageListAdapterFrom
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageListAdapterFromPath imageListAdapter = new ImageListAdapterFromPath(getContext());
+        //enable or disable the long click menu
+        ImageListAdapterFromPath imageListAdapter = new ImageListAdapterFromPath(getContext(), mode == TabMode.Edit);
+
         itemImageList.setAdapter(imageListAdapter);
         globalContext.getImageManager().setAdapter(imageListAdapter);
-        globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
-
+        if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT ){
+            globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
+        }else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT
+                        || globalContext.getCurrentState() == ApplicationState.DETAILS_FRAGMENT ) {
+            globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
+        }
         if (mode == TabMode.Edit) {
             addPicture.setOnClickListener(new View.OnClickListener() {
                 @Override
