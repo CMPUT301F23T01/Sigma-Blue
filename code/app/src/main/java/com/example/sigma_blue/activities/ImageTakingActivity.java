@@ -34,7 +34,7 @@ public class ImageTakingActivity extends BaseActivity{
     static final int REQUEST_GALLERY_PICKING = 3;
 
     private GlobalContext globalContext;        // Global context object
-    private boolean cameraPermissionGranted;
+    private boolean cameraPermissionGranted,storagePermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +45,25 @@ public class ImageTakingActivity extends BaseActivity{
 
         checkAndroidCameraPermissions();
 
-        if (cameraPermissionGranted) {
-            dispatchIntent();
-        }
+        dispatchIntent();
     }
 
     private void dispatchIntent() {
         if (globalContext.getCurrentState() == ApplicationState.IMAGE_ADD_ACTIVITY) {
-            dispatchTakePictureIntent();
+            checkAndroidCameraPermissions();
+            if (cameraPermissionGranted) {
+                dispatchTakePictureIntent();
+            }
         } else if (globalContext.getCurrentState() == ApplicationState.BARCODE_ADD_ACTIVITY){
-            dispatchScanBarcodeIntent();
+            checkAndroidCameraPermissions();
+            if (cameraPermissionGranted) {
+                dispatchScanBarcodeIntent();
+            }
         } else if (globalContext.getCurrentState() == ApplicationState.GALLERY_ADD_ACTIVITY) {
-            dispatchStartGalleryIntent();
+            checkAndroidStoragePermissions();
+            if (storagePermissionGranted) {
+                dispatchStartGalleryIntent();
+            }
         }
     }
     private void dispatchScanBarcodeIntent() {
@@ -160,13 +167,29 @@ public class ImageTakingActivity extends BaseActivity{
             this.requestPermissions(p, 1);
         }
     }
+    private void checkAndroidStoragePermissions() {
+        int permissionStatus = ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
+        storagePermissionGranted = (permissionStatus == 0);
+
+        if (!storagePermissionGranted) {
+            // need to ask for permission
+            String[] p = {android.Manifest.permission.READ_EXTERNAL_STORAGE};
+            this.requestPermissions(p, 1);
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int r, String[] p, int[] g) {
         super.onRequestPermissionsResult(r, p, g);
         if (g.length > 0 && g[0] == 0) {
-            cameraPermissionGranted = true;
-            dispatchIntent();
+            if (r == REQUEST_IMAGE_CAPTURE) {
+                cameraPermissionGranted = true;
+                dispatchIntent();
+            } else if (r == REQUEST_GALLERY_PICKING) {
+                storagePermissionGranted = true;
+                dispatchIntent();
+            }
+
         } else {
             // If the user doesn't want out app to use the camera go back to the edit page
             //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
