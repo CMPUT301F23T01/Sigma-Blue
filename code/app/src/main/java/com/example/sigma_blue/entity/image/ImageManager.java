@@ -22,12 +22,15 @@ public class ImageManager {
     private Boolean uploading;
     private Boolean upToDate;
 
+    private  ArrayList<image> imageList;
+
     public ImageManager() {
         this.pathList = new ArrayList<>();
         this.entityList = new ArrayList<>();
         this.dbHandler = new ImageDB();
         this.uploading = false;
         this.upToDate = true;
+        this.imageList = new ArrayList<>();
     }
 
     /**
@@ -41,7 +44,9 @@ public class ImageManager {
         this.uploading = true;
         this.entityList.add(bitmap);
         this.adapter.notifyDataSetChanged();
-        return dbHandler.addImage(bitmap, account, task -> onImageUpload());
+        String path = dbHandler.addImage(bitmap, account, task -> onImageUpload());
+        imageList.add(new image(path, bitmap));
+        return path;
     }
 
     /**
@@ -62,10 +67,12 @@ public class ImageManager {
 
     private void updateFromList() {
         this.entityList.clear();
+        this.imageList.clear();
 //        for (String s : pathList) {
 //            dbHandler.getImage(s, this::onImageDownload);
 //        }
-        for (int i = 0; i < pathList.size(); i ++) {
+        for (int i = 0; i < pathList.size() ; i ++) {
+            this.imageList.add(new image(pathList.get(i)));
             dbHandler.getImage(pathList.get(i), this::onImageDownload);
         }
         this.adapter.notifyDataSetChanged();
@@ -84,6 +91,8 @@ public class ImageManager {
         Log.i("DEBUG", "Image download succeed");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         this.entityList.add(bitmap);
+
+        this.imageList.get()
         this.adapter.notifyDataSetChanged();
     }
     private void onImageUpload() {

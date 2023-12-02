@@ -78,7 +78,9 @@ public class ItemPhotosFragment extends Fragment
             itemImageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    globalContext.getModifiedItem().removeImagePath(globalContext.getImageManager().getPathList().get(position));
+                    // position of the item in the pathList
+                    int posPathList = globalContext.getImageManager().getPathList().size() - position - 1;
+                    globalContext.getModifiedItem().removeImagePath(globalContext.getImageManager().getPathList().get(posPathList));
                     globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
                 }
             });

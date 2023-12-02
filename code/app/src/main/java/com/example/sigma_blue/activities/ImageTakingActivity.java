@@ -137,7 +137,7 @@ public class ImageTakingActivity extends BaseActivity{
                     String picturePath = cursor.getString(columnIndex);
 
                     //decode and compress the image to target for uploading and displaying
-                    Bitmap imageBitmap = globalContext.getImageManager().compressBitmap(picturePath, 1000, 1000);
+                    Bitmap imageBitmap = globalContext.getImageManager().compressBitmap(picturePath, 500, 500);
                     cursor.close();
 
                     String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
