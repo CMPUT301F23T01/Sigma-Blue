@@ -24,12 +24,12 @@ import com.example.sigma_blue.entity.item.ItemListAdapter;
 
 import com.example.sigma_blue.fragments.QueryFragment;
 
-import com.example.sigma_blue.placeholder.ConfirmDelete;
+import com.example.sigma_blue.utility.ConfirmDelete;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
-public class ViewListActivity extends BaseActivity implements ConfirmDelete {
+public class ViewListActivity extends BaseActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick
@@ -180,7 +180,7 @@ public class ViewListActivity extends BaseActivity implements ConfirmDelete {
 
         viewHolder.deleteSelectedButton.setOnClickListener(v -> {
             // method for confirm delete menu, creates onClickListener for specific method of deleting
-            confirmDelete(this, new DialogInterface.OnClickListener() {
+            ConfirmDelete.confirmDelete(this, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // code for deleting that is to be run if delete is confirmed by user
@@ -252,7 +252,7 @@ public class ViewListActivity extends BaseActivity implements ConfirmDelete {
                     logoutUser();
                 }
                 else if(optionsMenu[i].equals("Delete Account")){
-                    handleDeleteAccount();
+                    ConfirmDelete.confirmDelete(ViewListActivity.this, (dialog, which) -> handleDeleteAccount());
                 }
                 else if (optionsMenu[i].equals("Cancel")) {
                     dialogInterface.dismiss();

@@ -6,16 +6,13 @@ import com.example.sigma_blue.databinding.TagManagerFragmentBinding;
 import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.tag.Tag;
 
-import com.example.sigma_blue.entity.tag.TagList;
-
 import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.entity.item.Item;
-import com.example.sigma_blue.placeholder.ConfirmDelete;
+import com.example.sigma_blue.utility.ConfirmDelete;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,9 +27,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class TagManagerFragment extends Fragment implements ConfirmDelete{
+public class TagManagerFragment extends Fragment {
     private GlobalContext globalContext;
 
     // Fragment binding
@@ -210,7 +206,7 @@ public class TagManagerFragment extends Fragment implements ConfirmDelete{
             public void onClick(View v) {
 
                 // method for confirm delete menu, creates onClickListener for specific method of deleting
-                confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
+                ConfirmDelete.confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // code for deleting that is to be run if delete is confirmed by user
