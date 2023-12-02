@@ -22,13 +22,13 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.activities.AddEditActivity;
 import com.example.sigma_blue.databinding.DetailsFragmentBinding;
 import com.example.sigma_blue.entity.item.Item;
-import com.example.sigma_blue.placeholder.ConfirmDelete;
+import com.example.sigma_blue.utility.ConfirmDelete;
 import com.google.android.material.tabs.TabLayout;
 
 /**
  * Class for handling activity to view details of an item
  */
-public class DetailsFragment extends Fragment implements ConfirmDelete
+public class DetailsFragment extends Fragment
 {
     private GlobalContext globalContext = GlobalContext.getInstance();
 
@@ -145,7 +145,7 @@ public class DetailsFragment extends Fragment implements ConfirmDelete
             public void onClick(View v)
             {
                // method for confirm delete menu, creates onClickListener for specific method of deleting
-                confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
+                ConfirmDelete.confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // code for deleting that is to be run if delete is confirmed by user
