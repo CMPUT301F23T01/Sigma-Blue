@@ -12,7 +12,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Asks upcitemdb for a description
+ * Asks upcitemdb for a description. Using volley because it's the first http request library that
+ * I found that can do async requests.
  * see https://google.github.io/volley/simple.html
  */
 public class DescriptionDB {

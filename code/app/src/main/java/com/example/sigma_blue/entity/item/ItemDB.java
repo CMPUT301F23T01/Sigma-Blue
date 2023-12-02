@@ -10,7 +10,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * This class handles database handling.
+ * This class handles the database interactions for the Item class.
  */
 public class ItemDB extends ADatabaseHandler<Item> {
 

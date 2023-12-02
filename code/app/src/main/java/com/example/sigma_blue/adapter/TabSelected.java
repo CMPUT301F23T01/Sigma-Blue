@@ -3,6 +3,9 @@ package com.example.sigma_blue.adapter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enum for the selected tab in the edit/details fragments.
+ */
 public enum TabSelected
 {
     Details (0), Tags (1), Photos (2);

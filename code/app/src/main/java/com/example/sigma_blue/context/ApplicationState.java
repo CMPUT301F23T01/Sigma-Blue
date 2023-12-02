@@ -2,6 +2,10 @@ package com.example.sigma_blue.context;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Possible states the app can be in. Some activities/fragments behave differently depending on the
+ * current or last state.
+ */
 public enum ApplicationState {
     SORT_MENU("sort_menu"),
     FILTER_MENU("filter_menu"),

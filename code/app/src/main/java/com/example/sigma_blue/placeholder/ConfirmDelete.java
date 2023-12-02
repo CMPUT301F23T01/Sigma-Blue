@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+/**
+ * Generalized 'are you sure' popup
+ */
 public interface ConfirmDelete {
 
     // method for generating a confirm delete menu, takes in an OnClickListener so that

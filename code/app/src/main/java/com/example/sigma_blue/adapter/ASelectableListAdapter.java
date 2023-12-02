@@ -26,12 +26,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Parent class for adapters that work with highlightable/selectable entities.
+ * @param <T>
+ */
 public abstract class ASelectableListAdapter<T> extends ArrayAdapter<T> {
 
     /* Attributes */
     protected List<T> entityData;
     protected Context context;
-    protected GlobalContext globalContext;
+    protected static GlobalContext globalContext = GlobalContext.getInstance();
     /* Factories and Constructors */
 
 
@@ -43,7 +47,6 @@ public abstract class ASelectableListAdapter<T> extends ArrayAdapter<T> {
      */
     public ASelectableListAdapter(List<T> entityData, Context context) {
         super(context, 0, entityData);
-        globalContext = GlobalContext.getInstance();
         this.context = context;
         this.entityData = entityData;
     }
@@ -61,7 +64,7 @@ public abstract class ASelectableListAdapter<T> extends ArrayAdapter<T> {
      * Method that will turn on the highlight of the view if it is selected,
      * otherwise, reset it to the default background color.
      * @param view is the view that is being checked.
-     * @param selected
+     * @param selected true if the entity should be highlighted
      */
     protected void highlightControl(View view, boolean selected) {
         Drawable row;

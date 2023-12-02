@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
@@ -17,9 +18,10 @@ import com.example.sigma_blue.entity.item.Item;
 import java.util.Objects;
 
 /**
- * Add/Edit activity class. Controls the add and edit activity.
+ * Add/Edit activity class. Controls the add and edit activity fragments. Very little happens here,
+ * see DetailsFragment and Edit Fragment.
  */
-public class AddEditActivity extends BaseActivity
+public class AddEditActivity extends AppCompatActivity
 {
     private GlobalContext globalContext;
     private NavGraph graph;

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 /**
- * Interfaces with the database to keep the tags up to date. Should this be included in TagList?
+ * Interfaces with the database to keep the tags up to date.
  * Ideally this class will only be used from TagList.
  */
 public class TagDB extends ADatabaseHandler<Tag> {

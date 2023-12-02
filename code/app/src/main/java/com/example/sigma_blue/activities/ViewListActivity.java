@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,8 +29,10 @@ import com.example.sigma_blue.placeholder.ConfirmDelete;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-
-public class ViewListActivity extends BaseActivity implements ConfirmDelete {
+/**
+ * Activity that displays the list of items. Acts like the 'main page' of the app.
+ */
+public class ViewListActivity extends AppCompatActivity implements ConfirmDelete {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick

@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Parent class for the *List classes. Implements some useful utility functions
+ * @param <T> entity to store
+ */
 public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     protected final ArrayList<T> entityList;
     protected ADatabaseHandler<T> dbHandler;
@@ -128,13 +132,6 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     public void setDbHandler(ADatabaseHandler<T> dbHandler) {
         this.dbHandler = dbHandler;
     }
-
-    /**
-     * Default instance creation. Should use the account in global context (if account needed).
-     * This method should also set up the db handler and adapter.
-     */
-    //public abstract AEntityList<T> newInstance();
-
 
     /**
      * This method removes all the items owned by the user. Made for testing.

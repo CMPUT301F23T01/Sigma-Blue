@@ -19,7 +19,7 @@ import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 
 /**
- * Fragment for editing existing tags.
+ * Fragment for editing existing tags. //TODO merge into tag add fragment
  */
 public class TagEditFragment extends Fragment {
     private GlobalContext globalContext;

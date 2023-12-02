@@ -17,6 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapts a list of strings (each representing a firebase storage path) into a displayed list of
+ * images.
+ */
 public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdapterFromPath.ImageViewHolder> {
     private Context mContext;
     private ArrayList<String> pathData;
@@ -37,20 +41,25 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
         this.isMenuNeeded = true;
     }
 
+    /**
+     * Constructor that starts an empty adapter.
+     * @param mContext context of calling activity/fragment
+     * @param isMenuNeed true if there should be a delete menu on clicking an item
+     */
     public ImageListAdapterFromPath(Context mContext, boolean isMenuNeed) {
         this.mContext = mContext;
         this.pathData = new ArrayList<String>();
         this.isMenuNeeded = isMenuNeed;
     }
 
-    public ArrayList<String> getPathData() {
-        return pathData;
-    }
-
-    public void setPathData(ArrayList<String> pathData) {
-        this.pathData = pathData;
-    }
-
+    /**
+     * RecyclerView.Adapter Called when RecyclerView needs a new RecyclerView.ViewHolder of the
+     * given type to represent an item.
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
+     * @param viewType The view type of the new View.
+     * @return
+     */
     @NonNull
     @NotNull
     @Override
@@ -150,4 +159,12 @@ public class ImageListAdapterFromPath extends RecyclerView.Adapter<ImageListAdap
         mListener = listener;
     }
 
+
+    public ArrayList<String> getPathData() {
+        return pathData;
+    }
+
+    public void setPathData(ArrayList<String> pathData) {
+        this.pathData = pathData;
+    }
 }
