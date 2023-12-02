@@ -4,7 +4,6 @@ package com.example.sigma_blue.entity.tag;
 import android.graphics.Color;
 
 import com.example.sigma_blue.database.IDatabaseItem;
-import com.example.sigma_blue.entity.item.Item;
 
 import java.io.Serializable;
 
@@ -32,7 +31,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
 
     public Tag(String tagText, String colour) {
         this.tagText = tagText;
-        this.colour = Color.valueOf(Color.RED); //TODO, parse the string
+        this.colour = Color.valueOf(Color.parseColor("#" + colour));
     }
 
     public String getTagText() {
@@ -46,14 +45,6 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     public Color getColour() {
         return colour;
     }
-
-    public static final Function<IDatabaseItem<Tag>, HashMap<String, Object>>
-            hashMapOfEntity = t -> {
-        HashMap<String, Object> ret = new HashMap<>();
-        ret.put(LABEL, ((Tag) t).getTagText());
-        ret.put(COLOR, ((Tag) t).getColourString());
-        return ret;
-    };
 
     public void setColour(Color colour) {
         this.colour = colour;
@@ -92,8 +83,7 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
             return false;
         }
         Tag otherTag = (Tag) obj;
-        return (this.tagText.equals(otherTag.getTagText())
-                && (colour.equals(otherTag.getColour())));
+        return (this.tagText.equals(otherTag.getTagText()));
     }
 
     /**
@@ -109,14 +99,27 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     public String getColourString() {
         return Integer.toHexString(colour.toArgb());
     }
+
     /**
-     * return the hashmap function
-     * @return
+     * return the hashmap conversion function
+     * @return the function that convert the entity object into a hashmap for db
      */
-    public Function<IDatabaseItem<Tag>, HashMap<String, Object>> getHashMapOfEntity() {
-        return this.hashMapOfEntity;
+    public Function<IDatabaseItem<Tag>, HashMap<String,
+            Object>> getHashMapOfEntity() {
+        return t -> {
+            HashMap<String, Object> ret = new HashMap<>();
+            Tag tag = t.getInstance();
+            ret.put(LABEL, tag.getTagText());
+            ret.put(COLOR, tag.getColourString());
+            return ret;
+        };
     }
 
+    /**
+     * Return the current instance with the correct type without explicit type
+     * casting
+     * @return the current instance, but as the required type.
+     */
     @Override
     public Tag getInstance() {
         return this;

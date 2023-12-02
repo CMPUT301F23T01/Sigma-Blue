@@ -28,4 +28,17 @@ public class SelectedEntities<T> {
     public int size() {
         return selected.size();
     }
+    public void updateEntity(T newE, T oldE) {
+        this.removeEntity(oldE);
+        selected.add(newE);
+    }
+    private void removeEntity(T e) {
+        ArrayList<T> newSelected = new ArrayList<>();
+        for (T i : this.selected) {
+            if (i != e) {
+                newSelected.add(e);
+            }
+        }
+        this.selected = newSelected;
+    }
 }

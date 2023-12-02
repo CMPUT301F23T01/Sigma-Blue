@@ -1,37 +1,32 @@
 package com.example.sigma_blue.activities;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.Navigation;
 
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
-import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
 
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
 import com.example.sigma_blue.fragments.QueryFragment;
-import com.example.sigma_blue.query.QueryGenerator;
-import com.example.sigma_blue.query.SortField;
+
+import com.example.sigma_blue.utility.ConfirmDelete;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.Query;
 
 
 public class ViewListActivity extends BaseActivity {
@@ -94,7 +89,7 @@ public class ViewListActivity extends BaseActivity {
 
         /* ItemList encapsulates both the database and the adapter */
         globalContext.getItemList().setAdapter(
-                new ItemListAdapter(globalContext.getItemList().getList(), this, viewHolder.summaryView));
+                new ItemListAdapter(globalContext.getItemList().getVisibleList(), this, viewHolder.summaryView));
         globalContext.getItemList().startListening();
 
         globalContext.getItemList().setSummaryView(viewHolder.summaryView);
@@ -136,7 +131,7 @@ public class ViewListActivity extends BaseActivity {
             globalContext.getItemList().remove(i);
         }
         globalContext.getSelectedItems().resetSelected();
-        globalContext.getItemList().getAdapter().notifyDataSetChanged();
+        globalContext.getItemList().updateUI();
         viewHolder.selectedItemsMenu.setVisibility(View.GONE);
     }
 
@@ -144,11 +139,10 @@ public class ViewListActivity extends BaseActivity {
      * This method shows the query fragment for the user to choose either a sort
      * or a filter, or maybe both.
      */
-    private void displayQueryFragment() {
+    private void displayQueryFragment(ApplicationState state) {
         QueryFragment queryFragment = new QueryFragment();
-        globalContext.newState(ApplicationState.SORT_MENU);
-        startFragmentTransaction(queryFragment, ApplicationState.SORT_MENU
-                .toString());
+        globalContext.newState(state);
+        startFragmentTransaction(queryFragment, state.toString());
     }
 
     /**
@@ -157,8 +151,9 @@ public class ViewListActivity extends BaseActivity {
      * @param tag the tag of the fragment
      */
     private void startFragmentTransaction(DialogFragment fragment, String tag) {
-        if (fragmentManager == null)
+        if (fragmentManager == null) {
             fragmentManager = getSupportFragmentManager();
+        }
         fragment.show(fragmentManager, tag);
     }
 
@@ -174,15 +169,25 @@ public class ViewListActivity extends BaseActivity {
             startActivity(intent);
         });  // Launch add activity.
 
-        viewHolder.searchButton.setOnClickListener(v -> {});    // Launch search fragment
+        viewHolder.searchButton.setOnClickListener(v ->
+                this.displayQueryFragment(ApplicationState.FILTER_MENU));
+
         viewHolder.sortFilterButton.setOnClickListener(v ->
-                this.displayQueryFragment());
+                this.displayQueryFragment(ApplicationState.SORT_MENU));
 
         viewHolder.optionsButton.setOnClickListener(v ->
                 this.handleOptionsClick());
 
-        viewHolder.deleteSelectedButton.setOnClickListener(v ->
-                this.deleteSelectedItems());
+        viewHolder.deleteSelectedButton.setOnClickListener(v -> {
+            // method for confirm delete menu, creates onClickListener for specific method of deleting
+            ConfirmDelete.confirmDelete(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // code for deleting that is to be run if delete is confirmed by user
+                    deleteSelectedItems();
+                }
+            });  
+        });
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -199,18 +204,17 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.listListView // This is for short clicks on a row
                 .setOnItemClickListener((parent, view, position, id) -> {
                     this.handleClick(globalContext.getItemList()
-                            .getList().get(position));
+                            .getVisibleList().get(position));
         });
 
         /* The long click listener */
         viewHolder.listListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> {
                     final Item itemCache = globalContext.getItemList()
-                            .getList().get(position);
+                            .getVisibleList().get(position);
                     this.handleLongClick(itemCache);
 
-                    globalContext.getItemList().getAdapter()
-                            .notifyDataSetChanged();    // Update highlight
+                    globalContext.getItemList().updateUI();    // Update highlight
 
                     /*Returns true if the list consumes the click. Always true
                     * in our app*/
@@ -248,7 +252,7 @@ public class ViewListActivity extends BaseActivity {
                     logoutUser();
                 }
                 else if(optionsMenu[i].equals("Delete Account")){
-                    handleDeleteAccount();
+                    ConfirmDelete.confirmDelete(ViewListActivity.this, (dialog, which) -> handleDeleteAccount());
                 }
                 else if (optionsMenu[i].equals("Cancel")) {
                     dialogInterface.dismiss();

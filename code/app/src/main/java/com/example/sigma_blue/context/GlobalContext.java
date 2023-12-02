@@ -2,10 +2,9 @@ package com.example.sigma_blue.context;
 
 import android.util.Log;
 
-import com.example.sigma_blue.database.ADatabaseHandler;
-import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
+import com.example.sigma_blue.entity.description.DescriptionManager;
 import com.example.sigma_blue.entity.image.ImageManager;
 import com.example.sigma_blue.entity.item.Item;
 
@@ -13,7 +12,6 @@ import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
-import com.example.sigma_blue.query.QueryMode;
 
 import java.util.ArrayList;
 
@@ -33,11 +31,10 @@ public class GlobalContext {
     private TagList tagList;
     private SelectedEntities<Tag> selectedTags;
     private ImageManager imageManager;
+    private DescriptionManager descriptionManager;
     private Item currentItem;
     private Item modifiedItem;
     private Tag currentTag;
-    private QueryMode queryState;
-
     private ArrayList<ApplicationState> stateHistory; // store a history for debugging
 
     /**
@@ -70,6 +67,7 @@ public class GlobalContext {
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
         this.imageManager = new ImageManager();
+        this.descriptionManager = new DescriptionManager();
     }
 
     /**
@@ -104,16 +102,6 @@ public class GlobalContext {
         return itemList;
     }
     public ImageManager getImageManager() {return imageManager;}
-    /**
-     * Setter for the query mode.
-     * @return the query mode object, which keeps track of the current query
-     * state.
-     */
-    public QueryMode getQueryState() {
-        if (queryState == null) queryState = new QueryMode(itemList
-                .getCollectionReference());   // lazy cons
-       return this.queryState;
-    }
 
     public TagList getTagList() {
         return tagList;
@@ -149,5 +137,15 @@ public class GlobalContext {
 
     public void setModifiedItem(Item modifiedItem) {
         this.modifiedItem = modifiedItem;
+    }
+
+    public void updateTag(Tag newTag, Tag oldTag) {
+        this.tagList.updateEntity(newTag, oldTag);
+        this.selectedTags.updateEntity(newTag, oldTag);
+        this.itemList.updateTags(newTag, oldTag);
+    }
+
+    public DescriptionManager getDescriptionManager() {
+        return descriptionManager;
     }
 }
