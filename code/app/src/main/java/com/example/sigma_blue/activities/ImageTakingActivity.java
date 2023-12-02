@@ -35,6 +35,7 @@ public class ImageTakingActivity extends BaseActivity{
 
     private GlobalContext globalContext;        // Global context object
     private boolean cameraPermissionGranted;
+    private boolean readStoragePermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,24 @@ public class ImageTakingActivity extends BaseActivity{
             dispatchIntent();
         }
     }
+
+    private boolean PermissionChecker () {
+        if (globalContext.getCurrentState() == ApplicationState.IMAGE_ADD_ACTIVITY) {
+            checkAndroidCameraPermissions();
+
+            return cameraPermissionGranted;
+        } else if (globalContext.getCurrentState() == ApplicationState.BARCODE_ADD_ACTIVITY){
+            checkAndroidCameraPermissions();
+
+            return cameraPermissionGranted;
+        } else if (globalContext.getCurrentState() == ApplicationState.GALLERY_ADD_ACTIVITY) {
+            checkAndroidReadStoragePermissions();
+
+            return readStoragePermissionGranted;
+        }
+        return false;
+    }
+
 
     private void dispatchIntent() {
         if (globalContext.getCurrentState() == ApplicationState.IMAGE_ADD_ACTIVITY) {
