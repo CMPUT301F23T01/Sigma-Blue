@@ -147,8 +147,8 @@ public class Item implements Comparable<Item>, Serializable,
         this.value = value;
         this.comment = comment;
 
-        this.tags = new ArrayList<Tag>();
-        this.imagePaths = new ArrayList<String>();
+        this.tags = new ArrayList<>();
+        this.imagePaths = new ArrayList<>();
     }
 
     /**
@@ -158,21 +158,22 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name) {
         /* Making just the most vital components */
-        this.name = name;
-        this.tags = new ArrayList<>();
-        this.imagePaths = new ArrayList<>();
+        this(name, new Date(), null, null, null,
+                null, null, null);
     }
 
     /**
      * Constructor for an empty item
+     * Things that cannot be null:
+     * name
      */
     public Item() {
         this("", new Date(), "", "", "", "",
-                "", 0d);
+                "", null);
     }
 
     /**
-     * Copy constructer
+     * Copy constructor
      * @param other item to copy from
      */
     public Item(Item other) {
@@ -204,7 +205,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param name This is a name to set
      */
     public void setName(String name) {
-        this.name = name;
+        if (name != null) this.name = name; // Should never be null
+        else throw new IllegalArgumentException("Item name cannot be null");
     }
 
     /**
@@ -342,13 +344,13 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     /**
-     * Returns the list of tag names
+     * Returns the list of document tag ids.
      *
-     * @return
+     * @return a list of the document tag ID
      */
-    public ArrayList<String> getTagNames() {
-        return new ArrayList<>(tags.stream().map(Tag::getDocID).collect(Collectors
-                .toList()));
+    public ArrayList<String> getTagDocIDs() {
+        return tags.stream().map(Tag::getDocID).collect(Collectors
+                .toCollection(ArrayList::new));
     }
 
     /**
@@ -412,7 +414,7 @@ public class Item implements Comparable<Item>, Serializable,
      * @return this.tags.contains(( Object)tag) is a boolean that has value true if the Item contains the tag, false if not
      */
     public boolean hasTag(Tag tag) {
-        return this.tags.contains((Object) tag);
+        return this.tags.contains(tag);
     }
 
     /**
@@ -439,7 +441,8 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     @Override
-    public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
+    public Function<IDatabaseItem<Item>,
+            HashMap<String, Object>> getHashMapOfEntity() {
         return dbItem -> {
             Item item = dbItem.getInstance();
             HashMap<String, Object> ret = new HashMap<>();
@@ -452,8 +455,8 @@ public class Item implements Comparable<Item>, Serializable,
             ret.put(dbSerial, item.getSerialNumber());
             ret.put(dbValue, item.getValue());
             ret.put(dbImages, item.getImagePaths());
-            ret.put(dbTags, item.getTagNames());
-            Log.e("TAG NAMES", item.getTagNames().stream()
+            ret.put(dbTags, item.getTagDocIDs());
+            Log.e("TAG NAMES", item.getTagDocIDs().stream()
                     .reduce("", (acc, ele) -> acc + ele));
             return ret;
         };
