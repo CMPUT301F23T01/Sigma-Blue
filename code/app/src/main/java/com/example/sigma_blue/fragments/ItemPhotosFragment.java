@@ -9,10 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +23,6 @@ import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.DetailsFragItemPhotosBinding;
 import com.example.sigma_blue.databinding.EditFragItemPhotosBinding;
-import com.example.sigma_blue.entity.image.ImageListAdapter;
 import com.example.sigma_blue.entity.image.ImageListAdapterFromPath;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

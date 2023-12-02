@@ -2,15 +2,15 @@ package com.example.sigma_blue.entity.image;
 
 import android.graphics.Bitmap;
 
-public class image {
+public class Image {
     private String imagePath;
     private Bitmap image;
 
-    public image(String imagePath) {
+    public Image(String imagePath) {
         this.imagePath = imagePath;
     }
 
-    public image(String imagePath, Bitmap image) {
+    public Image(String imagePath, Bitmap image) {
         this.imagePath = imagePath;
         this.image = image;
     }
