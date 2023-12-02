@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sigma_blue.R;
+import com.example.sigma_blue.adapter.TabMode;
+import com.example.sigma_blue.adapter.TabSelected;
+import com.example.sigma_blue.adapter.ViewPagerAdapter;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.image.ImageListAdapter;
@@ -29,6 +33,7 @@ import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.placeholder.ConfirmDelete;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -39,23 +44,18 @@ import java.text.SimpleDateFormat;
  */
 public class DetailsFragment extends Fragment implements ConfirmDelete
 {
+    private GlobalContext globalContext = GlobalContext.getInstance();
+
     // Fragment binding
     private DetailsFragmentBinding binding;
 
     // Fragment ui components
     private TextView textName;
-    private TextView textValue;
-    private TextView textDate;
-    private TextView textMake;
-    private TextView textModel;
-    private TextView textSerial;
-    private TextView textDescription;
-    private TextView textComment;
-    private ListView tagListView;
-    private TagListAdapter tagListAdapter;
-    private ListView itemImageList;
-    private ImageListAdapter imageListAdapter;
-    private GlobalContext globalContext;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private TabSelected tabSelected;
+
 
     /**
      * Required empty public constructor
@@ -80,7 +80,7 @@ public class DetailsFragment extends Fragment implements ConfirmDelete
      * @param savedInstanceState is a Bundle passed that holds data of activity
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
@@ -88,15 +88,10 @@ public class DetailsFragment extends Fragment implements ConfirmDelete
 
         // bind ui components
         textName = binding.getRoot().findViewById(R.id.text_name_disp);
-        textValue = binding.getRoot().findViewById(R.id.text_value_disp);
-        textDate = binding.getRoot().findViewById(R.id.text_date_disp);
-        textMake = binding.getRoot().findViewById(R.id.text_make_disp);
-        textModel = binding.getRoot().findViewById(R.id.text_model_disp);
-        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
-        textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
-        textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
-        tagListView = binding.getRoot().findViewById(R.id.list_tag);
-        itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
+
+        tabLayout = binding.getRoot().findViewById(R.id.detailsTabLayout);
+        viewPager = binding.getRoot().findViewById(R.id.detailsViewPager);
+        viewPagerAdapter = new ViewPagerAdapter(this, TabMode.Details);
 
         return binding.getRoot();
     }
@@ -117,21 +112,36 @@ public class DetailsFragment extends Fragment implements ConfirmDelete
 
         // set item details from global context
         textName.setText(currentItem.getName());
-        textValue.setText(String.valueOf(currentItem.getValue()));
-        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        textDate.setText(sdf.format(currentItem.getDate()));
-        textMake.setText(currentItem.getMake());
-        textModel.setText(currentItem.getModel());
-        textSerial.setText(currentItem.getSerialNumber());
-        textDescription.setText(currentItem.getDescription());
-        textComment.setText(currentItem.getComment());
-        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
-        tagListView.setAdapter(tagListAdapter);
-        imageListAdapter = new ImageListAdapter(getContext());
-        itemImageList.setAdapter(imageListAdapter);
 
-        globalContext.getImageManager().setAdapter(imageListAdapter);
-        globalContext.getImageManager().updateFromItem(currentItem);
+        // Initialize tab layout ui
+        viewPager.setAdapter(viewPagerAdapter);
+        tabSelected = TabSelected.Details;
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                tabSelected = TabSelected.of(position);
+                viewPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
+            }
+        });
 
         view.findViewById(R.id.button_edit).setOnClickListener(new View.OnClickListener()
         {
@@ -158,8 +168,6 @@ public class DetailsFragment extends Fragment implements ConfirmDelete
                         globalContext.getItemList().remove(currentItem);
                         globalContext.setCurrentItem(null);
                         globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                        Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                                .toString());
                         activity.returnAndClose();
                     }
                 });
@@ -173,8 +181,6 @@ public class DetailsFragment extends Fragment implements ConfirmDelete
             {
                 // Return to ViewListActivity
                 globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                        .toString());
                 activity.returnAndClose();
             }
         });

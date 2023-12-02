@@ -37,7 +37,7 @@ public class AccountList extends AEntityList<Account> {
      * Constructor for an AccountList
      */
     public AccountList() {
-        this.entityList = new ArrayList<Account>();
+        super();
         this.dbHandler = AccountDB.newInstance();
         startListening();
     }
@@ -79,6 +79,7 @@ public class AccountList extends AEntityList<Account> {
      * @param list is the list that is replacing the current list.
      */
     public void setList(final ArrayList<Account> list) {
-        this.entityList = list;
+        this.entityList.clear();
+        this.entityList.addAll(list);
     }
 }

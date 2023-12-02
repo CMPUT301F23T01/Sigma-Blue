@@ -18,17 +18,22 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
-    protected ArrayList<T> entityList;
+    protected final ArrayList<T> entityList;
     protected ADatabaseHandler<T> dbHandler;
     protected ASelectableListAdapter<T> adapter;
     protected GlobalContext globalContext;
+
+    protected AEntityList() {
+        entityList = new ArrayList<>();
+    }
+
     /**
      * Both updates the list held in this class and the adapter element.
      * @param list is the list that is replacing the current list.
      */
     public void setList(final ArrayList<T> list) {
-        this.entityList = list;
-        this.adapter.setList(list);
+        this.entityList.clear();
+        entityList.addAll(list);
     }
 
     public ArrayList<T> getList() {
@@ -99,14 +104,6 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     }
 
     /**
-     * Same as above, but with a query.
-     * @param currentQuery query to use for filtering
-     */
-    public void startListening(Query currentQuery) {
-        this.dbHandler.startListening(currentQuery, (IDatabaseList<T>) this);
-    }
-
-    /**
      * Replace the old entity with a new one
      * @param newE replacement entity
      * @param oldE entity to replace
@@ -126,10 +123,6 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
     public void syncEntity(T e){
         this.dbHandler.remove((IDatabaseItem<T>) e);
         this.dbHandler.add((IDatabaseItem<T>) e);
-    }
-
-    public ADatabaseHandler<T> getDbHandler() {
-        return dbHandler;
     }
 
     public void setDbHandler(ADatabaseHandler<T> dbHandler) {

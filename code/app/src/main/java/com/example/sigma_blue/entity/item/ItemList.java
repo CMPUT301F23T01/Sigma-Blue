@@ -23,15 +23,9 @@ import java.util.function.Function;
 
 public class ItemList extends AEntityList<Item> {
     /* Attributes */
-    private ViewListModes displayMode;
+    private VisibleItemList visibleItemList;
+    private ArrayList<Item> visibleItemArrayList;
 
-
-    public enum ViewListModes {
-        NONE, SORT, FILTER;
-
-        private ViewListModes() {
-        }
-    }
 
     /* Factory construction */
 
@@ -58,10 +52,12 @@ public class ItemList extends AEntityList<Item> {
      * Class constructor.
      */
     private ItemList() {
-        this.entityList = new ArrayList<Item>();
-        this.displayMode = ViewListModes.NONE;
+        super();
+        this.visibleItemArrayList = new ArrayList<Item>();
         this.globalContext = GlobalContext.getInstance();
         this.dbHandler = ItemDB.newInstance(globalContext.getAccount());
+        this.visibleItemList = new VisibleItemList(this.entityList, this.visibleItemArrayList);
+        // use the same array reference
     }
 
     /**
@@ -84,8 +80,9 @@ public class ItemList extends AEntityList<Item> {
     @Override
     public void updateUI() {
         if (adapter != null) {
+            visibleItemList.refreshVisibleItems();
             adapter.notifyDataSetChanged();
-            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.entityList));
+            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.visibleItemArrayList));
         };
     }
 
@@ -99,17 +96,16 @@ public class ItemList extends AEntityList<Item> {
         return ItemDB.loadArray(q, Item.itemOfQueryDocument);
     }
 
-    /**
-     * Needed when making new queries
-     * @return the collection reference of the user
-     */
-    public CollectionReference getCollectionReference() {
-        return dbHandler.getCollectionReference();
+    @Override
+    public void setAdapter(ASelectableListAdapter<Item> adapter) {
+        this.adapter = adapter;
+        this.adapter.setList(this.visibleItemArrayList);
+        this.adapter.notifyDataSetChanged();
     }
 
     public void setSummaryView(TextView summaryView) {
         ((ItemListAdapter) this.adapter).setSummaryView(summaryView);
-        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.entityList));
+        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.visibleItemArrayList));
     }
 
     /**
@@ -130,5 +126,13 @@ public class ItemList extends AEntityList<Item> {
             i.updateTag(newTag, oldTag);
             syncEntity(i);
         }
+    }
+
+    public VisibleItemList getVisibleItemList() {
+        return visibleItemList;
+    }
+
+    public ArrayList<Item> getVisibleList() {
+        return visibleItemArrayList;
     }
 }

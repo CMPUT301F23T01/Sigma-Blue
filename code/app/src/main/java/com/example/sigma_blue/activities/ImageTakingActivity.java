@@ -2,7 +2,9 @@ package com.example.sigma_blue.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -29,6 +31,7 @@ public class ImageTakingActivity extends BaseActivity{
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE_SCAN = 2;
+    static final int REQUEST_GALLERY_PICKING = 3;
 
     private GlobalContext globalContext;        // Global context object
     private boolean cameraPermissionGranted;
@@ -43,15 +46,17 @@ public class ImageTakingActivity extends BaseActivity{
         checkAndroidCameraPermissions();
 
         if (cameraPermissionGranted) {
-            dispatchScanOrImageIntent();
+            dispatchIntent();
         }
     }
 
-    private void dispatchScanOrImageIntent() {
+    private void dispatchIntent() {
         if (globalContext.getCurrentState() == ApplicationState.IMAGE_ADD_ACTIVITY) {
             dispatchTakePictureIntent();
-        } else {
+        } else if (globalContext.getCurrentState() == ApplicationState.BARCODE_ADD_ACTIVITY){
             dispatchScanBarcodeIntent();
+        } else if (globalContext.getCurrentState() == ApplicationState.GALLERY_ADD_ACTIVITY) {
+            dispatchStartGalleryIntent();
         }
     }
     private void dispatchScanBarcodeIntent() {
@@ -82,7 +87,14 @@ public class ImageTakingActivity extends BaseActivity{
             // display error state to the user
         }
     }
-
+    private void dispatchStartGalleryIntent(){
+        Intent galleryPhotoPick  = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        try {
+            startActivityForResult(galleryPhotoPick , REQUEST_GALLERY_PICKING);
+        } catch (ActivityNotFoundException e) {
+            // display error state to the user
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -113,6 +125,27 @@ public class ImageTakingActivity extends BaseActivity{
 //                //startActivity(intent);
 //                finish();
 //            }
+        } else if (requestCode == REQUEST_GALLERY_PICKING && resultCode == RESULT_OK) {
+            // extract image from path of image, then upload to the
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            if (selectedImage != null) {
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(columnIndex);
+
+                    //decode and compress the image to target for uploading and displaying
+                    Bitmap imageBitmap = globalContext.getImageManager().compressBitmap(picturePath, 1000, 1000);
+                    cursor.close();
+
+                    String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
+                    globalContext.getModifiedItem().addImagePath(path);
+                    globalContext.newState(globalContext.getLastState());
+                    finish();
+                }
+            }
         }
     }
 
@@ -133,7 +166,7 @@ public class ImageTakingActivity extends BaseActivity{
         super.onRequestPermissionsResult(r, p, g);
         if (g.length > 0 && g[0] == 0) {
             cameraPermissionGranted = true;
-            dispatchScanOrImageIntent();
+            dispatchIntent();
         } else {
             // If the user doesn't want out app to use the camera go back to the edit page
             //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
