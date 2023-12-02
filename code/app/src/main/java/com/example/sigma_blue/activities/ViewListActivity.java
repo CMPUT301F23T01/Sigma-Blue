@@ -34,7 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
 
 
-public class ViewListActivity extends BaseActivity {
+public class ViewListActivity extends BaseActivity implements ConfirmDelete {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick
@@ -182,25 +182,14 @@ public class ViewListActivity extends BaseActivity {
                 this.handleOptionsClick());
 
         viewHolder.deleteSelectedButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setCancelable(true);
-                builder.setMessage("Please confirm the deletion of the selected item(s).");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteSelectedItems();
-                            }
-                });
-                builder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+            // method for confirm delete menu, creates onClickListener for specific method of deleting
+            confirmDelete(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // code for deleting that is to be run if delete is confirmed by user
+                    deleteSelectedItems();
+                }
+            });  
         });
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
