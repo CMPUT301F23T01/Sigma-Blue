@@ -68,6 +68,7 @@ public class ImageManager {
         for (int i = 0; i < pathList.size(); i ++) {
             dbHandler.getImage(pathList.get(i), this::onImageDownload);
         }
+        this.adapter.notifyDataSetChanged();
         this.upToDate = true; // technically not up to date until the downloads finish, but this works
     }
 
