@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -72,6 +73,16 @@ public class ItemPhotosFragment extends Fragment
                     handleImageClick();
                 }
             });
+
+            // dealing with function of delete an image
+            itemImageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    globalContext.getModifiedItem().removeImagePath(globalContext.getImageManager().getPathList().get(position));
+                    globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
+                }
+            });
+
         }
     }
 

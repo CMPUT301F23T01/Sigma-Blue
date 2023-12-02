@@ -91,6 +91,10 @@ public class ImageManager {
         // in case this upload was blocking a download
     }
 
+    public ArrayList<String> getPathList() {
+        return this.pathList;
+    }
+
     // bitmap compressing method
     public Bitmap compressBitmap(String path, int reqWidth, int reqHeight) {
         // get width and height of bitmap
