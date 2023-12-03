@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.sigma_blue.R;
@@ -27,14 +28,18 @@ import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-public class ImageTakingActivity extends BaseActivity{
+/**
+ * Handles taking images, loading images from local storage, and scanning barcodes. The user
+ * shouldn't ever be on this activity for long, quickly switching to the correct activity on entry
+ */
+public class ImageTakingActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE_SCAN = 2;
     static final int REQUEST_GALLERY_PICKING = 3;
 
     private GlobalContext globalContext;        // Global context object
-    private boolean cameraPermissionGranted;
+    private boolean cameraPermissionGranted,storagePermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +50,25 @@ public class ImageTakingActivity extends BaseActivity{
 
         checkAndroidCameraPermissions();
 
-        if (cameraPermissionGranted) {
-            dispatchIntent();
-        }
+        dispatchIntent();
     }
 
     private void dispatchIntent() {
         if (globalContext.getCurrentState() == ApplicationState.IMAGE_ADD_ACTIVITY) {
-            dispatchTakePictureIntent();
+            checkAndroidCameraPermissions();
+            if (cameraPermissionGranted) {
+                dispatchTakePictureIntent();
+            }
         } else if (globalContext.getCurrentState() == ApplicationState.BARCODE_ADD_ACTIVITY){
-            dispatchScanBarcodeIntent();
+            checkAndroidCameraPermissions();
+            if (cameraPermissionGranted) {
+                dispatchScanBarcodeIntent();
+            }
         } else if (globalContext.getCurrentState() == ApplicationState.GALLERY_ADD_ACTIVITY) {
-            dispatchStartGalleryIntent();
+            checkAndroidStoragePermissions();
+            if (storagePermissionGranted) {
+                dispatchStartGalleryIntent();
+            }
         }
     }
     private void dispatchScanBarcodeIntent() {
@@ -112,6 +124,7 @@ public class ImageTakingActivity extends BaseActivity{
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
             globalContext.getModifiedItem().addImagePath(path);
+            globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
             globalContext.newState(globalContext.getLastState());
             finish();
 
@@ -137,11 +150,12 @@ public class ImageTakingActivity extends BaseActivity{
                     String picturePath = cursor.getString(columnIndex);
 
                     //decode and compress the image to target for uploading and displaying
-                    Bitmap imageBitmap = globalContext.getImageManager().compressBitmap(picturePath, 1000, 1000);
+                    Bitmap imageBitmap = globalContext.getImageManager().compressBitmap(picturePath, 500, 500);
                     cursor.close();
 
                     String path = globalContext.getImageManager().uploadImage(globalContext.getAccount(), imageBitmap);
                     globalContext.getModifiedItem().addImagePath(path);
+                    globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
                     globalContext.newState(globalContext.getLastState());
                     finish();
                 }
@@ -160,13 +174,29 @@ public class ImageTakingActivity extends BaseActivity{
             this.requestPermissions(p, 1);
         }
     }
+    private void checkAndroidStoragePermissions() {
+        int permissionStatus = ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
+        storagePermissionGranted = (permissionStatus == 0);
+
+        if (!storagePermissionGranted) {
+            // need to ask for permission
+            String[] p = {android.Manifest.permission.READ_EXTERNAL_STORAGE};
+            this.requestPermissions(p, 1);
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int r, String[] p, int[] g) {
         super.onRequestPermissionsResult(r, p, g);
         if (g.length > 0 && g[0] == 0) {
-            cameraPermissionGranted = true;
-            dispatchIntent();
+            if (r == REQUEST_IMAGE_CAPTURE) {
+                cameraPermissionGranted = true;
+                dispatchIntent();
+            } else if (r == REQUEST_GALLERY_PICKING) {
+                storagePermissionGranted = true;
+                dispatchIntent();
+            }
+
         } else {
             // If the user doesn't want out app to use the camera go back to the edit page
             //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);

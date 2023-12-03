@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,9 +24,14 @@ import com.example.sigma_blue.R;
 import com.example.sigma_blue.entity.item.ItemListAdapter;
 
 import com.example.sigma_blue.fragments.QueryFragment;
+
+import com.example.sigma_blue.utility.ConfirmDelete;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-
+/**
+ * Activity that displays the list of items. Acts like the 'main page' of the app.
+ */
 public class ViewListActivity extends BaseActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */
@@ -175,8 +181,16 @@ public class ViewListActivity extends BaseActivity {
         viewHolder.optionsButton.setOnClickListener(v ->
                 this.handleOptionsClick());
 
-        viewHolder.deleteSelectedButton.setOnClickListener(v ->
-                this.deleteSelectedItems());
+        viewHolder.deleteSelectedButton.setOnClickListener(v -> {
+            // method for confirm delete menu, creates onClickListener for specific method of deleting
+            ConfirmDelete.confirmDelete(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // code for deleting that is to be run if delete is confirmed by user
+                    deleteSelectedItems();
+                }
+            });  
+        });
 
         viewHolder.addTagsSelectedButton.setOnClickListener(v -> {
             viewHolder.selectedItemsMenu.setVisibility(View.GONE);
@@ -241,7 +255,7 @@ public class ViewListActivity extends BaseActivity {
                     logoutUser();
                 }
                 else if(optionsMenu[i].equals("Delete Account")){
-                    handleDeleteAccount();
+                    ConfirmDelete.confirmDelete(ViewListActivity.this, (dialog, which) -> handleDeleteAccount());
                 }
                 else if (optionsMenu[i].equals("Cancel")) {
                     dialogInterface.dismiss();

@@ -5,13 +5,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.example.sigma_blue.R;
@@ -21,15 +23,18 @@ import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.databinding.DetailsFragItemPhotosBinding;
 import com.example.sigma_blue.databinding.EditFragItemPhotosBinding;
-import com.example.sigma_blue.entity.image.ImageListAdapter;
+import com.example.sigma_blue.entity.image.ImageListAdapterFromPath;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ItemPhotosFragment extends Fragment
+/**
+ * Display images of the modified item
+ */
+public class ItemPhotosFragment extends Fragment implements ImageListAdapterFromPath.OnItemClickListener
 {
     private final GlobalContext globalContext = GlobalContext.getInstance();
     private final TabMode mode;
     private ViewBinding binding;
-    private ListView itemImageList;
+    private RecyclerView itemImageList;
     private FloatingActionButton addPicture;
 
     public ItemPhotosFragment(TabMode mode) {
@@ -61,10 +66,17 @@ public class ItemPhotosFragment extends Fragment
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageListAdapter imageListAdapter = new ImageListAdapter(getContext());
+        //enable or disable the long click menu
+        ImageListAdapterFromPath imageListAdapter = new ImageListAdapterFromPath(getContext(), mode == TabMode.Edit);
+
         itemImageList.setAdapter(imageListAdapter);
         globalContext.getImageManager().setAdapter(imageListAdapter);
-
+        if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT ){
+            globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
+        }else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT
+                        || globalContext.getCurrentState() == ApplicationState.DETAILS_FRAGMENT ) {
+            globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
+        }
         if (mode == TabMode.Edit) {
             addPicture.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -72,6 +84,10 @@ public class ItemPhotosFragment extends Fragment
                     handleImageClick();
                 }
             });
+
+
+            globalContext.getImageManager().getAdapter().setOnItemClickListener(this);
+
         }
     }
 
@@ -104,6 +120,9 @@ public class ItemPhotosFragment extends Fragment
     public void updateBinding(ViewBinding binding)
     {
         itemImageList = binding.getRoot().findViewById(R.id.list_pictures);
+        itemImageList.setHasFixedSize(true);
+        itemImageList.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
     }
 
     /**
@@ -144,5 +163,23 @@ public class ItemPhotosFragment extends Fragment
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onWhatEverClick(int position) {
+
+    }
+
+    // dealing with functionality of delete an image
+    @Override
+    public void onDeleteClick(int position) {
+        Log.e("check pos", String.valueOf(position));
+        globalContext.getModifiedItem().removeImagePath(globalContext.getImageManager().getPathList().get(position));
+        globalContext.getImageManager().updateFromItem(globalContext.getModifiedItem());
     }
 }

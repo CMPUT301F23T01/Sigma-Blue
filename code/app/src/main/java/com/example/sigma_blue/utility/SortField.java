@@ -6,28 +6,21 @@ import com.example.sigma_blue.entity.item.Item;
 
 import java.util.Comparator;
 
+/**
+ * Enum of the ways to sort an item
+ */
 public enum SortField {
-    NAME(Item.dbName, "Name"),
-    DATE(Item.dbDate, "Date"),
-    DESCRIPTION(Item.dbDescription, "Description"),
-    MAKE(Item.dbMake, "Make"),
-    VALUE(Item.dbValue, "Item Value"),
-    NO_SELECTION(Item.dbName, "No Selection");
+    NAME("Name"),
+    DATE("Date"),
+    DESCRIPTION("Description"),
+    MAKE("Make"),
+    VALUE("Item Value"),
+    NO_SELECTION("No Selection");
 
-    final private String dbFieldName;
     final private String menuName;
 
-    SortField(String dbFieldName, String menuName) {
-        this.dbFieldName = dbFieldName;
+    SortField(String menuName) {
         this.menuName = menuName;
-    }
-
-    /**
-     * Returns the field to sort by on the database
-     * @return the field name on that database to sort by
-     */
-    public String getDbField() {
-        return this.dbFieldName;
     }
 
     /**

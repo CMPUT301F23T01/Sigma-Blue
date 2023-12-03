@@ -11,6 +11,8 @@ import java.util.Comparator;
 public class ItemSortComparator {
     private SortField sortBy;
     private int direction;
+    // note that since direction is -1 or 1 it inverts the 'usual' result fo the compareTo method when
+    // the direction needs to be reversed.
     private final Comparator<Item> defaultComparator      = (o1, o2) -> direction * o1.getName().compareTo(o2.getName());
     private final Comparator<Item> nameComparator         = (o1, o2) -> direction * o1.getName().compareTo(o2.getName());
     private final Comparator<Item> dateComparator         = (o1, o2) -> direction * o1.getDate().compareTo(o2.getDate());

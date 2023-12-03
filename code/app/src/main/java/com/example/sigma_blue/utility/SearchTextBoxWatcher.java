@@ -4,6 +4,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
+/**
+ * A specialized TextWatcher used for the filter/search fragment editText boxes.
+ * @param <T> The type of text view to watch
+ */
 public abstract class SearchTextBoxWatcher<T extends TextView> implements TextWatcher {
     T target;   // The edit text that is being changed.
 

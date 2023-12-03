@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+/**
+ * Adapter for displaying items.
+ */
 public class ItemListAdapter extends ASelectableListAdapter<Item> {
     /* The the lists that are relevant to the item list adapter */
     private TextView sumView;

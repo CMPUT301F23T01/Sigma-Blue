@@ -18,7 +18,7 @@ public class ImageManager {
     private ArrayList<String> pathList;
     private ArrayList<Bitmap> entityList;
     protected ImageDB dbHandler;
-    protected ImageListAdapter adapter;
+    protected ImageListAdapterFromPath adapter;
     private Boolean uploading;
     private Boolean upToDate;
 
@@ -44,6 +44,7 @@ public class ImageManager {
         return dbHandler.addImage(bitmap, account, task -> onImageUpload());
     }
 
+
     /**
      * use the image paths from the passed item to download the corresponding bitmaps
      * @param item item to get pictures from
@@ -60,11 +61,17 @@ public class ImageManager {
         }
     }
 
+    public ImageListAdapterFromPath getAdapter() {
+        return adapter;
+    }
+
     private void updateFromList() {
         this.entityList.clear();
-        for (String s : pathList) {
-            dbHandler.getImage(s, this::onImageDownload);
+        for (int i = 0; i < pathList.size() ; i ++) {
+            dbHandler.getImage(pathList.get(i), this::onImageDownload);
         }
+        this.adapter.setPathData(this.pathList);
+        this.adapter.notifyDataSetChanged();
         this.upToDate = true; // technically not up to date until the downloads finish, but this works
     }
 
@@ -72,9 +79,9 @@ public class ImageManager {
      * Set the adapter and tie it to the list of image bitmaps held in this class.
      * @param adapter
      */
-    public void setAdapter(ImageListAdapter adapter) {
+    public void setAdapter(ImageListAdapterFromPath adapter) {
         this.adapter = adapter;
-        this.adapter.setList(entityList);
+        this.adapter.setPathData(pathList);
     }
     private void onImageDownload(byte[] bytes) {
         Log.i("DEBUG", "Image download succeed");
@@ -89,6 +96,10 @@ public class ImageManager {
             this.updateFromList();
         }
         // in case this upload was blocking a download
+    }
+
+    public ArrayList<String> getPathList() {
+        return this.pathList;
     }
 
     // bitmap compressing method
