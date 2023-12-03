@@ -32,7 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 /**
  * Activity that displays the list of items. Acts like the 'main page' of the app.
  */
-public class ViewListActivity extends BaseActivity {
+public class ViewListActivity extends AppCompatActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */
     // https://stackoverflow.com/questions/24471109/recyclerview-onclick

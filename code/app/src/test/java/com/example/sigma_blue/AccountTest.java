@@ -55,19 +55,18 @@ public class AccountTest {
     @Test
     public void testHashMapGeneration() {
         // Testing creation of hashmap objects from the tags
-        HashMap<String, Object> expected1 = hashMapFormatter("testing",
-                "password1");
-        HashMap<String, Object> expected2 = hashMapFormatter("testing2",
-                "Password2");
-        HashMap<String, Object> expected3 = hashMapFormatter("Testing",
-                "p");
+        List<HashMap<String, Object>> testVector = new ArrayList<>();
+        // Not the cleanest way yet, but better than before
+        testVector.add(hashMapFormatter("testing",
+                "password1"));
+        testVector.add( hashMapFormatter("testing2",
+                "Password2"));
+        testVector.add( hashMapFormatter("Testing",
+                "p"));
 
-        assertEquals(expected1, cUTs.get(0).getHashMapOfEntity().apply(cUTs
-                .get(0)));
-        assertEquals(expected2, cUTs.get(1).getHashMapOfEntity().apply(cUTs
-                .get(1)));
-        assertEquals(expected3, cUTs.get(2).getHashMapOfEntity().apply(cUTs
-                .get(2)));
+        for (int i = 0; i < testVector.size(); i++)
+            assertEquals(testVector.get(i), cUTs.get(i).getHashMapOfEntity()
+                    .apply(cUTs.get(i)));
     }
 
     @Test
@@ -109,6 +108,7 @@ public class AccountTest {
     public void testAccountOfDocument() {
         Account expected = new Account("Watrina",
                 "magicMushrooms");
+
         Mockito.when(mockDocument.getString(Account.USERNAME))
                 .thenReturn("Watrina");
         Mockito.when(mockDocument.getString(Account.PASSWORD))
