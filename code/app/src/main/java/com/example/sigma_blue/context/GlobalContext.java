@@ -16,26 +16,27 @@ import com.example.sigma_blue.entity.tag.TagList;
 import java.util.ArrayList;
 
 /**
+ * Used for sharing data between activities/fragments instead of bundles. Bundles should only be
+ * used when interfacing with 3rd party code.
  * Guidelines:
  *   - ALL state shared between two or more activities/fragments/classes should be here.
  *   - Call newState() right before switching to a new activity/fragment. The new state should be
- *     the name of the state being switched to. Eventually I'll make an enum for the states.
+ *     the name of the state being switched to.
  *   - add "private GlobalContext globalContext" to every class you use global context.
  */
 public class GlobalContext {
     private static GlobalContext instance;
-    private Account account;
-    private AccountList accountList;
+    private Account account; // not final to ease testing
+    private final AccountList accountList;
     private ItemList itemList;
-    private SelectedEntities<Item> selectedItems;
+    private final SelectedEntities<Item> selectedItems;
     private TagList tagList;
-    private SelectedEntities<Tag> selectedTags;
-    private ImageManager imageManager;
-    private DescriptionManager descriptionManager;
+    private final SelectedEntities<Tag> selectedTags;
+    private final ImageManager imageManager;
+    private final DescriptionManager descriptionManager;
     private Item currentItem;
     private Item modifiedItem;
-    private Tag currentTag;
-    private ArrayList<ApplicationState> stateHistory; // store a history for debugging
+    private final ArrayList<ApplicationState> stateHistory; // store a history for debugging
 
     /**
      * The intended way to use this class. Singleton design pattern.

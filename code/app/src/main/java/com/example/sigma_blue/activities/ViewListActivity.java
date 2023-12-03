@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,7 +29,9 @@ import com.example.sigma_blue.utility.ConfirmDelete;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-
+/**
+ * Activity that displays the list of items. Acts like the 'main page' of the app.
+ */
 public class ViewListActivity extends BaseActivity {
 
     /* Tracking views that gets reused. Using nested class because struct */

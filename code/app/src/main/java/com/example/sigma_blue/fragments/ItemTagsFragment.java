@@ -26,6 +26,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+/**
+ * Display tags of the current item
+ */
 public class ItemTagsFragment extends Fragment
 {
     private final GlobalContext globalContext = GlobalContext.getInstance();

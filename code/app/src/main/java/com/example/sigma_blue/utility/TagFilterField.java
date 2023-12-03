@@ -7,8 +7,11 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
+/**
+ * Check if an item's tags matches a given list of tags
+ */
 public class TagFilterField extends FilterField<Item>{
-    private ArrayList<Tag> tagsToMatch;
+    private final ArrayList<Tag> tagsToMatch;
 
     /**
      *

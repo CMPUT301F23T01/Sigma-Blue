@@ -26,6 +26,9 @@ import com.example.sigma_blue.databinding.EditFragItemPhotosBinding;
 import com.example.sigma_blue.entity.image.ImageListAdapterFromPath;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/**
+ * Display images of the modified item
+ */
 public class ItemPhotosFragment extends Fragment implements ImageListAdapterFromPath.OnItemClickListener
 {
     private final GlobalContext globalContext = GlobalContext.getInstance();

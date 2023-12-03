@@ -2,6 +2,9 @@ package com.example.sigma_blue.utility;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Modes for the search/filter fragment
+ */
 public enum ModeField {
     SORT("Sort"), SEARCH("Search");
 

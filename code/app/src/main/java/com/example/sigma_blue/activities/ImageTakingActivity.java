@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.sigma_blue.R;
@@ -27,7 +28,11 @@ import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-public class ImageTakingActivity extends BaseActivity{
+/**
+ * Handles taking images, loading images from local storage, and scanning barcodes. The user
+ * shouldn't ever be on this activity for long, quickly switching to the correct activity on entry
+ */
+public class ImageTakingActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE_SCAN = 2;

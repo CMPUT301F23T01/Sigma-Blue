@@ -21,6 +21,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Wraps the visible items logic and database handling and provides an interface for activities/
+ * fragments.
+ */
 public class ItemList extends AEntityList<Item> {
     /* Attributes */
     private VisibleItemList visibleItemList;

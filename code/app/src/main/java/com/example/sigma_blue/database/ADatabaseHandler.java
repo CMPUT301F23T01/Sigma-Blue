@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Interface for the Database interface classes.
+ * Parent class for the Database interface classes that interface with firebase (not firebase storage)
  * @param <T> is the Object that is being stored in the database. i.e., Item,
  *           Tag
  */

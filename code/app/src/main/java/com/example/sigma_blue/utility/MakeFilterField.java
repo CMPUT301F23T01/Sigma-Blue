@@ -4,6 +4,9 @@ import com.example.sigma_blue.entity.item.Item;
 
 import java.util.Objects;
 
+/**
+ * Check if an item make matches a string
+ */
 public class MakeFilterField extends FilterField<Item>{
     public MakeFilterField(String filterText, boolean enabled, boolean exact) {
         super(filterText, enabled, exact);
