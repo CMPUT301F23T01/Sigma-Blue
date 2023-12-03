@@ -54,6 +54,16 @@ public class UITestTools {
                 .perform(click());
     }
 
-    
+    public static void typeIn(int id, String text) {
+        onView(withId(id)).perform(ViewActions.typeText(text));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+    }
+
+    public static void replaceWith(int id, String text) {
+        onView(withId(id)).perform(ViewActions.replaceText(text));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+    }
+
+
 
 }
