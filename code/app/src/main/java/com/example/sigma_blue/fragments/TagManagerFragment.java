@@ -217,7 +217,7 @@ public class TagManagerFragment extends Fragment {
                     globalContext.getSelectedTags().clear();    // Clears all
                     globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
 
-                    Item modItem;
+                    Item modItem;   // For the case that an item is being edited
                     if ((modItem = globalContext.getModifiedItem()) != null)
                         globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
                 });
