@@ -2,47 +2,41 @@ package com.example.sigma_blue.context;
 
 import android.util.Log;
 
-import com.example.sigma_blue.database.ADatabaseHandler;
-import com.example.sigma_blue.database.IDatabaseList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
-import com.example.sigma_blue.entity.image.ImageDB;
+import com.example.sigma_blue.entity.description.DescriptionManager;
+import com.example.sigma_blue.entity.image.ImageManager;
 import com.example.sigma_blue.entity.item.Item;
 
-import com.example.sigma_blue.entity.item.ItemDB;
 import com.example.sigma_blue.entity.item.ItemList;
 
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.entity.tag.TagList;
-import com.example.sigma_blue.query.QueryGenerator;
-import com.example.sigma_blue.query.QueryMode;
-import com.example.sigma_blue.utility.Pair;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
 /**
+ * Used for sharing data between activities/fragments instead of bundles. Bundles should only be
+ * used when interfacing with 3rd party code.
  * Guidelines:
  *   - ALL state shared between two or more activities/fragments/classes should be here.
  *   - Call newState() right before switching to a new activity/fragment. The new state should be
- *     the name of the state being switched to. Eventually I'll make an enum for the states.
+ *     the name of the state being switched to.
  *   - add "private GlobalContext globalContext" to every class you use global context.
  */
 public class GlobalContext {
     private static GlobalContext instance;
-    private Account account;
-    private AccountList accountList;
+    private Account account; // not final to ease testing
+    private final AccountList accountList;
     private ItemList itemList;
-    private SelectedEntities<Item> selectedItems;
+    private final SelectedEntities<Item> selectedItems;
     private TagList tagList;
-    private SelectedEntities<Tag> selectedTags;
+    private final SelectedEntities<Tag> selectedTags;
+    private final ImageManager imageManager;
+    private final DescriptionManager descriptionManager;
     private Item currentItem;
     private Item modifiedItem;
-    private Tag currentTag;
-    private QueryMode queryState;
-    private ImageDB imageDB; // probably bad
-
-    private ArrayList<ApplicationState> stateHistory; // store a history for debugging
+    private final ArrayList<ApplicationState> stateHistory; // store a history for debugging
 
     /**
      * The intended way to use this class. Singleton design pattern.
@@ -73,7 +67,8 @@ public class GlobalContext {
         this.selectedTags = new SelectedEntities<Tag>();
         this.accountList = new AccountList();
         this.stateHistory = new ArrayList<>();
-        this.imageDB = new ImageDB();
+        this.imageManager = new ImageManager();
+        this.descriptionManager = new DescriptionManager();
     }
 
     /**
@@ -107,29 +102,10 @@ public class GlobalContext {
     public ItemList getItemList() {
         return itemList;
     }
-    public ImageDB getImageDB() {return imageDB;}
-    /**
-     * Setter for the query mode.
-     * @return the query mode object, which keeps track of the current query
-     * state.
-     */
-    public QueryMode getQueryState() {
-        if (queryState == null) queryState = new QueryMode(itemList
-                .getCollectionReference());   // lazy cons
-       return this.queryState;
-    }
+    public ImageManager getImageManager() {return imageManager;}
 
     public TagList getTagList() {
         return tagList;
-    }
-
-    /**
-     * Returns a pair to reduce how verbose the methods are getting.
-     * @return a pair of the database list and the database handler. Used for
-     * querying.
-     */
-    public Pair<ADatabaseHandler<Item>, IDatabaseList<Item>> getQueryPair() {
-        return new Pair<>(itemList.getDbHandler(), itemList);
     }
 
     /**
@@ -162,5 +138,15 @@ public class GlobalContext {
 
     public void setModifiedItem(Item modifiedItem) {
         this.modifiedItem = modifiedItem;
+    }
+
+    public void updateTag(Tag newTag, Tag oldTag) {
+        this.tagList.updateEntity(newTag, oldTag);
+        this.selectedTags.updateEntity(newTag, oldTag);
+        this.itemList.updateTags(newTag, oldTag);
+    }
+
+    public DescriptionManager getDescriptionManager() {
+        return descriptionManager;
     }
 }

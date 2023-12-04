@@ -17,18 +17,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Parent class for the *List classes. Implements some useful utility functions
+ * @param <T> entity to store
+ */
 public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
-    protected ArrayList<T> entityList;
+    protected final ArrayList<T> entityList;
     protected ADatabaseHandler<T> dbHandler;
     protected ASelectableListAdapter<T> adapter;
     protected GlobalContext globalContext;
+
+    protected AEntityList() {
+        entityList = new ArrayList<>();
+    }
+
     /**
      * Both updates the list held in this class and the adapter element.
      * @param list is the list that is replacing the current list.
      */
     public void setList(final ArrayList<T> list) {
-        this.entityList = list;
-        this.adapter.setList(list);
+        this.entityList.clear();
+        entityList.addAll(list);
     }
 
     public ArrayList<T> getList() {
@@ -92,7 +101,7 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
 
     /**
      * Sets up a listening thread for changes to the database collection. This
-     * method will update the state of the tag list.
+     * method will update the state of the list.
      */
     public void startListening() {
         dbHandler.startListening(this.dbHandler.getCollectionReference(), (IDatabaseList<T>) this);
@@ -120,17 +129,15 @@ public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
         this.dbHandler.add((IDatabaseItem<T>) e);
     }
 
-    public ADatabaseHandler<T> getDbHandler() {
-        return dbHandler;
-    }
-
     public void setDbHandler(ADatabaseHandler<T> dbHandler) {
         this.dbHandler = dbHandler;
     }
 
     /**
-     * Default instance creation. Should use the account in global context (if account needed).
-     * This method should also set up the db handler and adapter.
+     * This method removes all the items owned by the user. Made for testing.
      */
-    //public abstract AEntityList<T> newInstance();
+    public void removeAll() {
+        this.entityList.stream().forEach(item -> dbHandler.remove((IDatabaseItem<T>) item));
+        this.entityList.clear();
+    }
 }

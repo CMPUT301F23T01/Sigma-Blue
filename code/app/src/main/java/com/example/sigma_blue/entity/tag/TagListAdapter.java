@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Adapter for displaying tags
+ */
 public class TagListAdapter extends ASelectableListAdapter<Tag> {
     /**
      * Base factory that takes in a tagList object and returns the adapter for it

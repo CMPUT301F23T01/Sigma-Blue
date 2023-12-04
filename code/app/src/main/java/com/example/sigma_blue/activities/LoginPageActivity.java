@@ -3,6 +3,8 @@ package com.example.sigma_blue.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.sigma_blue.context.ApplicationState;
@@ -18,7 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 /**
  * Class for first opened activity of app (login/create account page)
  */
-public class LoginPageActivity extends BaseActivity implements CreateAccFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener{
+public class LoginPageActivity extends AppCompatActivity implements CreateAccFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener{
 
     public Button createAccBtn;
     public Button loginBtn;
