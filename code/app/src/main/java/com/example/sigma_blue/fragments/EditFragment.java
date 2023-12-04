@@ -187,10 +187,15 @@ public class EditFragment extends Fragment
                             activity.returnAndClose();
                         }
                     } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
-                        globalContext.getItemList().updateEntity(newItem, oldItem);
-                        globalContext.setCurrentItem(newItem);
-                        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
-                        NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                        if (globalContext.getItemList().getList().contains(newItem) && !newItem.equals(oldItem)){
+                            Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
+                            errorSnackbar.show();
+                        } else {
+                            globalContext.getItemList().updateEntity(newItem, oldItem);
+                            globalContext.setCurrentItem(newItem);
+                            globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
+                            NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                        }
                     } else {
                         Log.e("BAD STATE",
                                 "Edit and the item doesn't exist");

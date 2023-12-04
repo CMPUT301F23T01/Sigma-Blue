@@ -200,7 +200,7 @@ public class ImageTakingActivity extends AppCompatActivity {
         } else {
             // If the user doesn't want out app to use the camera go back to the edit page
             //Intent intent = new Intent(ImageTakingActivity.this, AddEditActivity.class);
-            globalContext.newState(ApplicationState.EDIT_ITEM_FRAGMENT);
+            globalContext.newState(globalContext.getLastState());
             //startActivity(intent);
             finish();
         }
