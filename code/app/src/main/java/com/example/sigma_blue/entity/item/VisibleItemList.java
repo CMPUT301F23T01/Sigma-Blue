@@ -36,6 +36,7 @@ public class VisibleItemList {
             if (makeFilterField.match(i) &&
                 nameFilterField.match(i) &&
                 descriptionFilterField.match(i) &&
+                tagFilterField.match(i) &&
                 dateFilterField.match(i)){
 
                 visibleItems.add(i);
