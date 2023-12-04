@@ -118,8 +118,9 @@ public class ViewListActivity extends AppCompatActivity {
         Log.i("DEBUG", item.getName() + "Short Press");
         Intent intent = new Intent(ViewListActivity.this, AddEditActivity.class);
         Item currentItem = new Item(item);
+        Item modifiedItem = new Item(item);
         globalContext.setCurrentItem(currentItem);
-        globalContext.setModifiedItem(item);
+        globalContext.setModifiedItem(modifiedItem);
         globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
         startActivity(intent);
     }

@@ -19,7 +19,7 @@ public class ItemSortComparator {
     private final Comparator<Item> makeComparator         = (o1, o2) -> direction * o1.getMake().compareTo(o2.getMake());
     private final Comparator<Item> valueComparator        = (o1, o2) -> direction * o1.getValue().compareTo(o2.getValue());
     private final Comparator<Item> descriptionComparator  = (o1, o2) -> direction * o1.getDescription().compareTo(o2.getDescription());
-    private final Comparator<Item> tagComparator          = (o1, o2) -> -direction * String.valueOf(o1.getTags().size()).compareTo(String.valueOf(o2.getTags().size()));
+    private final Comparator<Item> tagComparator          = (o1, o2) -> direction * String.valueOf(o1.getTags().size()).compareTo(String.valueOf(o2.getTags().size()));
 
     public ItemSortComparator(SortField sortBy, int direction){
         this.sortBy = sortBy;
