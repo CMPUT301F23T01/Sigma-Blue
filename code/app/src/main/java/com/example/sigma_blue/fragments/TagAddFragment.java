@@ -22,7 +22,7 @@ import com.example.sigma_blue.entity.tag.Tag;
 import com.google.android.material.snackbar.Snackbar;
 
 /**
- * Fragment for adding new tags. //TODO, merge into tag edit fragment
+ * Fragment for adding new tags. //
  */
 public class TagAddFragment extends Fragment {
     private GlobalContext globalContext;
