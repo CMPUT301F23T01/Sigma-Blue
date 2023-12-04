@@ -214,7 +214,7 @@ public class TagManagerFragment extends Fragment {
                     globalContext.getSelectedTags().getSelected().forEach(tag ->
                             globalContext.getTagList().remove(tag));
 
-                    globalContext.getSelectedTags().clear();    // Clears all
+                    globalContext.getSelectedTags().resetSelected();
                     globalContext.getItemList().cleanAllItemTags(globalContext
                             .getTagList().getList());
 
