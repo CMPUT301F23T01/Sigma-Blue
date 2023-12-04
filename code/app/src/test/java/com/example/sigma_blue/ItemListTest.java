@@ -28,14 +28,17 @@ public class ItemListTest {
     /* Under test */
     ItemList itemListUT;
     ItemFactory itemF;
-    GlobalContext globalContext;
     ArrayList<Item> fakeItemDB;
 
     /* Mock classes */
     @Mock
     ItemDB mockDBHandler;
+
     @Mock
     ItemListAdapter itemListAdapter;
+
+    @Mock
+    GlobalContext globalContext;
 
     /**
      * Recreating the Class Under Test
@@ -65,8 +68,7 @@ public class ItemListTest {
     @Test
     public void sizeTest() {
         itemListUT.add(placeHolderItem1());
-        fail("Need to rework");
-        //Assert.assertEquals(1, itemListUT.size());
+        Assert.assertEquals(1, itemListUT.getList().size());
     }
 
     /**
