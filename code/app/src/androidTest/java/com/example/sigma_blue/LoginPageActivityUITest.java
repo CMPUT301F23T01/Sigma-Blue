@@ -84,7 +84,7 @@ public class LoginPageActivityUITest {
     public void check_login_US_06_01_02() {
         onView(withId(R.id.createAccButton)).perform(click());
         onView(withId(R.id.usernameEditText)).perform(ViewActions
-                .typeText("Temp_User"));
+                .typeText("Temp_User1"));
         onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
         onView(withId(R.id.passwordEditText)).perform(ViewActions
                 .typeText("password"));
@@ -96,7 +96,7 @@ public class LoginPageActivityUITest {
 
         // login with new account
         onView(withId(R.id.loginButton)).perform(click());
-        onView(withId(R.id.usernameEditText)).perform(ViewActions.typeText("Temp_User"));
+        onView(withId(R.id.usernameEditText)).perform(ViewActions.typeText("Temp_User1"));
         onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
         onView(withId(R.id.passwordEditText)).perform(ViewActions.typeText("password"));
         onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());

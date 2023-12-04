@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Keeps track of a global use of tags. Also allows for sync to the DB (well in the future...)
+ * Keeps track of a global use of tags. Also allows for sync to the DB
  */
 public class TagList extends AEntityList<Tag> {
     /**
@@ -52,14 +52,14 @@ public class TagList extends AEntityList<Tag> {
     }
 
     private TagList(TagDB tagDB) {
+        super();
         this.dbHandler = tagDB;
-        this.entityList = new ArrayList<>();
     }
 
     private TagList() {
+        super();
         this.globalContext = GlobalContext.getInstance();
         this.dbHandler = TagDB.newInstance(globalContext.getAccount());
-        this.entityList = new ArrayList<>();
     }
 
     /**

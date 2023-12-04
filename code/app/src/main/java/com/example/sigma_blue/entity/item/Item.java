@@ -3,7 +3,6 @@ package com.example.sigma_blue.entity.item;
 
 import android.util.Log;
 
-import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.tag.Tag;
 import com.example.sigma_blue.database.IDatabaseItem;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -28,15 +27,14 @@ public class Item implements Comparable<Item>, Serializable,
     public static final String dbName = "NAME", dbDate = "DATE",
             dbDescription = "DESCRIPTION", dbMake = "MAKE", dbValue = "VALUE",
             dbModel = "MODEL", dbComment = "COMMENT", dbSerial = "SERIAL",
-            dbTags = "TAGS";
+            dbTags = "TAGS", dbImages = "IMAGES";
 
-    private String name;
+    private String description, make, model, name;
     private Date date;
-    private String description, make, model;
     private Double value;
     private String serialNumber, comment;
     private List<Tag> tags;
-    private GlobalContext globalContext;
+    private ArrayList<String> imagePaths;
 
     /*TODO
         UNFINISHED ITEM OBJECT!!!
@@ -67,7 +65,7 @@ public class Item implements Comparable<Item>, Serializable,
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
                                    String model, String serial, Double value,
-                                   List<String> tags) {
+                                   List<String> imagePaths, List<String> tags) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -84,12 +82,19 @@ public class Item implements Comparable<Item>, Serializable,
             Tag newTag = new Tag(s.substring(0, s.length()-8), s.substring(s.length()-8));
             ret.addTag(newTag);
         }
+
+        // workaround to allow for loading documents from before images were a thing
+        if (imagePaths != null) {
+            for (String s : imagePaths) {
+                ret.addImagePath(s);
+            }
+        }
         return ret;
     }
 
     public static Item newInstance(String t, Date date, String comment,
                                    String description, String make,
-                                   String model, String serial, Double value) {
+                                   String model, String serial, Double value ) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -106,7 +111,7 @@ public class Item implements Comparable<Item>, Serializable,
 
     public static Item newInstance(final String t, final Date date,
                                    final String make, final String model,
-                                   final String serial, final Double value) {
+                                   final String serial, final Double value ) {
         Item ret = new Item(t);
 
         /* Default setting */
@@ -133,7 +138,6 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name, Date date, String description, String comment,
                 String make, String serial, String model, Double value) {
-        this.globalContext = GlobalContext.getInstance();
         this.name = name;
         this.date = date;
         this.description = description;
@@ -143,7 +147,8 @@ public class Item implements Comparable<Item>, Serializable,
         this.value = value;
         this.comment = comment;
 
-        this.tags = new ArrayList<Tag>();
+        this.tags = new ArrayList<>();
+        this.imagePaths = new ArrayList<>();
     }
 
     /**
@@ -153,16 +158,36 @@ public class Item implements Comparable<Item>, Serializable,
      */
     public Item(String name) {
         /* Making just the most vital components */
-        this.name = name;
-        this.tags = new ArrayList<>();
+        this(name, new Date(), null, null, null,
+                null, null, null);
     }
 
     /**
      * Constructor for an empty item
+     * Things that cannot be null:
+     * name
      */
     public Item() {
         this("", new Date(), "", "", "", "",
-                "", 0d);
+                "", null);
+    }
+
+    /**
+     * Copy constructor
+     * @param other item to copy from
+     */
+    public Item(Item other) {
+        this.name = other.getName();
+        this.date = other.getDate();
+        this.description = other.getDescription();
+        this.make = other.getMake();
+        this.model = other.getModel();
+        this.serialNumber = other.getSerialNumber();
+        this.value = other.getValue();
+        this.comment = other.getComment();
+
+        this.tags = new ArrayList<Tag>(other.getTags());
+        this.imagePaths = new ArrayList<String>(other.getImagePaths());
     }
 
     /**
@@ -180,7 +205,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param name This is a name to set
      */
     public void setName(String name) {
-        this.name = name;
+        if (name != null) this.name = name; // Should never be null
+        else throw new IllegalArgumentException("Item name cannot be null");
     }
 
     /**
@@ -318,13 +344,13 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     /**
-     * Returns the list of tag names
+     * Returns the list of document tag ids.
      *
-     * @return
+     * @return a list of the document tag ID
      */
-    public ArrayList<String> getTagNames() {
-        return new ArrayList<>(tags.stream().map(Tag::getDocID).collect(Collectors
-                .toList()));
+    public ArrayList<String> getTagDocIDs() {
+        return tags.stream().map(Tag::getDocID).collect(Collectors
+                .toCollection(ArrayList::new));
     }
 
     /**
@@ -333,7 +359,8 @@ public class Item implements Comparable<Item>, Serializable,
      * @param tags List containing tags.
      */
     public void setTags(List<Tag> tags) {
-        this.tags = tags;
+        this.tags.clear();
+        this.tags.addAll(tags);
     }
 
     /**
@@ -363,6 +390,23 @@ public class Item implements Comparable<Item>, Serializable,
         return false;
     }
 
+    public ArrayList<String> getImagePaths() {
+        return this.imagePaths;
+    }
+
+    public void addImagePath(String i) {
+        this.imagePaths.add(i);
+    }
+
+    public boolean removeImagePath(String i) {
+        if (this.imagePaths.contains(i)){
+            this.imagePaths.remove(i);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Method that checks if the Item contains a given tag
      *
@@ -370,7 +414,7 @@ public class Item implements Comparable<Item>, Serializable,
      * @return this.tags.contains(( Object)tag) is a boolean that has value true if the Item contains the tag, false if not
      */
     public boolean hasTag(Tag tag) {
-        return this.tags.contains((Object) tag);
+        return this.tags.contains(tag);
     }
 
     /**
@@ -397,10 +441,26 @@ public class Item implements Comparable<Item>, Serializable,
     }
 
     @Override
-    public Function<IDatabaseItem<Item>, HashMap<String, Object>> getHashMapOfEntity() {
-        return hashMapOfItem;
+    public Function<IDatabaseItem<Item>,
+            HashMap<String, Object>> getHashMapOfEntity() {
+        return dbItem -> {
+            Item item = dbItem.getInstance();
+            HashMap<String, Object> ret = new HashMap<>();
+            ret.put(dbName, item.getName());
+            ret.put(dbDate, simpledf.format(item.getDate()));
+            ret.put(dbMake, item.getMake());
+            ret.put(dbModel, item.getModel());
+            ret.put(dbComment, item.getComment());
+            ret.put(dbDescription, item.getDescription());
+            ret.put(dbSerial, item.getSerialNumber());
+            ret.put(dbValue, item.getValue());
+            ret.put(dbImages, item.getImagePaths());
+            ret.put(dbTags, item.getTagDocIDs());
+            Log.e("TAG NAMES", item.getTagDocIDs().stream()
+                    .reduce("", (acc, ele) -> acc + ele));
+            return ret;
+        };
     }
-
 
     /**
      * This overrides equals method of super class
@@ -457,27 +517,6 @@ public class Item implements Comparable<Item>, Serializable,
     public Item getInstance() {
         return this;
     }
-    /**
-     * Function for converting Item object into HashMap, which is compatible
-     * with Firestore database.
-     */
-    public static final Function<IDatabaseItem<Item>, HashMap<String, Object>> hashMapOfItem =
-            dbItem -> {
-                Item item = dbItem.getInstance();
-                HashMap<String, Object> ret = new HashMap<>();
-                ret.put(dbName, item.getName());
-                ret.put(dbDate, simpledf.format(item.getDate()));
-                ret.put(dbMake, item.getMake());
-                ret.put(dbModel, item.getModel());
-                ret.put(dbComment, item.getComment());
-                ret.put(dbDescription, item.getDescription());
-                ret.put(dbSerial, item.getSerialNumber());
-                ret.put(dbValue, item.getValue());
-                ret.put(dbTags, item.getTagNames());
-                Log.e("TAG NAMES", item.getTagNames().stream()
-                        .reduce("", (acc, ele) -> acc + ele));
-                return ret;
-            };
 
     /**
      * This function is created for converting QueryDocumentSnapshot from the
@@ -496,6 +535,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbModel),
                     q.getString(dbSerial),
                     q.getDouble(dbValue),
+                    (List<String>) q.get(dbImages),
                     (List<String>) q.get(dbTags)
             );
         } catch (ParseException e) {
@@ -508,6 +548,7 @@ public class Item implements Comparable<Item>, Serializable,
                     q.getString(dbModel),
                     q.getString(dbSerial),
                     q.getDouble(dbValue),
+                    (List<String>) q.get(dbImages),
                     (List<String>) q.get(dbTags)
             );
         }
@@ -521,17 +562,24 @@ public class Item implements Comparable<Item>, Serializable,
      * When tags are deleted from the DB they are not removed from items.
      * This method removes any tags that are not in the tag list.
      */
-    public void cleanTags() {
+    public void cleanTags(ArrayList<Tag> validTags) {
         ArrayList<Tag> newTags = new ArrayList<>();
-        if (globalContext == null) {
-            globalContext = GlobalContext.getInstance();
-        }
 
         for (Tag t : this.tags) {
-            if (globalContext.getTagList().getEntityList().contains(t)) {
+            if (validTags.contains(t)) {
                 newTags.add(t);
             }
         }
         this.tags = newTags;
+    }
+
+    /**
+     * When a tag is modified old versions of the tag should be replaced with the new version
+     */
+    public void updateTag(Tag newTag, Tag oldTag) {
+        if (this.hasTag(oldTag)) {
+            this.tags.remove(oldTag);
+            this.tags.add(newTag);
+        }
     }
 }

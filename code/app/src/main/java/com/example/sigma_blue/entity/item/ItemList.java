@@ -9,6 +9,7 @@ import com.example.sigma_blue.database.ADatabaseHandler;
 import com.example.sigma_blue.entity.AEntityList;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.database.IDatabaseList;
+import com.example.sigma_blue.entity.tag.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -20,17 +21,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Wraps the visible items logic and database handling and provides an interface for activities/
+ * fragments.
+ */
 public class ItemList extends AEntityList<Item> {
     /* Attributes */
-    private ViewListModes displayMode;
+    private VisibleItemList visibleItemList;
+    private ArrayList<Item> visibleItemArrayList;
 
-
-    public enum ViewListModes {
-        NONE, SORT, FILTER;
-
-        private ViewListModes() {
-        }
-    }
 
     /* Factory construction */
 
@@ -57,10 +56,12 @@ public class ItemList extends AEntityList<Item> {
      * Class constructor.
      */
     private ItemList() {
-        this.entityList = new ArrayList<Item>();
-        this.displayMode = ViewListModes.NONE;
+        super();
+        this.visibleItemArrayList = new ArrayList<Item>();
         this.globalContext = GlobalContext.getInstance();
         this.dbHandler = ItemDB.newInstance(globalContext.getAccount());
+        this.visibleItemList = new VisibleItemList(this.entityList, this.visibleItemArrayList);
+        // use the same array reference
     }
 
     /**
@@ -77,24 +78,15 @@ public class ItemList extends AEntityList<Item> {
                     .reduce(0d, Double::sum));
         };
 
-
-    /**
-     * This method removes all the items owned by the user. Made for testing.
-     */
-    public void removeAll() {
-        this.entityList.stream()
-                .forEach(item -> dbHandler.remove(item));
-        this.entityList.clear();
-    }
-
     /**
      * Updates the UI to match the current data in the ItemList.
      */
     @Override
     public void updateUI() {
         if (adapter != null) {
+            visibleItemList.refreshVisibleItems();
             adapter.notifyDataSetChanged();
-            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.entityList));
+            ((ItemListAdapter) adapter).notifySumView(sumValues.apply(this.visibleItemArrayList));
         };
     }
 
@@ -108,26 +100,43 @@ public class ItemList extends AEntityList<Item> {
         return ItemDB.loadArray(q, Item.itemOfQueryDocument);
     }
 
-    /**
-     * Needed when making new queries
-     * @return the collection reference of the user
-     */
-    public CollectionReference getCollectionReference() {
-        return dbHandler.getCollectionReference();
+    @Override
+    public void setAdapter(ASelectableListAdapter<Item> adapter) {
+        this.adapter = adapter;
+        this.adapter.setList(this.visibleItemArrayList);
+        this.adapter.notifyDataSetChanged();
     }
 
     public void setSummaryView(TextView summaryView) {
         ((ItemListAdapter) this.adapter).setSummaryView(summaryView);
-        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.entityList));
+        ((ItemListAdapter) this.adapter).notifySumView(sumValues.apply(this.visibleItemArrayList));
     }
 
     /**
-     * Clean all the tags in all stored items
+     * Remove all tags in all stored items that aren't in the global tag list
      */
-    public void cleanAllItemTags() {
+    public void cleanAllItemTags(ArrayList<Tag> validTags) {
         for (Item i : this.entityList) {
-            i.cleanTags();
+            i.cleanTags(validTags);
             syncEntity(i);
         }
+    }
+
+    /**
+     * Modify every copy of a tag object
+     */
+    public void updateTags(Tag newTag, Tag oldTag) {
+        for (Item i : this.entityList) {
+            i.updateTag(newTag, oldTag);
+            syncEntity(i);
+        }
+    }
+
+    public VisibleItemList getVisibleItemList() {
+        return visibleItemList;
+    }
+
+    public ArrayList<Item> getVisibleList() {
+        return visibleItemArrayList;
     }
 }

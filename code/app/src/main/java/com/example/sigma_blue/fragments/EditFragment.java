@@ -1,70 +1,49 @@
 package com.example.sigma_blue.fragments;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.example.sigma_blue.activities.AddEditActivity;
-import com.example.sigma_blue.activities.ViewListActivity;
+import com.example.sigma_blue.adapter.TabMode;
+import com.example.sigma_blue.adapter.TabSelected;
+import com.example.sigma_blue.adapter.ViewPagerAdapter;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.Item;
 import com.example.sigma_blue.R;
-import com.example.sigma_blue.entity.tag.Tag;
-import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.databinding.EditFragmentBinding;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.common.base.VerifyException;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 /**
  * Class for handling fragment for editing an Item objects values
  */
 public class EditFragment extends Fragment
 {
-    //private AddEditViewModel sharedVM;
-
+    private final GlobalContext globalContext = GlobalContext.getInstance();
     // Fragment binding
     private EditFragmentBinding binding;
 
     // Fragment ui components
     private EditText textName;
-    private EditText textValue;
-    private EditText textDate;
-    private EditText textMake;
-    private EditText textModel;
-    private EditText textSerial;
-    private EditText textDescription;
-    private EditText textComment;
-    private ListView tagListView;
-    private TagListAdapter tagListAdapter;
-    private ArrayList<EditText> editTextList;
-    //private Item savedItemChanges;
-    private int mDay, mMonth, mYear;
-    private GlobalContext globalContext;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private TabSelected tabSelected;
 
     /**
      * Required empty public constructor
@@ -89,40 +68,20 @@ public class EditFragment extends Fragment
      * @param savedInstanceState is a Bundle passed that holds data of activity
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = EditFragmentBinding.inflate(inflater, container, false);
 
         // bind ui components
-        editTextList = new ArrayList<>();
-        textName = binding.getRoot().findViewById(R.id.text_name_disp); editTextList.add(textName);
-        textValue = binding.getRoot().findViewById(R.id.text_value_disp); editTextList.add(textValue);
-        textDate = binding.getRoot().findViewById(R.id.text_date_disp); editTextList.add(textDate);
-        textMake = binding.getRoot().findViewById(R.id.text_make_disp); editTextList.add(textMake);
-        textModel = binding.getRoot().findViewById(R.id.text_model_disp); editTextList.add(textModel);
-        textSerial = binding.getRoot().findViewById(R.id.text_serial_disp);
-        textDescription = binding.getRoot().findViewById(R.id.text_description_disp);
-        textComment = binding.getRoot().findViewById(R.id.text_comment_disp);
-        tagListView = binding.getRoot().findViewById((R.id.list_tag));
+        textName = binding.getRoot().findViewById(R.id.text_name_disp);
 
+        tabLayout = binding.getRoot().findViewById(R.id.tabLayout);
+        viewPager = binding.getRoot().findViewById(R.id.viewPager);
+        viewPagerAdapter = new ViewPagerAdapter(this, TabMode.Edit);
+
+        // TODO add buttons here
         return binding.getRoot();
-    }
-
-    /**
-     * Binding the current item to the ui.
-     * @param currentItem is the item that is being edited.
-     */
-    private void editItemUIBindings(final Item currentItem) {
-        textName.setText(currentItem.getName());
-        textValue.setText(String.valueOf(currentItem.getValue()));
-        textMake.setText(currentItem.getMake());
-        textModel.setText(currentItem.getModel());
-        textSerial.setText(currentItem.getSerialNumber());
-        textDescription.setText(currentItem.getDescription());
-        textComment.setText(currentItem.getComment());
-        tagListAdapter = TagListAdapter.newInstance(currentItem.getTags(), getContext());
-        tagListView.setAdapter(tagListAdapter);
     }
 
     /**
@@ -136,60 +95,55 @@ public class EditFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         final AddEditActivity activity = (AddEditActivity) requireActivity();
 
-        globalContext = GlobalContext.getInstance();
-        // Load Item and mode
-        Item currentItem = globalContext.getCurrentItem();
-        // If the user is creating a new item.
-        if (currentItem == null) {
-            currentItem = new Item();
-
-            globalContext.setCurrentItem(currentItem);
-        }
-        final ApplicationState mode = globalContext.getCurrentState();
-
-        // set item details
-        if (mode == ApplicationState.EDIT_ITEM_FRAGMENT) {
-            editItemUIBindings(currentItem);
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        textDate.setText(sdf.format(currentItem.getDate()));
-
-        Context context = this.getContext();
-        textDate.setOnClickListener(new View.OnClickListener()
-        {
+        // Initialize tab layout ui
+        viewPager.setAdapter(viewPagerAdapter);
+        tabSelected = TabSelected.Details;
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View v)
-            {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                if (tabSelected == TabSelected.Details) {
+                    if (viewPagerAdapter.verifyDetailsText()) {
+                        tabSelected = TabSelected.of(position);
+                        viewPagerAdapter.saveTextToContext();
+                        viewPager.setCurrentItem(position);
+                    }
+                    else { tabLayout.getTabAt(tabSelected.position()).select(); }
+                }
+                else {
+                    tabSelected = TabSelected.of(position);
+                    viewPager.setCurrentItem(position);
+                }
+            }
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(context,
-                        new DatePickerDialog.OnDateSetListener()
-                        {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int month, int day)
-                            {
-                                // TODO: Add this to strings.xml
-                                textDate.setText(year + "-" + (month + 1) + "-" + day);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
+            }
+        });
+
         view.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if (mode == ApplicationState.ADD_ITEM_FRAGMENT) {
+                if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
                     globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
-                    Log.i("NEW STATE", ApplicationState.VIEW_LIST_ACTIVITY
-                            .toString());
                     activity.returnAndClose();
 
                 } else {
@@ -201,102 +155,70 @@ public class EditFragment extends Fragment
             }
         });
 
-
-        view.findViewById(R.id.button_tag).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // Save current ui state
-                loadUiText(globalContext.getCurrentItem());
-                // Open TagManager
-                globalContext.newState(ApplicationState.TAG_MANAGER_FRAGMENT);
-                Log.i("NEW STATE", ApplicationState.TAG_MANAGER_FRAGMENT
-                        .toString());
-                NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_tagManagerFragment);
-            }
-        });
-
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // Load ui text and save into shared item; Navigate to DetailsFragment
-                if (verifyText()) {
+                boolean verified = true;
+                if (tabSelected == TabSelected.Details) {
+                    verified = viewPagerAdapter.verifyDetailsText() && verifyName();
+                }
+
+                if (verified) {
                     // need a new item as to not overwrite the old one. If the
                     // old one is overwritten then we don't know which item in
                     // the list needs to be deleted if doing an edit.
-                    Item modifiedItem = new Item();
-                    loadUiText(modifiedItem);
+                    Item oldItem = globalContext.getCurrentItem();
+                    if (tabSelected == TabSelected.Details) {
+                        viewPagerAdapter.saveTextToContext();
+                    }
+                    Item newItem = globalContext.getModifiedItem();
+                    loadTextName(newItem);
+
                     // State control for adding items
-                    if (globalContext.getCurrentState() == ApplicationState
-                            .ADD_ITEM_FRAGMENT) {
-                        if (globalContext.getItemList().getList().contains(modifiedItem)) {
+                    if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
+                        if (globalContext.getItemList().getList().contains(newItem)) {
                             Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
                             errorSnackbar.show();
                         } else {
-                            globalContext.getItemList().add(modifiedItem);
-                            globalContext.setCurrentItem(modifiedItem);
-                            globalContext.newState(ApplicationState
-                                    .VIEW_LIST_ACTIVITY);
-                            Log.i("NEW STATE", ApplicationState
-                                    .VIEW_LIST_ACTIVITY.toString());
+                            globalContext.getItemList().add(newItem);
+                            globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
                             activity.returnAndClose();
                         }
-                    } else if (globalContext.getCurrentState() ==
-                            ApplicationState.EDIT_ITEM_FRAGMENT) {
-                        globalContext.getItemList().updateEntity(modifiedItem, globalContext.getCurrentItem());
-                        globalContext.setCurrentItem(modifiedItem);
-                        globalContext.newState(ApplicationState
-                                .DETAILS_FRAGMENT);
-                        Log.i("NEW STATE", ApplicationState
-                                .DETAILS_FRAGMENT.toString());
+                    } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
+                        globalContext.getItemList().updateEntity(newItem, oldItem);
+                        globalContext.setCurrentItem(newItem);
+                        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
                         NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
                     } else {
                         Log.e("BAD STATE",
                                 "Edit and the item doesn't exist");
                         throw new VerifyException("Bad state"); // Unhandled
                     }
-
                 }
             }
         });
-
-        view.findViewById(R.id.button_barcode).setOnClickListener(new View.OnClickListener()
-        {
+        // suboptimal and a bit ugly
+        textName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v)
-            {
-                IntentIntegrator integrator = IntentIntegrator.forSupportFragment(EditFragment.this);
-
-                integrator.setOrientationLocked(true);
-                integrator.setPrompt("Scan Barcode");
-                integrator.setBeepEnabled(true);
-
-                integrator.initiateScan();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                globalContext.getModifiedItem().setName(s.toString());
             }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
     }
 
-    /**
-     * Method for retrieving results from barcode scanning activity
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result.getContents() != null) {
-            textSerial.setText(result.getContents());
-        }
+    public void onResume() {
+        super.onResume();
+        textName.setText(globalContext.getModifiedItem().getName());
+        viewPagerAdapter.updateFromContext(tabSelected.position());
     }
-    
+
     /**
      * Method for destroying fragment
      */
@@ -307,42 +229,25 @@ public class EditFragment extends Fragment
     }
 
     /**
-     * Verifies that no text field is empty when saving edits
+     * Verifies that the item name is not empty when saving edits
      * @return flag verifying that required EditText's are populated
      */
-    private boolean verifyText() {
+    private boolean verifyName() {
         String emptyErrText = "Must enter a value before saving";
-        boolean flag = true;
-        for (EditText e : editTextList)
+        if (TextUtils.isEmpty(textName.getText()))
         {
-            if (TextUtils.isEmpty(e.getText()))
-            {
-                e.setError(emptyErrText);
-                flag = false;
-            }
+            textName.setError(emptyErrText);
+            return false;
         }
-        return flag;
+        else { return true; }
     }
 
     /**
      * Adds ui text into an item object
      * @param item to edit
      */
-    private void loadUiText(@NonNull Item item)
+    private void loadTextName(@NonNull Item item)
     {
         item.setName(textName.getText().toString());
-        item.setValue(Double.parseDouble(textValue.getText().toString()));
-        SimpleDateFormat sdf = new SimpleDateFormat(getResources().getString(R.string.date_format));
-        try
-        {
-            item.setDate(sdf.parse(textDate.getText().toString()));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        item.setMake(textMake.getText().toString());
-        item.setModel(textModel.getText().toString());
-        item.setSerialNumber(textSerial.getText().toString());
-        item.setDescription(textDescription.getText().toString());
-        item.setComment(textComment.getText().toString());
     }
 }

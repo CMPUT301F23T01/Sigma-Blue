@@ -1,9 +1,12 @@
 package com.example.sigma_blue.context;
 
-import com.example.sigma_blue.entity.tag.Tag;
-
 import java.util.ArrayList;
 
+/**
+ * Holds a list of 'selectable' entities. used instead of an array list as it enforces only certain
+ * operations on the items.
+ * @param <T>
+ */
 public class SelectedEntities<T> {
     ArrayList<T> selected;
     public SelectedEntities() {
@@ -27,5 +30,18 @@ public class SelectedEntities<T> {
     }
     public int size() {
         return selected.size();
+    }
+    public void updateEntity(T newE, T oldE) {
+        this.removeEntity(oldE);
+        selected.add(newE);
+    }
+    private void removeEntity(T e) {
+        ArrayList<T> newSelected = new ArrayList<>();
+        for (T i : this.selected) {
+            if (i != e) {
+                newSelected.add(e);
+            }
+        }
+        this.selected = newSelected;
     }
 }

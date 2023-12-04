@@ -37,6 +37,8 @@ dependencies {
     //implementation("androidx.test.espresso:espresso-contrib:3.5.1")
     val nav_version = "2.7.5"
 
+    implementation("com.azeesoft.lib.colorpicker:colorpicker:1.0.9")
+    implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -48,7 +50,16 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.4.1")
+    implementation("androidx.activity:activity:1.8.1")
 
+    // Add the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-storage")
+
+    //for image adapter
+    implementation ("com.firebaseui:firebase-ui-storage:7.2.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
 
     androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -72,6 +83,8 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+
+    androidTestImplementation ("org.easymock:easymock:3.5.1")
 
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
