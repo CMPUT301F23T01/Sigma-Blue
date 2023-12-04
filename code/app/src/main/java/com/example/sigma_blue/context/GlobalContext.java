@@ -56,7 +56,9 @@ public class GlobalContext {
     public void login(Account account) {
         this.account = account;
         this.tagList = TagList.newInstance();
+        this.tagList.startListening();
         this.itemList = ItemList.newInstance();
+        this.itemList.startListening();
     }
 
     /**

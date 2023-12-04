@@ -15,6 +15,7 @@ public enum SortField {
     DESCRIPTION("Description"),
     MAKE("Make"),
     VALUE("Item Value"),
+    TAG("Tag"),
     NO_SELECTION("No Selection");
 
     final private String menuName;

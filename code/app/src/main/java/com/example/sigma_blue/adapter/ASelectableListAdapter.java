@@ -51,6 +51,12 @@ public abstract class ASelectableListAdapter<T> extends ArrayAdapter<T> {
         this.entityData = entityData;
     }
 
+    public ASelectableListAdapter(List<T> entityData, int resource, Context context) {
+        super(context, resource, entityData);
+        this.context = context;
+        this.entityData = entityData;
+    }
+
     @Override
     public int getCount() {
         return entityData.size();
