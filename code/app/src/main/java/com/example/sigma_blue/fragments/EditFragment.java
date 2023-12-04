@@ -143,6 +143,8 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
+                globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
+                globalContext.setModifiedItem(new Item(globalContext.getCurrentItem()));
                 if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
