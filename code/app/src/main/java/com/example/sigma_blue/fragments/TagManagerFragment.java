@@ -208,18 +208,20 @@ public class TagManagerFragment extends Fragment {
             public void onClick(View v) {
 
                 // method for confirm delete menu, creates onClickListener for specific method of deleting
-                ConfirmDelete.confirmDelete(getActivity(), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // code for deleting that is to be run if delete is confirmed by user
-                        for (Tag t : globalContext.getSelectedTags().getSelected()) {
-                            globalContext.getTagList().remove(t);
-                            globalContext.getSelectedTags().toggleHighlight(t);
-                            globalContext.getItemList().cleanAllItemTags(globalContext.getTagList().getList());
-                            globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
-                            // remove dead tag from items
-                        }
-                    }
+                ConfirmDelete.confirmDelete(getActivity(), (dialog, which) -> {
+                    // code for deleting that is to be run if delete is confirmed by user
+
+                    globalContext.getSelectedTags().getSelected().forEach(tag ->
+                            globalContext.getTagList().remove(tag));
+
+                    globalContext.getSelectedTags().resetSelected();
+                    globalContext.getItemList().cleanAllItemTags(globalContext
+                            .getTagList().getList());
+
+                    Item modItem;   // For the case that an item is being edited
+                    if ((modItem = globalContext.getModifiedItem()) != null)
+                        globalContext.getModifiedItem().cleanTags(globalContext
+                                .getTagList().getList());
                 });
             }
         });

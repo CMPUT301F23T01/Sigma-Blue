@@ -19,11 +19,12 @@ public class SelectedEntities<T> {
             this.selected.remove(e);
         }
     }
+
     public ArrayList<T> getSelected() {
         return selected;
     }
     public void resetSelected() {
-        selected = new ArrayList<T>();
+        selected.clear();
     }
     public boolean empty() {
         return selected.size() == 0;
