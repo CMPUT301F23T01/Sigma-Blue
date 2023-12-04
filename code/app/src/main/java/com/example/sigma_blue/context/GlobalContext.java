@@ -2,6 +2,7 @@ package com.example.sigma_blue.context;
 
 import android.util.Log;
 
+import com.example.sigma_blue.adapter.TabSelected;
 import com.example.sigma_blue.entity.account.Account;
 import com.example.sigma_blue.entity.account.AccountList;
 import com.example.sigma_blue.entity.description.DescriptionManager;
@@ -36,6 +37,7 @@ public class GlobalContext {
     private final DescriptionManager descriptionManager;
     private Item currentItem;
     private Item modifiedItem;
+    private TabSelected tabSelected;
     private final ArrayList<ApplicationState> stateHistory; // store a history for debugging
 
     /**
@@ -56,7 +58,10 @@ public class GlobalContext {
     public void login(Account account) {
         this.account = account;
         this.tagList = TagList.newInstance();
+        this.tagList.startListening();
         this.itemList = ItemList.newInstance();
+        this.itemList.startListening();
+        this.tabSelected = TabSelected.Details;
     }
 
     /**
@@ -148,5 +153,13 @@ public class GlobalContext {
 
     public DescriptionManager getDescriptionManager() {
         return descriptionManager;
+    }
+
+    public TabSelected getTabSelected() {
+        return tabSelected;
+    }
+
+    public void setTabSelected(TabSelected tabSelected) {
+        this.tabSelected = tabSelected;
     }
 }

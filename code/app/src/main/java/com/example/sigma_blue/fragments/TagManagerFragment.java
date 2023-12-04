@@ -14,8 +14,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.VerifyException;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -228,15 +230,19 @@ public class TagManagerFragment extends Fragment {
      * Update the UI to reflect new tag information
      */
     private boolean updateTagListView() {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
         globalContext.getTagList().getAdapter().notifyDataSetChanged();
         int checkedTags = globalContext.getSelectedTags().size();
         if (checkedTags == 1) {
             tagEditButton.setEnabled(true);
-            tagEditButton.setBackgroundColor(androidx.appcompat.R.attr.colorPrimary);
+            theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true);
+            tagEditButton.setBackgroundColor(typedValue.data);
             return true;
         } else {
             tagEditButton.setEnabled(false);
-            tagEditButton.setBackgroundColor(getResources().getColor(androidx.cardview.R.color.cardview_dark_background));
+            theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimaryDark, typedValue, true);
+            tagEditButton.setBackgroundColor(typedValue.data);
             return false;
         }
     }

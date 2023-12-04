@@ -57,7 +57,7 @@ public class LoginPageActivity extends AppCompatActivity implements CreateAccFra
 
         loginBtn.setOnClickListener((v) -> {
             globalContext.newState(ApplicationState.LOGIN_FRAGMENT);
-            loginFragment = new LoginFragment().newInstance(globalContext.getAccountList());
+            loginFragment = new LoginFragment();
             fragmentLauncher.startFragmentTransaction(loginFragment, "LOGIN");
         });
     }
@@ -93,11 +93,6 @@ public class LoginPageActivity extends AppCompatActivity implements CreateAccFra
             // creates popup message for incorrect user account information input
             Snackbar incorrectMessage = Snackbar.make(findViewById(R.id.login_main), getResources().getString(R.string.invalid_username_password), Snackbar.LENGTH_LONG);
             incorrectMessage.show();
-
-            //comment this out so it's easier to make a new account after a failed login
-//            loginFragment = new LoginFragment().newInstance(globalContext.getAccountList());
-//            globalContext.newState("login_fragment");
-//            fragmentLauncher.startFragmentTransaction(loginFragment, "LOGIN");
         }
     }
 }

@@ -21,7 +21,7 @@ import java.util.Objects;
  * Parent class for the *List classes. Implements some useful utility functions
  * @param <T> entity to store
  */
-public abstract class AEntityList<T> implements Serializable, IDatabaseList<T>{
+public abstract class AEntityList<T> implements IDatabaseList<T>{
     protected final ArrayList<T> entityList;
     protected ADatabaseHandler<T> dbHandler;
     protected ASelectableListAdapter<T> adapter;

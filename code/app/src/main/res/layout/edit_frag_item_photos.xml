@@ -10,6 +10,8 @@
         android:id="@+id/list_pictures"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toTopOf="@id/button_picture"
         app:layout_constraintEnd_toEndOf="parent"

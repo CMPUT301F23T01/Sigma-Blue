@@ -61,23 +61,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/sortCriteriaSpinner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/filterTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/filter_by_title_text"
-                android:textColor="?colorOnBackground"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-          <CheckBox
+            <CheckBox
                 android:id="@+id/dateFilterCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,28 +101,17 @@
                 app:layout_constraintTop_toBottomOf="@id/dateFilterCheckbox">
 
                 <TextView
-                    android:id="@+id/startDateTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/start_date_title_text"
-                    android:textColor="?colorOnBackground"
-                    android:textSize="24sp"
-                    app:layout_constraintBottom_toBottomOf="@id/startDatePicker"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/startDatePicker" />
-
-                <TextView
                     android:id="@+id/endDateTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="28dp"
                     android:text="@string/end_date_title_text"
                     android:textColor="?colorOnBackground"
-                    android:textSize="24sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/endDatePicker"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/endDatePicker" />
+                    app:layout_constraintTop_toTopOf="@id/endDatePicker"
+                    app:layout_constraintVertical_bias="0.761" />
 
                 <DatePicker
                     android:id="@+id/startDatePicker"
@@ -152,18 +130,29 @@
                     android:datePickerMode="spinner"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/startDatePicker" />
+
+                <TextView
+                    android:id="@+id/startDateTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="28dp"
+                    android:text="@string/start_date_title_text"
+                    android:textColor="?colorOnBackground"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/startDatePicker"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/startDatePicker" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/nameFilterTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Name"
-                android:textColor="#000000"
+                android:layout_marginStart="28dp"
+                android:text="@string/add_edit_text_name"
+                android:textColor="?colorOnBackground"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/nameFilterEditText"
-                app:layout_constraintEnd_toStartOf="@+id/nameFilterEditText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/nameFilterEditText" />
 
@@ -171,12 +160,11 @@
                 android:id="@+id/makeFilterTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="28dp"
                 android:text="@string/make_title_text"
                 android:textColor="?colorOnBackground"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/makeFilterEditText"
-                app:layout_constraintEnd_toStartOf="@+id/makeFilterEditText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/makeFilterEditText" />
 
@@ -184,12 +172,11 @@
                 android:id="@+id/tagFilterTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="28dp"
                 android:text="@string/filter_tags_title_text"
                 android:textColor="?colorOnBackground"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tagFilterSpinner"
-                app:layout_constraintEnd_toStartOf="@+id/tagFilterSpinner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tagFilterSpinner" />
 
@@ -225,11 +212,11 @@
                 android:id="@+id/descFilterEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:autofillHints="@string/filter_keywords_hint_text"
                 android:hint="@string/filter_keywords_hint_text"
                 android:inputType="text"
                 android:textSize="20sp"
-                android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
                 app:layout_constraintTop_toBottomOf="@id/nameFilterEditText"
@@ -245,6 +232,7 @@
                 app:layout_constraintTop_toBottomOf="@id/date_filter_constraint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ViewSwitcher>
 
     <Button

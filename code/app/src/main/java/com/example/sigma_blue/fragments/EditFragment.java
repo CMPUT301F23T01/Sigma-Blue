@@ -97,7 +97,8 @@ public class EditFragment extends Fragment
 
         // Initialize tab layout ui
         viewPager.setAdapter(viewPagerAdapter);
-        tabSelected = TabSelected.Details;
+        tabSelected = globalContext.getTabSelected();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -105,6 +106,7 @@ public class EditFragment extends Fragment
                 if (tabSelected == TabSelected.Details) {
                     if (viewPagerAdapter.verifyDetailsText()) {
                         tabSelected = TabSelected.of(position);
+                        globalContext.setTabSelected(tabSelected);
                         viewPagerAdapter.saveTextToContext();
                         viewPager.setCurrentItem(position);
                     }
@@ -112,6 +114,7 @@ public class EditFragment extends Fragment
                 }
                 else {
                     tabSelected = TabSelected.of(position);
+                    globalContext.setTabSelected(tabSelected);
                     viewPager.setCurrentItem(position);
                 }
             }
@@ -140,6 +143,8 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
+                globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
+                globalContext.setModifiedItem(new Item(globalContext.getCurrentItem()));
                 if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
@@ -187,10 +192,15 @@ public class EditFragment extends Fragment
                             activity.returnAndClose();
                         }
                     } else if (globalContext.getCurrentState() == ApplicationState.EDIT_ITEM_FRAGMENT) {
-                        globalContext.getItemList().updateEntity(newItem, oldItem);
-                        globalContext.setCurrentItem(newItem);
-                        globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
-                        NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                        if (globalContext.getItemList().getList().contains(newItem) && !newItem.equals(oldItem)){
+                            Snackbar errorSnackbar = Snackbar.make(v, "Item Already Exists", Snackbar.LENGTH_LONG);
+                            errorSnackbar.show();
+                        } else {
+                            globalContext.getItemList().updateEntity(newItem, oldItem);
+                            globalContext.setCurrentItem(newItem);
+                            globalContext.newState(ApplicationState.DETAILS_FRAGMENT);
+                            NavHostFragment.findNavController(EditFragment.this).navigate(R.id.action_editFragment_to_detailsFragment);
+                        }
                     } else {
                         Log.e("BAD STATE",
                                 "Edit and the item doesn't exist");
@@ -234,8 +244,7 @@ public class EditFragment extends Fragment
      */
     private boolean verifyName() {
         String emptyErrText = "Must enter a value before saving";
-        if (TextUtils.isEmpty(textName.getText()))
-        {
+        if (TextUtils.isEmpty(textName.getText())) {
             textName.setError(emptyErrText);
             return false;
         }

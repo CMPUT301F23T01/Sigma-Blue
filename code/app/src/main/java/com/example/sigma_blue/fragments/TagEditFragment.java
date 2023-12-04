@@ -1,5 +1,6 @@
 package com.example.sigma_blue.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -87,12 +88,13 @@ public class TagEditFragment extends Fragment {
 
     private void pickColour() {
         ColorPickerDialog colorPickerDialog;
-        // TODO check the current theme
-
-        if (true) {
+        int nightModeFlags = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        Boolean nightMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+        if (nightMode) {
+            colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext(),ColorPickerDialog.DARK_THEME);;
+        }
+        else {
             colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext());
-        } else {
-            colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext(),ColorPickerDialog.DARK_THEME);
         }
 
         colorPickerDialog.setInitialColor(modifiedTag.getColour().toArgb());

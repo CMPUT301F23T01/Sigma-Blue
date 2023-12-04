@@ -187,7 +187,11 @@ public class ItemDetailsFragment extends Fragment
      * @param currentItem with updated text values
      */
     private void editItemUIBindings(final Item currentItem) {
-        textValue.setText(String.valueOf(currentItem.getValue()));
+        if (currentItem.getValue() != null) {
+            textValue.setText(String.valueOf(currentItem.getValue()));
+        } else {
+            textValue.setText("");
+        }
         textMake.setText(currentItem.getMake());
         textModel.setText(currentItem.getModel());
         textSerial.setText(currentItem.getSerialNumber());

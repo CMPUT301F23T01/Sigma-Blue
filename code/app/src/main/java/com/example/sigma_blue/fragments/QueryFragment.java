@@ -26,6 +26,9 @@ import com.example.sigma_blue.R;
 import com.example.sigma_blue.context.ApplicationState;
 import com.example.sigma_blue.context.GlobalContext;
 import com.example.sigma_blue.entity.item.VisibleItemList;
+import com.example.sigma_blue.entity.tag.Tag;
+import com.example.sigma_blue.entity.tag.TagList;
+import com.example.sigma_blue.entity.tag.TagListAdapter;
 import com.example.sigma_blue.utility.DateFilterField;
 import com.example.sigma_blue.utility.DescriptionFilterField;
 import com.example.sigma_blue.utility.FilterField;
@@ -35,6 +38,7 @@ import com.example.sigma_blue.utility.ModeField;
 import com.example.sigma_blue.utility.NameFilterField;
 import com.example.sigma_blue.utility.SearchTextBoxWatcher;
 import com.example.sigma_blue.utility.SortField;
+import com.example.sigma_blue.utility.TagFilterField;
 import com.google.firebase.firestore.Query;
 
 import java.time.LocalDate;
@@ -61,6 +65,7 @@ public class QueryFragment extends DialogFragment {
         DatePicker startDatePicker, endDatePicker;
         ArrayAdapter<SortField> sortAdapter;
         ArrayAdapter<ModeField> modeAdapter;
+        TagListAdapter tagFilterAdapter;
         ViewSwitcher modeSwitcher;
 
         /**
@@ -94,10 +99,12 @@ public class QueryFragment extends DialogFragment {
             // setup adapters for sort and mode spinners
             createSortAdapter();
             createModeAdapter();
+            createTagAdapter();
 
             /* Binding the adapters */
             sortCriteriaSpinner.setAdapter(this.sortAdapter);
             modeChoiceSpinner.setAdapter(this.modeAdapter);
+            tagFilterSpinner.setAdapter(this.tagFilterAdapter);
 
             // update UI state to match the current query.
             regenerateSelection();
@@ -116,6 +123,7 @@ public class QueryFragment extends DialogFragment {
             menuItems.add(SortField.MAKE);
             menuItems.add(SortField.VALUE);
             menuItems.add(SortField.DESCRIPTION);
+            menuItems.add(SortField.TAG);
 
             return menuItems;
         }
@@ -152,6 +160,17 @@ public class QueryFragment extends DialogFragment {
         }
 
         /**
+         * Populating tag filtering options
+         */
+        private void createTagAdapter() {
+            ArrayList<Tag> e = new ArrayList<>();
+            e.addAll(globalTags.getEntityList());
+            e.add(0, new Tag("All Tags", 0));
+            tagFilterAdapter = new TagListAdapter(e, android.R.layout
+                    .simple_spinner_dropdown_item, getContext());
+        }
+
+        /**
          * Flips between the check checkboxes
          * @param p when true will make checkbox ascending, with descending off.
          *          When false, the descending checkbox is selected and the
@@ -183,9 +202,14 @@ public class QueryFragment extends DialogFragment {
          * Restores the selection that has been saved to the global context.
          */
         public void regenerateSelection() {
+            // Regenerate spinners
             sortCriteriaSpinner.setSelection(sortAdapter.getPosition(visibleItemList.getItemSortComparator().getSortBy()));
             flipAscendBox((visibleItemList.getItemSortComparator().getDirection()) == 1);
 
+            ArrayList<Tag> tags = ((TagFilterField)(visibleItemList.getTagFilterField())).getTagsToMatch();
+            if (tags.size() > 0) {
+                tagFilterSpinner.setSelection(tagFilterAdapter.getPosition(tags.get(0)));
+            }
             // Filter text regeneration
             regenerateTextBox(makeFilterET, visibleItemList.getMakeFilterField().getFilterText());
             regenerateTextBox(descriptionFilterET, visibleItemList.getDescriptionFilterField().getFilterText());
@@ -385,6 +409,22 @@ public class QueryFragment extends DialogFragment {
                 }
             });
 
+            tagFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    ArrayList<Tag> tagsSelected = new ArrayList<>();
+                    tagsSelected.add(tagFilterAdapter.getItem(position));
+                    TagFilterField tagFilter = new TagFilterField("", position>0, false, tagsSelected);
+                    visibleItemList.setTagFilterField(tagFilter);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Does not need to do anything yet
+                }
+            });
+
             makeFilterET.addTextChangedListener(
                     new SearchTextBoxWatcher<EditText>(makeFilterET) {
 
@@ -473,6 +513,8 @@ public class QueryFragment extends DialogFragment {
                 case 4:
                     visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.DESCRIPTION, d));
                     break;
+                case 5:
+                    visibleItemList.setItemSortComparator(new ItemSortComparator(SortField.TAG, d));
             }
         }
     }
@@ -481,6 +523,7 @@ public class QueryFragment extends DialogFragment {
     private ViewHolder viewHolder;          // The view holder
     private ModeField currentView;          // For state matching
     private VisibleItemList visibleItemList;
+    private TagList globalTags;
 
     /**
      * Empty public constructor
@@ -507,6 +550,7 @@ public class QueryFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         globalContext = GlobalContext.getInstance();
         visibleItemList = globalContext.getItemList().getVisibleItemList();
+        globalTags = globalContext.getTagList();
         currentView = SORT;
     }
 
