@@ -1,5 +1,6 @@
 package com.example.sigma_blue.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,7 +22,7 @@ import com.example.sigma_blue.entity.tag.Tag;
 import com.google.android.material.snackbar.Snackbar;
 
 /**
- * Fragment for adding new tags. //TODO, merge into tag edit fragment
+ * Fragment for adding new tags. //
  */
 public class TagAddFragment extends Fragment {
     private GlobalContext globalContext;
@@ -85,12 +86,13 @@ public class TagAddFragment extends Fragment {
 
     private void pickColour() {
         ColorPickerDialog colorPickerDialog;
-        // TODO check the current theme
-
-        if (true) {
+        int nightModeFlags = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        Boolean nightMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+        if (nightMode) {
+            colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext(),ColorPickerDialog.DARK_THEME);;
+        }
+        else {
             colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext());
-        } else {
-            colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getContext(),ColorPickerDialog.DARK_THEME);
         }
 
         colorPickerDialog.setInitialColor(modifiedTag.getColour().toArgb());

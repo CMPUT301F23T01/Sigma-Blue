@@ -101,12 +101,14 @@ public class DetailsFragment extends Fragment
 
         // Initialize tab layout ui
         viewPager.setAdapter(viewPagerAdapter);
-        tabSelected = TabSelected.Details;
+        tabSelected = globalContext.getTabSelected();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 tabSelected = TabSelected.of(position);
+                globalContext.setTabSelected(tabSelected);
                 viewPager.setCurrentItem(position);
             }
 
@@ -154,6 +156,7 @@ public class DetailsFragment extends Fragment
                         globalContext.getItemList().remove(currentItem);
                         globalContext.setCurrentItem(null);
                         globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                        globalContext.setTabSelected(TabSelected.Details);
                         activity.returnAndClose();
                     }
                 });
@@ -167,6 +170,7 @@ public class DetailsFragment extends Fragment
             {
                 // Return to ViewListActivity
                 globalContext.newState(ApplicationState.VIEW_LIST_ACTIVITY);
+                globalContext.setTabSelected(TabSelected.Details);
                 activity.returnAndClose();
             }
         });

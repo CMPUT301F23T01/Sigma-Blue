@@ -97,7 +97,8 @@ public class EditFragment extends Fragment
 
         // Initialize tab layout ui
         viewPager.setAdapter(viewPagerAdapter);
-        tabSelected = TabSelected.Details;
+        tabSelected = globalContext.getTabSelected();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -105,6 +106,7 @@ public class EditFragment extends Fragment
                 if (tabSelected == TabSelected.Details) {
                     if (viewPagerAdapter.verifyDetailsText()) {
                         tabSelected = TabSelected.of(position);
+                        globalContext.setTabSelected(tabSelected);
                         viewPagerAdapter.saveTextToContext();
                         viewPager.setCurrentItem(position);
                     }
@@ -112,6 +114,7 @@ public class EditFragment extends Fragment
                 }
                 else {
                     tabSelected = TabSelected.of(position);
+                    globalContext.setTabSelected(tabSelected);
                     viewPager.setCurrentItem(position);
                 }
             }
@@ -239,8 +242,7 @@ public class EditFragment extends Fragment
      */
     private boolean verifyName() {
         String emptyErrText = "Must enter a value before saving";
-        if (TextUtils.isEmpty(textName.getText()))
-        {
+        if (TextUtils.isEmpty(textName.getText())) {
             textName.setError(emptyErrText);
             return false;
         }
