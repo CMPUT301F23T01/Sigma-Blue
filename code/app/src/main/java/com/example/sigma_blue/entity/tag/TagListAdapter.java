@@ -46,6 +46,9 @@ public class TagListAdapter extends ASelectableListAdapter<Tag> {
     public TagListAdapter(List<Tag> entityData, Context context) {
         super(entityData, context);
     }
+    public TagListAdapter(List<Tag> entityData, int resource, Context context) {
+        super(entityData, resource, context);
+    }
 
     @NonNull
     @Override

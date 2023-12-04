@@ -45,7 +45,7 @@
     <!-- Strings related to the list view activity -->
     <string name="empty_summary_view">No Items</string>
     <string name="list_add_tag">Add Tag…</string>
-    <string name="list_sort_filter">Sort/Filter</string>
+    <string name="list_sort_filter">Sort</string>
     <string name="list_search">Search</string>
     <string name="list_options">Options</string>
 
@@ -83,6 +83,7 @@
     <string name="invalid_username_password">Incorrect Username or Password</string>
     <!-- -end- -->
 
+    <!-- Strings related to query fragment -->
     <string name="ascending_title_text">Ascending</string>
     <string name="descending_title_text">Descending</string>
     <string name="filter_by_title_text">Filter By:</string>
@@ -95,6 +96,7 @@
     <string name="filter_keywords_title_text">Description Keywords</string>
     <string name="filter_keywords_hint_text">Enter Keywords</string>
     <string name="sort_by_title_text">Sort By:</string>
+    <!-- -end- -->
 
     <!-- Strings in sorting elements spinner -->
     <string-array name="SortingElements">

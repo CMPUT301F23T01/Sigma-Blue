@@ -67,8 +67,10 @@ public class TagList extends AEntityList<Tag> {
      */
     @Override
     public void updateUI() {
-        adapter.setList(this.entityList);
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.setList(this.entityList);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**

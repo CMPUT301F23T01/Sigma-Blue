@@ -124,4 +124,9 @@ public class Tag implements Comparable<Tag>, IDatabaseItem<Tag>, Serializable {
     public Tag getInstance() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        return tagText;
+    }
 }
