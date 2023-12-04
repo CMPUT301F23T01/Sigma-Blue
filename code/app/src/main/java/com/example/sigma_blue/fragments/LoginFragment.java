@@ -39,21 +39,6 @@ public class LoginFragment extends DialogFragment {
         void onLoginPressed(boolean matches);
     }
 
-    /**
-     * Creates instance to take in account object from LoginPageActivity so it can be checked
-     * against user input
-     */
-    public static LoginFragment newInstance(AccountList accountList) {
-
-        Bundle args = new Bundle();
-        args.putSerializable("accountList", accountList);
-
-        LoginFragment fragment = new LoginFragment();
-        fragment.setArguments(args);
-
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
