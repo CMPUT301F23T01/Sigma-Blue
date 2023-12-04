@@ -1,35 +1,5 @@
 @startuml
-skinparam classAttributeIconSize 0
-left to right direction
-class sigma_blue.entity.tag.Tag {
-- String tagText
-- Color colour
-+ {static} String LABEL
-+ {static} Function<IDatabaseItem<Tag>,HashMap<String,Object>> hashMapOfEntity
-+ String getTagText()
-+ void setTagText(String)
-+ Color getColour()
-+ void setColour(Color)
-+ int compareTo(Tag)
-+ int hashCode()
-+ boolean equals(Object)
-+ String getDocID()
-+ String getColourString()
-+ Function<IDatabaseItem<Tag>,HashMap<String,Object>> getHashMapOfEntity()
-+ Tag getInstance()
-}
-class sigma_blue.activities.LoginPageActivity {
-+ Button createAccBtn
-+ Button loginBtn
-- FragmentLauncher fragmentLauncher
-- DialogFragment createAccFragment
-- DialogFragment loginFragment
-- GlobalContext globalContext
-# void onCreate(Bundle)
-+ void onConfirmPressed(boolean)
-+ void onLoginPressed(boolean)
-}
-class sigma_blue.entity.item.ItemFactory {
+class com.example.sigma_blue.entity.item.ItemFactory {
 ~ String factoryTitle
 ~ Date factoryDate
 ~ String factoryDescription
@@ -45,25 +15,7 @@ class sigma_blue.entity.item.ItemFactory {
 - Date getFactoryDate()
 - Double getFactoryValue()
 }
-class sigma_blue.entity.image.ImageDB {
-- FirebaseStorage storage
-+ String addImage(Bitmap,Account,OnCompleteListener<UploadTask.TaskSnapshot>)
-+ void getImage(String,OnSuccessListener<byte[]>)
-}
-class sigma_blue.database.DatabaseInitializer {
-- CollectionReference dbRef
-- Boolean exists
-+ {static} DatabaseInitializer newInstance()
-+ boolean checkExistence(Account)
-+ void generateFileStructure(Account)
-+ HashMap<String,String> documentOfAccount(Account)
-}
-
-note left of sigma_blue.database.DatabaseInitializer
-    Only used for testing,
-    unused for now.
-end note
-class sigma_blue.activities.ActivityLauncher {
+class com.example.sigma_blue.activities.ActivityLauncher {
 - ActivityResultLauncher<Input> launcher
 - OnActivityResult<Result> onActivityResult
 + {static} ActivityLauncher<Input,Result> registerForActivityResult(ActivityResultCaller,ActivityResultContract<Input,Result>,OnActivityResult<Result>)
@@ -74,18 +26,411 @@ class sigma_blue.activities.ActivityLauncher {
 + void launch(Input)
 - void callOnActivityResult(Result)
 }
-interface sigma_blue.activities.ActivityLauncher$OnActivityResult {
+interface com.example.sigma_blue.activities.ActivityLauncher$OnActivityResult {
 ~ void onActivityResult(O)
 }
-abstract class sigma_blue.adapter.ASelectableListAdapter {
+class com.example.sigma_blue.utility.TagFilterField {
+- ArrayList<Tag> tagsToMatch
++ boolean match(Item)
+}
+class com.example.sigma_blue.utility.ItemSortComparator {
+- SortField sortBy
+- int direction
+- Comparator<Item> defaultComparator
+- Comparator<Item> nameComparator
+- Comparator<Item> dateComparator
+- Comparator<Item> makeComparator
+- Comparator<Item> valueComparator
+- Comparator<Item> descriptionComparator
++ SortField getSortBy()
++ Comparator<Item> getComparator()
++ int getDirection()
++ void setDirection(int)
+}
+abstract class com.example.sigma_blue.adapter.ASelectableListAdapter {
 # List<T> entityData
 # Context context
-# GlobalContext globalContext
+# {static} GlobalContext globalContext
 + int getCount()
 + void setList(List<T>)
 # void highlightControl(View,boolean)
 }
-class sigma_blue.entity.item.ItemListAdapter {
+class com.example.sigma_blue.utility.DateFilterField {
+~ Date startDate
+~ Date endDate
++ boolean match(Item)
++ Date getStartDate()
++ Date getEndDate()
+}
+class com.example.sigma_blue.fragments.ItemTagsFragment {
+- GlobalContext globalContext
+- TabMode mode
+- ViewBinding binding
+- ListView tagListView
+- TagListAdapter tagListAdapter
+- FloatingActionButton addTag
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onViewCreated(View,Bundle)
++ void onResume()
++ void updateTags()
++ void onDestroyView()
++ void updateBinding(ViewBinding)
+}
+enum com.example.sigma_blue.adapter.TabSelected {
++  Details
++  Tags
++  Photos
+- int position
+- {static} Map<Integer,TabSelected> map
++ {static} TabSelected of(int)
++ int position()
+}
+class com.example.sigma_blue.fragments.ItemPhotosFragment {
+- GlobalContext globalContext
+- TabMode mode
+- ViewBinding binding
+- RecyclerView itemImageList
+- FloatingActionButton addPicture
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onViewCreated(View,Bundle)
++ void onResume()
++ void onDestroyView()
++ void updateImageList()
++ void updateBinding(ViewBinding)
+- void handleImageClick()
+- void chooseImageSource(Context)
++ void onItemClick(int)
++ void onWhatEverClick(int)
++ void onDeleteClick(int)
+}
+enum com.example.sigma_blue.utility.ModeField {
++  SORT
++  SEARCH
+- String stringRepresentation
++ String toString()
+}
+abstract class com.example.sigma_blue.utility.FilterField {
+# String filterText
+# boolean enabled
+# boolean exact
++ {abstract}boolean match(T)
++ String getFilterText()
++ boolean isEnabled()
+}
+class com.example.sigma_blue.entity.description.DescriptionManager {
+- HashMap<String,String> descriptionMappings
+- {static} boolean DBEnabled
+- DescriptionDB descriptionDB
++ void setContext(Context)
++ void updateItemDescription(String,Response.Listener<String>,Response.ErrorListener)
+- String parseResponse(String)
+}
+class com.example.sigma_blue.utility.StringHasher {
++ {static} String getHash(String)
+- {static} String bytesToString(byte[])
+}
+class com.example.sigma_blue.activities.ViewListActivity {
+- ActivityLauncher<Intent,ActivityResult> activityLauncher
+- ViewHolder viewHolder
+- GlobalContext globalContext
+- FragmentManager fragmentManager
+# void onCreate(Bundle)
+- void handleClick(Item)
+- void deleteSelectedItems()
+- void displayQueryFragment(ApplicationState)
+- void startFragmentTransaction(DialogFragment,String)
+- void setUIOnClickListeners()
+- void handleLongClick(Item)
+- void handleOptionsClick()
+- void handleDeleteAccount()
+- void logoutUser()
+}
+class com.example.sigma_blue.activities.ViewListActivity$ViewHolder {
++ Button searchButton
++ Button sortFilterButton
++ Button optionsButton
++ Button deleteSelectedButton
++ Button addTagsSelectedButton
++ ConstraintLayout selectedItemsMenu
++ FloatingActionButton addEntryButton
++ TextView summaryView
++ ListView listListView
+}
+enum com.example.sigma_blue.utility.SortField {
++  NAME
++  DATE
++  DESCRIPTION
++  MAKE
++  VALUE
++  NO_SELECTION
+- String menuName
++ String toString()
+}
+class com.example.sigma_blue.fragments.EditFragment {
+- GlobalContext globalContext
+- EditFragmentBinding binding
+- EditText textName
+- TabLayout tabLayout
+- ViewPager2 viewPager
+- ViewPagerAdapter viewPagerAdapter
+- TabSelected tabSelected
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onViewCreated(View,Bundle)
++ void onResume()
++ void onDestroyView()
+- boolean verifyName()
+- void loadTextName(Item)
+}
+class com.example.sigma_blue.entity.item.ItemDB {
+- FirebaseFirestore firestoreInjection
+- Account account
++ {static} ItemDB newInstance(Account)
++ {static} ItemDB newInstance(FirebaseFirestore,Account)
+- void setAccount(Account)
+- void setFirestore(FirebaseFirestore)
++ void add(Item)
++ void remove(Item)
++ Account getAccount()
++ CollectionReference getCollectionReference()
+}
+class com.example.sigma_blue.activities.AddEditActivity {
+- GlobalContext globalContext
+- NavGraph graph
+- NavController navController
+# void onCreate(Bundle)
++ void onResume()
++ void returnAndClose()
+# void onActivityResult(int,int,Intent)
+}
+class com.example.sigma_blue.fragments.DetailsFragment {
+- GlobalContext globalContext
+- DetailsFragmentBinding binding
+- TextView textName
+- TabLayout tabLayout
+- ViewPager2 viewPager
+- ViewPagerAdapter viewPagerAdapter
+- TabSelected tabSelected
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onViewCreated(View,Bundle)
++ void onDestroyView()
+}
+class com.example.sigma_blue.context.GlobalContext {
+- {static} GlobalContext instance
+- Account account
+- AccountList accountList
+- ItemList itemList
+- SelectedEntities<Item> selectedItems
+- TagList tagList
+- SelectedEntities<Tag> selectedTags
+- ImageManager imageManager
+- DescriptionManager descriptionManager
+- Item currentItem
+- Item modifiedItem
+- ArrayList<ApplicationState> stateHistory
++ {static} GlobalContext getInstance()
++ void login(Account)
++ void newState(ApplicationState)
++ ApplicationState getCurrentState()
++ ApplicationState getLastState()
++ AccountList getAccountList()
++ ItemList getItemList()
++ ImageManager getImageManager()
++ TagList getTagList()
++ Item getCurrentItem()
++ void setCurrentItem(Item)
++ Account getAccount()
++ void setAccount(Account)
++ SelectedEntities<Item> getSelectedItems()
++ SelectedEntities<Tag> getSelectedTags()
++ Item getModifiedItem()
++ void setModifiedItem(Item)
++ void updateTag(Tag,Tag)
++ DescriptionManager getDescriptionManager()
+}
+class com.example.sigma_blue.utility.DescriptionFilterField {
++ boolean match(Item)
+}
+class com.example.sigma_blue.fragments.TagManagerFragment {
+- GlobalContext globalContext
+- TagManagerFragmentBinding binding
+- Button tagCreateButton
+- Button tagEditButton
+- Button tagDeleteButton
+- Button backButton
+- Button confirmButton
+- ListView tagsListView
+- AddEditActivity activity
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onViewCreated(View,Bundle)
+- boolean updateTagListView()
+- void updateItemsWithTags()
++ void onDestroyView()
+- void handleClick(Tag)
+}
+enum com.example.sigma_blue.database.DatabaseNames {
++  PRIMARY_COLLECTION
++  ITEMS_COLLECTION
++  TAGS_COLLECTION
++  ACCOUNT_INFO_COLLECTION
++  USER_INFO_DOCUMENT
+- String name
++ String getName()
+}
+class com.example.sigma_blue.fragments.TagEditFragment {
+- GlobalContext globalContext
+- EditText inputField
+- Button backButton
+- Button confirmButton
+- Button colourButton
+- Tag oldTag
+- Tag modifiedTag
++ void onViewCreated(View,Bundle)
+- void pickColour()
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+enum com.example.sigma_blue.adapter.TabMode {
++  Edit
++  Details
+}
+class com.example.sigma_blue.fragments.LoginFragment {
+- EditText usernameInput
+- EditText passwordInput
+- OnFragmentInteractionListener listener
+- GlobalContext globalContext
++ {static} LoginFragment newInstance(AccountList)
++ void onAttach(Context)
++ Dialog onCreateDialog(Bundle)
+}
+interface com.example.sigma_blue.fragments.LoginFragment$OnFragmentInteractionListener {
+~ void onLoginPressed(boolean)
+}
+class com.example.sigma_blue.entity.image.ImageManager {
+- ArrayList<String> pathList
+- ArrayList<Bitmap> entityList
+# ImageDB dbHandler
+# ImageListAdapterFromPath adapter
+- Boolean uploading
+- Boolean upToDate
++ String uploadImage(Account,Bitmap)
++ void updateFromItem(Item)
++ ImageListAdapterFromPath getAdapter()
+- void updateFromList()
++ void setAdapter(ImageListAdapterFromPath)
+- void onImageDownload(byte[])
+- void onImageUpload()
++ ArrayList<String> getPathList()
++ Bitmap compressBitmap(String,int,int)
+}
+class com.example.sigma_blue.entity.description.DescriptionDB {
+- {static} String url
+~ RequestQueue queue
++ void setContext(Context)
++ void getDescription(String,Response.Listener<String>,Response.ErrorListener)
+}
+class com.example.sigma_blue.utility.NameFilterField {
++ boolean match(Item)
+}
+abstract class com.example.sigma_blue.utility.SearchTextBoxWatcher {
+~ T target
++ void beforeTextChanged(CharSequence,int,int,int)
++ void onTextChanged(CharSequence,int,int,int)
++ void afterTextChanged(Editable)
++ {abstract}void onTextChanged(T,Editable)
+}
+class com.example.sigma_blue.adapter.ViewPagerAdapter {
+- TabMode mode
+- ItemDetailsFragment itemDetailsFragment
+- ItemPhotosFragment itemPhotosFragment
+- ItemTagsFragment itemTagsFragment
+- boolean fragmentsInitialized
+- String ERROR_MESSAGE
++ Fragment createFragment(int)
++ int getItemCount()
++ boolean verifyDetailsText()
++ void saveTextToContext()
++ void updateFromContext(int)
+}
+class com.example.sigma_blue.entity.account.Account {
+- String username
+- String password
++ {static} String USERNAME
++ {static} Function<QueryDocumentSnapshot,Account> accountOfDocument
++ String getUsername()
++ String getPassword()
++ boolean checkUsername(String)
++ boolean checkPassword(String)
++ String getDocID()
++ boolean equals(Object)
++ Function<IDatabaseItem<Account>,HashMap<String,Object>> getHashMapOfEntity()
++ Account getInstance()
+}
+class com.example.sigma_blue.utility.ConfirmDelete {
++ {static} void confirmDelete(Context,DialogInterface.OnClickListener)
+}
+class com.example.sigma_blue.activities.ImageTakingActivity {
+~ {static} int REQUEST_IMAGE_CAPTURE
+~ {static} int REQUEST_BARCODE_SCAN
+~ {static} int REQUEST_GALLERY_PICKING
+- GlobalContext globalContext
+- boolean cameraPermissionGranted
+- ActivityResultLauncher<ScanOptions> barcodeLauncher
+# void onCreate(Bundle)
+- void dispatchIntent()
+- void dispatchScanBarcodeIntent()
+- void dispatchTakePictureIntent()
+- void dispatchStartGalleryIntent()
+# void onActivityResult(int,int,Intent)
+- void checkAndroidCameraPermissions()
+- void checkAndroidStoragePermissions()
++ void onRequestPermissionsResult(int,String[],int[])
+}
+class com.example.sigma_blue.fragments.CreateAccFragment {
+- EditText usernameInput
+- EditText passwordInput
+- OnFragmentInteractionListener listener
+- GlobalContext globalContext
++ void onAttach(Context)
++ Dialog onCreateDialog(Bundle)
+}
+interface com.example.sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener {
+~ void onConfirmPressed(boolean)
+}
+class com.example.sigma_blue.entity.tag.Tag {
+- String tagText
+- Color colour
++ {static} String LABEL
++ String getTagText()
++ void setTagText(String)
++ Color getColour()
++ void setColour(Color)
++ int compareTo(Tag)
++ int hashCode()
++ boolean equals(Object)
++ String getDocID()
++ String getColourString()
++ Function<IDatabaseItem<Tag>,HashMap<String,Object>> getHashMapOfEntity()
++ Tag getInstance()
+}
+class com.example.sigma_blue.activities.LoginPageActivity {
++ Button createAccBtn
++ Button loginBtn
+- FragmentLauncher fragmentLauncher
+- DialogFragment createAccFragment
+- DialogFragment loginFragment
+- GlobalContext globalContext
+# void onCreate(Bundle)
++ void onConfirmPressed(boolean)
++ void onLoginPressed(boolean)
+}
+class com.example.sigma_blue.entity.image.ImageDB {
+- FirebaseStorage storage
++ String addImage(Bitmap,Account,OnCompleteListener<UploadTask.TaskSnapshot>)
++ void getImage(String,OnSuccessListener<byte[]>)
+}
+class com.example.sigma_blue.entity.item.ItemListAdapter {
 - TextView sumView
 + void notifyDataSetChanged()
 + View getView(int,View,ViewGroup)
@@ -94,81 +439,71 @@ class sigma_blue.entity.item.ItemListAdapter {
 + void setSummaryView(TextView)
 - void bindPosition(View,int)
 }
-abstract class sigma_blue.activities.BaseActivity {
-# ActivityLauncher<Intent,ActivityResult> activityLauncher
-+ {static} boolean isBlank(EditText)
-}
-enum sigma_blue.query.SortField {
-+  NAME
-+  DATE
-+  DESCRIPTION
-+  MAKE
-+  VALUE
-+  NO_SELECTION
-- String dbFieldName
-- String menuName
-+ String getDbField()
-+ String toString()
-}
-class sigma_blue.query.FilterState {
-- List<FilterField> appliedFilters
-+ void addFilter(FilterField)
-+ void resetState()
-+ List<FilterField> getAppliedFilters()
-}
-class sigma_blue.fragments.TagAddFragment {
-- int tagColor
+class com.example.sigma_blue.fragments.ItemDetailsFragment {
 - GlobalContext globalContext
+- TabMode mode
+- ViewBinding binding
+- TextView textValue
+- TextView textDate
+- TextView textMake
+- TextView textModel
+- TextView textSerial
+- TextView textDescription
+- TextView textComment
+- ArrayList<EditText> editTextList
+- Button scanSerial
+- int mDay
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
 + void onViewCreated(View,Bundle)
++ void onResume()
++ void onDestroyView()
+- void editItemUIBindings(Item)
+- void loadUiText(Item)
++ boolean verifyText()
++ void updateText()
++ void saveText()
++ void updateBinding(ViewBinding)
+}
+class com.example.sigma_blue.entity.image.ImageListAdapterFromPath {
+- Context mContext
+- ArrayList<String> pathData
+- OnItemClickListener mListener
+- FirebaseStorage storage
+- boolean isMenuNeeded
++ ImageViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ImageViewHolder,int)
++ int getItemCount()
++ void setOnItemClickListener(OnItemClickListener)
++ ArrayList<String> getPathData()
++ void setPathData(ArrayList<String>)
+}
+class com.example.sigma_blue.entity.image.ImageListAdapterFromPath$ImageViewHolder {
++ ImageView imageView
++ void onClick(View)
++ void onCreateContextMenu(ContextMenu,View,ContextMenu.ContextMenuInfo)
++ boolean onMenuItemClick(MenuItem)
+}
+interface com.example.sigma_blue.entity.image.ImageListAdapterFromPath$OnItemClickListener {
+~ void onItemClick(int)
+~ void onWhatEverClick(int)
+~ void onDeleteClick(int)
+}
+class com.example.sigma_blue.fragments.TagAddFragment {
+- GlobalContext globalContext
+- EditText inputField
+- Button backButton
+- Button confirmButton
+- Button colourButton
+- Tag modifiedTag
++ void onViewCreated(View,Bundle)
+- void pickColour()
 + View onCreateView(LayoutInflater,ViewGroup,Bundle)
 }
-class sigma_blue.query.QueryGenerator {
-- Query query
-- CollectionReference baseQuery
-+ void resetQuery()
-+ Query getQuery()
-- void setQuery(Query)
-+ {static} Query sortQuery(Query,SortField,Query.Direction)
-+ void filterEqualsQuery(String,String)
-+ void filterRangeQuery(String,String,String)
-+ void filterInclusiveQuery(String,List<Object>)
-}
-class sigma_blue.utility.Pair {
-- E1 first
-- E2 second
-+ E1 getFirst()
-+ E2 getSecond()
-}
-class sigma_blue.entity.account.AccountDB {
+class com.example.sigma_blue.entity.account.AccountDB {
 + {static} AccountDB newInstance()
 + CollectionReference getCollectionReference()
 }
-
-class sigma_blue.activities.ViewListActivity {
-- ActivityLauncher<Intent,ActivityResult> activityLauncher
-- ViewHolder viewHolder
-- GlobalContext globalContext
-- FragmentManager fragmentManager
-# void onCreate(Bundle)
-- void handleClick(Item)
-- void deleteSelectedItems()
-- void displayQueryFragment()
-- void startFragmentTransaction(DialogFragment,String)
-- void setUIOnClickListeners()
-- void handleLongClick(Item)
-}
-class sigma_blue.activities.ViewListActivity$ViewHolder {
-+ Button searchButton
-+ Button sortFilterButton
-+ Button optionsButton
-+ Button deleteSelectedButton
-+ Button addTagsSelectedButton
-+ LinearLayout selectedItemsMenu
-+ FloatingActionButton addEntryButton
-+ TextView summaryView
-+ ListView listListView
-}
-abstract class sigma_blue.entity.AEntityList {
+abstract class com.example.sigma_blue.entity.AEntityList {
 # ArrayList<T> entityList
 # ADatabaseHandler<T> dbHandler
 # ASelectableListAdapter<T> adapter
@@ -185,17 +520,50 @@ abstract class sigma_blue.entity.AEntityList {
 + void startListening()
 + void updateEntity(T,T)
 + void syncEntity(T)
-+ ADatabaseHandler<T> getDbHandler()
 + void setDbHandler(ADatabaseHandler<T>)
++ void removeAll()
 }
-class sigma_blue.entity.account.AccountList {
+class com.example.sigma_blue.entity.image.MyAppGlideModule {
++ void registerComponents(Context,Glide,Registry)
+}
+class com.example.sigma_blue.entity.account.AccountList {
 + {static} AEntityList<Account> newInstance()
 + boolean validAccount(Account)
 + void updateUI()
 + List<Account> loadArray(QuerySnapshot)
 + void setList(ArrayList<Account>)
 }
-class sigma_blue.entity.item.Item {
+class com.example.sigma_blue.utility.MakeFilterField {
++ boolean match(Item)
+}
+class com.example.sigma_blue.entity.tag.TagDB {
+- Account account
++ {static} TagDB newInstance(Account)
++ DocumentReference getDocRef(Tag)
++ CollectionReference getCollectionReference()
+}
+enum com.example.sigma_blue.context.ApplicationState {
++  SORT_MENU
++  FILTER_MENU
++  LOGIN_ACTIVITY
++  VIEW_LIST_ACTIVITY
++  CREATE_ACCOUNT_FRAGMENT
++  LOGIN_FRAGMENT
++  DETAILS_FRAGMENT
++  ADD_ITEM_FRAGMENT
++  EDIT_ITEM_FRAGMENT
++  MULTI_SELECT_TAG_MANAGER_FRAGMENT
++  TAG_MANAGER_FRAGMENT
++  TAG_ADD_FRAGMENT
++  TAG_EDIT_FRAGMENT
++  IMAGE_ADD_ACTIVITY
++  BARCODE_ADD_ACTIVITY
++  GALLERY_ADD_ACTIVITY
++  NONE
+- String key
++ String toString()
+}
+class com.example.sigma_blue.entity.item.Item {
 + {static} String dbName
 - String description
 - Date date
@@ -204,7 +572,6 @@ class sigma_blue.entity.item.Item {
 - List<Tag> tags
 - ArrayList<String> imagePaths
 + {static} SimpleDateFormat simpledf
-+ {static} Function<IDatabaseItem<Item>,HashMap<String,Object>> hashMapOfItem
 + {static} Function<QueryDocumentSnapshot,Item> itemOfQueryDocument
 + {static} Item newInstance(String)
 + {static} Item newInstance(String,Date,String,String,String,String,String,Double,List<String>,List<String>)
@@ -228,7 +595,7 @@ class sigma_blue.entity.item.Item {
 + String getComment()
 + void setComment(String)
 + List<Tag> getTags()
-+ ArrayList<String> getTagNames()
++ ArrayList<String> getTagDocIDs()
 + void setTags(List<Tag>)
 + void addTag(Tag)
 + boolean deleteTag(Tag)
@@ -243,38 +610,9 @@ class sigma_blue.entity.item.Item {
 + int hashCode()
 + Item getInstance()
 + void cleanTags(ArrayList<Tag>)
++ void updateTag(Tag,Tag)
 }
-class sigma_blue.entity.tag.TagDB {
-- Account account
-+ {static} TagDB newInstance(Account)
-+ DocumentReference getDocRef(Tag)
-+ CollectionReference getCollectionReference()
-}
-class sigma_blue.adapter.ItemLinearLayoutManager {
-- int[] mMeasuredDimension
-+ void onMeasure(RecyclerView.Recycler,RecyclerView.State,int,int)
-- void measureScrapChild(RecyclerView.Recycler,int,int,int,int[])
-}
-enum sigma_blue.context.ApplicationState {
-+  SORT_MENU
-+  LOGIN_ACTIVITY
-+  VIEW_LIST_ACTIVITY
-+  CREATE_ACCOUNT_FRAGMENT
-+  LOGIN_FRAGMENT
-+  DETAILS_FRAGMENT
-+  ADD_ITEM_FRAGMENT
-+  EDIT_ITEM_FRAGMENT
-+  MULTI_SELECT_TAG_MANAGER_FRAGMENT
-+  TAG_MANAGER_FRAGMENT
-+  TAG_ADD_FRAGMENT
-+  TAG_EDIT_FRAGMENT
-+  IMAGE_ADD_ACTIVITY
-+  BARCODE_ADD_ACTIVITY
-+  NONE
-- String key
-+ String toString()
-}
-abstract class sigma_blue.database.ADatabaseHandler {
+abstract class com.example.sigma_blue.database.ADatabaseHandler {
 - ListenerRegistration registration
 # CollectionReference ref
 # {static} void addDocument(CollectionReference,T,Function<T,HashMap<String,Object>>,String)
@@ -287,56 +625,45 @@ abstract class sigma_blue.database.ADatabaseHandler {
 - void clearRegistration()
 + DocumentReference getDocRef(IDatabaseItem<T>)
 }
-class sigma_blue.fragments.QueryFragment {
+class com.example.sigma_blue.fragments.QueryFragment {
 - GlobalContext globalContext
 - ViewHolder viewHolder
+- ModeField currentView
+- VisibleItemList visibleItemList
++ void onResume()
 + void onCreate(Bundle)
 + View onCreateView(LayoutInflater,ViewGroup,Bundle)
 }
-class sigma_blue.fragments.QueryFragment$ViewHolder {
-~ Button backButton
+class com.example.sigma_blue.fragments.QueryFragment$ViewHolder {
+~ Button confirmButton
+~ TextView startDateTV
 ~ EditText descriptionFilterET
 ~ Spinner sortCriteriaSpinner
 ~ CheckBox ascendingBox
 ~ DatePicker startDatePicker
-~ ArrayAdapter<SortField> adapter
-- void bindViews(View)
-- void setAdapters()
+~ ArrayAdapter<SortField> sortAdapter
+~ ArrayAdapter<ModeField> modeAdapter
+~ ViewSwitcher modeSwitcher
 - List<SortField> createMenuItems()
+- List<ModeField> createModeChoices()
 - void createSortAdapter()
+- void createModeAdapter()
 + void flipAscendBox(boolean)
+- void resetQueryUI()
 - void resetQuery()
 + void regenerateSelection()
-- void setSortCheckbox(Query.Direction)
+- void regenerateTextBox(EditText,String)
+- void setDatePickerVisibility(int)
+- void dateCheckBoxController(CheckBox)
+- Date dateRepresentationOfPicker(DatePicker)
+- void setBoxListeners()
+- void setDatePickerListeners()
 + void setUIListeners()
+- void chooseModeView(ModeField)
+- void swapMode(ModeField)
+- void handleSortUpdate(int)
 }
-class sigma_blue.fragments.EditFragment {
-- EditFragmentBinding binding
-- EditText textName
-- EditText textValue
-- EditText textDate
-- EditText textMake
-- EditText textModel
-- EditText textSerial
-- EditText textDescription
-- EditText textComment
-- ListView tagListView
-- TagListAdapter tagListAdapter
-- ImageView itemImage
-- ArrayList<EditText> editTextList
-- int mDay
-- GlobalContext globalContext
-+ void onCreate(Bundle)
-+ View onCreateView(LayoutInflater,ViewGroup,Bundle)
-- void editItemUIBindings(Item)
-+ void onViewCreated(View,Bundle)
-+ void onResume()
-+ void onDestroyView()
-- boolean verifyText()
-- void loadUiText(Item)
-- void handleImageClick()
-}
-class sigma_blue.entity.tag.TagList {
+class com.example.sigma_blue.entity.tag.TagList {
 + {static} Function<QueryDocumentSnapshot,Tag> tagOfDocument
 + {static} TagList newInstance(Account)
 + {static} TagList newInstance()
@@ -344,318 +671,130 @@ class sigma_blue.entity.tag.TagList {
 + void updateUI()
 + List<Tag> loadArray(QuerySnapshot)
 }
-class sigma_blue.entity.item.ItemDB {
-- FirebaseFirestore firestoreInjection
-- Account account
-+ {static} ItemDB newInstance(Account)
-+ {static} ItemDB newInstance(FirebaseFirestore,Account)
-- void setAccount(Account)
-- void setFirestore(FirebaseFirestore)
-+ void add(Item)
-+ void remove(Item)
-+ Account getAccount()
-+ CollectionReference getCollectionReference()
-}
-class sigma_blue.activities.AddEditActivity {
-- GlobalContext globalContext
-- NavGraph graph
-- NavController navController
-# void onCreate(Bundle)
-+ void onResume()
-+ void returnAndClose()
-# void onActivityResult(int,int,Intent)
-}
-class sigma_blue.entity.tag.TagListAdapter {
+class com.example.sigma_blue.entity.tag.TagListAdapter {
 + {static} TagListAdapter newInstance(List<Tag>,Context)
 + View getView(int,View,ViewGroup)
 }
-class sigma_blue.fragments.DetailsFragment {
-- DetailsFragmentBinding binding
-- TextView textName
-- TextView textValue
-- TextView textDate
-- TextView textMake
-- TextView textModel
-- TextView textSerial
-- TextView textDescription
-- TextView textComment
-- ListView tagListView
-- TagListAdapter tagListAdapter
-- ImageView itemImage
-- GlobalContext globalContext
-- FirebaseStorage storage
-+ void onCreate(Bundle)
-+ View onCreateView(LayoutInflater,ViewGroup,Bundle)
-+ void onViewCreated(View,Bundle)
-+ void onDestroyView()
-}
-class sigma_blue.context.GlobalContext {
-- {static} GlobalContext instance
-- Account account
-- AccountList accountList
-- ItemList itemList
-- SelectedEntities<Item> selectedItems
-- TagList tagList
-- SelectedEntities<Tag> selectedTags
-- Item currentItem
-- Item modifiedItem
-- Tag currentTag
-- QueryMode queryState
-- ImageDB imageDB
-- ArrayList<ApplicationState> stateHistory
-+ {static} GlobalContext getInstance()
-+ void login(Account)
-+ void newState(ApplicationState)
-+ ApplicationState getCurrentState()
-+ ApplicationState getLastState()
-+ AccountList getAccountList()
-+ ItemList getItemList()
-+ ImageDB getImageDB()
-+ QueryMode getQueryState()
-+ TagList getTagList()
-+ Pair<ADatabaseHandler<Item>,IDatabaseList<Item>> getQueryPair()
-+ Item getCurrentItem()
-+ void setCurrentItem(Item)
-+ Account getAccount()
-+ void setAccount(Account)
-+ SelectedEntities<Item> getSelectedItems()
-+ SelectedEntities<Tag> getSelectedTags()
-+ Item getModifiedItem()
-+ void setModifiedItem(Item)
-}
-
-note left of sigma_blue.context.GlobalContext
-    Singleton class. Used in
-    all activities and fragments.
-
-    Also keeps track of a history
-    of application states.
-end note
-
-
-class sigma_blue.fragments.FragmentLauncher {
+class com.example.sigma_blue.fragments.FragmentLauncher {
 - FragmentManager hostFragmentManager
 + {static} FragmentLauncher newInstance(FragmentActivity)
 + {static} FragmentLauncher newInstance(Fragment)
 + void startFragmentTransaction(DialogFragment,String)
 + void startFragmentTransaction(Fragment,String)
 }
-class sigma_blue.fragments.TagManagerFragment {
-- GlobalContext globalContext
-- TagManagerFragmentBinding binding
-- Button tagCreateButton
-- Button tagEditButton
-- Button tagDeleteButton
-- Button backButton
-- Button confirmButton
-- ListView tagsListView
-- AddEditActivity activity
-+ void onCreate(Bundle)
-+ View onCreateView(LayoutInflater,ViewGroup,Bundle)
-+ void onViewCreated(View,Bundle)
-- boolean updateTagListView()
-- void updateItemsWithTags()
-+ void onDestroyView()
-- void handleClick(Tag)
+class com.example.sigma_blue.entity.item.VisibleItemList {
+- FilterField<Item> makeFilterField
+- ItemSortComparator itemSortComparator
+- ArrayList<Item> visibleItems
++ void refreshVisibleItems()
++ void resetVisibleItems()
++ void setMakeFilterField(FilterField<Item>)
++ void setNameFilterField(FilterField<Item>)
++ void setDescriptionFilterField(FilterField<Item>)
++ void setDateFilterField(FilterField<Item>)
++ void setTagFilterField(FilterField<Item>)
++ void setItemSortComparator(ItemSortComparator)
++ FilterField<Item> getTagFilterField()
++ FilterField<Item> getMakeFilterField()
++ FilterField<Item> getNameFilterField()
++ FilterField<Item> getDescriptionFilterField()
++ FilterField<Item> getDateFilterField()
++ ItemSortComparator getItemSortComparator()
 }
-enum sigma_blue.database.DatabaseNames {
-+  PRIMARY_COLLECTION
-+  ITEMS_COLLECTION
-+  TAGS_COLLECTION
-+  ACCOUNT_INFO_COLLECTION
-+  USER_INFO_DOCUMENT
-- String name
-+ String getName()
-}
-class sigma_blue.fragments.TagEditFragment {
-- int tagColor
-- Tag tag
-- GlobalContext globalContext
-+ void onViewCreated(View,Bundle)
-+ View onCreateView(LayoutInflater,ViewGroup,Bundle)
-}
-interface sigma_blue.database.IDatabaseList {
+interface com.example.sigma_blue.database.IDatabaseList {
 + void setList(ArrayList<T>)
 + void updateUI()
 + List<T> loadArray(QuerySnapshot)
 + void startListening()
 }
-class sigma_blue.entity.item.ItemList {
-- ViewListModes displayMode
+class com.example.sigma_blue.entity.item.ItemList {
+- VisibleItemList visibleItemList
+- ArrayList<Item> visibleItemArrayList
 + {static} Function<List<Item>,Optional<Double>> sumValues
 + {static} ItemList newInstance(ItemDB,ItemListAdapter)
 + {static} ItemList newInstance(ItemDB)
 + {static} ItemList newInstance()
-+ void removeAll()
 + void updateUI()
 + List<Item> loadArray(QuerySnapshot)
-+ CollectionReference getCollectionReference()
++ void setAdapter(ASelectableListAdapter<Item>)
 + void setSummaryView(TextView)
 + void cleanAllItemTags(ArrayList<Tag>)
++ void updateTags(Tag,Tag)
++ VisibleItemList getVisibleItemList()
++ ArrayList<Item> getVisibleList()
 }
-enum sigma_blue.entity.item.ViewListModes {
-+  NONE
-+  SORT
-+  FILTER
-}
-class sigma_blue.fragments.LoginFragment {
-- EditText usernameInput
-- EditText passwordInput
-- OnFragmentInteractionListener listener
-- GlobalContext globalContext
-+ {static} LoginFragment newInstance(AccountList)
-+ void onAttach(Context)
-+ Dialog onCreateDialog(Bundle)
-}
-interface sigma_blue.fragments.LoginFragment$OnFragmentInteractionListener {
-~ void onLoginPressed(boolean)
-}
-interface sigma_blue.database.IDatabaseItem {
+interface com.example.sigma_blue.database.IDatabaseItem {
 + String getDocID()
 + Function<IDatabaseItem<T>,HashMap<String,Object>> getHashMapOfEntity()
 + T getInstance()
 }
-
-note left of sigma_blue.database.IDatabaseItem
-    Item, Tag, and Account
-    implement IDatabaseItem.
-end note
-
-class sigma_blue.context.SelectedEntities {
+class com.example.sigma_blue.context.SelectedEntities {
 ~ ArrayList<T> selected
 + void toggleHighlight(T)
 + ArrayList<T> getSelected()
 + void resetSelected()
 + boolean empty()
 + int size()
++ void updateEntity(T,T)
+- void removeEntity(T)
 }
 
-note left of sigma_blue.context.SelectedEntities
-    Either Tags or Items are selected here.
-end note
 
-enum sigma_blue.query.FilterField {
-+  NONE
-+  DATE_RANGE
-+  TAG
-+  DESCRIPTION
-+  MAKE
-}
-class sigma_blue.query.QueryMode {
-~ Boolean sort
-~ SortField currentSort
-~ Query.Direction direction
-~ FilterState filterState
-- QueryGenerator queryFactory
-- Query currentQuery
-- CollectionReference originalQuery
-+ Query.Direction getDirection()
-+ SortField getCurrentSort()
-+ void clearQuery()
-+ void resetQueryObject()
-+ void receiveSortQuery(SortField)
-+ void queryUpdateSort()
-+ void sendQuery(Pair<ADatabaseHandler<Item>,IDatabaseList<Item>>)
-+ void filterOn(FilterState)
-+ void filterOff()
-+ void setAscend()
-+ void setDescend()
-}
-
-class sigma_blue.entity.account.Account {
-- String username
-- String password
-+ {static} String USERNAME
-+ {static} Function<QueryDocumentSnapshot,Account> accountOfDocument
-+ {static} Function<IDatabaseItem<Account>,HashMap<String,Object>> hashMapOfEntity
-+ String getUsername()
-+ void setUsername(String)
-+ String getPassword()
-+ void setPassword(String)
-+ boolean checkUsername(String)
-+ boolean checkPassword(String)
-+ String getDocID()
-+ boolean equals(Object)
-+ Function<IDatabaseItem<Account>,HashMap<String,Object>> getHashMapOfEntity()
-+ Account getInstance()
-}
-class sigma_blue.activities.ImageTakingActivity {
-~ {static} int REQUEST_IMAGE_CAPTURE
-~ {static} int REQUEST_BARCODE_SCAN
-- GlobalContext globalContext
-- boolean cameraPermissionGranted
-- ActivityResultLauncher<ScanOptions> barcodeLauncher
-# void onCreate(Bundle)
-- void dispatchScanOrImageIntent()
-- void dispatchScanBarcodeIntent()
-- void dispatchTakePictureIntent()
-# void onActivityResult(int,int,Intent)
-- void checkAndroidCameraPermissions()
-+ void onRequestPermissionsResult(int,String[],int[])
-}
-class sigma_blue.fragments.CreateAccFragment {
-- EditText usernameInput
-- EditText passwordInput
-- OnFragmentInteractionListener listener
-- GlobalContext globalContext
-+ void onAttach(Context)
-+ Dialog onCreateDialog(Bundle)
-}
-interface sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener {
-~ void onConfirmPressed(boolean)
-}
-
-java.lang.Comparable <|.. sigma_blue.entity.tag.Tag
-sigma_blue.entity.tag.TagList "  1" *-- sigma_blue.entity.tag.TagDB
-sigma_blue.entity.tag.TagList "  1" o-- sigma_blue.entity.tag.TagListAdapter
-sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.tag.Tag
-java.io.Serializable <|.. sigma_blue.entity.tag.Tag
-sigma_blue.activities.OnFragmentInteractionListener <|.. sigma_blue.activities.LoginPageActivity
-sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.LoginPageActivity
-sigma_blue.activities.ActivityLauncher "  1" *-- sigma_blue.activities.ActivityLauncher$OnActivityResult
-android.widget.ArrayAdapter <|-- sigma_blue.adapter.ASelectableListAdapter
-sigma_blue.adapter.ASelectableListAdapter <|-- sigma_blue.entity.item.ItemListAdapter
-androidx.appcompat.app.AppCompatActivity <|-- sigma_blue.activities.BaseActivity
-androidx.fragment.app.Fragment <|-- sigma_blue.fragments.TagAddFragment
-sigma_blue.database.ADatabaseHandler <|-- sigma_blue.entity.account.AccountDB
-sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.ViewListActivity
-sigma_blue.activities.ViewListActivity "  1" *-- sigma_blue.activities.ViewListActivity$ViewHolder
-sigma_blue.activities.LoginPageActivity "  1" *-- sigma_blue.fragments.FragmentLauncher
-java.io.Serializable <|.. sigma_blue.entity.AEntityList
-sigma_blue.database.IDatabaseList <|.. sigma_blue.entity.AEntityList
-sigma_blue.entity.AEntityList <|-- sigma_blue.entity.account.AccountList
-sigma_blue.entity.account.AccountList "0..*" *-- sigma_blue.entity.account.Account
-sigma_blue.entity.account.AccountList "1" *-- sigma_blue.entity.account.AccountDB
-java.lang.Comparable <|.. sigma_blue.entity.item.Item
-sigma_blue.entity.item.Item "0..*" o-- sigma_blue.entity.tag.Tag
-sigma_blue.entity.item.ItemList "0..*" o-- sigma_blue.entity.item.Item
-sigma_blue.entity.item.ItemList "1" *-- sigma_blue.entity.item.ItemDB
-sigma_blue.entity.item.ItemListAdapter "  1" o-- sigma_blue.activities.ViewListActivity
-sigma_blue.entity.item.ItemFactory "creates" -- sigma_blue.entity.item.Item
-java.io.Serializable <|.. sigma_blue.entity.item.Item
-sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.item.Item
-sigma_blue.database.ADatabaseHandler <|-- sigma_blue.entity.tag.TagDB
-androidx.recyclerview.widget.LinearLayoutManager <|-- sigma_blue.adapter.ItemLinearLayoutManager
-androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.QueryFragment
-sigma_blue.fragments.QueryFragment "  1" *-- sigma_blue.fragments.QueryFragment$ViewHolder
-androidx.fragment.app.Fragment <|-- sigma_blue.fragments.EditFragment
-sigma_blue.entity.AEntityList <|-- sigma_blue.entity.tag.TagList
-sigma_blue.database.ADatabaseHandler <|-- sigma_blue.entity.item.ItemDB
-sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.AddEditActivity
-sigma_blue.adapter.ASelectableListAdapter <|-- sigma_blue.entity.tag.TagListAdapter
-androidx.fragment.app.Fragment <|-- sigma_blue.fragments.DetailsFragment
-androidx.fragment.app.Fragment <|-- sigma_blue.fragments.TagManagerFragment
-androidx.fragment.app.Fragment <|-- sigma_blue.fragments.TagEditFragment
-sigma_blue.fragments.TagManagerFragment "  1" o-- sigma_blue.entity.tag.TagListAdapter
-sigma_blue.fragments.DetailsFragment "  1" o-- sigma_blue.entity.tag.TagListAdapter
-sigma_blue.fragments.EditFragment "  1" o-- sigma_blue.entity.tag.TagListAdapter
-sigma_blue.entity.AEntityList <|-- sigma_blue.entity.item.ItemList
-androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.LoginFragment
-java.io.Serializable <|.. sigma_blue.entity.account.Account
-sigma_blue.database.IDatabaseItem <|.. sigma_blue.entity.account.Account
-sigma_blue.activities.BaseActivity <|-- sigma_blue.activities.ImageTakingActivity
-androidx.fragment.app.DialogFragment <|-- sigma_blue.fragments.CreateAccFragment
-sigma_blue.fragments.CreateAccFragment "  1" *-- sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener
-sigma_blue.context.GlobalContext "  2" *-- sigma_blue.context.SelectedEntities
-sigma_blue.context.GlobalContext "0..*" *-- sigma_blue.context.ApplicationState
+com.example.sigma_blue.activities.ActivityLauncher +.. com.example.sigma_blue.activities.ActivityLauncher$OnActivityResult
+com.example.sigma_blue.utility.FilterField <|-- com.example.sigma_blue.utility.TagFilterField
+android.widget.ArrayAdapter <|-- com.example.sigma_blue.adapter.ASelectableListAdapter
+com.example.sigma_blue.utility.FilterField <|-- com.example.sigma_blue.utility.DateFilterField
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.ItemTagsFragment
+com.example.sigma_blue.fragments.OnItemClickListener <|.. com.example.sigma_blue.fragments.ItemPhotosFragment
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.ItemPhotosFragment
+androidx.appcompat.app.AppCompatActivity <|-- com.example.sigma_blue.activities.ViewListActivity
+com.example.sigma_blue.activities.ViewListActivity +.. com.example.sigma_blue.activities.ViewListActivity$ViewHolder
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.EditFragment
+com.example.sigma_blue.database.ADatabaseHandler <|-- com.example.sigma_blue.entity.item.ItemDB
+androidx.appcompat.app.AppCompatActivity <|-- com.example.sigma_blue.activities.AddEditActivity
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.DetailsFragment
+com.example.sigma_blue.utility.FilterField <|-- com.example.sigma_blue.utility.DescriptionFilterField
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.TagManagerFragment
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.TagEditFragment
+androidx.fragment.app.DialogFragment <|-- com.example.sigma_blue.fragments.LoginFragment
+com.example.sigma_blue.fragments.LoginFragment +.. com.example.sigma_blue.fragments.LoginFragment$OnFragmentInteractionListener
+com.example.sigma_blue.utility.FilterField <|-- com.example.sigma_blue.utility.NameFilterField
+android.text.TextWatcher <|.. com.example.sigma_blue.utility.SearchTextBoxWatcher
+androidx.viewpager2.adapter.FragmentStateAdapter <|-- com.example.sigma_blue.adapter.ViewPagerAdapter
+java.io.Serializable <|.. com.example.sigma_blue.entity.account.Account
+com.example.sigma_blue.database.IDatabaseItem <|.. com.example.sigma_blue.entity.account.Account
+androidx.appcompat.app.AppCompatActivity <|-- com.example.sigma_blue.activities.ImageTakingActivity
+androidx.fragment.app.DialogFragment <|-- com.example.sigma_blue.fragments.CreateAccFragment
+com.example.sigma_blue.fragments.CreateAccFragment +.. com.example.sigma_blue.fragments.CreateAccFragment$OnFragmentInteractionListener
+com.example.sigma_blue.entity.tag.Comparable <|.. com.example.sigma_blue.entity.tag.Tag
+com.example.sigma_blue.database.IDatabaseItem <|.. com.example.sigma_blue.entity.tag.Tag
+java.io.Serializable <|.. com.example.sigma_blue.entity.tag.Tag
+com.example.sigma_blue.activities.OnFragmentInteractionListener <|.. com.example.sigma_blue.activities.LoginPageActivity
+com.example.sigma_blue.activities.OnFragmentInteractionListener <|.. com.example.sigma_blue.activities.LoginPageActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.sigma_blue.activities.LoginPageActivity
+com.example.sigma_blue.adapter.ASelectableListAdapter <|-- com.example.sigma_blue.entity.item.ItemListAdapter
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.ItemDetailsFragment
+com.example.sigma_blue.entity.image.Adapter <|-- com.example.sigma_blue.entity.image.ImageListAdapterFromPath
+com.example.sigma_blue.entity.image.ImageListAdapterFromPath +.. com.example.sigma_blue.entity.image.ImageListAdapterFromPath$ImageViewHolder
+com.example.sigma_blue.entity.image.OnClickListener <|.. com.example.sigma_blue.entity.image.ImageListAdapterFromPath$ImageViewHolder
+com.example.sigma_blue.entity.image.OnCreateContextMenuListener <|.. com.example.sigma_blue.entity.image.ImageListAdapterFromPath$ImageViewHolder
+com.example.sigma_blue.entity.image.OnMenuItemClickListener <|.. com.example.sigma_blue.entity.image.ImageListAdapterFromPath$ImageViewHolder
+com.example.sigma_blue.entity.image.ViewHolder <|-- com.example.sigma_blue.entity.image.ImageListAdapterFromPath$ImageViewHolder
+com.example.sigma_blue.entity.image.ImageListAdapterFromPath +.. com.example.sigma_blue.entity.image.ImageListAdapterFromPath$OnItemClickListener
+androidx.fragment.app.Fragment <|-- com.example.sigma_blue.fragments.TagAddFragment
+com.example.sigma_blue.database.ADatabaseHandler <|-- com.example.sigma_blue.entity.account.AccountDB
+java.io.Serializable <|.. com.example.sigma_blue.entity.AEntityList
+com.example.sigma_blue.database.IDatabaseList <|.. com.example.sigma_blue.entity.AEntityList
+com.bumptech.glide.module.AppGlideModule <|-- com.example.sigma_blue.entity.image.MyAppGlideModule
+com.example.sigma_blue.entity.AEntityList <|-- com.example.sigma_blue.entity.account.AccountList
+com.example.sigma_blue.utility.FilterField <|-- com.example.sigma_blue.utility.MakeFilterField
+com.example.sigma_blue.database.ADatabaseHandler <|-- com.example.sigma_blue.entity.tag.TagDB
+com.example.sigma_blue.entity.item.Comparable <|.. com.example.sigma_blue.entity.item.Item
+java.io.Serializable <|.. com.example.sigma_blue.entity.item.Item
+com.example.sigma_blue.database.IDatabaseItem <|.. com.example.sigma_blue.entity.item.Item
+androidx.fragment.app.DialogFragment <|-- com.example.sigma_blue.fragments.QueryFragment
+com.example.sigma_blue.fragments.QueryFragment +.. com.example.sigma_blue.fragments.QueryFragment$ViewHolder
+com.example.sigma_blue.entity.AEntityList <|-- com.example.sigma_blue.entity.tag.TagList
+com.example.sigma_blue.adapter.ASelectableListAdapter <|-- com.example.sigma_blue.entity.tag.TagListAdapter
+com.example.sigma_blue.entity.AEntityList <|-- com.example.sigma_blue.entity.item.ItemList
 @enduml
