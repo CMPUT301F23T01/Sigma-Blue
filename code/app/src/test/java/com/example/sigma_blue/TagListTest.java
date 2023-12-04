@@ -51,8 +51,7 @@ public class TagListTest {
         Tag input = new Tag("Spider", mockColor);
 
 
-        fail("Not implemented properly");
-//        assertEquals(expected, Tag.hashMapOfTag.apply(input));
+        assertEquals(expected, input.getHashMapOfEntity().apply(input));
     }
 
     /**
