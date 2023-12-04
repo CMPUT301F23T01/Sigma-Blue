@@ -23,15 +23,19 @@ public class AccountList extends AEntityList<Account> {
         return new AccountList();
     }
 
-//    /**
-//     * Dependency injection constructor.
-//     * @param aDB database handler
-//     * @param aLst local list
-//     */
-//    public AccountList(AccountDB aDB, List<Account> aLst) {
-//        accountDB = aDB;
-//        accList = aLst;
-//    }
+    /**
+     * Dependency injection constructor, for testing.
+     * @param aDB database handler
+     * @param aLst local list
+     */
+    public AccountList(AccountDB aDB, List<Account> aLst) {
+        super();
+        this.dbHandler = aDB;
+
+        for (Account a: aLst) {
+            this.add(a);
+        }
+    }
 
     /**
      * Constructor for an AccountList
