@@ -220,7 +220,8 @@ public class TagManagerFragment extends Fragment {
 
                     Item modItem;   // For the case that an item is being edited
                     if ((modItem = globalContext.getModifiedItem()) != null)
-                        globalContext.getModifiedItem().cleanTags(globalContext.getTagList().getList());
+                        globalContext.getModifiedItem().cleanTags(globalContext
+                                .getTagList().getList());
                 });
             }
         });
