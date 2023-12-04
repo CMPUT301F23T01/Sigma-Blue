@@ -20,7 +20,7 @@ public abstract class FilterField<T> {
     }
 
     /**
-     * Does the given entity fit the filter critirion?
+     * Does the given entity fit the filter criterion?
      * @param entity entity to check
      * @return true if the entity fits the filter, false otherwise.
      */

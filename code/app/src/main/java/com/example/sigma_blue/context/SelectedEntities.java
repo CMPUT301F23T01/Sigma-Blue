@@ -12,6 +12,11 @@ public class SelectedEntities<T> {
     public SelectedEntities() {
         selected = new ArrayList<>();
     }
+
+    /**
+     * Flips the presence of an item on the list.
+     * @param e is the entity being swapped in and out
+     */
     public void toggleHighlight(T e) {
         if (!this.selected.contains(e)){
             this.selected.add(e);

@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+/**
+ * The confirm delete dialog box, factored out into a class due to multiple
+ * reuse
+ */
 public class ConfirmDelete {
 
     // method for generating a confirm delete menu, takes in an OnClickListener so that

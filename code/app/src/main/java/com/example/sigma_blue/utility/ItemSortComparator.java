@@ -9,7 +9,7 @@ import java.util.Comparator;
  * Store all the comparators used for sorting
  */
 public class ItemSortComparator {
-    private SortField sortBy;
+    private final SortField sortBy;
     private int direction;
     // note that since direction is -1 or 1 it inverts the 'usual' result fo the compareTo method when
     // the direction needs to be reversed.
