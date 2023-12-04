@@ -61,23 +61,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/sortCriteriaSpinner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/filterTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/filter_by_title_text"
-                android:textColor="?colorOnBackground"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-          <CheckBox
+            <CheckBox
                 android:id="@+id/dateFilterCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -225,11 +214,11 @@
                 android:id="@+id/descFilterEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:autofillHints="@string/filter_keywords_hint_text"
                 android:hint="@string/filter_keywords_hint_text"
                 android:inputType="text"
                 android:textSize="20sp"
-                android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/dateFilterCheckbox"
                 app:layout_constraintTop_toBottomOf="@id/nameFilterEditText"
@@ -245,6 +234,7 @@
                 app:layout_constraintTop_toBottomOf="@id/date_filter_constraint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ViewSwitcher>
 
     <Button

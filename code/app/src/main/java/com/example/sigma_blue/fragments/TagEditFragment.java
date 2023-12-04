@@ -51,7 +51,7 @@ public class TagEditFragment extends Fragment {
         });
 
         confirmButton.setOnClickListener(v -> {
-            if (globalContext.getTagList().getEntityList().contains(modifiedTag) && modifiedTag != oldTag) {
+            if (globalContext.getTagList().getEntityList().contains(modifiedTag) && !modifiedTag.equals(oldTag)) {
                 Snackbar incorrectMessage = Snackbar.make(v, "Tag Already Exists", Snackbar.LENGTH_LONG);
                 incorrectMessage.show();
             } else {

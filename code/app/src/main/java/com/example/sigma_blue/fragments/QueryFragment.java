@@ -162,12 +162,12 @@ public class QueryFragment extends DialogFragment {
         /**
          * Populating tag filtering options
          */
-        private void createTagAdapter()
-        {
-            tagFilterAdapter = new TagListAdapter(globalTags.getEntityList(), android.R.layout
+        private void createTagAdapter() {
+            ArrayList<Tag> e = new ArrayList<>();
+            e.addAll(globalTags.getEntityList());
+            e.add(0, new Tag("All Tags", 0));
+            tagFilterAdapter = new TagListAdapter(e, android.R.layout
                     .simple_spinner_dropdown_item, getContext());
-            tagFilterAdapter.addAll();
-            Log.e("UHOH",globalContext.getTagList().getEntityList().toString());
         }
 
         /**
@@ -205,9 +205,11 @@ public class QueryFragment extends DialogFragment {
             // Regenerate spinners
             sortCriteriaSpinner.setSelection(sortAdapter.getPosition(visibleItemList.getItemSortComparator().getSortBy()));
             flipAscendBox((visibleItemList.getItemSortComparator().getDirection()) == 1);
-            // TODO:
-//            tagFilterSpinner.setSelection(sortAdapter);
 
+            ArrayList<Tag> tags = ((TagFilterField)(visibleItemList.getTagFilterField())).getTagsToMatch();
+            if (tags.size() > 0) {
+                tagFilterSpinner.setSelection(tagFilterAdapter.getPosition(tags.get(0)));
+            }
             // Filter text regeneration
             regenerateTextBox(makeFilterET, visibleItemList.getMakeFilterField().getFilterText());
             regenerateTextBox(descriptionFilterET, visibleItemList.getDescriptionFilterField().getFilterText());
@@ -413,7 +415,7 @@ public class QueryFragment extends DialogFragment {
                                            int position, long id) {
                     ArrayList<Tag> tagsSelected = new ArrayList<>();
                     tagsSelected.add(tagFilterAdapter.getItem(position));
-                    TagFilterField tagFilter = new TagFilterField("", true, true, tagsSelected);
+                    TagFilterField tagFilter = new TagFilterField("", position>0, false, tagsSelected);
                     visibleItemList.setTagFilterField(tagFilter);
                 }
 

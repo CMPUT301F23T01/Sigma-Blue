@@ -45,7 +45,7 @@
     <!-- Strings related to the list view activity -->
     <string name="empty_summary_view">No Items</string>
     <string name="list_add_tag">Add Tag…</string>
-    <string name="list_sort_filter">Sort/Filter</string>
+    <string name="list_sort_filter">Sort</string>
     <string name="list_search">Search</string>
     <string name="list_options">Options</string>
 

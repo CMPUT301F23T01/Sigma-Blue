@@ -24,6 +24,10 @@ public class TagFilterField extends FilterField<Item>{
         this.tagsToMatch = tagsToMatch;
     }
 
+    public ArrayList<Tag> getTagsToMatch() {
+        return tagsToMatch;
+    }
+
     @Override
     public boolean match(Item entity) {
         if (!enabled) {
