@@ -1,11 +1,13 @@
 package com.example.sigma_blue.entity.image;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.sigma_blue.entity.account.Account;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,6 +50,13 @@ public class ImageDB {
             public void onFailure(@NonNull Exception exception) {
                 Log.e("ImageDownload", "Image download fail");
             }
+        }).addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Log.e("ImageDownload", "Image download canceled");
+            }
         });
     }
+
+
 }
