@@ -19,6 +19,14 @@ public class SelectedEntities<T> {
             this.selected.remove(e);
         }
     }
+
+    /**
+     * Clearing the entire selected view. Needed for delete features.
+     */
+    public void clear() {
+        this.selected.clear();
+    }
+
     public ArrayList<T> getSelected() {
         return selected;
     }

@@ -47,8 +47,7 @@ public class TagList extends AEntityList<Tag> {
      * to the database that stores all of the Tags that the user has defined.
      */
     public static TagList newInstance(TagDB db) {
-        TagList ret = new TagList(db);
-        return ret;
+        return new TagList(db);
     }
 
     private TagList(TagDB tagDB) {
