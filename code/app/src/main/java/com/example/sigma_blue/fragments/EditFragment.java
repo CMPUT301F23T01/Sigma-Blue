@@ -140,8 +140,7 @@ public class EditFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
-                globalContext.setModifiedItem(new Item(globalContext.getCurrentItem()));
+                globalContext.setModifiedItem(null);
                 if (globalContext.getCurrentState() == ApplicationState.ADD_ITEM_FRAGMENT) {
                     // Cancel new item; Return to ViewListActivity
                     globalContext.setCurrentItem(null);
@@ -149,6 +148,7 @@ public class EditFragment extends Fragment
                     activity.returnAndClose();
 
                 } else {
+                    globalContext.getImageManager().updateFromItem(globalContext.getCurrentItem());
                     // Navigate to Item Details
                     NavHostFragment.findNavController(EditFragment.this)
                             .navigate(R.id
